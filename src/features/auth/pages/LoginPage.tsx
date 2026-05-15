@@ -2,15 +2,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { LoginForm } from '@/features/auth/components'
 
 export function LoginPage() {
-  return (
-    <Card>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Welcome back</CardTitle>
-        <CardDescription>Sign in to your account to continue</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <LoginForm />
-      </CardContent>
-    </Card>
-  )
+    return (
+        <Card>
+            <CardHeader className="text-center">
+                <CardTitle className="text-2xl">Welcome back</CardTitle>
+                <CardDescription>Sign in to your account to continue</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <LoginForm />
+            </CardContent>
+        </Card>
+    )
 }

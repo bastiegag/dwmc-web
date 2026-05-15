@@ -4,10 +4,18 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
+    plugins: [react(), tailwindcss()],
+    server: {
+        open: true,
+        host: true,
+        port: 5182,
+        watch: {
+            usePolling: true,
+        },
     },
-  },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+        },
+    },
 })

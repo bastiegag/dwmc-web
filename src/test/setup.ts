@@ -6,8 +6,8 @@ import { server } from './mocks/server'
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }))
 afterEach(() => {
-  cleanup()
-  server.resetHandlers()
+    cleanup()
+    server.resetHandlers()
 })
 afterAll(() => server.close())
 

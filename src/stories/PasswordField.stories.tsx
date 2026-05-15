@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { PasswordField } from '@/components/form/PasswordField'
 
 const meta: Meta<typeof PasswordField> = {
-  title: 'Form/PasswordField',
-  component: PasswordField,
-  tags: ['autodocs'],
-  args: { id: 'password', label: 'Password' },
+    title: 'Form/PasswordField',
+    component: PasswordField,
+    tags: ['autodocs'],
+    args: { id: 'password', label: 'Password' },
 }
 
 export default meta
