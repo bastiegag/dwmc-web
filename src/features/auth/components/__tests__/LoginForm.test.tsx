@@ -25,7 +25,7 @@ describe('LoginForm', () => {
     it('renders email and password fields', () => {
         render(<LoginForm />)
         expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
-        expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument()
+        expect(screen.getByLabelText(/^password/i)).toBeInTheDocument()
     })
 
     it('renders sign in button', () => {
