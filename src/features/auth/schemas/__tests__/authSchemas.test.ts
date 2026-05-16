@@ -47,7 +47,7 @@ describe('signupSchema', () => {
         const result = signupSchema.safeParse({ ...valid, confirmPassword: 'Different123' })
         expect(result.success).toBe(false)
         if (!result.success) {
-            expect(result.error.errors.find((e) => e.path[0] === 'confirmPassword')?.message).toBe(
+            expect(result.error.issues.find((e) => e.path[0] === 'confirmPassword')?.message).toBe(
                 'Passwords do not match',
             )
         }
