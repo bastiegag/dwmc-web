@@ -4,7 +4,7 @@ import { toast } from '@/components/ui/use-toast'
 import type { SignupCredentials } from '@/features/auth/types'
 
 export function useSignup() {
-    const { mutateAsync, isPending, error } = useMutation({
+    const { mutateAsync, isPending, isSuccess, error } = useMutation({
         mutationFn: (credentials: Omit<SignupCredentials, 'confirmPassword'>) =>
             authService.signup(credentials),
         onSuccess: () => {
@@ -17,5 +17,5 @@ export function useSignup() {
             toast({ variant: 'destructive', title: 'Sign up failed', description: error.message })
         },
     })
-    return { signup: mutateAsync, isPending, error }
+    return { signup: mutateAsync, isPending, isSuccess, error }
 }

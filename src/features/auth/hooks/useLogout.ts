@@ -1,9 +1,9 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { authService } from '@/features/auth/services'
-import { queryClient } from '@/lib/query'
 import { toast } from '@/components/ui/use-toast'
 
 export function useLogout() {
+    const queryClient = useQueryClient()
     const { mutateAsync, isPending } = useMutation({
         mutationFn: () => authService.logout(),
         onSuccess: () => {
