@@ -8,12 +8,6 @@ export function useAuth() {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        authService.getSession().then((session) => {
-            setSession(session)
-            setUser(session?.user ?? null)
-            setIsLoading(false)
-        })
-
         const {
             data: { subscription },
         } = authService.onAuthStateChange(async (_event, session) => {

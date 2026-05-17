@@ -47,4 +47,18 @@ export const authHandlers = [
     http.get(`${SUPABASE_URL}/auth/v1/user`, () =>
         HttpResponse.json({ message: 'JWT expired or invalid' }, { status: 401 }),
     ),
+
+    http.put(`${SUPABASE_URL}/auth/v1/user`, () =>
+        HttpResponse.json({
+            id: 'mock-user-id',
+            email: 'test@example.com',
+            aud: 'authenticated',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            user_metadata: {},
+            app_metadata: {},
+        }),
+    ),
+
+    http.post(`${SUPABASE_URL}/auth/v1/logout`, () => new HttpResponse(null, { status: 204 })),
 ]

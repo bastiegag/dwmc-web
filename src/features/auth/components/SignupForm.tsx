@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'react-router-dom'
@@ -12,8 +11,7 @@ import { useSignup } from '@/features/auth/hooks'
 import { signupSchema, type SignupInput } from '@/features/auth/schemas'
 
 export function SignupForm() {
-    const { signup, isPending } = useSignup()
-    const [isSuccess, setIsSuccess] = useState(false)
+    const { signup, isPending, isSuccess } = useSignup()
 
     const {
         register,
@@ -25,7 +23,6 @@ export function SignupForm() {
     const onSubmit = async (data: SignupInput) => {
         try {
             await signup({ email: data.email, password: data.password })
-            setIsSuccess(true)
         } catch (err) {
             if (err instanceof Error) setError('root', { message: err.message })
         }
