@@ -7,6 +7,7 @@ vi.mock('@/features/auth/hooks', () => ({
     useSignup: vi.fn(() => ({
         signup: vi.fn().mockResolvedValue(undefined),
         isPending: false,
+        isSuccess: false,
         error: null,
     })),
 }))
@@ -42,6 +43,21 @@ describe('SignupForm', () => {
     })
 
     it('shows a success alert after successful submission', async () => {
+        const { useSignup } = await import('@/features/auth/hooks')
+        const signup = vi.fn().mockImplementation(async () => {
+            vi.mocked(useSignup).mockReturnValue({
+                signup,
+                isPending: false,
+                isSuccess: true,
+                error: null,
+            })
+        })
+        vi.mocked(useSignup).mockReturnValue({
+            signup,
+            isPending: false,
+            isSuccess: false,
+            error: null,
+        })
         const user = userEvent.setup()
         render(<SignupForm />)
         await user.type(screen.getByLabelText(/email/i), 'new@example.com')
@@ -58,6 +74,7 @@ describe('SignupForm', () => {
         vi.mocked(useSignup).mockReturnValue({
             signup: vi.fn(),
             isPending: true,
+            isSuccess: false,
             error: null,
         })
         render(<SignupForm />)

@@ -8,15 +8,28 @@ export function useAuth() {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        const {
-            data: { subscription },
-        } = authService.onAuthStateChange(async (_event, session) => {
+        let ignore = false
+
+        authService.getSession().then((session) => {
+            if (ignore) return
             setSession(session)
             setUser(session?.user ?? null)
             setIsLoading(false)
         })
 
-        return () => subscription.unsubscribe()
+        const {
+            data: { subscription },
+        } = authService.onAuthStateChange(async (_event, session) => {
+            ignore = true
+            setSession(session)
+            setUser(session?.user ?? null)
+            setIsLoading(false)
+        })
+
+        return () => {
+            ignore = true
+            subscription.unsubscribe()
+        }
     }, [])
 
     return { user, session, isLoading, isAuthenticated: !!user }

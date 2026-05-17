@@ -9,6 +9,7 @@ export default defineConfig({
         globals: true,
         environment: 'jsdom',
         setupFiles: ['./src/test/setup.ts'],
+        exclude: ['node_modules/**', 'e2e/**'],
         coverage: {
             reporter: ['text', 'json', 'html'],
             exclude: ['node_modules/', 'src/test/', '*.config.*', 'src/stories/'],
@@ -22,6 +23,6 @@ export default defineConfig({
     define: {
         'import.meta.env.VITE_SUPABASE_URL': '"https://test.supabase.co"',
         'import.meta.env.VITE_SUPABASE_ANON_KEY': '"test-anon-key"',
-        'import.meta.env.VITE_APP_URL': '"http://localhost:5173"',
+        'import.meta.env.VITE_APP_URL': '"http://localhost:5182"',
     },
 })

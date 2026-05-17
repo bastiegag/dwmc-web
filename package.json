@@ -18,7 +18,7 @@
         "test:e2e": "playwright test",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
-        "prepare": "node -e \"try{require('husky')}catch(e){}\" || true"
+        "prepare": "husky"
     },
     "dependencies": {
         "@hookform/resolvers": "^5.2.2",

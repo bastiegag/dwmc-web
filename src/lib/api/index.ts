@@ -1,2 +1,2 @@
-export { apiClient, ApiError } from './client'
+export { ApiError } from './client'
 export type { ApiResponse, ApiErrorResponse } from './client'

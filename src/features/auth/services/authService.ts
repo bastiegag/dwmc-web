@@ -9,18 +9,20 @@ export const authService = {
     },
 
     async signup({ email, password }: Omit<SignupCredentials, 'confirmPassword'>) {
+        const appUrl = import.meta.env.VITE_APP_URL
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
-            options: { emailRedirectTo: `${window.location.origin}/app` },
+            options: { emailRedirectTo: `${appUrl}/app` },
         })
         if (error) throw error
         return data
     },
 
     async forgotPassword(email: string) {
+        const appUrl = import.meta.env.VITE_APP_URL
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/reset-password`,
+            redirectTo: `${appUrl}/reset-password`,
         })
         if (error) throw error
     },

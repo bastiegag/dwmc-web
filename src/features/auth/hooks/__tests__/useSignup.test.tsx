@@ -33,14 +33,10 @@ describe('useSignup', () => {
         })
     })
 
-    it('rejects and calls toast with destructive variant for an existing email', async () => {
-        const { toast } = await import('@/components/ui/use-toast')
+    it('rejects for an existing email', async () => {
         const { result } = renderHook(() => useSignup(), { wrapper: createWrapper() })
         await expect(
             result.current.signup({ email: 'existing@example.com', password: 'Password123' }),
         ).rejects.toThrow()
-        await waitFor(() => {
-            expect(toast).toHaveBeenCalledWith(expect.objectContaining({ variant: 'destructive' }))
-        })
     })
 })

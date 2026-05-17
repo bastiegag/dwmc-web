@@ -10,21 +10,21 @@
 
 | Concern            | Library / Tool                                      |
 | ------------------ | --------------------------------------------------- |
-| Framework          | React 18 + TypeScript 5                             |
-| Build              | Vite 6                                              |
+| Framework          | React 19 + TypeScript 6                             |
+| Build              | Vite 8                                              |
 | CSS                | Tailwind CSS v4 (via `@tailwindcss/vite` plugin)    |
 | UI primitives      | Radix UI (dialog, dropdown, label, slot, toast)     |
 | Component variants | class-variance-authority (CVA) — shadcn/ui pattern  |
-| Routing            | React Router DOM v6 (lazy-loaded routes)            |
+| Routing            | React Router DOM v7 (lazy-loaded routes)            |
 | Server state       | TanStack React Query v5                             |
-| Forms              | React Hook Form v7 + Zod v3                         |
+| Forms              | React Hook Form v7 + Zod v4                         |
 | Backend / Auth     | Supabase JS SDK v2                                  |
-| Testing            | Vitest + Testing Library + MSW v2                   |
-| E2E                | Playwright                                          |
-| Component explorer | Storybook 8                                         |
+| Testing            | Vitest 4 + Testing Library + MSW v2                 |
+| E2E                | Playwright 1.49                                     |
+| Component explorer | Storybook 10                                        |
 | Linting            | ESLint 9 (TypeScript + React Hooks + React Refresh) |
 | Formatting         | Prettier 3                                          |
-| Pre-commit         | Husky + lint-staged                                 |
+| Pre-commit         | Husky v9 + lint-staged                              |
 
 ---
 
@@ -71,6 +71,12 @@ In tests, Vitest injects `https://test.supabase.co` and `test-anon-key` via `vit
 ## Directory Structure
 
 ```
+e2e/                      # Playwright E2E specs
+├── navigation.spec.ts    # Redirect / unauthenticated guard tests
+├── login.spec.ts         # Login page (7 tests)
+├── signup.spec.ts        # Signup page (5 tests)
+└── forgot-password.spec.ts  # Forgot-password page (4 tests)
+
 src/
 ├── app/
 │   ├── layouts/          # AppLayout, AuthLayout (Outlet wrappers)
@@ -186,14 +192,21 @@ Add new handlers in `src/test/mocks/handlers/` and register them in `src/test/mo
 ### E2E tests (Playwright)
 
 - Run with `npm run test:e2e`.
-- Config lives in `playwright.config.ts` (if present) or Playwright defaults.
+- Config: `playwright.config.ts` — Chromium only, `baseURL: http://localhost:5182`, `webServer` auto-starts `npm run dev`.
+- Specs live in `e2e/`. 19 tests across 4 files (navigation, login, signup, forgot-password).
+- Mock Supabase API calls with `page.route(/\/auth\/v1\/token/, handler)` — no real backend needed.
+- **Do not use `getByLabel('Password')` for password fields** — the `required` prop renders a `<span aria-hidden>*</span>` inside the label, making its text content `"Password *"`. Use `page.locator('#password')` and `page.locator('#confirmPassword')` instead.
+- **Scope error text assertions** when the same string appears in both an inline `role="alert"` and a toast: use `page.getByRole('alert').getByText(/message/i)` to avoid strict-mode violations.
+- Supabase env vars are not needed for E2E tests (all calls mocked); CI uses hardcoded placeholders.
 
 ---
 
 ## Known Constraints & Workarounds
 
 - **Supabase client in tests**: The client is a singleton created at module load time. The Vitest config overrides `import.meta.env` via `define` to point at the MSW-intercepted URL. Do not mock the Supabase client module directly — rely on MSW handlers instead.
-- **`husky` in CI**: The `prepare` script silently skips Husky installation when it is not available, so `npm ci` works in CI without error.
+- **Zod v4 error messages**: Zod v4 is installed (not v3). Empty required fields produce `"Email is required"` (from `.min(1, '...')`), invalid format produces `"Please enter a valid email address"` (from `.email('...')`). These are the strings to assert against in tests — not `"Invalid email"`.
+- **MSW `onUnhandledRequest`**: Set to `'error'` in `src/test/setup.ts`. Any Supabase endpoint hit by tests without a matching handler will throw immediately — add the handler before writing the test.
+- **Husky v9**: `prepare` script runs `husky`, which sets `core.hooksPath` to `.husky/_/`. The `_/` directory contains Husky's bridge scripts; user hooks live in `.husky/pre-commit`. This is correct v9 architecture — do not change it.
 
 ---
 
@@ -207,3 +220,4 @@ Follow the vertical-slice pattern already used by `features/auth`:
 4. Wrap pages in `<AppLayout>` and `<ProtectedRoute>` if they require authentication.
 5. Add MSW handlers for any new API endpoints under `src/test/mocks/handlers/`.
 6. Write Vitest component tests and, optionally, Storybook stories.
+7. Write a Playwright E2E spec in `e2e/<feature>.spec.ts` covering the happy path and key error states. Use `page.route()` to mock API calls.

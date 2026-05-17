@@ -13,9 +13,6 @@ export function useSignup() {
                 description: 'Check your email to verify your account.',
             })
         },
-        onError: (error: Error) => {
-            toast({ variant: 'destructive', title: 'Sign up failed', description: error.message })
-        },
     })
     return { signup: mutateAsync, isPending, isSuccess, error }
 }

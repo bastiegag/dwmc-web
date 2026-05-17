@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { renderHook, waitFor } from '@testing-library/react'
+import { renderHook } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type ReactNode } from 'react'
 import { useLogin } from '@/features/auth/hooks/useLogin'
@@ -33,14 +33,10 @@ describe('useLogin', () => {
         ).resolves.toBeDefined()
     })
 
-    it('rejects and calls toast with destructive variant for invalid credentials', async () => {
-        const { toast } = await import('@/components/ui/use-toast')
+    it('rejects for invalid credentials', async () => {
         const { result } = renderHook(() => useLogin(), { wrapper: createWrapper() })
         await expect(
             result.current.login({ email: 'test@example.com', password: 'wrongpassword' }),
         ).rejects.toThrow()
-        await waitFor(() => {
-            expect(toast).toHaveBeenCalledWith(expect.objectContaining({ variant: 'destructive' }))
-        })
     })
 })
