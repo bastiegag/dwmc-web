@@ -57,14 +57,15 @@ npm run build-storybook  # Storybook production build
 
 The app reads the following `VITE_` prefixed variables at build time:
 
-| Variable                 | Purpose                        | Required |
-| ------------------------ | ------------------------------ | -------- |
-| `VITE_SUPABASE_URL`      | Supabase project REST/Auth URL | Yes      |
-| `VITE_SUPABASE_ANON_KEY` | Supabase public anon key       | Yes      |
+| Variable                 | Purpose                                 | Required |
+| ------------------------ | --------------------------------------- | -------- |
+| `VITE_SUPABASE_URL`      | Supabase project REST/Auth URL          | Yes      |
+| `VITE_SUPABASE_ANON_KEY` | Supabase public anon key                | Yes      |
+| `VITE_APP_URL`           | App origin for auth email redirect URLs | Yes      |
 
-For local development create a `.env.local` file (gitignored). The Supabase client falls back to placeholder values if the variables are absent so the app still compiles; API calls will fail at runtime without real values.
+For local development create a `.env.local` file (gitignored). All three variables are required — the app throws at startup if any are missing.
 
-In tests, Vitest injects `https://test.supabase.co` and `test-anon-key` via `vitest.config.ts` `define` block — no `.env` needed for tests.
+In tests, Vitest injects values for all three variables via the `vitest.config.ts` `define` block — no `.env` needed for tests.
 
 ---
 
@@ -93,12 +94,12 @@ src/
 │   │   └── TextField.tsx
 │   ├── layout/           # AppNav, ThemeProvider, ThemeToggle
 │   └── ui/               # Low-level shadcn-style primitives
-│       └── button, card, input, label, toast, toaster, use-toast
+│       └── button, card, input, label, toast, toaster, use-toast, alert
 │
 ├── features/             # Feature modules (vertical slices)
 │   └── auth/
 │       ├── components/   # LoginForm, SignupForm, ForgotPasswordForm, ResetPasswordForm
-│       ├── hooks/        # useAuth, useLogin, useLogout, useSignup, useForgotPassword, useResetPassword
+│       ├── hooks/        # useAuth, useLogin, useLogout, useSignup, useForgotPassword, useResetPassword, usePasswordRecovery
 │       ├── pages/        # LoginPage, SignupPage, ForgotPasswordPage, ResetPasswordPage, DashboardPage
 │       ├── routes/       # ProtectedRoute (redirects unauthenticated users)
 │       ├── schemas/      # Zod validation schemas (loginSchema, signupSchema, etc.)

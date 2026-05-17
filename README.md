@@ -40,11 +40,11 @@ npm run dev
 
 ## Environment Variables
 
-| Variable                 | Purpose                                | Required                    |
-| ------------------------ | -------------------------------------- | --------------------------- |
-| `VITE_SUPABASE_URL`      | Supabase project REST/Auth URL         | Yes                         |
-| `VITE_SUPABASE_ANON_KEY` | Supabase public anon key               | Yes                         |
-| `VITE_APP_URL`           | App origin used for auth redirect URLs | No (defaults to dev origin) |
+| Variable                 | Purpose                                 | Required |
+| ------------------------ | --------------------------------------- | -------- |
+| `VITE_SUPABASE_URL`      | Supabase project REST/Auth URL          | Yes      |
+| `VITE_SUPABASE_ANON_KEY` | Supabase public anon key                | Yes      |
+| `VITE_APP_URL`           | App origin for auth email redirect URLs | Yes      |
 
 ---
 
@@ -82,7 +82,7 @@ src/
     feedback/         # ErrorBoundary, LoadingSpinner
     form/             # TextField, PasswordField, FormError, FormSubmitButton
     layout/           # AppNav, ThemeProvider, ThemeToggle
-    ui/               # shadcn-style primitives (button, input, label, toast)
+    ui/               # shadcn-style primitives (button, card, input, label, toast, alert)
   features/
     auth/             # Vertical slice: components, hooks, pages, schemas, services, types
   lib/
@@ -103,7 +103,7 @@ Unit and component tests use Vitest + Testing Library + MSW. All Supabase calls 
 E2E tests use Playwright and mock Supabase via `page.route()`. Run against a local dev server that starts automatically.
 
 ```bash
-npm run test             # 128 unit/component tests
+npm run test             # 136 unit/component tests
 npm run test:e2e         # 19 E2E tests (Chromium)
 ```
 

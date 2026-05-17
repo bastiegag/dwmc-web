@@ -1,18 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { LogOut, LayoutDashboard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from './ThemeToggle'
-import { useLogout } from '@/features/auth/hooks/useLogout'
 
-export function AppNav() {
-    const navigate = useNavigate()
-    const { logout, isPending } = useLogout()
+interface AppNavProps {
+    onLogout: () => void
+    isLoggingOut?: boolean
+}
 
-    const handleLogout = async () => {
-        await logout()
-        navigate('/login')
-    }
-
+export function AppNav({ onLogout, isLoggingOut = false }: AppNavProps) {
     return (
         <header className="border-b bg-card px-6 py-3">
             <nav className="flex items-center justify-between" aria-label="Main navigation">
@@ -37,12 +33,12 @@ export function AppNav() {
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={handleLogout}
-                        disabled={isPending}
+                        onClick={onLogout}
+                        disabled={isLoggingOut}
                         className="flex items-center gap-2"
                     >
                         <LogOut className="h-4 w-4" />
-                        {isPending ? 'Signing out...' : 'Sign out'}
+                        {isLoggingOut ? 'Signing out...' : 'Sign out'}
                     </Button>
                 </div>
             </nav>

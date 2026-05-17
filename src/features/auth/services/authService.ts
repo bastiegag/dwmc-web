@@ -1,46 +1,60 @@
 import { supabase } from '@/lib/supabase'
+import { AuthServiceError } from '@/features/auth/types'
 import type { LoginCredentials, SignupCredentials } from '@/features/auth/types'
+
+function toAuthServiceError(error: unknown): AuthServiceError {
+    if (error instanceof Error) {
+        const code =
+            typeof (error as { code?: unknown }).code === 'string'
+                ? (error as unknown as { code: string }).code
+                : undefined
+        return new AuthServiceError(error.message, code)
+    }
+    return new AuthServiceError('An unexpected error occurred')
+}
+const appUrl = import.meta.env.VITE_APP_URL
+if (!appUrl) {
+    throw new Error('Missing VITE_APP_URL. Set it to the app origin (e.g. https://example.com).')
+}
 
 export const authService = {
     async login({ email, password }: LoginCredentials) {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) throw error
+        if (error) throw toAuthServiceError(error)
         return data
     },
 
     async signup({ email, password }: Omit<SignupCredentials, 'confirmPassword'>) {
-        const appUrl = import.meta.env.VITE_APP_URL
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: { emailRedirectTo: `${appUrl}/app` },
         })
-        if (error) throw error
+        if (error) throw toAuthServiceError(error)
         return data
     },
 
     async forgotPassword(email: string) {
-        const appUrl = import.meta.env.VITE_APP_URL
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: `${appUrl}/reset-password`,
         })
-        if (error) throw error
+        if (error) throw toAuthServiceError(error)
     },
 
     async resetPassword(password: string) {
         const { data, error } = await supabase.auth.updateUser({ password })
-        if (error) throw error
+        if (error) throw toAuthServiceError(error)
         return data
     },
 
     async logout() {
         const { error } = await supabase.auth.signOut()
-        if (error) throw error
+        if (error) throw toAuthServiceError(error)
     },
 
     async getSession() {
         const { data, error } = await supabase.auth.getSession()
-        if (error) throw error
+        if (error) throw toAuthServiceError(error)
         return data.session
     },
 

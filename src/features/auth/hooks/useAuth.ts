@@ -1,36 +1,16 @@
-import { useEffect, useState } from 'react'
-import type { User, Session } from '@supabase/supabase-js'
+import { useQuery } from '@tanstack/react-query'
 import { authService } from '@/features/auth/services'
 
+export const authSessionQueryKey = ['auth', 'session'] as const
+
 export function useAuth() {
-    const [user, setUser] = useState<User | null>(null)
-    const [session, setSession] = useState<Session | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
+    const { data: session = null, isLoading } = useQuery({
+        queryKey: authSessionQueryKey,
+        queryFn: () => authService.getSession(),
+        staleTime: Infinity,
+        retry: false,
+    })
 
-    useEffect(() => {
-        let ignore = false
-
-        authService.getSession().then((session) => {
-            if (ignore) return
-            setSession(session)
-            setUser(session?.user ?? null)
-            setIsLoading(false)
-        })
-
-        const {
-            data: { subscription },
-        } = authService.onAuthStateChange(async (_event, session) => {
-            ignore = true
-            setSession(session)
-            setUser(session?.user ?? null)
-            setIsLoading(false)
-        })
-
-        return () => {
-            ignore = true
-            subscription.unsubscribe()
-        }
-    }, [])
-
+    const user = session?.user ?? null
     return { user, session, isLoading, isAuthenticated: !!user }
 }
