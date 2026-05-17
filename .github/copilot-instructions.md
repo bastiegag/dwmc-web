@@ -8,23 +8,23 @@
 
 ## Tech Stack
 
-| Concern | Library / Tool |
-|---|---|
-| Framework | React 18 + TypeScript 5 |
-| Build | Vite 6 |
-| CSS | Tailwind CSS v4 (via `@tailwindcss/vite` plugin) |
-| UI primitives | Radix UI (dialog, dropdown, label, slot, toast) |
-| Component variants | class-variance-authority (CVA) — shadcn/ui pattern |
-| Routing | React Router DOM v6 (lazy-loaded routes) |
-| Server state | TanStack React Query v5 |
-| Forms | React Hook Form v7 + Zod v3 |
-| Backend / Auth | Supabase JS SDK v2 |
-| Testing | Vitest + Testing Library + MSW v2 |
-| E2E | Playwright |
-| Component explorer | Storybook 8 |
-| Linting | ESLint 9 (TypeScript + React Hooks + React Refresh) |
-| Formatting | Prettier 3 |
-| Pre-commit | Husky + lint-staged |
+| Concern            | Library / Tool                                      |
+| ------------------ | --------------------------------------------------- |
+| Framework          | React 18 + TypeScript 5                             |
+| Build              | Vite 6                                              |
+| CSS                | Tailwind CSS v4 (via `@tailwindcss/vite` plugin)    |
+| UI primitives      | Radix UI (dialog, dropdown, label, slot, toast)     |
+| Component variants | class-variance-authority (CVA) — shadcn/ui pattern  |
+| Routing            | React Router DOM v6 (lazy-loaded routes)            |
+| Server state       | TanStack React Query v5                             |
+| Forms              | React Hook Form v7 + Zod v3                         |
+| Backend / Auth     | Supabase JS SDK v2                                  |
+| Testing            | Vitest + Testing Library + MSW v2                   |
+| E2E                | Playwright                                          |
+| Component explorer | Storybook 8                                         |
+| Linting            | ESLint 9 (TypeScript + React Hooks + React Refresh) |
+| Formatting         | Prettier 3                                          |
+| Pre-commit         | Husky + lint-staged                                 |
 
 ---
 
@@ -57,10 +57,10 @@ npm run build-storybook  # Storybook production build
 
 The app reads the following `VITE_` prefixed variables at build time:
 
-| Variable | Purpose | Required |
-|---|---|---|
-| `VITE_SUPABASE_URL` | Supabase project REST/Auth URL | Yes |
-| `VITE_SUPABASE_ANON_KEY` | Supabase public anon key | Yes |
+| Variable                 | Purpose                        | Required |
+| ------------------------ | ------------------------------ | -------- |
+| `VITE_SUPABASE_URL`      | Supabase project REST/Auth URL | Yes      |
+| `VITE_SUPABASE_ANON_KEY` | Supabase public anon key       | Yes      |
 
 For local development create a `.env.local` file (gitignored). The Supabase client falls back to placeholder values if the variables are absent so the app still compiles; API calls will fail at runtime without real values.
 
@@ -131,30 +131,36 @@ import { useAuth } from '@/features/auth/hooks'
 ## Coding Conventions
 
 ### Component style
+
 - Functional components with named exports (not default exports in feature files).
 - Each feature subdirectory has an `index.ts` barrel that re-exports its public API.
 - UI primitive components follow the shadcn/ui pattern: `cva` for variant definitions, `cn()` for className merging, `React.forwardRef` where needed.
 
 ### Forms
+
 - All forms use `react-hook-form` with `zodResolver`.
 - Validation schemas live in `features/<feature>/schemas/index.ts` and export both the schema and the inferred `z.infer<>` type.
 - Reusable form building blocks (`TextField`, `PasswordField`, `FormError`, `FormSubmitButton`) are in `src/components/form/`.
 
 ### Data fetching / mutations
+
 - Use TanStack Query mutations (`useMutation`) for auth actions; the hooks are in `features/auth/hooks/`.
 - The shared `QueryClient` instance lives in `src/lib/query/client.ts`.
 
 ### Routing
+
 - Routes are lazy-loaded with `React.lazy` + `Suspense`.
 - Protected routes are wrapped in `<ProtectedRoute>` which uses `useAuth()` to redirect.
 - Auth pages use `<AuthLayout>`, app pages use `<AppLayout>`.
 
 ### TypeScript
+
 - Strict mode is on (`tsconfig.app.json`).
 - Unused variables starting with `_` are allowed; all others trigger an error.
 - Zero ESLint warnings are tolerated (`--max-warnings 0`).
 
 ### Theming
+
 - Light/dark/system themes are supported via `ThemeProvider` (CSS class on `<html>`).
 - Theme preference is persisted to `localStorage` under the key `dwmc-theme`.
 - Colors use CSS custom properties defined in `src/styles/globals.css`.
@@ -164,18 +170,21 @@ import { useAuth } from '@/features/auth/hooks'
 ## Testing Conventions
 
 ### Unit / component tests (Vitest)
+
 - Test files live in `__tests__/` subdirectories next to the code they test.
 - **Always import `render` from `@/test/utils/render`**, not from `@testing-library/react` directly — the custom render wraps the component in `QueryClientProvider` + `MemoryRouter`.
 - Vitest globals are enabled; no need to import `describe`, `it`, `expect`, `vi`, etc.
 - MSW intercepts Supabase API calls:
-  - Valid test credentials: `test@example.com` / `Password123`
-  - Pre-existing user email: `existing@example.com`
-  - Supabase URL in tests: `https://test.supabase.co`
+    - Valid test credentials: `test@example.com` / `Password123`
+    - Pre-existing user email: `existing@example.com`
+    - Supabase URL in tests: `https://test.supabase.co`
 
 ### Adding MSW handlers
+
 Add new handlers in `src/test/mocks/handlers/` and register them in `src/test/mocks/server.ts`.
 
 ### E2E tests (Playwright)
+
 - Run with `npm run test:e2e`.
 - Config lives in `playwright.config.ts` (if present) or Playwright defaults.
 
@@ -185,7 +194,6 @@ Add new handlers in `src/test/mocks/handlers/` and register them in `src/test/mo
 
 - **Supabase client in tests**: The client is a singleton created at module load time. The Vitest config overrides `import.meta.env` via `define` to point at the MSW-intercepted URL. Do not mock the Supabase client module directly — rely on MSW handlers instead.
 - **`husky` in CI**: The `prepare` script silently skips Husky installation when it is not available, so `npm ci` works in CI without error.
-- **Tailwind v4**: Uses the new `@tailwindcss/vite` Vite plugin instead of a PostCSS plugin. There is no `tailwind.config.js`; configuration is done via CSS in `globals.css`.
 
 ---
 
