@@ -38,6 +38,7 @@ jobs:
 
     e2e:
         name: E2E tests
+        if: github.actor != 'dependabot[bot]'
         runs-on: ubuntu-latest
         env:
             # E2E tests mock all Supabase calls via page.route() — placeholders are sufficient
