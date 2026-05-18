@@ -73,15 +73,16 @@ In tests, Vitest injects values for all three variables via the `vitest.config.t
 
 ```
 e2e/                      # Playwright E2E specs
-├── navigation.spec.ts    # Redirect / unauthenticated guard tests
+├── navigation.spec.ts    # Redirect / unauthenticated guard tests (3 tests)
 ├── login.spec.ts         # Login page (7 tests)
 ├── signup.spec.ts        # Signup page (5 tests)
-└── forgot-password.spec.ts  # Forgot-password page (4 tests)
+├── forgot-password.spec.ts  # Forgot-password page (4 tests)
+└── reset-password.spec.ts   # Reset-password page (9 tests)
 
 src/
 ├── app/
 │   ├── layouts/          # AppLayout, AuthLayout (Outlet wrappers)
-│   ├── providers/        # AppProviders — QueryClient + ThemeProvider + Toaster
+│   ├── providers/        # AppProviders — QueryClient + ThemeProvider + AuthSyncProvider + Toaster
 │   └── router/           # AppRouter (BrowserRouter + lazy Routes)
 │
 ├── components/           # Shared, feature-agnostic components
@@ -194,7 +195,7 @@ Add new handlers in `src/test/mocks/handlers/` and register them in `src/test/mo
 
 - Run with `npm run test:e2e`.
 - Config: `playwright.config.ts` — Chromium only, `baseURL: http://localhost:5182`, `webServer` auto-starts `npm run dev`.
-- Specs live in `e2e/`. 19 tests across 4 files (navigation, login, signup, forgot-password).
+- Specs live in `e2e/`. 28 tests across 5 files (navigation, login, signup, forgot-password, reset-password).
 - Mock Supabase API calls with `page.route(/\/auth\/v1\/token/, handler)` — no real backend needed.
 - **Do not use `getByLabel('Password')` for password fields** — the `required` prop renders a `<span aria-hidden>*</span>` inside the label, making its text content `"Password *"`. Use `page.locator('#password')` and `page.locator('#confirmPassword')` instead.
 - **Scope error text assertions** when the same string appears in both an inline `role="alert"` and a toast: use `page.getByRole('alert').getByText(/message/i)` to avoid strict-mode violations.

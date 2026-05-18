@@ -27,9 +27,12 @@ React + TypeScript single-page application with a full authentication flow (logi
 # Install dependencies
 npm ci
 
-# Add environment variables
-cp .env.example .env.local
-# Fill in VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+# Add environment variables (create the file manually)
+cat > .env.local << 'EOF'
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_APP_URL=http://localhost:5182
+EOF
 
 # Start dev server
 npm run dev
@@ -76,7 +79,7 @@ e2e/                  # Playwright E2E specs
 src/
   app/
     layouts/          # AppLayout, AuthLayout
-    providers/        # QueryClient + ThemeProvider + Toaster
+    providers/        # QueryClient + ThemeProvider + AuthSyncProvider + Toaster
     router/           # Lazy-loaded routes
   components/
     feedback/         # ErrorBoundary, LoadingSpinner
@@ -103,8 +106,8 @@ Unit and component tests use Vitest + Testing Library + MSW. All Supabase calls 
 E2E tests use Playwright and mock Supabase via `page.route()`. Run against a local dev server that starts automatically.
 
 ```bash
-npm run test             # 136 unit/component tests
-npm run test:e2e         # 19 E2E tests (Chromium)
+npm run test             # 158 unit/component tests
+npm run test:e2e         # 28 E2E tests (Chromium)
 ```
 
 ---
