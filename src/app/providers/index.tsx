@@ -20,6 +20,17 @@ function AuthSyncProvider({ children }: { children: ReactNode }) {
         return () => subscription.unsubscribe()
     }, [qc])
 
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                void qc.invalidateQueries({ queryKey: authSessionQueryKey })
+            }
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }, [qc])
+
     return <>{children}</>
 }
 

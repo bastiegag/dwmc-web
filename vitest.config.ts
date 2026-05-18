@@ -22,6 +22,12 @@ export default defineConfig({
         coverage: {
             reporter: ['text', 'json', 'html'],
             exclude: ['node_modules/', 'src/test/', '*.config.*', 'src/stories/'],
+            thresholds: {
+                statements: 75,
+                branches: 65,
+                functions: 75,
+                lines: 80,
+            },
         },
         projects: [
             // Unit / component tests (jsdom)

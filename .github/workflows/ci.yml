@@ -44,6 +44,7 @@ jobs:
             # E2E tests mock all Supabase calls via page.route() — placeholders are sufficient
             VITE_SUPABASE_URL: https://placeholder.supabase.co
             VITE_SUPABASE_ANON_KEY: placeholder-anon-key
+            VITE_APP_URL: http://localhost:5182
         steps:
             - uses: actions/checkout@v4
 

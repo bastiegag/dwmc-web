@@ -11,7 +11,7 @@ import { loginSchema, type LoginInput } from '@/features/auth/schemas'
 export function LoginForm() {
     const navigate = useNavigate()
     const location = useLocation()
-    const { login, isPending } = useLogin()
+    const { login, isPending, isLockedOut, secondsRemaining } = useLogin()
     const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/app'
 
     const {
@@ -22,6 +22,7 @@ export function LoginForm() {
     } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) })
 
     const onSubmit = async (data: LoginInput) => {
+        if (isLockedOut) return
         try {
             await login(data)
             navigate(from, { replace: true })
@@ -30,9 +31,13 @@ export function LoginForm() {
         }
     }
 
+    const errorMessage = isLockedOut
+        ? `Too many failed attempts. Try again in ${secondsRemaining}s.`
+        : errors.root?.message
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-            <FormError message={errors.root?.message} />
+            <FormError message={errorMessage} />
             <TextField
                 id="email"
                 label="Email"
@@ -59,7 +64,11 @@ export function LoginForm() {
                     Forgot your password?
                 </Link>
             </div>
-            <FormSubmitButton isLoading={isPending} loadingText="Signing in...">
+            <FormSubmitButton
+                isLoading={isPending}
+                loadingText="Signing in..."
+                disabled={isLockedOut}
+            >
                 Sign in
             </FormSubmitButton>
             <p className="text-center text-sm text-muted-foreground">
