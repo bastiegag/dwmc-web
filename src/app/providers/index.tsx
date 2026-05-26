@@ -5,7 +5,7 @@ import { queryClient } from '@/lib/query'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { Toaster } from '@/components/ui/sonner'
 import { authService } from '@/features/auth/services'
-import { authSessionQueryKey } from '@/features/auth/hooks/useAuth'
+import { authSessionQueryKey } from '@/features/auth/hooks'
 
 function AuthSyncProvider({ children }: { children: ReactNode }) {
     const qc = useQueryClient()

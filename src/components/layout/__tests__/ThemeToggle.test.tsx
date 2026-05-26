@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import { render } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
@@ -18,7 +19,7 @@ Object.defineProperty(window, 'matchMedia', {
     })),
 })
 
-function renderWithTheme(defaultTheme: 'light' | 'dark' = 'light') {
+function renderWithTheme(defaultTheme: 'light' | 'dark' | 'system' = 'light') {
     return render(
         <ThemeProvider defaultTheme={defaultTheme} storageKey="test-theme">
             <ThemeToggle />
@@ -42,21 +43,34 @@ describe('ThemeToggle', () => {
         expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Switch to dark mode')
     })
 
-    it('has aria-label "Switch to light mode" when theme is dark', () => {
+    it('has aria-label "Switch to system theme" when theme is dark', () => {
         renderWithTheme('dark')
+        expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Switch to system theme')
+    })
+
+    it('has aria-label "Switch to light mode" when theme is system', () => {
+        renderWithTheme('system')
         expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Switch to light mode')
     })
 
-    it('adds "dark" class to documentElement when clicking from light', async () => {
+    it('cycles light → dark on click', async () => {
         const user = userEvent.setup()
         renderWithTheme('light')
         await user.click(screen.getByRole('button'))
         expect(document.documentElement.classList.contains('dark')).toBe(true)
     })
 
-    it('adds "light" class to documentElement when clicking from dark', async () => {
+    it('cycles dark → system on click (matchMedia returns light)', async () => {
         const user = userEvent.setup()
         renderWithTheme('dark')
+        await user.click(screen.getByRole('button'))
+        // matchMedia mock has matches:false → system resolves to light
+        expect(document.documentElement.classList.contains('light')).toBe(true)
+    })
+
+    it('cycles system → light on click', async () => {
+        const user = userEvent.setup()
+        renderWithTheme('system')
         await user.click(screen.getByRole('button'))
         expect(document.documentElement.classList.contains('light')).toBe(true)
     })

@@ -5,9 +5,10 @@ test('/ redirects to /login', async ({ page }) => {
     await expect(page).toHaveURL('/login')
 })
 
-test('unknown path redirects to /login', async ({ page }) => {
+test('unknown path shows 404 page', async ({ page }) => {
     await page.goto('/unknown-path')
-    await expect(page).toHaveURL('/login')
+    await expect(page).toHaveURL('/unknown-path')
+    await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
 })
 
 test('/app redirects to /login when not authenticated', async ({ page }) => {

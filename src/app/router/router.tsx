@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 import { AuthLayout } from '@/app/layouts/AuthLayout'
 import { AppLayout } from '@/app/layouts/AppLayout'
@@ -37,34 +37,43 @@ function PageLoader() {
     )
 }
 
+function RouterContent() {
+    const { pathname } = useLocation()
+    return (
+        <ErrorBoundary key={pathname}>
+            <Suspense fallback={<PageLoader />}>
+                <Routes>
+                    <Route path="/" element={<Navigate to="/login" replace />} />
+
+                    {/* Auth routes */}
+                    <Route element={<AuthLayout />}>
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/signup" element={<SignupPage />} />
+                        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                        <Route path="/reset-password" element={<ResetPasswordPage />} />
+                    </Route>
+
+                    {/* Protected app routes */}
+                    <Route element={<ProtectedRoute />}>
+                        <Route element={<AppLayout />}>
+                            <Route path="/app" element={<DashboardPage />} />
+                        </Route>
+                    </Route>
+
+                    {/* Catch-all */}
+                    <Route element={<AuthLayout />}>
+                        <Route path="*" element={<NotFoundPage />} />
+                    </Route>
+                </Routes>
+            </Suspense>
+        </ErrorBoundary>
+    )
+}
+
 export function AppRouter() {
     return (
         <BrowserRouter>
-            <ErrorBoundary>
-                <Suspense fallback={<PageLoader />}>
-                    <Routes>
-                        <Route path="/" element={<Navigate to="/login" replace />} />
-
-                        {/* Auth routes */}
-                        <Route element={<AuthLayout />}>
-                            <Route path="/login" element={<LoginPage />} />
-                            <Route path="/signup" element={<SignupPage />} />
-                            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                            <Route path="/reset-password" element={<ResetPasswordPage />} />
-                        </Route>
-
-                        {/* Protected app routes */}
-                        <Route element={<ProtectedRoute />}>
-                            <Route element={<AppLayout />}>
-                                <Route path="/app" element={<DashboardPage />} />
-                            </Route>
-                        </Route>
-
-                        {/* Catch-all */}
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
-                </Suspense>
-            </ErrorBoundary>
+            <RouterContent />
         </BrowserRouter>
     )
 }

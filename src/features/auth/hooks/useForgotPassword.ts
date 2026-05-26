@@ -10,9 +10,6 @@ export function useForgotPassword() {
                 description: 'Check your email for the reset link.',
             })
         },
-        onError: (error: Error) => {
-            toast.error('Failed to send reset link', { description: error.message })
-        },
     })
     return { forgotPassword: mutateAsync, isPending, isSuccess, error }
 }

@@ -22,7 +22,7 @@ export function AppNav({ onLogout, isLoggingOut = false }: AppNavProps) {
                     <div className="flex items-center gap-1">
                         <Button variant="ghost" size="sm" asChild>
                             <Link to="/app" className="flex items-center gap-2">
-                                <LayoutDashboard className="h-4 w-4" />
+                                <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
                                 Dashboard
                             </Link>
                         </Button>
@@ -37,7 +37,7 @@ export function AppNav({ onLogout, isLoggingOut = false }: AppNavProps) {
                         disabled={isLoggingOut}
                         className="flex items-center gap-2"
                     >
-                        <LogOut className="h-4 w-4" />
+                        <LogOut className="h-4 w-4" aria-hidden="true" />
                         {isLoggingOut ? 'Signing out...' : 'Sign out'}
                     </Button>
                 </div>

@@ -34,20 +34,13 @@ describe('useForgotPassword', () => {
         })
     })
 
-    it('rejects and calls destructive toast on server error', async () => {
+    it('rejects on server error (error handling delegated to caller)', async () => {
         server.use(
             http.post('https://test.supabase.co/auth/v1/recover', () =>
                 HttpResponse.json({ error: 'Server error' }, { status: 500 }),
             ),
         )
-        const { toast } = await import('sonner')
         const { result } = renderHook(() => useForgotPassword(), { wrapper: createWrapper() })
         await expect(result.current.forgotPassword('test@example.com')).rejects.toThrow()
-        await waitFor(() => {
-            expect(toast.error).toHaveBeenCalledWith(
-                'Failed to send reset link',
-                expect.objectContaining({ description: expect.any(String) }),
-            )
-        })
     })
 })

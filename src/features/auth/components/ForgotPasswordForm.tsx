@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'react-router-dom'
@@ -11,6 +12,11 @@ import { forgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/
 
 export function ForgotPasswordForm() {
     const { forgotPassword, isPending, isSuccess } = useForgotPassword()
+    const successRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (isSuccess) successRef.current?.focus()
+    }, [isSuccess])
 
     const {
         register,
@@ -29,8 +35,11 @@ export function ForgotPasswordForm() {
 
     if (isSuccess) {
         return (
-            <div className="space-y-4">
-                <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950">
+            <div ref={successRef} tabIndex={-1} className="space-y-4">
+                <Alert
+                    role="status"
+                    className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950"
+                >
                     <CheckCircle
                         className="h-4 w-4 text-green-600 dark:text-green-400"
                         aria-hidden="true"

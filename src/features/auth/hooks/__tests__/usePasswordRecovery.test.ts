@@ -57,11 +57,11 @@ describe('usePasswordRecovery', () => {
         expect(result.current.isValid).toBe(false)
     })
 
-    it('resolves to valid when INITIAL_SESSION fires with an existing session', async () => {
+    it('resolves to invalid when INITIAL_SESSION fires with an existing session (not a recovery flow)', async () => {
         const { result } = renderHook(() => usePasswordRecovery())
         await fireAuthEvent('INITIAL_SESSION', { user: { id: 'user-1' } })
         await waitFor(() => expect(result.current.isLoading).toBe(false))
-        expect(result.current.isValid).toBe(true)
+        expect(result.current.isValid).toBe(false)
     })
 
     it('unsubscribes on unmount', () => {

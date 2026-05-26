@@ -24,21 +24,21 @@ describe('useLogout', () => {
         vi.clearAllMocks()
     })
 
-    it('calls queryClient.clear() and success toast on success', async () => {
+    it('calls queryClient.removeQueries() and success toast on success', async () => {
         vi.spyOn(authService, 'logout').mockResolvedValueOnce(undefined)
         const { toast } = await import('sonner')
         const { qc, wrapper } = createWrapper()
-        const clearSpy = vi.spyOn(qc, 'clear')
+        const removeQueriesSpy = vi.spyOn(qc, 'removeQueries')
         const { result } = renderHook(() => useLogout(), { wrapper })
         await result.current.logout()
         await waitFor(() => {
-            expect(clearSpy).toHaveBeenCalledOnce()
+            expect(removeQueriesSpy).toHaveBeenCalledOnce()
             expect(toast.success).toHaveBeenCalledWith(
                 'Signed out',
                 expect.objectContaining({ description: 'You have been signed out.' }),
             )
         })
-        clearSpy.mockRestore()
+        removeQueriesSpy.mockRestore()
     })
 
     it('rejects and calls destructive toast on error', async () => {

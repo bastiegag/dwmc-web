@@ -16,6 +16,8 @@ const passwordSchema = z
 const confirmPasswordRefine = (data: { password: string; confirmPassword: string }) =>
     data.password === data.confirmPassword
 
+export { passwordSchema }
+
 export const loginSchema = z.object({
     email: emailSchema,
     password: z.string().min(1, 'Password is required'),

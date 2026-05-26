@@ -13,6 +13,12 @@ export default defineConfig({
         coverage: {
             reporter: ['text', 'json', 'html'],
             exclude: ['node_modules/', 'src/test/', '*.config.*', 'src/stories/'],
+            thresholds: {
+                statements: 80,
+                branches: 80,
+                functions: 80,
+                lines: 80,
+            },
         },
     },
     resolve: {

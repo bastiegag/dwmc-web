@@ -9,11 +9,9 @@ type RecoveryStatus = 'loading' | 'valid' | 'invalid'
  *
  * Subscribes to onAuthStateChange and resolves to:
  *   - 'loading'  until the first auth event arrives
- *   - 'valid'    when a PASSWORD_RECOVERY event is received, or when
- *                INITIAL_SESSION fires with an existing session (Supabase
- *                already exchanged the recovery token before this component mounted)
- *   - 'invalid'  when INITIAL_SESSION fires with a null session, meaning
- *                the user navigated directly without a valid recovery token
+ *   - 'valid'    only when a PASSWORD_RECOVERY event is received
+ *   - 'invalid'  for any other event, including INITIAL_SESSION — a regular
+ *                logged-in session must not grant access to the reset form
  */
 export function usePasswordRecovery(): { isLoading: boolean; isValid: boolean } {
     const [status, setStatus] = useState<RecoveryStatus>('loading')
@@ -21,14 +19,15 @@ export function usePasswordRecovery(): { isLoading: boolean; isValid: boolean } 
     useEffect(() => {
         const {
             data: { subscription },
-        } = authService.onAuthStateChange(async (event, session) => {
+        } = authService.onAuthStateChange(async (event, _session) => {
             if (event === 'PASSWORD_RECOVERY') {
                 setStatus('valid')
             } else if (event === 'INITIAL_SESSION') {
-                // A non-null session here means Supabase already processed the
-                // recovery token (singleton initialised before this component
-                // mounted) and the session is still active.
-                setStatus(session ? 'valid' : 'invalid')
+                setStatus('invalid')
+            } else {
+                // Any other event (e.g. SIGNED_IN in some PKCE flows) is not a
+                // valid recovery entry point — resolve the loading state as invalid.
+                setStatus('invalid')
             }
         })
 

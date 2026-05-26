@@ -12,13 +12,6 @@ export class AuthServiceError extends Error {
     }
 }
 
-export interface AuthState {
-    user: User | null
-    session: Session | null
-    isLoading: boolean
-    isAuthenticated: boolean
-}
-
 export interface LoginCredentials {
     email: string
     password: string
@@ -26,15 +19,6 @@ export interface LoginCredentials {
 
 export interface SignupCredentials {
     email: string
-    password: string
-    confirmPassword: string
-}
-
-export interface ForgotPasswordData {
-    email: string
-}
-
-export interface ResetPasswordData {
     password: string
     confirmPassword: string
 }

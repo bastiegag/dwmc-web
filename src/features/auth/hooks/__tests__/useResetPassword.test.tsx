@@ -44,16 +44,9 @@ describe('useResetPassword', () => {
         })
     })
 
-    it('rejects and calls destructive toast on error', async () => {
+    it('rejects on error (error handling delegated to caller)', async () => {
         vi.spyOn(authService, 'resetPassword').mockRejectedValueOnce(new Error('Server error'))
-        const { toast } = await import('sonner')
         const { result } = renderHook(() => useResetPassword(), { wrapper: createWrapper() })
         await expect(result.current.resetPassword('NewPassword123')).rejects.toThrow()
-        await waitFor(() => {
-            expect(toast.error).toHaveBeenCalledWith(
-                'Failed to reset password',
-                expect.objectContaining({ description: expect.any(String) }),
-            )
-        })
     })
 })

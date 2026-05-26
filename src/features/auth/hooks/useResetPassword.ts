@@ -8,9 +8,6 @@ export function useResetPassword() {
         onSuccess: () => {
             toast.success('Password updated', { description: 'Your password has been reset.' })
         },
-        onError: (error: Error) => {
-            toast.error('Failed to reset password', { description: error.message })
-        },
     })
     return { resetPassword: mutateAsync, isPending, isSuccess, error }
 }

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { authService } from '@/features/auth/services'
+import { authSessionQueryKey } from '@/features/auth/hooks'
 import { toast } from 'sonner'
 
 export function useLogout() {
@@ -7,7 +8,7 @@ export function useLogout() {
     const { mutateAsync, isPending } = useMutation({
         mutationFn: () => authService.logout(),
         onSuccess: () => {
-            queryClient.clear()
+            queryClient.removeQueries({ queryKey: authSessionQueryKey })
             toast.success('Signed out', { description: 'You have been signed out.' })
         },
         onError: (error: Error) => {
