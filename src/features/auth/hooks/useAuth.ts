@@ -7,7 +7,7 @@ export function useAuth() {
     const { data: session = null, isLoading } = useQuery({
         queryKey: authSessionQueryKey,
         queryFn: () => authService.getSession(),
-        staleTime: Infinity,
+        staleTime: Infinity, // session is kept fresh by AuthSyncProvider via invalidateQueries on auth state changes
         retry: false,
     })
 

@@ -4,7 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type ReactNode } from 'react'
 import { useSignup } from '@/features/auth/hooks/useSignup'
 
-vi.mock('@/components/ui/use-toast', () => ({ toast: vi.fn() }))
+vi.mock('sonner', () => ({
+    toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
+}))
 
 function createWrapper() {
     const qc = new QueryClient({
@@ -21,15 +23,13 @@ describe('useSignup', () => {
     })
 
     it('resolves for a new email and calls success toast', async () => {
-        const { toast } = await import('@/components/ui/use-toast')
+        const { toast } = await import('sonner')
         const { result } = renderHook(() => useSignup(), { wrapper: createWrapper() })
         await expect(
             result.current.signup({ email: 'newuser@example.com', password: 'Password123' }),
         ).resolves.toBeDefined()
         await waitFor(() => {
-            expect(toast).toHaveBeenCalledWith(
-                expect.objectContaining({ title: 'Account created' }),
-            )
+            expect(toast.success).toHaveBeenCalledWith('Account created', expect.any(Object))
         })
     })
 

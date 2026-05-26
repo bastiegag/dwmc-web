@@ -6,7 +6,9 @@ import { type ReactNode } from 'react'
 import { server } from '@/test/mocks/server'
 import { useForgotPassword } from '@/features/auth/hooks/useForgotPassword'
 
-vi.mock('@/components/ui/use-toast', () => ({ toast: vi.fn() }))
+vi.mock('sonner', () => ({
+    toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
+}))
 
 function createWrapper() {
     const qc = new QueryClient({
@@ -23,14 +25,12 @@ describe('useForgotPassword', () => {
     })
 
     it('sets isSuccess to true and calls success toast on success', async () => {
-        const { toast } = await import('@/components/ui/use-toast')
+        const { toast } = await import('sonner')
         const { result } = renderHook(() => useForgotPassword(), { wrapper: createWrapper() })
         await result.current.forgotPassword('test@example.com')
         await waitFor(() => {
             expect(result.current.isSuccess).toBe(true)
-            expect(toast).toHaveBeenCalledWith(
-                expect.objectContaining({ title: 'Reset link sent' }),
-            )
+            expect(toast.success).toHaveBeenCalledWith('Reset link sent', expect.any(Object))
         })
     })
 
@@ -40,11 +40,14 @@ describe('useForgotPassword', () => {
                 HttpResponse.json({ error: 'Server error' }, { status: 500 }),
             ),
         )
-        const { toast } = await import('@/components/ui/use-toast')
+        const { toast } = await import('sonner')
         const { result } = renderHook(() => useForgotPassword(), { wrapper: createWrapper() })
         await expect(result.current.forgotPassword('test@example.com')).rejects.toThrow()
         await waitFor(() => {
-            expect(toast).toHaveBeenCalledWith(expect.objectContaining({ variant: 'destructive' }))
+            expect(toast.error).toHaveBeenCalledWith(
+                'Failed to send reset link',
+                expect.objectContaining({ description: expect.any(String) }),
+            )
         })
     })
 })

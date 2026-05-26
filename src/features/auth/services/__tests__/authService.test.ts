@@ -64,7 +64,7 @@ describe('authService', () => {
 
     describe('onAuthStateChange', () => {
         it('returns an object with a subscription that has an unsubscribe function', () => {
-            const result = authService.onAuthStateChange(() => {})
+            const result = authService.onAuthStateChange(async () => {})
             expect(typeof result.data.subscription.unsubscribe).toBe('function')
             result.data.subscription.unsubscribe()
         })

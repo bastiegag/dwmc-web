@@ -21,7 +21,7 @@ export function usePasswordRecovery(): { isLoading: boolean; isValid: boolean } 
     useEffect(() => {
         const {
             data: { subscription },
-        } = authService.onAuthStateChange((event, session) => {
+        } = authService.onAuthStateChange(async (event, session) => {
             if (event === 'PASSWORD_RECOVERY') {
                 setStatus('valid')
             } else if (event === 'INITIAL_SESSION') {

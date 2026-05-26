@@ -1,8 +1,10 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { NotFoundPage } from '@/app/pages/NotFoundPage'
 import { AuthLayout } from '@/app/layouts/AuthLayout'
 import { AppLayout } from '@/app/layouts/AppLayout'
 import { ProtectedRoute } from '@/features/auth/routes/ProtectedRoute'
+import { ErrorBoundary } from '@/components/feedback/ErrorBoundary'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 
 const LoginPage = lazy(() =>
@@ -38,29 +40,31 @@ function PageLoader() {
 export function AppRouter() {
     return (
         <BrowserRouter>
-            <Suspense fallback={<PageLoader />}>
-                <Routes>
-                    <Route path="/" element={<Navigate to="/login" replace />} />
+            <ErrorBoundary>
+                <Suspense fallback={<PageLoader />}>
+                    <Routes>
+                        <Route path="/" element={<Navigate to="/login" replace />} />
 
-                    {/* Auth routes */}
-                    <Route element={<AuthLayout />}>
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/signup" element={<SignupPage />} />
-                        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                        <Route path="/reset-password" element={<ResetPasswordPage />} />
-                    </Route>
-
-                    {/* Protected app routes */}
-                    <Route element={<ProtectedRoute />}>
-                        <Route element={<AppLayout />}>
-                            <Route path="/app" element={<DashboardPage />} />
+                        {/* Auth routes */}
+                        <Route element={<AuthLayout />}>
+                            <Route path="/login" element={<LoginPage />} />
+                            <Route path="/signup" element={<SignupPage />} />
+                            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                            <Route path="/reset-password" element={<ResetPasswordPage />} />
                         </Route>
-                    </Route>
 
-                    {/* Catch-all */}
-                    <Route path="*" element={<Navigate to="/login" replace />} />
-                </Routes>
-            </Suspense>
+                        {/* Protected app routes */}
+                        <Route element={<ProtectedRoute />}>
+                            <Route element={<AppLayout />}>
+                                <Route path="/app" element={<DashboardPage />} />
+                            </Route>
+                        </Route>
+
+                        {/* Catch-all */}
+                        <Route path="*" element={<NotFoundPage />} />
+                    </Routes>
+                </Suspense>
+            </ErrorBoundary>
         </BrowserRouter>
     )
 }

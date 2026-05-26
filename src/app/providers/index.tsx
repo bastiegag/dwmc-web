@@ -3,7 +3,7 @@ import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import type { Session } from '@supabase/supabase-js'
 import { queryClient } from '@/lib/query'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from '@/components/ui/sonner'
 import { authService } from '@/features/auth/services'
 import { authSessionQueryKey } from '@/features/auth/hooks/useAuth'
 
@@ -13,7 +13,7 @@ function AuthSyncProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const {
             data: { subscription },
-        } = authService.onAuthStateChange((_event, session) => {
+        } = authService.onAuthStateChange(async (_event, session) => {
             qc.setQueryData<Session | null>(authSessionQueryKey, session)
         })
 

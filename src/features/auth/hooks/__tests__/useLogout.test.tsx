@@ -5,7 +5,9 @@ import { type ReactNode } from 'react'
 import { useLogout } from '@/features/auth/hooks/useLogout'
 import { authService } from '@/features/auth/services'
 
-vi.mock('@/components/ui/use-toast', () => ({ toast: vi.fn() }))
+vi.mock('sonner', () => ({
+    toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
+}))
 
 function createWrapper() {
     const qc = new QueryClient({
@@ -24,26 +26,32 @@ describe('useLogout', () => {
 
     it('calls queryClient.clear() and success toast on success', async () => {
         vi.spyOn(authService, 'logout').mockResolvedValueOnce(undefined)
-        const { toast } = await import('@/components/ui/use-toast')
+        const { toast } = await import('sonner')
         const { qc, wrapper } = createWrapper()
         const clearSpy = vi.spyOn(qc, 'clear')
         const { result } = renderHook(() => useLogout(), { wrapper })
         await result.current.logout()
         await waitFor(() => {
             expect(clearSpy).toHaveBeenCalledOnce()
-            expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Signed out' }))
+            expect(toast.success).toHaveBeenCalledWith(
+                'Signed out',
+                expect.objectContaining({ description: 'You have been signed out.' }),
+            )
         })
         clearSpy.mockRestore()
     })
 
     it('rejects and calls destructive toast on error', async () => {
         vi.spyOn(authService, 'logout').mockRejectedValueOnce(new Error('Sign out failed'))
-        const { toast } = await import('@/components/ui/use-toast')
+        const { toast } = await import('sonner')
         const { wrapper } = createWrapper()
         const { result } = renderHook(() => useLogout(), { wrapper })
         await expect(result.current.logout()).rejects.toThrow()
         await waitFor(() => {
-            expect(toast).toHaveBeenCalledWith(expect.objectContaining({ variant: 'destructive' }))
+            expect(toast.error).toHaveBeenCalledWith(
+                'Sign out failed',
+                expect.objectContaining({ description: expect.any(String) }),
+            )
         })
     })
 })

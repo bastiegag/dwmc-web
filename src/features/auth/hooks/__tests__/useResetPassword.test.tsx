@@ -5,7 +5,9 @@ import { type ReactNode } from 'react'
 import { useResetPassword } from '@/features/auth/hooks/useResetPassword'
 import { authService } from '@/features/auth/services'
 
-vi.mock('@/components/ui/use-toast', () => ({ toast: vi.fn() }))
+vi.mock('sonner', () => ({
+    toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
+}))
 
 function createWrapper() {
     const qc = new QueryClient({
@@ -33,24 +35,25 @@ describe('useResetPassword', () => {
 
     it('sets isSuccess to true and calls success toast on success', async () => {
         vi.spyOn(authService, 'resetPassword').mockResolvedValueOnce({ user: mockUser })
-        const { toast } = await import('@/components/ui/use-toast')
+        const { toast } = await import('sonner')
         const { result } = renderHook(() => useResetPassword(), { wrapper: createWrapper() })
         await result.current.resetPassword('NewPassword123')
         await waitFor(() => {
             expect(result.current.isSuccess).toBe(true)
-            expect(toast).toHaveBeenCalledWith(
-                expect.objectContaining({ title: 'Password updated' }),
-            )
+            expect(toast.success).toHaveBeenCalledWith('Password updated', expect.any(Object))
         })
     })
 
     it('rejects and calls destructive toast on error', async () => {
         vi.spyOn(authService, 'resetPassword').mockRejectedValueOnce(new Error('Server error'))
-        const { toast } = await import('@/components/ui/use-toast')
+        const { toast } = await import('sonner')
         const { result } = renderHook(() => useResetPassword(), { wrapper: createWrapper() })
         await expect(result.current.resetPassword('NewPassword123')).rejects.toThrow()
         await waitFor(() => {
-            expect(toast).toHaveBeenCalledWith(expect.objectContaining({ variant: 'destructive' }))
+            expect(toast.error).toHaveBeenCalledWith(
+                'Failed to reset password',
+                expect.objectContaining({ description: expect.any(String) }),
+            )
         })
     })
 })

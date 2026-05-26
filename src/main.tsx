@@ -3,7 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { AppProviders } from '@/app/providers'
 import { AppRouter } from '@/app/router'
 import { ErrorBoundary } from '@/components/feedback/ErrorBoundary'
+import { validateEnv } from '@/features/auth/services'
 import '@/styles/globals.css'
+
+validateEnv()
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Root element not found')

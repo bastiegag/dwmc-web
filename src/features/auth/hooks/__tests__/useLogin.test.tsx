@@ -4,7 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type ReactNode } from 'react'
 import { useLogin } from '@/features/auth/hooks/useLogin'
 
-vi.mock('@/components/ui/use-toast', () => ({ toast: vi.fn() }))
+vi.mock('sonner', () => ({
+    toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
+}))
 
 function createWrapper() {
     const qc = new QueryClient({

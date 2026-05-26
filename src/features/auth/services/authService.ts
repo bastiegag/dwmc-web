@@ -2,19 +2,30 @@ import { supabase } from '@/lib/supabase'
 import { AuthServiceError } from '@/features/auth/types'
 import type { LoginCredentials, SignupCredentials } from '@/features/auth/types'
 
+function hasCode(value: unknown): value is { code: string } {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        'code' in value &&
+        typeof (value as Record<string, unknown>).code === 'string'
+    )
+}
+
 function toAuthServiceError(error: unknown): AuthServiceError {
     if (error instanceof Error) {
-        const code =
-            typeof (error as { code?: unknown }).code === 'string'
-                ? (error as unknown as { code: string }).code
-                : undefined
+        const code = hasCode(error) ? error.code : undefined
         return new AuthServiceError(error.message, code)
     }
     return new AuthServiceError('An unexpected error occurred')
 }
 const appUrl = import.meta.env.VITE_APP_URL
-if (!appUrl) {
-    throw new Error('Missing VITE_APP_URL. Set it to the app origin (e.g. https://example.com).')
+
+export function validateEnv(): void {
+    if (!appUrl) {
+        throw new Error(
+            'Missing VITE_APP_URL. Set it to the app origin (e.g. https://example.com).',
+        )
+    }
 }
 
 export const authService = {

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { authService } from '@/features/auth/services'
-import { toast } from '@/components/ui/use-toast'
+import { toast } from 'sonner'
 import type { SignupCredentials } from '@/features/auth/types'
 
 export function useSignup() {
@@ -8,8 +8,7 @@ export function useSignup() {
         mutationFn: (credentials: Omit<SignupCredentials, 'confirmPassword'>) =>
             authService.signup(credentials),
         onSuccess: () => {
-            toast({
-                title: 'Account created',
+            toast.success('Account created', {
                 description: 'Check your email to verify your account.',
             })
         },
