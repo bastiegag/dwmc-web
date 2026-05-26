@@ -3,14 +3,17 @@ import { SignupForm } from '@/features/auth/components'
 
 export function SignupPage() {
     return (
-        <Card>
-            <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Create an account</CardTitle>
-                <CardDescription>Start managing your finances today</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <SignupForm />
-            </CardContent>
-        </Card>
+        <>
+            <h1 className="sr-only">Create account</h1>
+            <Card>
+                <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">Create an account</CardTitle>
+                    <CardDescription>Start managing your finances today</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <SignupForm />
+                </CardContent>
+            </Card>
+        </>
     )
 }

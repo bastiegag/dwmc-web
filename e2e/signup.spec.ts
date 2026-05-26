@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
 
 test.describe('Signup page', () => {
     test.beforeEach(async ({ page }) => {
@@ -51,5 +52,10 @@ test.describe('Signup page', () => {
     test('"Sign in" link navigates to /login', async ({ page }) => {
         await page.getByRole('link', { name: /sign in/i }).click()
         await expect(page).toHaveURL('/login')
+    })
+
+    test('has no accessibility violations', async ({ page }) => {
+        const results = await new AxeBuilder({ page }).analyze()
+        expect(results.violations).toEqual([])
     })
 })

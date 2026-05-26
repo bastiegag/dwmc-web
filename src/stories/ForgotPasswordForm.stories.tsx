@@ -3,11 +3,11 @@ import { expect, userEvent, within } from 'storybook/test'
 import { http, HttpResponse, delay } from 'msw'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { LoginForm } from '@/features/auth/components/LoginForm'
+import { ForgotPasswordForm } from '@/features/auth/components/ForgotPasswordForm'
 
-const meta: Meta<typeof LoginForm> = {
-    title: 'Auth/LoginForm',
-    component: LoginForm,
+const meta: Meta<typeof ForgotPasswordForm> = {
+    title: 'Auth/ForgotPasswordForm',
+    component: ForgotPasswordForm,
     decorators: [
         (Story) => (
             <QueryClientProvider
@@ -35,28 +35,16 @@ export const Default: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement)
         await expect(canvas.getByLabelText(/email/i)).toBeVisible()
-        await expect(canvas.getByLabelText(/password/i)).toBeVisible()
-        await expect(canvas.getByRole('button', { name: /sign in/i })).toBeEnabled()
-        await expect(canvas.getByRole('link', { name: /forgot your password/i })).toBeVisible()
-        await expect(canvas.getByRole('link', { name: /sign up/i })).toBeVisible()
+        await expect(canvas.getByRole('button', { name: /send reset link/i })).toBeEnabled()
+        await expect(canvas.getByRole('link', { name: /back to sign in/i })).toBeVisible()
     },
 }
 
-export const EmptyValidation: Story = {
+export const ValidationError: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement)
-        await userEvent.click(canvas.getByRole('button', { name: /sign in/i }))
+        await userEvent.click(canvas.getByRole('button', { name: /send reset link/i }))
         await expect(canvas.getByText('Email is required')).toBeVisible()
-        await expect(canvas.getByText('Password is required')).toBeVisible()
-    },
-}
-
-export const InvalidEmailFormat: Story = {
-    play: async ({ canvasElement }) => {
-        const canvas = within(canvasElement)
-        await userEvent.type(canvas.getByLabelText(/email/i), 'not-an-email')
-        await userEvent.click(canvas.getByRole('button', { name: /sign in/i }))
-        await expect(canvas.getByText('Please enter a valid email address')).toBeVisible()
     },
 }
 
@@ -64,7 +52,7 @@ export const Loading: Story = {
     parameters: {
         msw: {
             handlers: [
-                http.post(/\/auth\/v1\/token/, async () => {
+                http.post(/\/auth\/v1\/recover/, async () => {
                     await delay('infinite')
                     return HttpResponse.json({})
                 }),
@@ -74,9 +62,24 @@ export const Loading: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement)
         await userEvent.type(canvas.getByLabelText(/email/i), 'test@example.com')
-        await userEvent.type(canvas.getByLabelText(/password/i), 'Password123')
-        await userEvent.click(canvas.getByRole('button', { name: /sign in/i }))
-        await expect(await canvas.findByRole('button', { name: /signing in/i })).toBeDisabled()
+        await userEvent.click(canvas.getByRole('button', { name: /send reset link/i }))
+        await expect(
+            await canvas.findByRole('button', { name: /sending reset link/i }),
+        ).toBeDisabled()
+    },
+}
+
+export const Success: Story = {
+    parameters: {
+        msw: {
+            handlers: [http.post(/\/auth\/v1\/recover/, () => HttpResponse.json({}))],
+        },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await userEvent.type(canvas.getByLabelText(/email/i), 'test@example.com')
+        await userEvent.click(canvas.getByRole('button', { name: /send reset link/i }))
+        await expect(canvas.findByText(/check your email/i)).resolves.toBeVisible()
     },
 }
 
@@ -84,10 +87,10 @@ export const ServerError: Story = {
     parameters: {
         msw: {
             handlers: [
-                http.post(/\/auth\/v1\/token/, () =>
+                http.post(/\/auth\/v1\/recover/, () =>
                     HttpResponse.json(
-                        { error: 'invalid_grant', error_description: 'Invalid login credentials' },
-                        { status: 400 },
+                        { error: 'Service temporarily unavailable' },
+                        { status: 500 },
                     ),
                 ),
             ],
@@ -96,8 +99,7 @@ export const ServerError: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement)
         await userEvent.type(canvas.getByLabelText(/email/i), 'test@example.com')
-        await userEvent.type(canvas.getByLabelText(/password/i), 'Password123')
-        await userEvent.click(canvas.getByRole('button', { name: /sign in/i }))
+        await userEvent.click(canvas.getByRole('button', { name: /send reset link/i }))
         await expect(await canvas.findByRole('alert')).toBeVisible()
     },
 }

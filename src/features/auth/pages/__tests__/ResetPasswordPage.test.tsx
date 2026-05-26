@@ -28,7 +28,9 @@ describe('ResetPasswordPage', () => {
     it('renders the reset password form for a valid recovery session', async () => {
         await mockRecovery({ isLoading: false, isValid: true })
         render(<ResetPasswordPage />)
-        expect(screen.getByRole('heading', { name: /reset your password/i })).toBeInTheDocument()
+        expect(
+            screen.getByRole('heading', { name: /reset your password/i, level: 2 }),
+        ).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /update password/i })).toBeInTheDocument()
     })
 

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { axe } from 'vitest-axe'
 import { render, screen, waitFor } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
 import { ForgotPasswordForm } from '@/features/auth/components/ForgotPasswordForm'
@@ -56,5 +57,22 @@ describe('ForgotPasswordForm', () => {
         })
         render(<ForgotPasswordForm />)
         expect(screen.getByText(/sending reset link/i)).toBeInTheDocument()
+    })
+
+    it('has no accessibility violations', async () => {
+        const { container } = render(<ForgotPasswordForm />)
+        expect(await axe(container)).toHaveNoViolations()
+    })
+
+    it('success state has no accessibility violations', async () => {
+        const { useForgotPassword } = await import('@/features/auth/hooks')
+        vi.mocked(useForgotPassword).mockReturnValue({
+            forgotPassword: vi.fn(),
+            isPending: false,
+            isSuccess: true,
+            error: null,
+        })
+        const { container } = render(<ForgotPasswordForm />)
+        expect(await axe(container)).toHaveNoViolations()
     })
 })

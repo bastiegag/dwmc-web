@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { axe } from 'vitest-axe'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils/render'
@@ -51,5 +52,28 @@ describe('LoginForm', () => {
         await waitFor(() => {
             expect(screen.getByText(/please enter a valid email/i)).toBeInTheDocument()
         })
+    })
+
+    it('has no accessibility violations', async () => {
+        const { container } = render(<LoginForm />)
+        expect(await axe(container)).toHaveNoViolations()
+    })
+
+    it('links validation error to the email field via aria attributes', async () => {
+        const user = userEvent.setup()
+        render(<LoginForm />)
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+        await waitFor(() => {
+            const emailInput = screen.getByLabelText(/email/i)
+            expect(emailInput).toHaveAttribute('aria-invalid', 'true')
+            expect(emailInput).toHaveAttribute('aria-describedby', 'email-error')
+        })
+    })
+
+    it('submit button is disabled with loading label while pending', async () => {
+        const { useLogin } = await import('@/features/auth/hooks/useLogin')
+        vi.mocked(useLogin).mockReturnValue({ login: vi.fn(), isPending: true, error: null })
+        render(<LoginForm />)
+        expect(screen.getByRole('button', { name: /signing in/i })).toBeDisabled()
     })
 })

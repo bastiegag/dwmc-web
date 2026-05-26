@@ -17,34 +17,40 @@ export function ResetPasswordPage() {
 
     if (!isValid) {
         return (
-            <Card>
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Link expired or invalid</CardTitle>
-                    <CardDescription>
-                        This password reset link is invalid or has already been used.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="text-center text-sm">
-                    <Link
-                        to="/forgot-password"
-                        className="text-primary underline-offset-4 hover:underline"
-                    >
-                        Request a new password reset
-                    </Link>
-                </CardContent>
-            </Card>
+            <>
+                <h1 className="sr-only">Reset password</h1>
+                <Card>
+                    <CardHeader className="text-center">
+                        <CardTitle className="text-2xl">Link expired or invalid</CardTitle>
+                        <CardDescription>
+                            This password reset link is invalid or has already been used.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="text-center text-sm">
+                        <Link
+                            to="/forgot-password"
+                            className="text-primary underline-offset-4 hover:underline"
+                        >
+                            Request a new password reset
+                        </Link>
+                    </CardContent>
+                </Card>
+            </>
         )
     }
 
     return (
-        <Card>
-            <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Reset your password</CardTitle>
-                <CardDescription>Choose a strong new password for your account</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ResetPasswordForm />
-            </CardContent>
-        </Card>
+        <>
+            <h1 className="sr-only">Reset your password</h1>
+            <Card>
+                <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">Reset your password</CardTitle>
+                    <CardDescription>Choose a strong new password for your account</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ResetPasswordForm />
+                </CardContent>
+            </Card>
+        </>
     )
 }

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { axe } from 'vitest-axe'
 import { render, screen, waitFor } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
 import { SignupForm } from '@/features/auth/components/SignupForm'
@@ -79,5 +80,49 @@ describe('SignupForm', () => {
         })
         render(<SignupForm />)
         expect(screen.getByText(/creating account/i)).toBeInTheDocument()
+    })
+
+    it('has no accessibility violations', async () => {
+        const { container } = render(<SignupForm />)
+        expect(await axe(container)).toHaveNoViolations()
+    })
+
+    it('links email validation error to the field via aria attributes', async () => {
+        const { useSignup } = await import('@/features/auth/hooks')
+        vi.mocked(useSignup).mockReturnValue({
+            signup: vi.fn().mockResolvedValue(undefined),
+            isPending: false,
+            isSuccess: false,
+            error: null,
+        })
+        const user = userEvent.setup()
+        render(<SignupForm />)
+        await user.click(screen.getByRole('button', { name: /create account/i }))
+        await waitFor(() => {
+            const emailInput = screen.getByLabelText(/email/i)
+            expect(emailInput).toHaveAttribute('aria-invalid', 'true')
+            expect(emailInput).toHaveAttribute('aria-describedby', 'email-error')
+        })
+    })
+
+    it('server error renders as an accessible alert', async () => {
+        const { useSignup } = await import('@/features/auth/hooks')
+        vi.mocked(useSignup).mockReturnValue({
+            signup: vi.fn().mockRejectedValue(new Error('User already registered')),
+            isPending: false,
+            isSuccess: false,
+            error: null,
+        })
+        const user = userEvent.setup()
+        render(<SignupForm />)
+        await user.type(screen.getByLabelText(/email/i), 'existing@example.com')
+        await user.type(screen.getByLabelText(/^password/i), 'Password123')
+        await user.type(screen.getByLabelText(/confirm password/i), 'Password123')
+        await user.click(screen.getByRole('button', { name: /create account/i }))
+        await waitFor(() => {
+            const alert = screen.getByRole('alert')
+            expect(alert).toBeInTheDocument()
+            expect(alert).toHaveTextContent(/user already registered/i)
+        })
     })
 })

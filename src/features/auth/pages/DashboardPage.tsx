@@ -9,7 +9,9 @@ export function DashboardPage() {
         <div className="space-y-6">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                <p className="text-muted-foreground">Welcome back, {user?.email ?? 'there'}! 👋</p>
+                <p className="text-muted-foreground">
+                    Welcome back, {user?.email ?? 'there'}! <span aria-hidden="true">👋</span>
+                </p>
             </div>
             <Card className="border-dashed">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

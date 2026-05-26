@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
 
 const MOCK_SESSION = {
     access_token: 'mock-access-token',
@@ -79,5 +80,24 @@ test.describe('Login page', () => {
         await page.getByRole('button', { name: /sign in/i }).click()
 
         await expect(page.getByRole('alert').getByText(/invalid login credentials/i)).toBeVisible()
+    })
+
+    test('has no accessibility violations', async ({ page }) => {
+        const results = await new AxeBuilder({ page }).analyze()
+        expect(results.violations).toEqual([])
+    })
+
+    test('keyboard focus moves through email, password and submit in order', async ({ page }) => {
+        // Start focus on the email field (first interactive element in the form)
+        await page.getByLabel('Email').focus()
+        await expect(page.getByLabel('Email')).toBeFocused()
+
+        await page.keyboard.press('Tab')
+        await expect(page.locator('#password')).toBeFocused()
+
+        // Tab past the show-password toggle button
+        await page.keyboard.press('Tab')
+        await page.keyboard.press('Tab')
+        await expect(page.getByRole('button', { name: /sign in/i })).toBeFocused()
     })
 })

@@ -17,7 +17,7 @@ export function AppNav({ onLogout, isLoggingOut = false }: AppNavProps) {
                         to="/app"
                         className="flex items-center gap-2 text-lg font-bold text-primary"
                     >
-                        💰 DWMC
+                        <span aria-hidden="true">💰</span> DWMC
                     </Link>
                     <div className="flex items-center gap-1">
                         <Button variant="ghost" size="sm" asChild>
