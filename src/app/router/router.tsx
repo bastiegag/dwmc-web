@@ -28,6 +28,11 @@ const DashboardPage = lazy(() =>
         default: m.DashboardPage,
     })),
 )
+const CategoriesPage = lazy(() =>
+    import('@/features/categories/pages/CategoriesPage').then((m) => ({
+        default: m.CategoriesPage,
+    })),
+)
 
 function PageLoader() {
     return (
@@ -57,6 +62,7 @@ function RouterContent() {
                     <Route element={<ProtectedRoute />}>
                         <Route element={<AppLayout />}>
                             <Route path="/app" element={<DashboardPage />} />
+                            <Route path="/app/categories" element={<CategoriesPage />} />
                         </Route>
                     </Route>
 

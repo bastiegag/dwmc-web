@@ -28,6 +28,7 @@ describe('AppLayout', () => {
     it('renders the navigation', () => {
         render(<AppLayout />)
         expect(screen.getByRole('navigation', { name: /main navigation/i })).toBeInTheDocument()
+        expect(screen.getByRole('link', { name: /categories/i })).toBeInTheDocument()
     })
 
     it('calls logout and redirects to /login when Sign out is clicked', async () => {

@@ -55,6 +55,11 @@ describe('AppNav', () => {
         expect(screen.getByRole('link', { name: /dashboard/i })).toBeInTheDocument()
     })
 
+    it('renders Categories navigation link', () => {
+        renderNav()
+        expect(screen.getByRole('link', { name: /categories/i })).toBeInTheDocument()
+    })
+
     it('renders Sign out button', () => {
         renderNav()
         expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument()
