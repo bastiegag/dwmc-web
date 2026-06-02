@@ -22,6 +22,7 @@ test.describe('Reset password page', () => {
     })
 
     test('has no accessibility violations on the invalid-link state', async ({ page }) => {
+        await page.waitForSelector('main')
         const results = await new AxeBuilder({ page }).analyze()
         expect(results.violations).toEqual([])
     })

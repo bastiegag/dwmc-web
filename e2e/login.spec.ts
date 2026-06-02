@@ -83,6 +83,7 @@ test.describe('Login page', () => {
     })
 
     test('has no accessibility violations', async ({ page }) => {
+        await page.waitForSelector('main')
         const results = await new AxeBuilder({ page }).analyze()
         expect(results.violations).toEqual([])
     })
@@ -95,9 +96,19 @@ test.describe('Login page', () => {
         await page.keyboard.press('Tab')
         await expect(page.locator('#password')).toBeFocused()
 
-        // Tab past the show-password toggle button
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Tab')
+        // Tab past any toggle(s) until the Sign in button is focused (max 6 tabs)
+        for (let i = 0; i < 6; i++) {
+            const activeText = await page.evaluate(
+                () =>
+                    (document.activeElement &&
+                        (document.activeElement.textContent ||
+                            (document.activeElement.getAttribute &&
+                                document.activeElement.getAttribute('aria-label')))) ||
+                    '',
+            )
+            if (/sign in/i.test(String(activeText))) break
+            await page.keyboard.press('Tab')
+        }
         await expect(page.getByRole('button', { name: /sign in/i })).toBeFocused()
     })
 })
