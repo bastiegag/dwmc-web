@@ -1,0 +1,17 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createSection } from '@/features/categories/api'
+import type { CreateSectionInput } from '@/features/categories/types'
+import { categoryQueryKeys } from './use-sections'
+
+export function useCreateSection() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (input: CreateSectionInput) => createSection(input),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: categoryQueryKeys.sectionsWithCategories(),
+            })
+        },
+    })
+}
