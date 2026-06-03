@@ -2,31 +2,39 @@ name: CodeQL
 
 on:
     push:
-        branches: [main]
+        branches:
+            - main
     pull_request:
-        branches: [main]
+        branches:
+            - main
     schedule:
-        - cron: 0 8 * * 1
-
-env:
-    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+        - cron: '30 2 * * 1'
 
 jobs:
     analyze:
-        name: Analyze (javascript-typescript)
+        name: Analyze JavaScript/TypeScript
         runs-on: ubuntu-latest
+
         permissions:
             security-events: write
+            packages: read
             actions: read
             contents: read
+
+        strategy:
+            fail-fast: false
+            matrix:
+                language:
+                    - javascript-typescript
+
         steps:
-            - uses: actions/checkout@v4
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
             - name: Initialize CodeQL
               uses: github/codeql-action/init@v3
               with:
-                  languages: javascript-typescript
-                  queries: security-and-quality
+                  languages: ${{ matrix.language }}
 
             - name: Autobuild
               uses: github/codeql-action/autobuild@v3
