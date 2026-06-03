@@ -15,11 +15,11 @@ jobs:
         if: github.actor != 'dependabot[bot]'
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v6
               with:
                   node-version: 24
                   cache: npm
@@ -27,7 +27,7 @@ jobs:
             - run: npm ci
 
             - name: Run Chromatic
-              uses: chromaui/action@v12
+              uses: chromaui/action@v17
               with:
                   projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
                   buildScriptName: build-storybook
