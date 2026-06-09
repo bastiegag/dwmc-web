@@ -33,6 +33,14 @@ const CategoriesPage = lazy(() =>
         default: m.CategoriesPage,
     })),
 )
+const AccountsPage = lazy(() =>
+    import('@/features/accounts/pages/AccountsPage').then((m) => ({ default: m.AccountsPage })),
+)
+const TransactionsPage = lazy(() =>
+    import('@/features/transactions/pages/TransactionsPage').then((m) => ({
+        default: m.TransactionsPage,
+    })),
+)
 
 function PageLoader() {
     return (
@@ -63,6 +71,8 @@ function RouterContent() {
                         <Route element={<AppLayout />}>
                             <Route path="/app" element={<DashboardPage />} />
                             <Route path="/app/categories" element={<CategoriesPage />} />
+                            <Route path="/app/accounts" element={<AccountsPage />} />
+                            <Route path="/app/transactions" element={<TransactionsPage />} />
                         </Route>
                     </Route>
 
