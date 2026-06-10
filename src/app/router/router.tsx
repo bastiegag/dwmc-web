@@ -24,7 +24,7 @@ const ResetPasswordPage = lazy(() =>
     })),
 )
 const DashboardPage = lazy(() =>
-    import('@/features/auth/pages/DashboardPage').then((m) => ({
+    import('@/features/dashboard/pages/DashboardPage').then((m) => ({
         default: m.DashboardPage,
     })),
 )
