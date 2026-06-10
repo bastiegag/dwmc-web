@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 import {
@@ -64,8 +64,41 @@ export function TransactionsPage() {
             if (activeTransaction) {
                 await updateMutation.mutateAsync({ id: activeTransaction.id, input: values })
             } else {
-                await createMutation.mutateAsync(values)
+                // Convert form values (which allow nullable account ids) to the
+                // discriminated CreateTransactionPayload expected by the API.
+                // The form validation guarantees required fields are present for
+                // the given `type`, so use non-null assertions when narrowing.
+                const payload =
+                    values.type === 'TRANSFER'
+                        ? {
+                              type: 'TRANSFER' as const,
+                              amount: values.amount,
+                              date: values.date,
+                              fromAccountId: values.fromAccountId!,
+                              toAccountId: values.toAccountId!,
+                              note: values.note ?? undefined,
+                          }
+                        : values.type === 'ADJUSTMENT'
+                          ? {
+                                type: 'ADJUSTMENT' as const,
+                                amount: values.amount,
+                                date: values.date,
+                                accountId: values.accountId!,
+                                note: values.note ?? undefined,
+                            }
+                          : {
+                                type: values.type as 'INCOME' | 'EXPENSE',
+                                amount: values.amount,
+                                date: values.date,
+                                accountId: values.accountId!,
+                                categoryId: values.categoryId ?? undefined,
+                                merchant: values.merchant ?? undefined,
+                                note: values.note ?? undefined,
+                            }
+
+                await createMutation.mutateAsync(payload)
             }
+
             setDialogOpen(false)
         } catch (err) {
             setFormError(toErrorMessage(err, 'Unable to save transaction. Please try again.'))
@@ -81,16 +114,41 @@ export function TransactionsPage() {
         }
     }
 
+    const dialogInitialValues = useMemo<TransactionFormValues | undefined>(
+        () =>
+            activeTransaction
+                ? {
+                      type: activeTransaction.type,
+                      amount: activeTransaction.amount,
+                      date: activeTransaction.date.slice(0, 10),
+                      accountId: activeTransaction.accountId ?? null,
+                      fromAccountId: activeTransaction.fromAccountId ?? null,
+                      toAccountId: activeTransaction.toAccountId ?? null,
+                      categoryId: activeTransaction.categoryId ?? null,
+                      merchant: activeTransaction.merchant ?? null,
+                      note: activeTransaction.note ?? null,
+                  }
+                : undefined,
+        [activeTransaction],
+    )
+
+    const handleDialogOpenChange = useCallback(
+        (open: boolean) => {
+            if (!open) {
+                setDialogOpen(false)
+                setActiveTransaction(null)
+                setFormError(null)
+            }
+        },
+        [setDialogOpen, setActiveTransaction, setFormError],
+    )
+
     return (
         <section className="space-y-6" aria-labelledby="transactions-heading">
             <TransactionsPageHeader onCreate={openCreate} />
 
             <div className="pt-4">
-                <TransactionFilters
-                    accounts={accounts}
-                    sections={sections}
-                    onChange={(f) => setFilters(f)}
-                />
+                <TransactionFilters accounts={accounts} sections={sections} onChange={setFilters} />
             </div>
 
             {transactionsQuery.isLoading ? (
@@ -139,30 +197,10 @@ export function TransactionsPage() {
                 mode={activeTransaction ? 'edit' : 'create'}
                 accounts={accounts}
                 sections={sections}
-                initialValues={
-                    activeTransaction
-                        ? {
-                              type: activeTransaction.type,
-                              amount: activeTransaction.amount,
-                              date: activeTransaction.date.slice(0, 10),
-                              accountId: activeTransaction.accountId ?? null,
-                              fromAccountId: activeTransaction.fromAccountId ?? null,
-                              toAccountId: activeTransaction.toAccountId ?? null,
-                              categoryId: activeTransaction.categoryId ?? null,
-                              merchant: activeTransaction.merchant ?? null,
-                              note: activeTransaction.note ?? null,
-                          }
-                        : undefined
-                }
+                initialValues={dialogInitialValues}
                 isPending={createMutation.isPending || updateMutation.isPending}
                 errorMessage={formError}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setDialogOpen(false)
-                        setActiveTransaction(null)
-                        setFormError(null)
-                    }
-                }}
+                onOpenChange={handleDialogOpenChange}
                 onSubmit={handleSubmit}
             />
         </section>
