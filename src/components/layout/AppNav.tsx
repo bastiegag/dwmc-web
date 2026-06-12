@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { LogOut, LayoutDashboard, Tags, Wallet, ReceiptText } from 'lucide-react'
+import { LogOut, LayoutDashboard, Tags, Wallet, ReceiptText, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from './ThemeToggle'
 
@@ -42,6 +42,12 @@ export function AppNav({ onLogout, isLoggingOut = false }: AppNavProps) {
                             <Link to="/app/transactions" className="flex items-center gap-2">
                                 <ReceiptText className="h-4 w-4" aria-hidden="true" />
                                 Transactions
+                            </Link>
+                        </Button>
+                        <Button variant="ghost" size="sm" asChild>
+                            <Link to="/app/budgets" className="flex items-center gap-2">
+                                <Target className="h-4 w-4" aria-hidden="true" />
+                                Budgets
                             </Link>
                         </Button>
                     </div>
