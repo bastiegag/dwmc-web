@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import type { Resolver } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
 import { FormSubmitButton } from '@/components/form/FormSubmitButton'
 import { TextField } from '@/components/form/TextField'
@@ -41,7 +42,7 @@ export function AccountForm({
         formState: { errors },
         reset,
     } = useForm<AccountFormValues>({
-        resolver: zodResolver(accountFormSchema),
+        resolver: zodResolver(accountFormSchema) as unknown as Resolver<AccountFormValues>,
         mode: 'onBlur',
         defaultValues: initialValues ?? defaultValues,
     })

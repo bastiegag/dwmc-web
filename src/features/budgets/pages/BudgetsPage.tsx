@@ -71,7 +71,7 @@ export function BudgetsPage() {
             if (activeBudget) {
                 await updateMutation.mutateAsync({ id: activeBudget.id, input: values })
             } else {
-                await createMutation.mutateAsync(values)
+                await createMutation.mutateAsync(values as CreateBudgetPayload)
             }
             setDialogOpen(false)
         } catch (err) {

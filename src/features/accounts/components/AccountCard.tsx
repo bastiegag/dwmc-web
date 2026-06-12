@@ -60,7 +60,7 @@ export function AccountCard({ account, onEdit, onArchive }: AccountCardProps) {
                             <span>{account.name}</span>
                         </CardTitle>
                         <p className="text-sm text-muted-foreground">
-                            {account.type.replaceAll('_', ' ')}
+                            {String(account.type).replace(/_/g, ' ')}
                         </p>
                     </div>
                 </div>

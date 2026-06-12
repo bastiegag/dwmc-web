@@ -2,4 +2,4 @@ export { LoginPage } from './LoginPage'
 export { SignupPage } from './SignupPage'
 export { ForgotPasswordPage } from './ForgotPasswordPage'
 export { ResetPasswordPage } from './ResetPasswordPage'
-export { DashboardPage } from './DashboardPage'
+// DashboardPage belongs to the dashboard feature — not exported from auth pages

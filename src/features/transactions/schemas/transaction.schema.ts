@@ -24,7 +24,7 @@ export const transactionFormSchema = baseSchema.superRefine((data, ctx) => {
     if (type === 'ADJUSTMENT') {
         if (typeof data.amount !== 'number')
             ctx.addIssue({
-                code: z.ZodIssueCode.invalid_type,
+                code: z.ZodIssueCode.custom,
                 message: 'Amount is required',
                 path: ['amount'],
             })
@@ -80,7 +80,7 @@ export const transactionFormSchema = baseSchema.superRefine((data, ctx) => {
         const trimmed = data.merchant.trim()
         if (trimmed.length > 120)
             ctx.addIssue({
-                code: z.ZodIssueCode.too_big,
+                code: z.ZodIssueCode.custom,
                 message: 'Merchant must be 120 characters or fewer',
                 path: ['merchant'],
             })
@@ -89,7 +89,7 @@ export const transactionFormSchema = baseSchema.superRefine((data, ctx) => {
         const trimmed = data.note.trim()
         if (trimmed.length > 500)
             ctx.addIssue({
-                code: z.ZodIssueCode.too_big,
+                code: z.ZodIssueCode.custom,
                 message: 'Note must be 500 characters or fewer',
                 path: ['note'],
             })

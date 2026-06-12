@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import type { Resolver } from 'react-hook-form'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { FormError } from '@/components/form/FormError'
@@ -33,7 +34,7 @@ export function BudgetForm({
         formState: { errors },
         reset,
     } = useForm<BudgetFormValues>({
-        resolver: zodResolver(budgetFormSchema),
+        resolver: zodResolver(budgetFormSchema) as unknown as Resolver<BudgetFormValues>,
         mode: 'onBlur',
         defaultValues: initialValues ?? defaultValues,
     })

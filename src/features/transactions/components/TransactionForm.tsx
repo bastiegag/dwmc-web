@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
+import type { Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormError } from '@/components/form/FormError'
 import { FormSubmitButton } from '@/components/form/FormSubmitButton'
@@ -39,7 +40,7 @@ export function TransactionForm({
         setValue,
         formState: { errors },
     } = useForm<TransactionFormValues>({
-        resolver: zodResolver(transactionFormSchema),
+        resolver: zodResolver(transactionFormSchema) as unknown as Resolver<TransactionFormValues>,
         defaultValues: initialValues ?? defaultTransactionFormValues,
     })
 
