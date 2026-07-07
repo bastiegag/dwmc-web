@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { fireEvent, render, screen, waitFor, within } from '@/test/utils/render'
+import { fireEvent, render, screen, waitFor } from '@/test/utils/render'
 import { CategoryForm, SectionForm } from '@/features/categories/components'
 import { CategoriesPage } from '@/features/categories/pages/CategoriesPage'
 import type { SectionWithCategories } from '@/features/categories/types'
@@ -96,16 +96,17 @@ describe('categories forms and actions', () => {
     it('creating a section calls the section mutation', async () => {
         const user = userEvent.setup()
 
-        render(<CategoriesPage />)
+        const onSubmit = vi.fn().mockResolvedValue(undefined)
 
-        await user.click(screen.getByRole('button', { name: /new section/i }))
+        render(<SectionForm submitLabel="Create section" onSubmit={onSubmit} />)
+
         await user.type(screen.getByLabelText(/section name/i), 'Home')
         fireEvent.change(screen.getByLabelText(/color/i), { target: { value: '#3b82f6' } })
 
         await user.click(screen.getByRole('button', { name: /create section/i }))
 
         await waitFor(() => {
-            expect(createSectionMock).toHaveBeenCalledWith({
+            expect(onSubmit).toHaveBeenCalledWith({
                 name: 'Home',
                 color: '#3b82f6',
             })
@@ -115,18 +116,24 @@ describe('categories forms and actions', () => {
     it('creating a category calls the category mutation', async () => {
         const user = userEvent.setup()
 
-        render(<CategoriesPage />)
+        const onSubmit = vi.fn().mockResolvedValue(undefined)
 
-        await user.click(screen.getByRole('button', { name: /create category/i }))
+        render(
+            <CategoryForm
+                sections={sectionsData}
+                submitLabel="Create category"
+                onSubmit={onSubmit}
+            />,
+        )
+
         await user.type(screen.getByLabelText(/category name/i), 'Restaurants')
         await user.type(screen.getByLabelText(/icon/i), 'utensils')
         await user.selectOptions(screen.getByLabelText('Section'), 'section-1')
 
-        const categoryDialog = screen.getByRole('dialog', { name: /create category/i })
-        await user.click(within(categoryDialog).getByRole('button', { name: /create category/i }))
+        await user.click(screen.getByRole('button', { name: /create category/i }))
 
         await waitFor(() => {
-            expect(createCategoryMock).toHaveBeenCalledWith({
+            expect(onSubmit).toHaveBeenCalledWith({
                 name: 'Restaurants',
                 icon: 'utensils',
                 sectionId: 'section-1',

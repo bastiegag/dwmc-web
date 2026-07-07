@@ -1,4 +1,8 @@
 import { http, HttpResponse } from 'msw'
+import type {
+    CreateTransactionPayload,
+    UpdateTransactionPayload,
+} from '@/features/transactions/types/transaction.types'
 
 const API_URL = 'http://localhost:8787'
 
@@ -29,7 +33,7 @@ export const transactionHandlers = [
     }),
 
     http.post(`${API_URL}/api/v1/transactions`, async ({ request }) => {
-        const body = await request.json()
+        const body = (await request.json()) as CreateTransactionPayload
         const created = {
             id: 'tx-' + String(Math.floor(Math.random() * 10000)),
             ...body,
@@ -42,7 +46,7 @@ export const transactionHandlers = [
 
     http.patch(`${API_URL}/api/v1/transactions/:id`, async ({ request, params }) => {
         const id = params.id as string
-        const body = await request.json()
+        const body = (await request.json()) as UpdateTransactionPayload
         const updated = {
             id,
             ...body,

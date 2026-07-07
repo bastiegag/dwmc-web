@@ -22,7 +22,7 @@ describe('CategoriesPage', () => {
         render(<CategoriesPage />)
 
         expect(screen.getByLabelText(/loading categories/i)).toBeInTheDocument()
-        expect(await screen.findByText(/no sections yet/i)).toBeInTheDocument()
+        expect(await screen.findByText(/no categories yet/i)).toBeInTheDocument()
     })
 
     it('shows empty state when no sections exist', async () => {
@@ -34,7 +34,7 @@ describe('CategoriesPage', () => {
 
         render(<CategoriesPage />)
 
-        expect(await screen.findByText(/no sections yet/i)).toBeInTheDocument()
+        expect(await screen.findByText(/no categories yet/i)).toBeInTheDocument()
     })
 
     it('renders sections and categories from API response', async () => {

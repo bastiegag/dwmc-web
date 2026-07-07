@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils/render'
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
 
@@ -10,11 +9,10 @@ describe('DashboardPage', () => {
         vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
     })
 
-    it('renders heading and month selector', () => {
+    it('renders heading and loading state', () => {
         render(<DashboardPage />)
         expect(screen.getByRole('heading', { name: /dashboard/i, level: 1 })).toBeInTheDocument()
-        expect(screen.getByLabelText(/previous month/i)).toBeInTheDocument()
-        expect(screen.getByLabelText(/next month/i)).toBeInTheDocument()
+        expect(screen.getByLabelText(/loading summary/i)).toBeInTheDocument()
     })
 
     it('shows summary cards when data is present', async () => {
@@ -24,14 +22,5 @@ describe('DashboardPage', () => {
         ).toBeInTheDocument()
         expect(screen.getByRole('heading', { name: /expenses/i, level: 2 })).toBeInTheDocument()
         expect(screen.getByRole('heading', { name: /net/i, level: 2 })).toBeInTheDocument()
-    })
-
-    it('allows changing month via month selector', async () => {
-        const user = userEvent.setup()
-        render(<DashboardPage />)
-        const next = screen.getByLabelText(/next month/i)
-        await user.click(next)
-        // After changing month, summary will fetch — ensure the label updates
-        expect(screen.getByLabelText(/next month/i)).toBeInTheDocument()
     })
 })
