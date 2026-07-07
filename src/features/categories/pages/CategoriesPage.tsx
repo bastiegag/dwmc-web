@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 import { ApiError } from '@/lib/api-client'
@@ -20,6 +20,7 @@ import {
     SectionDialog,
     SectionList,
 } from '@/features/categories/components'
+import { usePrimaryAction } from '@/shared/primary-action'
 
 function toErrorMessage(error: unknown, fallback: string): string {
     if (error instanceof ApiError) {
@@ -55,6 +56,31 @@ export function CategoriesPage() {
     const [archiveError, setArchiveError] = useState<string | null>(null)
 
     const sections = sectionsQuery.data ?? []
+    const hasSections = sections.length > 0
+
+    const openCreateSection = useCallback(() => {
+        setActiveSection(null)
+        setSectionFormError(null)
+        setSectionDialogOpen(true)
+    }, [])
+
+    const openCreateCategory = useCallback(() => {
+        setActiveCategory(null)
+        setCategoryFormError(null)
+        setCategoryDialogOpen(true)
+    }, [])
+
+    usePrimaryAction(
+        hasSections
+            ? {
+                  label: 'Add category',
+                  onClick: openCreateCategory,
+              }
+            : {
+                  label: 'Add section',
+                  onClick: openCreateSection,
+              },
+    )
 
     const sectionInitialValues = useMemo<SectionFormValues | undefined>(() => {
         if (!activeSection) return undefined
@@ -143,19 +169,7 @@ export function CategoriesPage() {
 
     return (
         <section className="space-y-6" aria-labelledby="categories-heading">
-            <CategoriesPageHeader
-                onCreateSection={() => {
-                    setActiveSection(null)
-                    setSectionFormError(null)
-                    setSectionDialogOpen(true)
-                }}
-                onCreateCategory={() => {
-                    setActiveCategory(null)
-                    setCategoryFormError(null)
-                    setCategoryDialogOpen(true)
-                }}
-                disableCreateCategory={sections.length === 0}
-            />
+            <CategoriesPageHeader />
 
             {sectionsQuery.isLoading ? (
                 <div className="py-6" role="status" aria-live="polite">
@@ -183,13 +197,7 @@ export function CategoriesPage() {
             ) : null}
 
             {!sectionsQuery.isLoading && !sectionsQuery.isError && sections.length === 0 ? (
-                <EmptyCategoriesState
-                    onCreateSection={() => {
-                        setActiveSection(null)
-                        setSectionFormError(null)
-                        setSectionDialogOpen(true)
-                    }}
-                />
+                <EmptyCategoriesState />
             ) : null}
 
             {!sectionsQuery.isLoading && !sectionsQuery.isError && sections.length > 0 ? (
@@ -209,7 +217,6 @@ export function CategoriesPage() {
                     onArchiveCategory={handleArchiveCategory}
                 />
             ) : null}
-
             <SectionDialog
                 open={isSectionDialogOpen}
                 mode={activeSection ? 'edit' : 'create'}

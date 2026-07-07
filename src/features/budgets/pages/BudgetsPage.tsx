@@ -9,7 +9,6 @@ import {
 } from '@/features/budgets/hooks'
 import { useSections } from '@/features/categories/hooks/use-sections'
 import BudgetsPageHeader from '@/features/budgets/components/BudgetsPageHeader'
-import BudgetMonthSelector from '@/features/budgets/components/BudgetMonthSelector'
 import BudgetList from '@/features/budgets/components/BudgetList'
 import BudgetDialog from '@/features/budgets/components/BudgetDialog'
 import EmptyBudgetsState from '@/features/budgets/components/EmptyBudgetsState'
@@ -19,6 +18,8 @@ import type {
     CreateBudgetPayload,
     UpdateBudgetPayload,
 } from '@/features/budgets/types/budget.types'
+import { useSelectedMonth } from '@/shared/month'
+import { usePrimaryAction } from '@/shared/primary-action'
 
 function toErrorMessage(error: unknown, fallback: string) {
     if (error && typeof error === 'object' && 'message' in error) {
@@ -30,8 +31,7 @@ function toErrorMessage(error: unknown, fallback: string) {
 }
 
 export function BudgetsPage() {
-    const defaultMonth = new Date().toISOString().slice(0, 7)
-    const [month, setMonth] = useState<string>(defaultMonth)
+    const { month } = useSelectedMonth()
 
     const budgetsQuery = useBudgets({ month })
     const sectionsQuery = useSections()
@@ -45,6 +45,17 @@ export function BudgetsPage() {
     const [formError, setFormError] = useState<string | null>(null)
     const [archiveError, setArchiveError] = useState<string | null>(null)
 
+    const openCreate = useCallback(() => {
+        setActiveBudget(null)
+        setFormError(null)
+        setDialogOpen(true)
+    }, [])
+
+    usePrimaryAction({
+        label: 'Add budget',
+        onClick: openCreate,
+    })
+
     const budgets = useMemo(() => budgetsQuery.data ?? [], [budgetsQuery.data])
 
     const totals = useMemo(() => {
@@ -53,12 +64,6 @@ export function BudgetsPage() {
         const totalRemaining = budgets.reduce((s, b) => s + b.remaining, 0)
         return { totalPlanned, totalSpent, totalRemaining }
     }, [budgets])
-
-    const openCreate = () => {
-        setActiveBudget(null)
-        setFormError(null)
-        setDialogOpen(true)
-    }
 
     const openEdit = (b: Budget) => {
         setActiveBudget(b)
@@ -107,10 +112,7 @@ export function BudgetsPage() {
 
     return (
         <section className="space-y-6" aria-labelledby="budgets-heading">
-            <div className="flex items-center justify-between">
-                <BudgetsPageHeader onCreate={openCreate} />
-                <BudgetMonthSelector month={month} onChange={setMonth} />
-            </div>
+            <BudgetsPageHeader />
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div className="rounded-lg border bg-card p-4">
@@ -156,7 +158,7 @@ export function BudgetsPage() {
             ) : null}
 
             {!budgetsQuery.isLoading && !budgetsQuery.isError && budgets.length === 0 ? (
-                <EmptyBudgetsState month={month} onCreate={openCreate} />
+                <EmptyBudgetsState month={month} />
             ) : null}
 
             {!budgetsQuery.isLoading && !budgetsQuery.isError && budgets.length > 0 ? (

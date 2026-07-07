@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 import { ApiError } from '@/lib/api-client'
@@ -16,6 +16,7 @@ import {
     EmptyAccountsState,
     AccountList,
 } from '@/features/accounts/components'
+import { usePrimaryAction } from '@/shared/primary-action'
 
 function toErrorMessage(error: unknown, fallback: string): string {
     if (error instanceof ApiError) return error.message
@@ -33,6 +34,17 @@ export function AccountsPage() {
     const [activeAccount, setActiveAccount] = useState<Account | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
     const [archiveError, setArchiveError] = useState<string | null>(null)
+
+    const openCreate = useCallback(() => {
+        setActiveAccount(null)
+        setFormError(null)
+        setDialogOpen(true)
+    }, [])
+
+    usePrimaryAction({
+        label: 'Add account',
+        onClick: openCreate,
+    })
 
     const accounts = accountsQuery.data ?? []
 
@@ -78,13 +90,7 @@ export function AccountsPage() {
 
     return (
         <section className="space-y-6" aria-labelledby="accounts-heading">
-            <AccountsPageHeader
-                onCreate={() => {
-                    setActiveAccount(null)
-                    setFormError(null)
-                    setDialogOpen(true)
-                }}
-            />
+            <AccountsPageHeader />
 
             {accountsQuery.isLoading ? (
                 <div className="py-6" role="status" aria-live="polite">
@@ -112,13 +118,7 @@ export function AccountsPage() {
             ) : null}
 
             {!accountsQuery.isLoading && !accountsQuery.isError && accounts.length === 0 ? (
-                <EmptyAccountsState
-                    onCreate={() => {
-                        setActiveAccount(null)
-                        setFormError(null)
-                        setDialogOpen(true)
-                    }}
-                />
+                <EmptyAccountsState />
             ) : null}
 
             {!accountsQuery.isLoading && !accountsQuery.isError && accounts.length > 0 ? (
@@ -147,5 +147,4 @@ export function AccountsPage() {
         </section>
     )
 }
-
 export default AccountsPage

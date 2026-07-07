@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 import {
@@ -17,6 +17,8 @@ import EmptyTransactionsState from '@/features/transactions/components/EmptyTran
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 import type { GetTransactionsParams } from '@/features/transactions/types/transaction.types'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
+import { useSelectedMonth } from '@/shared/month'
+import { usePrimaryAction } from '@/shared/primary-action'
 
 function toErrorMessage(error: unknown, fallback: string) {
     if (error && typeof error === 'object' && 'message' in error)
@@ -26,7 +28,14 @@ function toErrorMessage(error: unknown, fallback: string) {
 }
 
 export function TransactionsPage() {
-    const [filters, setFilters] = useState<GetTransactionsParams>({})
+    const { month } = useSelectedMonth()
+    const [filters, setFilters] = useState<Omit<GetTransactionsParams, 'month'>>({})
+
+    useEffect(() => {
+        // When the global month changes, we could reset local filters if needed.
+        // For now, we just let the transactionsQuery refetch with the new month.
+    }, [month])
+
     const [isDialogOpen, setDialogOpen] = useState(false)
     const [activeTransaction, setActiveTransaction] = useState<Transaction | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
@@ -34,11 +43,22 @@ export function TransactionsPage() {
 
     const accountsQuery = useAccounts()
     const sectionsQuery = useSections()
-    const transactionsQuery = useTransactions(filters)
+    const transactionsQuery = useTransactions({ ...filters, month })
 
     const createMutation = useCreateTransaction()
     const updateMutation = useUpdateTransaction()
     const deleteMutation = useDeleteTransaction()
+
+    const openCreate = useCallback(() => {
+        setActiveTransaction(null)
+        setFormError(null)
+        setDialogOpen(true)
+    }, [])
+
+    usePrimaryAction({
+        label: 'Add transaction',
+        onClick: openCreate,
+    })
 
     const accounts = accountsQuery.data ?? []
     const sections = sectionsQuery.data ?? []
@@ -48,11 +68,6 @@ export function TransactionsPage() {
         [transactionsQuery.data],
     )
 
-    const openCreate = () => {
-        setActiveTransaction(null)
-        setFormError(null)
-        setDialogOpen(true)
-    }
     const openEdit = (t: Transaction) => {
         setActiveTransaction(t)
         setFormError(null)
@@ -64,10 +79,6 @@ export function TransactionsPage() {
             if (activeTransaction) {
                 await updateMutation.mutateAsync({ id: activeTransaction.id, input: values })
             } else {
-                // Convert form values (which allow nullable account ids) to the
-                // discriminated CreateTransactionPayload expected by the API.
-                // The form validation guarantees required fields are present for
-                // the given `type`, so use non-null assertions when narrowing.
                 const payload =
                     values.type === 'TRANSFER'
                         ? {
@@ -97,6 +108,7 @@ export function TransactionsPage() {
                             }
 
                 await createMutation.mutateAsync(payload)
+                localStorage.setItem(`last-tx-date-${month}`, values.date)
             }
 
             setDialogOpen(false)
@@ -114,23 +126,43 @@ export function TransactionsPage() {
         }
     }
 
-    const dialogInitialValues = useMemo<TransactionFormValues | undefined>(
-        () =>
-            activeTransaction
-                ? {
-                      type: activeTransaction.type,
-                      amount: activeTransaction.amount,
-                      date: activeTransaction.date.slice(0, 10),
-                      accountId: activeTransaction.accountId ?? null,
-                      fromAccountId: activeTransaction.fromAccountId ?? null,
-                      toAccountId: activeTransaction.toAccountId ?? null,
-                      categoryId: activeTransaction.categoryId ?? null,
-                      merchant: activeTransaction.merchant ?? null,
-                      note: activeTransaction.note ?? null,
-                  }
-                : undefined,
-        [activeTransaction],
-    )
+    const dialogInitialValues = useMemo<TransactionFormValues | undefined>(() => {
+        if (activeTransaction) {
+            return {
+                type: activeTransaction.type,
+                amount: activeTransaction.amount,
+                date: activeTransaction.date.slice(0, 10),
+                accountId: activeTransaction.accountId ?? null,
+                fromAccountId: activeTransaction.fromAccountId ?? null,
+                toAccountId: activeTransaction.toAccountId ?? null,
+                categoryId: activeTransaction.categoryId ?? null,
+                merchant: activeTransaction.merchant ?? null,
+                note: activeTransaction.note ?? null,
+            }
+        }
+        // Default date logic for new transactions
+        const lastDate = localStorage.getItem(`last-tx-date-${month}`)
+        const today = new Date().toISOString().slice(0, 10)
+        const firstDayOfMonth = `${month}-01`
+        const isCurrentMonth = month === today.slice(0, 7)
+
+        let defaultDate = isCurrentMonth ? today : firstDayOfMonth
+        if (lastDate && lastDate.startsWith(month)) {
+            defaultDate = lastDate
+        }
+
+        return {
+            type: 'EXPENSE',
+            amount: 0,
+            date: defaultDate,
+            accountId: null,
+            fromAccountId: null,
+            toAccountId: null,
+            categoryId: null,
+            merchant: null,
+            note: null,
+        }
+    }, [activeTransaction, month])
 
     const handleDialogOpenChange = useCallback(
         (open: boolean) => {
@@ -145,7 +177,7 @@ export function TransactionsPage() {
 
     return (
         <section className="space-y-6" aria-labelledby="transactions-heading">
-            <TransactionsPageHeader onCreate={openCreate} />
+            <TransactionsPageHeader />
 
             <div className="pt-4">
                 <TransactionFilters accounts={accounts} sections={sections} onChange={setFilters} />
@@ -179,7 +211,7 @@ export function TransactionsPage() {
             {!transactionsQuery.isLoading &&
             !transactionsQuery.isError &&
             transactions.length === 0 ? (
-                <EmptyTransactionsState onCreate={openCreate} />
+                <EmptyTransactionsState />
             ) : null}
 
             {!transactionsQuery.isLoading &&

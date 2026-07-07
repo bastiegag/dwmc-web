@@ -1,24 +1,17 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { FolderOpen } from 'lucide-react'
 
-type EmptyCategoriesStateProps = {
-    onCreateSection: () => void
-}
-
-export function EmptyCategoriesState({ onCreateSection }: EmptyCategoriesStateProps) {
+export function EmptyCategoriesState() {
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>No sections yet</CardTitle>
-                <CardDescription>
-                    Create your first section to organize categories for your transactions.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Button type="button" onClick={onCreateSection}>
-                    Create section
-                </Button>
-            </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-card p-12 text-center shadow-sm">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <FolderOpen className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold tracking-tight">No categories yet</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+                Create a section to organize your categories.
+            </p>
+        </div>
     )
 }
+
+export default EmptyCategoriesState

@@ -1,9 +1,7 @@
-import { Button } from '@/components/ui/button'
 import { Target } from 'lucide-react'
 
 type EmptyProps = {
     month: string
-    onCreate: () => void
 }
 
 function toLabel(month: string) {
@@ -16,17 +14,16 @@ function toLabel(month: string) {
     }
 }
 
-export function EmptyBudgetsState({ month, onCreate }: EmptyProps) {
+export function EmptyBudgetsState({ month }: EmptyProps) {
     return (
-        <div className="flex flex-col items-center justify-center rounded-lg border bg-card p-8 text-center">
-            <Target className="size-10 mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold">No budgets for {toLabel(month)}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-                Create a budget to track spending for a category.
-            </p>
-            <div className="mt-4">
-                <Button onClick={onCreate}>Create budget</Button>
+        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-card p-12 text-center shadow-sm">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <Target className="h-8 w-8 text-primary" />
             </div>
+            <h3 className="text-xl font-semibold tracking-tight">No budgets yet</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+                Get started by creating your first budget for {toLabel(month)}.
+            </p>
         </div>
     )
 }

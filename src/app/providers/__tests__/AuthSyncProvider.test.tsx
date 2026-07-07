@@ -2,15 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type ReactNode } from 'react'
-import { authService } from '@/features/auth/services'
-import { authSessionQueryKey } from '@/features/auth/hooks'
+import { authService } from '@/features/auth/services/authService'
+import { authSessionQueryKey } from '@/features/auth/hooks/useAuth'
 import type { Session, AuthChangeEvent } from '@supabase/supabase-js'
 
 // Capture the callback registered by AuthSyncProvider so tests can fire it manually.
 type AuthCallback = Parameters<typeof authService.onAuthStateChange>[0]
 let capturedCallback: AuthCallback | null = null
 
-vi.mock('@/features/auth/services', () => ({
+vi.mock('@/features/auth/services/authService', () => ({
     authService: {
         onAuthStateChange: vi.fn((cb: AuthCallback) => {
             capturedCallback = cb
@@ -62,9 +62,11 @@ describe('AuthSyncProvider — session propagation', () => {
         // Simulate what AuthSyncProvider does: subscribe and forward to queryClient.
         const {
             data: { subscription },
-        } = authService.onAuthStateChange(async (_event, session) => {
-            qc.setQueryData<Session | null>(authSessionQueryKey, session)
-        })
+        } = authService.onAuthStateChange(
+            async (_event: AuthChangeEvent, session: Session | null) => {
+                qc.setQueryData<Session | null>(authSessionQueryKey, session)
+            },
+        )
 
         const mockSession = {
             user: { id: 'u1', email: 'alice@example.com' },
@@ -93,9 +95,11 @@ describe('AuthSyncProvider — session propagation', () => {
 
         const {
             data: { subscription },
-        } = authService.onAuthStateChange(async (_event, session) => {
-            qc.setQueryData<Session | null>(authSessionQueryKey, session)
-        })
+        } = authService.onAuthStateChange(
+            async (_event: AuthChangeEvent, session: Session | null) => {
+                qc.setQueryData<Session | null>(authSessionQueryKey, session)
+            },
+        )
 
         await act(async () => {
             await capturedCallback?.('SIGNED_OUT' as AuthChangeEvent, null)

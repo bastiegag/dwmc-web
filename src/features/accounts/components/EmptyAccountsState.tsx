@@ -1,23 +1,16 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Landmark } from 'lucide-react'
 
-type EmptyAccountsStateProps = {
-    onCreate: () => void
-}
-
-export function EmptyAccountsState({ onCreate }: EmptyAccountsStateProps) {
+export function EmptyAccountsState() {
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>No accounts yet</CardTitle>
-                <CardDescription>Create an account to get started</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="flex items-center justify-center">
-                    <Button onClick={onCreate}>Create your first account</Button>
-                </div>
-            </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-card p-12 text-center shadow-sm">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <Landmark className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold tracking-tight">No accounts yet</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+                Get started by creating your first account.
+            </p>
+        </div>
     )
 }
 

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 import { AuthLayout } from '@/app/layouts/AuthLayout'
 import { AppLayout } from '@/app/layouts/AppLayout'
@@ -44,6 +44,9 @@ const TransactionsPage = lazy(() =>
 const BudgetsPage = lazy(() =>
     import('@/features/budgets/pages/BudgetsPage').then((m) => ({ default: m.BudgetsPage })),
 )
+const ToolsPage = lazy(() =>
+    import('@/app/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })),
+)
 
 function PageLoader() {
     return (
@@ -53,47 +56,70 @@ function PageLoader() {
     )
 }
 
-function RouterContent() {
-    const { pathname } = useLocation()
-    return (
-        <ErrorBoundary key={pathname}>
-            <Suspense fallback={<PageLoader />}>
-                <Routes>
-                    <Route path="/" element={<Navigate to="/login" replace />} />
-
-                    {/* Auth routes */}
-                    <Route element={<AuthLayout />}>
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/signup" element={<SignupPage />} />
-                        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                        <Route path="/reset-password" element={<ResetPasswordPage />} />
-                    </Route>
-
-                    {/* Protected app routes */}
-                    <Route element={<ProtectedRoute />}>
-                        <Route element={<AppLayout />}>
-                            <Route path="/app" element={<DashboardPage />} />
-                            <Route path="/app/categories" element={<CategoriesPage />} />
-                            <Route path="/app/accounts" element={<AccountsPage />} />
-                            <Route path="/app/transactions" element={<TransactionsPage />} />
-                            <Route path="/app/budgets" element={<BudgetsPage />} />
-                        </Route>
-                    </Route>
-
-                    {/* Catch-all */}
-                    <Route element={<AuthLayout />}>
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Route>
-                </Routes>
-            </Suspense>
-        </ErrorBoundary>
-    )
-}
+const router = createBrowserRouter([
+    {
+        path: '/',
+        element: <Navigate to="/app/dashboard" replace />,
+    },
+    {
+        path: '/app',
+        element: <ProtectedRoute />,
+        children: [
+            {
+                element: <AppLayout />,
+                children: [
+                    { index: true, element: <Navigate to="/app/dashboard" replace /> },
+                    {
+                        path: 'dashboard',
+                        element: <DashboardPage />,
+                    },
+                    {
+                        path: 'transactions',
+                        element: <TransactionsPage />,
+                    },
+                    {
+                        path: 'budgets',
+                        element: <BudgetsPage />,
+                    },
+                    {
+                        path: 'accounts',
+                        element: <AccountsPage />,
+                    },
+                    {
+                        path: 'tools',
+                        element: <Outlet />,
+                        children: [
+                            { index: true, element: <ToolsPage /> },
+                            { path: 'categories', element: <CategoriesPage /> },
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        path: '/auth',
+        element: <AuthLayout />,
+        children: [
+            { index: true, element: <Navigate to="/auth/login" replace /> },
+            { path: 'login', element: <LoginPage /> },
+            { path: 'signup', element: <SignupPage /> },
+            { path: 'forgot-password', element: <ForgotPasswordPage /> },
+            { path: 'reset-password', element: <ResetPasswordPage /> },
+        ],
+    },
+    {
+        path: '*',
+        element: <NotFoundPage />,
+    },
+])
 
 export function AppRouter() {
     return (
-        <BrowserRouter>
-            <RouterContent />
-        </BrowserRouter>
+        <Suspense fallback={<PageLoader />}>
+            <ErrorBoundary>
+                <RouterProvider router={router} />
+            </ErrorBoundary>
+        </Suspense>
     )
 }
