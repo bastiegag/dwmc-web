@@ -8,7 +8,7 @@ import { FormSubmitButton } from '@/components/form/FormSubmitButton'
 import { useLogin } from '@/features/auth/hooks'
 import { loginSchema, type LoginInput } from '@/features/auth/schemas'
 
-export function LoginForm() {
+export const LoginForm = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { login, isPending } = useLogin()

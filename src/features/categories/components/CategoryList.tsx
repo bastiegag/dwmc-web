@@ -7,7 +7,11 @@ type CategoryListProps = {
     onArchiveCategory: (category: Category) => Promise<void> | void
 }
 
-export function CategoryList({ categories, onEditCategory, onArchiveCategory }: CategoryListProps) {
+export const CategoryList = ({
+    categories,
+    onEditCategory,
+    onArchiveCategory,
+}: CategoryListProps) => {
     if (categories.length === 0) {
         return <p className="text-sm text-muted-foreground">No categories in this section yet.</p>
     }

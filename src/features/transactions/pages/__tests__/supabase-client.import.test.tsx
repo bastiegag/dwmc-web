@@ -1,4 +1,4 @@
-import '/src/test/setup'
+import '@/test/setup'
 import { expect, test } from 'vitest'
 import * as module from '@/lib/supabase/client'
 

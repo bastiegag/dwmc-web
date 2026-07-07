@@ -23,14 +23,14 @@ const defaultValues: CategoryFormValues = {
     sectionId: '',
 }
 
-export function CategoryForm({
+export const CategoryForm = ({
     sections,
     initialValues,
     submitLabel,
     isPending = false,
     errorMessage,
     onSubmit,
-}: CategoryFormProps) {
+}: CategoryFormProps) => {
     const {
         register,
         handleSubmit,

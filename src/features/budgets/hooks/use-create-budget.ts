@@ -3,7 +3,7 @@ import { createBudget } from '@/features/budgets/api/budgets.api'
 import { budgetQueryKeys } from './use-budgets'
 import type { CreateBudgetPayload } from '@/features/budgets/types/budget.types'
 
-export function useCreateBudget() {
+export const useCreateBudget = () => {
     const queryClient = useQueryClient()
 
     return useMutation({

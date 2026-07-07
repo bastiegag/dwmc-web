@@ -24,14 +24,14 @@ type TransactionFormProps = {
     onSubmit: (values: TransactionFormValues) => Promise<void> | void
 }
 
-export function TransactionForm({
+export const TransactionForm = ({
     accounts,
     sections,
     initialValues,
     isPending = false,
     errorMessage,
     onSubmit,
-}: TransactionFormProps) {
+}: TransactionFormProps) => {
     const {
         register,
         handleSubmit,

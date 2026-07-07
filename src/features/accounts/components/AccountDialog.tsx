@@ -12,7 +12,7 @@ type AccountDialogProps = {
     onSubmit: (values: AccountFormValues) => Promise<void> | void
 }
 
-export function AccountDialog({
+export const AccountDialog = ({
     open,
     mode,
     initialValues,
@@ -20,7 +20,7 @@ export function AccountDialog({
     errorMessage,
     onOpenChange,
     onSubmit,
-}: AccountDialogProps) {
+}: AccountDialogProps) => {
     if (!open) return null
 
     const title = mode === 'create' ? 'Create account' : 'Edit account'

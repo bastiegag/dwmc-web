@@ -10,7 +10,7 @@ type TransactionItemProps = {
     onArchive: (t: Transaction) => void
 }
 
-export function TransactionItem({ transaction, onEdit, onArchive }: TransactionItemProps) {
+export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionItemProps) => {
     const { type, amount, date } = transaction
 
     const displayAmount = currencyFormatter.format(amount)

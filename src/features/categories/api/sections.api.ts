@@ -6,7 +6,7 @@ import type {
     UpdateSectionInput,
 } from '@/features/categories/types'
 
-export async function getSections(): Promise<SectionWithCategories[]> {
+export const getSections = async (): Promise<SectionWithCategories[]> => {
     const response = await apiClient<{ data: SectionWithCategories[] }>(
         '/api/v1/sections?includeCategories=true',
     )
@@ -14,7 +14,7 @@ export async function getSections(): Promise<SectionWithCategories[]> {
     return response.data
 }
 
-export async function createSection(input: CreateSectionInput): Promise<Section> {
+export const createSection = async (input: CreateSectionInput): Promise<Section> => {
     const response = await apiClient<{ data: Section }>('/api/v1/sections', {
         method: 'POST',
         body: input,
@@ -23,7 +23,7 @@ export async function createSection(input: CreateSectionInput): Promise<Section>
     return response.data
 }
 
-export async function updateSection(id: string, input: UpdateSectionInput): Promise<Section> {
+export const updateSection = async (id: string, input: UpdateSectionInput): Promise<Section> => {
     const response = await apiClient<{ data: Section }>(`/api/v1/sections/${id}`, {
         method: 'PATCH',
         body: input,
@@ -32,7 +32,7 @@ export async function updateSection(id: string, input: UpdateSectionInput): Prom
     return response.data
 }
 
-export async function deleteSection(id: string): Promise<void> {
+export const deleteSection = async (id: string): Promise<void> => {
     await apiClient<{ data: Section }>(`/api/v1/sections/${id}`, {
         method: 'DELETE',
     })

@@ -62,7 +62,7 @@ describe('ResetPasswordForm', () => {
 
     it('has no accessibility violations', async () => {
         const { container } = render(<ResetPasswordForm />)
-        expect(await axe(container)).toHaveNoViolations()
+        expect((await axe(container)).violations).toHaveLength(0)
     })
 
     it('marks password field as invalid and links error when validation fails', async () => {

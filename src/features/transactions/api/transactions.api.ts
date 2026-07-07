@@ -7,7 +7,7 @@ import type {
     UpdateTransactionPayload,
 } from '@/features/transactions/types/transaction.types'
 
-function buildQuery(params?: GetTransactionsParams) {
+const buildQuery = (params?: GetTransactionsParams) => {
     if (!params) return ''
     const qs = new URLSearchParams()
     if (params.type) qs.set('type', params.type)
@@ -27,21 +27,21 @@ function buildQuery(params?: GetTransactionsParams) {
     return s ? `?${s}` : ''
 }
 
-export async function getTransactions(
+export const getTransactions = async (
     params?: GetTransactionsParams,
-): Promise<{ data: Transaction[]; meta?: TransactionsMeta }> {
+): Promise<{ data: Transaction[]; meta?: TransactionsMeta }> => {
     const response = await apiClient<{ data: Transaction[]; meta?: TransactionsMeta }>(
         `/api/v1/transactions${buildQuery(params)}`,
     )
     return response
 }
 
-export async function getTransaction(id: string): Promise<Transaction> {
+export const getTransaction = async (id: string): Promise<Transaction> => {
     const response = await apiClient<{ data: Transaction }>(`/api/v1/transactions/${id}`)
     return response.data
 }
 
-export async function createTransaction(input: CreateTransactionPayload): Promise<Transaction> {
+export const createTransaction = async (input: CreateTransactionPayload): Promise<Transaction> => {
     const response = await apiClient<{ data: Transaction }>(`/api/v1/transactions`, {
         method: 'POST',
         body: input,
@@ -49,10 +49,10 @@ export async function createTransaction(input: CreateTransactionPayload): Promis
     return response.data
 }
 
-export async function updateTransaction(
+export const updateTransaction = async (
     id: string,
     input: UpdateTransactionPayload,
-): Promise<Transaction> {
+): Promise<Transaction> => {
     const response = await apiClient<{ data: Transaction }>(`/api/v1/transactions/${id}`, {
         method: 'PATCH',
         body: input,
@@ -60,7 +60,7 @@ export async function updateTransaction(
     return response.data
 }
 
-export async function deleteTransaction(id: string): Promise<void> {
+export const deleteTransaction = async (id: string): Promise<void> => {
     await apiClient<{ data: unknown }>(`/api/v1/transactions/${id}`, {
         method: 'DELETE',
     })

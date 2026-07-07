@@ -7,7 +7,7 @@ type TransactionListProps = {
     onArchive: (t: Transaction) => void
 }
 
-export function TransactionList({ transactions, onEdit, onArchive }: TransactionListProps) {
+export const TransactionList = ({ transactions, onEdit, onArchive }: TransactionListProps) => {
     return (
         <div>
             {transactions.map((t) => (

@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useSignup } from '@/features/auth/hooks'
 import { signupSchema, type SignupInput } from '@/features/auth/schemas'
 
-export function SignupForm() {
+export const SignupForm = () => {
     const { signup, isPending, isSuccess } = useSignup()
     const successRef = useRef<HTMLDivElement>(null)
 

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { authService } from '@/features/auth/services'
 import { toast } from 'sonner'
 
-export function useResetPassword() {
+export const useResetPassword = () => {
     const { mutateAsync, isPending, isSuccess, error } = useMutation({
         mutationFn: (password: string) => authService.resetPassword(password),
         onSuccess: () => {

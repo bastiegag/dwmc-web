@@ -14,13 +14,13 @@ type SectionCardProps = {
     ) => Promise<void> | void
 }
 
-export function SectionCard({
+export const SectionCard = ({
     section,
     onEditSection,
     onArchiveSection,
     onEditCategory,
     onArchiveCategory,
-}: SectionCardProps) {
+}: SectionCardProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
     return (

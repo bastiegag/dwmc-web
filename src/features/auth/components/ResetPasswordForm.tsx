@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useResetPassword } from '@/features/auth/hooks'
 import { resetPasswordSchema, type ResetPasswordInput } from '@/features/auth/schemas'
 
-export function ResetPasswordForm() {
+export const ResetPasswordForm = () => {
     const { resetPassword, isPending, isSuccess } = useResetPassword()
 
     const {

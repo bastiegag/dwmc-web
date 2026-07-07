@@ -17,7 +17,7 @@ const ICON: Record<Theme, React.ReactNode> = {
     system: <Monitor className="h-4 w-4" aria-hidden="true" />,
 }
 
-export function ThemeToggle() {
+export const ThemeToggle = () => {
     const { theme, setTheme } = useTheme()
     return (
         <Button

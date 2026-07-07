@@ -3,7 +3,7 @@ import { getTransaction } from '@/features/transactions/api/transactions.api'
 
 import { transactionQueryKeys } from './use-transactions'
 
-export function useTransaction(id: string) {
+export const useTransaction = (id: string) => {
     return useQuery({
         queryKey: transactionQueryKeys.detail(id),
         queryFn: () => getTransaction(id),

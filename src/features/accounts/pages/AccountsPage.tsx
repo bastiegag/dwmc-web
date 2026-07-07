@@ -18,13 +18,13 @@ import {
 } from '@/features/accounts/components'
 import { usePrimaryAction } from '@/shared/primary-action'
 
-function toErrorMessage(error: unknown, fallback: string): string {
+const toErrorMessage = (error: unknown, fallback: string): string => {
     if (error instanceof ApiError) return error.message
     if (error instanceof Error) return error.message
     return fallback
 }
 
-export function AccountsPage() {
+export const AccountsPage = () => {
     const accountsQuery = useAccounts()
     const createMutation = useCreateAccount()
     const updateMutation = useUpdateAccount()

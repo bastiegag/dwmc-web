@@ -16,7 +16,7 @@ type TransactionDialogProps = {
     onSubmit: (values: TransactionFormValues) => Promise<void> | void
 }
 
-export function TransactionDialog({
+export const TransactionDialog = ({
     open,
     mode,
     accounts,
@@ -26,7 +26,7 @@ export function TransactionDialog({
     errorMessage,
     onOpenChange,
     onSubmit,
-}: TransactionDialogProps) {
+}: TransactionDialogProps) => {
     if (!open) return null
 
     const title = mode === 'create' ? 'Create transaction' : 'Edit transaction'

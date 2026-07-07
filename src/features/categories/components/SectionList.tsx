@@ -9,13 +9,13 @@ type SectionListProps = {
     onArchiveCategory: (category: Category) => Promise<void> | void
 }
 
-export function SectionList({
+export const SectionList = ({
     sections,
     onEditSection,
     onArchiveSection,
     onEditCategory,
     onArchiveCategory,
-}: SectionListProps) {
+}: SectionListProps) => {
     return (
         <div className="space-y-4" aria-label="Sections list">
             {sections.map((section) => (

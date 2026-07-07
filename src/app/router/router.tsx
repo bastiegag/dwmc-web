@@ -48,7 +48,7 @@ const ToolsPage = lazy(() =>
     import('@/app/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })),
 )
 
-function PageLoader() {
+const PageLoader = () => {
     return (
         <div className="flex min-h-screen items-center justify-center">
             <LoadingSpinner size="lg" aria-label="Loading page" />
@@ -114,7 +114,7 @@ const router = createBrowserRouter([
     },
 ])
 
-export function AppRouter() {
+export const AppRouter = () => {
     return (
         <Suspense fallback={<PageLoader />}>
             <ErrorBoundary>

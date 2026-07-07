@@ -11,8 +11,8 @@ import {
 
 const monthNavRoutes = ['/app/dashboard', '/app/transactions', '/app/budgets']
 
-export function AppLayout() {
-    const { mutate: logout, isPending: isLoggingOut } = useLogout()
+export const AppLayout = () => {
+    const { logout, isPending: isLoggingOut } = useLogout()
     const location = useLocation()
 
     const showMonthNav = monthNavRoutes.some((path) => location.pathname.startsWith(path))

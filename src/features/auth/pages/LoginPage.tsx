@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoginForm } from '@/features/auth/components'
 
-export function LoginPage() {
+export const LoginPage = () => {
     return (
         <>
             <h1 className="sr-only">Sign in</h1>

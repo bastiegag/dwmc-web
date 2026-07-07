@@ -7,14 +7,14 @@ interface FormSubmitButtonProps extends ButtonProps {
     loadingText?: string
 }
 
-export function FormSubmitButton({
+export const FormSubmitButton = ({
     isLoading = false,
     loadingText = 'Loading...',
     children,
     disabled,
     className,
     ...props
-}: FormSubmitButtonProps) {
+}: FormSubmitButtonProps) => {
     return (
         <Button
             type="submit"

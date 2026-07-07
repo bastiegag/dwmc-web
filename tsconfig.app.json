@@ -28,7 +28,6 @@
         "src/**/*.test.ts",
         "src/**/*.test.tsx",
         "src/**/__tests__/**",
-        "e2e/**",
-        "src/test/**"
+        "e2e/**"
     ]
 }

@@ -16,12 +16,12 @@ Object.defineProperty(window, 'matchMedia', {
         dispatchEvent: vi.fn(),
     })),
 })
-function ThemeDisplay() {
+const ThemeDisplay = () => {
     const { theme } = useTheme()
     return <p data-testid="theme">{theme}</p>
 }
 
-function ThemeControl() {
+const ThemeControl = () => {
     const { setTheme } = useTheme()
     return (
         <>

@@ -3,7 +3,7 @@ import { authService } from '@/features/auth/services'
 import { toast } from 'sonner'
 import type { SignupCredentials } from '@/features/auth/types'
 
-export function useSignup() {
+export const useSignup = () => {
     const { mutateAsync, isPending, isSuccess, error } = useMutation({
         mutationFn: (credentials: Omit<SignupCredentials, 'confirmPassword'>) =>
             authService.signup(credentials),

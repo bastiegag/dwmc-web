@@ -5,7 +5,7 @@ interface FormErrorProps {
     message?: string | null
 }
 
-export function FormError({ message }: FormErrorProps) {
+export const FormError = ({ message }: FormErrorProps) => {
     if (!message) return null
     return (
         <Alert variant="destructive" role="alert">

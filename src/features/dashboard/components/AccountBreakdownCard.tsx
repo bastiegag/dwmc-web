@@ -6,7 +6,7 @@ type Props = {
     items: SummaryAccountBreakdown[]
 }
 
-export function AccountBreakdownCard({ items }: Props) {
+export const AccountBreakdownCard = ({ items }: Props) => {
     return (
         <Card>
             <CardHeader className="p-4">

@@ -8,7 +8,7 @@ export const categoryQueryKeys = {
         [...categoryQueryKeys.sections(), { includeCategories: true }] as const,
 }
 
-export function useSections() {
+export const useSections = () => {
     return useQuery({
         queryKey: categoryQueryKeys.sectionsWithCategories(),
         queryFn: getSections,

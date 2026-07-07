@@ -12,7 +12,7 @@ type TransactionFiltersProps = {
     onChange: (filters: GetTransactionsParams) => void
 }
 
-export function TransactionFilters({ accounts, sections, onChange }: TransactionFiltersProps) {
+export const TransactionFilters = ({ accounts, sections, onChange }: TransactionFiltersProps) => {
     const [type, setType] = useState<string>('')
     const [accountId, setAccountId] = useState<string>('')
     const [categoryId, setCategoryId] = useState<string>('')

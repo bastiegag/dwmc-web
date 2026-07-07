@@ -21,7 +21,7 @@ import type {
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 
-function toErrorMessage(error: unknown, fallback: string) {
+const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error) {
         const e = error as { message?: string }
         return e.message ?? fallback
@@ -30,7 +30,7 @@ function toErrorMessage(error: unknown, fallback: string) {
     return fallback
 }
 
-export function BudgetsPage() {
+export const BudgetsPage = () => {
     const { month } = useSelectedMonth()
 
     const budgetsQuery = useBudgets({ month })

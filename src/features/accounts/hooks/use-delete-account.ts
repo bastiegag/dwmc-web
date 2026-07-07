@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteAccount } from '@/features/accounts/api/accounts.api'
 import { accountQueryKeys } from './use-accounts'
 
-export function useDeleteAccount() {
+export const useDeleteAccount = () => {
     const queryClient = useQueryClient()
 
     return useMutation({

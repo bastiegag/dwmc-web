@@ -7,7 +7,7 @@ type Props = {
     items: SummaryCategoryBreakdown[]
 }
 
-export function CategoryBreakdownCard({ title, items }: Props) {
+export const CategoryBreakdownCard = ({ title, items }: Props) => {
     return (
         <Card>
             <CardHeader className="p-4">

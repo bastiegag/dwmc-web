@@ -15,7 +15,7 @@ type Props = {
     onSubmit: (values: BudgetFormValues) => Promise<void> | void
 }
 
-export function BudgetDialog({
+export const BudgetDialog = ({
     open,
     mode,
     sections,
@@ -25,7 +25,7 @@ export function BudgetDialog({
     errorMessage,
     onOpenChange,
     onSubmit,
-}: Props) {
+}: Props) => {
     if (!open) return null
 
     const title = mode === 'create' ? 'Create budget' : 'Edit budget'

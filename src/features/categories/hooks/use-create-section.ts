@@ -3,7 +3,7 @@ import { createSection } from '@/features/categories/api'
 import type { CreateSectionInput } from '@/features/categories/types'
 import { categoryQueryKeys } from './use-sections'
 
-export function useCreateSection() {
+export const useCreateSection = () => {
     const queryClient = useQueryClient()
 
     return useMutation({

@@ -1,4 +1,4 @@
-export default function DashboardPageHeader() {
+export const DashboardPageHeader = () => {
     return (
         <div>
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
@@ -8,3 +8,5 @@ export default function DashboardPageHeader() {
         </div>
     )
 }
+
+export default DashboardPageHeader

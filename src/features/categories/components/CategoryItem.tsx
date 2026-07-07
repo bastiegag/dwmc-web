@@ -11,7 +11,7 @@ type CategoryItemProps = {
 
 type LucideIconComponent = React.ComponentType<{ className?: string }>
 
-function toPascalCase(value: string) {
+const toPascalCase = (value: string) => {
     return value
         .split(/[-_\s]+/)
         .filter(Boolean)
@@ -19,7 +19,7 @@ function toPascalCase(value: string) {
         .join('')
 }
 
-export function CategoryItem({ category, onEdit, onArchive }: CategoryItemProps) {
+export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
     const Icon = useMemo(() => {

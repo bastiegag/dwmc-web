@@ -29,13 +29,13 @@ const defaultValues: AccountFormValues = {
     icon: 'wallet',
 }
 
-export function AccountForm({
+export const AccountForm = ({
     initialValues,
     submitLabel,
     isPending = false,
     errorMessage,
     onSubmit,
-}: AccountFormProps) {
+}: AccountFormProps) => {
     const {
         register,
         handleSubmit,

@@ -3,7 +3,7 @@ import { render, screen } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
 import { ErrorBoundary } from '@/components/feedback/ErrorBoundary'
 
-function ThrowingChild({ shouldThrow }: { shouldThrow: boolean }) {
+const ThrowingChild = ({ shouldThrow }: { shouldThrow: boolean }) => {
     if (shouldThrow) throw new Error('Test error message')
     return <div>Child content</div>
 }
@@ -74,7 +74,7 @@ describe('ErrorBoundary', () => {
         const user = userEvent.setup()
         let shouldThrow = true
 
-        function ToggleChild() {
+        const ToggleChild = () => {
             if (shouldThrow) throw new Error('boom')
             return <div>Recovered content</div>
         }

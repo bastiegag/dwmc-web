@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 
-export function AuthLayout() {
+export const AuthLayout = () => {
     return (
         <div className="flex min-h-screen flex-col bg-background">
             <a

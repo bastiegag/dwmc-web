@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAuth, authSessionQueryKey } from '@/features/auth/hooks/useAuth'
 import type { Session } from '@supabase/supabase-js'
 
-function createWrapper(seed?: Session | null) {
+const createWrapper = (seed?: Session | null) => {
     const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
     if (seed !== undefined) {
         qc.setQueryData(authSessionQueryKey, seed)

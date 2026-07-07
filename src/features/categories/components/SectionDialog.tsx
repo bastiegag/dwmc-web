@@ -12,7 +12,7 @@ type SectionDialogProps = {
     onSubmit: (values: SectionFormValues) => Promise<void> | void
 }
 
-export function SectionDialog({
+export const SectionDialog = ({
     open,
     mode,
     initialValues,
@@ -20,7 +20,7 @@ export function SectionDialog({
     errorMessage,
     onOpenChange,
     onSubmit,
-}: SectionDialogProps) {
+}: SectionDialogProps) => {
     if (!open) return null
 
     const title = mode === 'create' ? 'Create section' : 'Edit section'

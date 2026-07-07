@@ -61,7 +61,7 @@ describe('ForgotPasswordForm', () => {
 
     it('has no accessibility violations', async () => {
         const { container } = render(<ForgotPasswordForm />)
-        expect(await axe(container)).toHaveNoViolations()
+        expect((await axe(container)).violations).toHaveLength(0)
     })
 
     it('success state has no accessibility violations', async () => {
@@ -73,6 +73,6 @@ describe('ForgotPasswordForm', () => {
             error: null,
         })
         const { container } = render(<ForgotPasswordForm />)
-        expect(await axe(container)).toHaveNoViolations()
+        expect((await axe(container)).violations).toHaveLength(0)
     })
 })

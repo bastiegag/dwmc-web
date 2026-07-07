@@ -7,7 +7,7 @@ vi.mock('@/features/auth/hooks', () => ({
     useAuth: vi.fn(() => ({ isAuthenticated: false, isLoading: false, user: null, session: null })),
 }))
 
-function renderWithRoutes(initialEntries = ['/app']) {
+const renderWithRoutes = (initialEntries = ['/app']) => {
     return render(
         <Routes>
             <Route element={<ProtectedRoute />}>

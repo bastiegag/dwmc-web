@@ -4,7 +4,7 @@ type EmptyProps = {
     month: string
 }
 
-function toLabel(month: string) {
+const toLabel = (month: string) => {
     try {
         const [y, m] = month.split('-').map(Number)
         const d = new Date(Date.UTC(y, m - 1, 1))
@@ -14,7 +14,7 @@ function toLabel(month: string) {
     }
 }
 
-export function EmptyBudgetsState({ month }: EmptyProps) {
+export const EmptyBudgetsState = ({ month }: EmptyProps) => {
     return (
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-card p-12 text-center shadow-sm">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">

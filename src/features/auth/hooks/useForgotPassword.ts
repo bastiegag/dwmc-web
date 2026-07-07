@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { authService } from '@/features/auth/services'
 import { toast } from 'sonner'
 
-export function useForgotPassword() {
+export const useForgotPassword = () => {
     const { mutateAsync, isPending, isSuccess, error } = useMutation({
         mutationFn: (email: string) => authService.forgotPassword(email),
         onSuccess: () => {

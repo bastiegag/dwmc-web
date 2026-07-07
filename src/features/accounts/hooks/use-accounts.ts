@@ -9,7 +9,7 @@ export const accountQueryKeys = {
     detail: (id: string) => [...accountQueryKeys.all, 'detail', id] as const,
 }
 
-export function useAccounts(params?: GetAccountsParams) {
+export const useAccounts = (params?: GetAccountsParams) => {
     return useQuery({
         queryKey: accountQueryKeys.list(params),
         queryFn: () => getAccounts(params),

@@ -23,7 +23,7 @@ const tools = [
     },
 ]
 
-export function ToolsPage() {
+export const ToolsPage = () => {
     return (
         <section className="space-y-6" aria-labelledby="tools-heading">
             <div className="px-4 sm:px-6 lg:px-8">

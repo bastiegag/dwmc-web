@@ -4,7 +4,7 @@ import type { CreateTransactionPayload } from '@/features/transactions/types/tra
 import { transactionQueryKeys } from './use-transactions'
 import { accountQueryKeys } from '@/features/accounts/hooks/use-accounts'
 
-export function useCreateTransaction() {
+export const useCreateTransaction = () => {
     const queryClient = useQueryClient()
 
     const mutation = useMutation({

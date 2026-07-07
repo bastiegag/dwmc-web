@@ -5,7 +5,7 @@ type SummaryCardsProps = {
     totals: MonthlySummary['totals']
 }
 
-export function SummaryCards({ totals }: SummaryCardsProps) {
+export const SummaryCards = ({ totals }: SummaryCardsProps) => {
     const { incomeTotal, expenseTotal, netTotal, transactionCount } = totals
 
     const netSubtitle = netTotal < 0 ? `Net loss` : netTotal > 0 ? `Net income` : `Break-even`

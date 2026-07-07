@@ -10,7 +10,7 @@ vi.mock('sonner', () => ({
     toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
 }))
 
-function createWrapper() {
+const createWrapper = () => {
     const qc = new QueryClient({
         defaultOptions: { mutations: { retry: false }, queries: { retry: false, gcTime: 0 } },
     })

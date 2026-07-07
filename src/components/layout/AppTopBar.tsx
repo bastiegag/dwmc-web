@@ -8,7 +8,7 @@ interface AppTopBarProps {
     isLoggingOut?: boolean
 }
 
-export function AppTopBar({ onLogout, isLoggingOut = false }: AppTopBarProps) {
+export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) => {
     return (
         <header className="flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6 lg:px-8">
             <Link to="/app" className="text-xl font-bold tracking-tight">

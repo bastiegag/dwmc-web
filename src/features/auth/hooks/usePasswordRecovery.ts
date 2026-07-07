@@ -13,7 +13,7 @@ type RecoveryStatus = 'loading' | 'valid' | 'invalid'
  *   - 'invalid'  for any other event, including INITIAL_SESSION — a regular
  *                logged-in session must not grant access to the reset form
  */
-export function usePasswordRecovery(): { isLoading: boolean; isValid: boolean } {
+export const usePasswordRecovery = (): { isLoading: boolean; isValid: boolean } => {
     const [status, setStatus] = useState<RecoveryStatus>('loading')
 
     useEffect(() => {

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Account } from '@/features/accounts/types/account.types'
 
-function getIconComponent(name: string) {
+const getIconComponent = (name: string) => {
     try {
         const pascal = name
             .split('-')
@@ -32,7 +32,7 @@ type AccountCardProps = {
     onArchive: (account: Account) => Promise<void> | void
 }
 
-export function AccountCard({ account, onEdit, onArchive }: AccountCardProps) {
+export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
     const iconComp = useMemo(() => getIconComponent(account.icon), [account.icon])
 

@@ -20,14 +20,14 @@ import type { TransactionFormValues } from '@/features/transactions/schemas/tran
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 
-function toErrorMessage(error: unknown, fallback: string) {
+const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error)
         return (error as { message?: string }).message ?? fallback
     if (error instanceof Error) return error.message
     return fallback
 }
 
-export function TransactionsPage() {
+export const TransactionsPage = () => {
     const { month } = useSelectedMonth()
     const [filters, setFilters] = useState<Omit<GetTransactionsParams, 'month'>>({})
 

@@ -20,14 +20,14 @@ type Props = {
 
 const defaultValues: BudgetFormValues = { categoryId: '', month: '', amount: 0 }
 
-export function BudgetForm({
+export const BudgetForm = ({
     sections,
     initialValues,
     submitLabel,
     isPending = false,
     errorMessage,
     onSubmit,
-}: Props) {
+}: Props) => {
     const {
         register,
         handleSubmit,

@@ -1,6 +1,6 @@
 import { Landmark } from 'lucide-react'
 
-export function EmptyAccountsState() {
+export const EmptyAccountsState = () => {
     return (
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-card p-12 text-center shadow-sm">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">

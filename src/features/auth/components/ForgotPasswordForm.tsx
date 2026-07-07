@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useForgotPassword } from '@/features/auth/hooks'
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/schemas'
 
-export function ForgotPasswordForm() {
+export const ForgotPasswordForm = () => {
     const { forgotPassword, isPending, isSuccess } = useForgotPassword()
     const successRef = useRef<HTMLDivElement>(null)
 

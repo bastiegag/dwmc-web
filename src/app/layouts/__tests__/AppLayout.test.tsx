@@ -1,19 +1,15 @@
-import { describe, it, expect, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import '@testing-library/jest-dom/vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils/render'
-import { AppLayout } from '@/app/layouts/AppLayout'
+import { AppLayout } from '../AppLayout'
 
-const mockNavigate = vi.fn()
 const mockLogout = vi.fn()
+let mockIsLoggingOut = false
 
-vi.mock('react-router-dom', async () => {
-    const actual = await vi.importActual('react-router-dom')
-    return { ...actual, useNavigate: () => mockNavigate }
-})
-
-vi.mock('@/features/auth/hooks/useLogout', () => ({
-    useLogout: vi.fn(() => ({ logout: mockLogout, isPending: false })),
+vi.mock('@/features/auth/hooks', () => ({
+    useLogout: () => ({ logout: mockLogout, isPending: mockIsLoggingOut }),
 }))
 
 vi.mock('sonner', () => ({
@@ -25,27 +21,34 @@ vi.mock('@/components/layout/ThemeToggle', () => ({
 }))
 
 describe('AppLayout', () => {
-    it('renders the navigation', () => {
-        render(<AppLayout />)
-        expect(screen.getByRole('navigation', { name: /main navigation/i })).toBeInTheDocument()
-        expect(screen.getByRole('link', { name: /categories/i })).toBeInTheDocument()
+    beforeEach(() => {
+        mockLogout.mockReset()
+        mockIsLoggingOut = false
     })
 
-    it('calls logout and redirects to /login when Sign out is clicked', async () => {
+    it('renders the month navigator on dashboard routes', () => {
+        render(<AppLayout />, { initialEntries: ['/app/dashboard'] })
+        expect(screen.getByRole('status')).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: /previous month/i })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: /next month/i })).toBeInTheDocument()
+    })
+
+    it('hides the month navigator on routes that do not need it', () => {
+        render(<AppLayout />, { initialEntries: ['/app/accounts'] })
+        expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    })
+
+    it('calls logout when Sign out is clicked', async () => {
         mockLogout.mockResolvedValueOnce(undefined)
         const user = userEvent.setup()
         render(<AppLayout />)
         await user.click(screen.getByRole('button', { name: /sign out/i }))
-        await waitFor(() => {
-            expect(mockLogout).toHaveBeenCalledOnce()
-            expect(mockNavigate).toHaveBeenCalledWith('/login')
-        })
+        expect(mockLogout).toHaveBeenCalledOnce()
     })
 
     it('disables the Sign out button while logging out', async () => {
-        const { useLogout } = await import('@/features/auth/hooks/useLogout')
-        vi.mocked(useLogout).mockReturnValue({ logout: mockLogout, isPending: true })
+        mockIsLoggingOut = true
         render(<AppLayout />)
-        expect(screen.getByRole('button', { name: /signing out/i })).toBeDisabled()
+        expect(screen.getByRole('button', { name: /sign out/i })).toBeDisabled()
     })
 })

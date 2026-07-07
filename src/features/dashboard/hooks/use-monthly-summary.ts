@@ -11,7 +11,7 @@ export const dashboardQueryKeys = {
         [...dashboardQueryKeys.all, 'monthly-summary', params ?? {}] as const,
 }
 
-export function useMonthlySummary(params?: GetMonthlySummaryParams) {
+export const useMonthlySummary = (params?: GetMonthlySummaryParams) => {
     return useQuery<MonthlySummary>({
         queryKey: dashboardQueryKeys.monthlySummary(params),
         queryFn: () => getMonthlySummary(params),

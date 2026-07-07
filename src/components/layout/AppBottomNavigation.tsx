@@ -10,7 +10,7 @@ const navigation = [
     { name: 'Tools', to: '/app/tools', icon: Wrench, matchPrefix: true },
 ]
 
-export function AppBottomNavigation() {
+export const AppBottomNavigation = () => {
     const { month } = useSelectedMonth()
     const location = useLocation()
 

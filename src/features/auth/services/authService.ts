@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { AuthServiceError } from '@/features/auth/types'
 import type { LoginCredentials, SignupCredentials } from '@/features/auth/types'
 
-function hasCode(value: unknown): value is { code: string } {
+const hasCode = (value: unknown): value is { code: string } => {
     return (
         typeof value === 'object' &&
         value !== null &&
@@ -11,7 +11,7 @@ function hasCode(value: unknown): value is { code: string } {
     )
 }
 
-function toAuthServiceError(error: unknown): AuthServiceError {
+const toAuthServiceError = (error: unknown): AuthServiceError => {
     if (error instanceof Error) {
         const code = hasCode(error) ? error.code : undefined
         return new AuthServiceError(error.message, code)
@@ -20,7 +20,7 @@ function toAuthServiceError(error: unknown): AuthServiceError {
 }
 const appUrl = import.meta.env.VITE_APP_URL
 
-export function validateEnv(): void {
+export const validateEnv = (): void => {
     if (!appUrl) {
         throw new Error(
             'Missing VITE_APP_URL. Set it to the app origin (e.g. https://example.com).',

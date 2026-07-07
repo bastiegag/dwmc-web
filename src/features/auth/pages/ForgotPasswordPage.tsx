@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ForgotPasswordForm } from '@/features/auth/components'
 
-export function ForgotPasswordPage() {
+export const ForgotPasswordPage = () => {
     return (
         <>
             <h1 className="sr-only">Reset password</h1>

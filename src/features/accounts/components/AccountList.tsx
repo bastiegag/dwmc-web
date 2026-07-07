@@ -7,7 +7,7 @@ type AccountListProps = {
     onArchive: (account: Account) => Promise<void> | void
 }
 
-export function AccountList({ accounts, onEdit, onArchive }: AccountListProps) {
+export const AccountList = ({ accounts, onEdit, onArchive }: AccountListProps) => {
     return (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {accounts.map((a) => (

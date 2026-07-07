@@ -1,4 +1,4 @@
-export function BudgetsPageHeader() {
+export const BudgetsPageHeader = () => {
     return (
         <div>
             <h1 className="text-2xl font-semibold">Budgets</h1>

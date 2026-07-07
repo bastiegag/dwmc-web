@@ -8,7 +8,7 @@ interface AppNavProps {
     isLoggingOut?: boolean
 }
 
-export function AppNav({ onLogout, isLoggingOut = false }: AppNavProps) {
+export const AppNav = ({ onLogout, isLoggingOut = false }: AppNavProps) => {
     return (
         <header className="border-b bg-card px-6 py-3">
             <nav className="flex items-center justify-between" aria-label="Main navigation">

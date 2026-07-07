@@ -10,22 +10,35 @@ import type { Session, AuthChangeEvent } from '@supabase/supabase-js'
 type AuthCallback = Parameters<typeof authService.onAuthStateChange>[0]
 let capturedCallback: AuthCallback | null = null
 
+const createAuthStateChangeResult = (
+    cb: AuthCallback,
+): ReturnType<typeof authService.onAuthStateChange> => {
+    return {
+        data: {
+            subscription: {
+                id: 'test-subscription',
+                callback: cb,
+                unsubscribe: vi.fn(),
+            },
+        },
+    } as ReturnType<typeof authService.onAuthStateChange>
+}
+
 vi.mock('@/features/auth/services/authService', () => ({
     authService: {
         onAuthStateChange: vi.fn((cb: AuthCallback) => {
             capturedCallback = cb
-            return { data: { subscription: { unsubscribe: vi.fn() } } }
+            return createAuthStateChangeResult(cb)
         }),
         getSession: vi.fn().mockResolvedValue(null),
     },
 }))
 
 // Minimal wrapper that mirrors the AuthSyncProvider logic in isolation.
-function makeWrapper(qc: QueryClient) {
-    return function Wrapper({ children }: { children: ReactNode }) {
+const makeWrapper = (qc: QueryClient) =>
+    function Wrapper({ children }: { children: ReactNode }) {
         return <QueryClientProvider client={qc}>{children}</QueryClientProvider>
     }
-}
 
 describe('AuthSyncProvider — session propagation', () => {
     let qc: QueryClient
@@ -41,7 +54,7 @@ describe('AuthSyncProvider — session propagation', () => {
         // but here we test the authService integration directly.
         vi.mocked(authService.onAuthStateChange).mockImplementationOnce((cb) => {
             capturedCallback = cb
-            return { data: { subscription: { unsubscribe: vi.fn() } } }
+            return createAuthStateChangeResult(cb)
         })
 
         const { unmount } = renderHook(() => null, { wrapper: makeWrapper(qc) })
@@ -56,7 +69,7 @@ describe('AuthSyncProvider — session propagation', () => {
         // Wire the mock so calling onAuthStateChange captures the callback.
         vi.mocked(authService.onAuthStateChange).mockImplementationOnce((cb) => {
             capturedCallback = cb
-            return { data: { subscription: { unsubscribe: vi.fn() } } }
+            return createAuthStateChangeResult(cb)
         })
 
         // Simulate what AuthSyncProvider does: subscribe and forward to queryClient.
@@ -90,7 +103,7 @@ describe('AuthSyncProvider — session propagation', () => {
 
         vi.mocked(authService.onAuthStateChange).mockImplementationOnce((cb) => {
             capturedCallback = cb
-            return { data: { subscription: { unsubscribe: vi.fn() } } }
+            return createAuthStateChangeResult(cb)
         })
 
         const {

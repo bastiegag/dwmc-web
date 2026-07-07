@@ -7,7 +7,7 @@ type Props = {
     transactions: SummaryRecentTransaction[]
 }
 
-export function RecentTransactionsCard({ transactions }: Props) {
+export const RecentTransactionsCard = ({ transactions }: Props) => {
     return (
         <Card>
             <CardHeader className="p-4">

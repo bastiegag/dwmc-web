@@ -3,7 +3,7 @@ import { createAccount } from '@/features/accounts/api/accounts.api'
 import { accountQueryKeys } from './use-accounts'
 import type { CreateAccountPayload } from '@/features/accounts/types/account.types'
 
-export function useCreateAccount() {
+export const useCreateAccount = () => {
     const queryClient = useQueryClient()
 
     return useMutation({

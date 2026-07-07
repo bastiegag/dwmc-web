@@ -10,7 +10,7 @@ vi.mock('@/features/auth/services', () => ({
     },
 }))
 
-async function getAuthService() {
+const getAuthService = async () => {
     const { authService } = await import('@/features/auth/services')
     return authService
 }
@@ -19,7 +19,7 @@ async function getAuthService() {
  * Calls the registered onAuthStateChange callback with the given event/session,
  * simulating a Supabase auth state change.
  */
-async function fireAuthEvent(event: string, session: Record<string, unknown> | null = null) {
+const fireAuthEvent = async (event: string, session: Record<string, unknown> | null = null) => {
     const authService = await getAuthService()
     const registeredCallback = vi.mocked(authService.onAuthStateChange).mock.calls[0]?.[0]
     if (!registeredCallback) throw new Error('No onAuthStateChange callback registered')

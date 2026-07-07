@@ -10,7 +10,7 @@ export const transactionQueryKeys = {
     detail: (id: string) => [...transactionQueryKeys.all, 'detail', id] as const,
 }
 
-export function useTransactions(params?: GetTransactionsParams) {
+export const useTransactions = (params?: GetTransactionsParams) => {
     return useQuery({
         queryKey: transactionQueryKeys.list(params),
         queryFn: () => getTransactions(params),

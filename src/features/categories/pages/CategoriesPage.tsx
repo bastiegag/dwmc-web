@@ -22,7 +22,7 @@ import {
 } from '@/features/categories/components'
 import { usePrimaryAction } from '@/shared/primary-action'
 
-function toErrorMessage(error: unknown, fallback: string): string {
+const toErrorMessage = (error: unknown, fallback: string): string => {
     if (error instanceof ApiError) {
         return error.message
     }
@@ -34,7 +34,7 @@ function toErrorMessage(error: unknown, fallback: string): string {
     return fallback
 }
 
-export function CategoriesPage() {
+export const CategoriesPage = () => {
     const sectionsQuery = useSections()
 
     const createSectionMutation = useCreateSection()

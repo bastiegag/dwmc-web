@@ -3,7 +3,7 @@ import { authService } from '@/features/auth/services'
 
 export const authSessionQueryKey = ['auth', 'session'] as const
 
-export function useAuth() {
+export const useAuth = () => {
     const { data: session = null, isLoading } = useQuery({
         queryKey: authSessionQueryKey,
         queryFn: () => authService.getSession(),

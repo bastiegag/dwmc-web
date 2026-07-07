@@ -11,7 +11,7 @@ const navigation = [
     { name: 'Tools', to: '/app/tools', icon: Wrench, matchPrefix: true },
 ]
 
-export function DesktopSidebar() {
+export const DesktopSidebar = () => {
     const { month } = useSelectedMonth()
     const location = useLocation()
 

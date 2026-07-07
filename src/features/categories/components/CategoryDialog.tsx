@@ -14,7 +14,7 @@ type CategoryDialogProps = {
     onSubmit: (values: CategoryFormValues) => Promise<void> | void
 }
 
-export function CategoryDialog({
+export const CategoryDialog = ({
     open,
     mode,
     sections,
@@ -23,7 +23,7 @@ export function CategoryDialog({
     errorMessage,
     onOpenChange,
     onSubmit,
-}: CategoryDialogProps) {
+}: CategoryDialogProps) => {
     if (!open) return null
 
     const title = mode === 'create' ? 'Create category' : 'Edit category'

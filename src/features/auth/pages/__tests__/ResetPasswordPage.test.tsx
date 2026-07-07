@@ -12,7 +12,7 @@ vi.mock('@/features/auth/hooks', () => ({
     })),
 }))
 
-async function mockRecovery(state: { isLoading: boolean; isValid: boolean }) {
+const mockRecovery = async (state: { isLoading: boolean; isValid: boolean }) => {
     const { usePasswordRecovery } = await import('@/features/auth/hooks')
     vi.mocked(usePasswordRecovery).mockReturnValue(state)
 }

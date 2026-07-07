@@ -6,7 +6,7 @@ import type {
     UpdateBudgetPayload,
 } from '@/features/budgets/types/budget.types'
 
-function buildQuery(params?: GetBudgetsParams) {
+const buildQuery = (params?: GetBudgetsParams) => {
     if (!params) return ''
     const qs = new URLSearchParams()
     if (params.month) qs.set('month', params.month)
@@ -17,17 +17,17 @@ function buildQuery(params?: GetBudgetsParams) {
     return s ? `?${s}` : ''
 }
 
-export async function getBudgets(params?: GetBudgetsParams): Promise<Budget[]> {
+export const getBudgets = async (params?: GetBudgetsParams): Promise<Budget[]> => {
     const response = await apiClient<{ data: Budget[] }>(`/api/v1/budgets${buildQuery(params)}`)
     return response.data
 }
 
-export async function getBudget(id: string): Promise<Budget> {
+export const getBudget = async (id: string): Promise<Budget> => {
     const response = await apiClient<{ data: Budget }>(`/api/v1/budgets/${id}`)
     return response.data
 }
 
-export async function createBudget(input: CreateBudgetPayload): Promise<Budget> {
+export const createBudget = async (input: CreateBudgetPayload): Promise<Budget> => {
     const response = await apiClient<{ data: Budget }>(`/api/v1/budgets`, {
         method: 'POST',
         body: input,
@@ -35,7 +35,7 @@ export async function createBudget(input: CreateBudgetPayload): Promise<Budget> 
     return response.data
 }
 
-export async function updateBudget(id: string, input: UpdateBudgetPayload): Promise<Budget> {
+export const updateBudget = async (id: string, input: UpdateBudgetPayload): Promise<Budget> => {
     const response = await apiClient<{ data: Budget }>(`/api/v1/budgets/${id}`, {
         method: 'PATCH',
         body: input,
@@ -43,7 +43,7 @@ export async function updateBudget(id: string, input: UpdateBudgetPayload): Prom
     return response.data
 }
 
-export async function deleteBudget(id: string): Promise<void> {
+export const deleteBudget = async (id: string): Promise<void> => {
     await apiClient<{ data: unknown }>(`/api/v1/budgets/${id}`, {
         method: 'DELETE',
     })

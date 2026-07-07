@@ -9,7 +9,7 @@ export const budgetQueryKeys = {
     detail: (id: string) => [...budgetQueryKeys.all, 'detail', id] as const,
 }
 
-export function useBudgets(params?: GetBudgetsParams) {
+export const useBudgets = (params?: GetBudgetsParams) => {
     return useQuery({
         queryKey: budgetQueryKeys.list(params),
         queryFn: () => getBudgets(params),

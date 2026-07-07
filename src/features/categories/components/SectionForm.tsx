@@ -19,13 +19,13 @@ const defaultValues: SectionFormValues = {
     color: '#22c55e',
 }
 
-export function SectionForm({
+export const SectionForm = ({
     initialValues,
     submitLabel,
     isPending = false,
     errorMessage,
     onSubmit,
-}: SectionFormProps) {
+}: SectionFormProps) => {
     const {
         register,
         handleSubmit,

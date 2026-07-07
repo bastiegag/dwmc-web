@@ -56,7 +56,7 @@ describe('LoginForm', () => {
 
     it('has no accessibility violations', async () => {
         const { container } = render(<LoginForm />)
-        expect(await axe(container)).toHaveNoViolations()
+        expect((await axe(container)).violations).toHaveLength(0)
     })
 
     it('links validation error to the email field via aria attributes', async () => {

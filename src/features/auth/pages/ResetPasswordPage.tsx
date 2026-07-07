@@ -4,7 +4,7 @@ import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 import { ResetPasswordForm } from '@/features/auth/components'
 import { usePasswordRecovery } from '@/features/auth/hooks'
 
-export function ResetPasswordPage() {
+export const ResetPasswordPage = () => {
     const { isLoading, isValid } = usePasswordRecovery()
 
     if (isLoading) {

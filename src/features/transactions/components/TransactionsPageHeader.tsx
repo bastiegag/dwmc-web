@@ -1,4 +1,4 @@
-export function TransactionsPageHeader() {
+export const TransactionsPageHeader = () => {
     return (
         <div>
             <h1 id="transactions-heading" className="text-3xl font-bold tracking-tight">

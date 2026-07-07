@@ -11,7 +11,7 @@ interface FormFieldProps {
     className?: string
 }
 
-export function FormField({ id, label, error, required, children, className }: FormFieldProps) {
+export const FormField = ({ id, label, error, required, children, className }: FormFieldProps) => {
     return (
         <div className={cn('space-y-1.5', className)}>
             <Label htmlFor={id}>

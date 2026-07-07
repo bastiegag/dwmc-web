@@ -9,7 +9,7 @@ type SummaryCardProps = {
     icon?: ReactNode
 }
 
-export function SummaryCard({ label, value, subtitle, icon }: SummaryCardProps) {
+export const SummaryCard = ({ label, value, subtitle, icon }: SummaryCardProps) => {
     const display = typeof value === 'number' ? formatCurrency(value) : String(value)
     return (
         <Card>

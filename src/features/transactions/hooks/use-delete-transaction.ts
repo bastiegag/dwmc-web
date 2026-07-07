@@ -3,7 +3,7 @@ import { deleteTransaction } from '@/features/transactions/api/transactions.api'
 import { transactionQueryKeys } from './use-transactions'
 import { accountQueryKeys } from '@/features/accounts/hooks/use-accounts'
 
-export function useDeleteTransaction() {
+export const useDeleteTransaction = () => {
     const queryClient = useQueryClient()
 
     const mutation = useMutation({

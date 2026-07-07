@@ -6,7 +6,7 @@ type MonthSelectorProps = {
     onChange: (month: string) => void
 }
 
-function toLabel(month: string) {
+const toLabel = (month: string) => {
     try {
         const [y, m] = month.split('-').map(Number)
         const d = new Date(Date.UTC(y, m - 1, 1))
@@ -16,7 +16,7 @@ function toLabel(month: string) {
     }
 }
 
-function addMonth(month: string, delta: number) {
+const addMonth = (month: string, delta: number) => {
     const [y, m] = month.split('-').map(Number)
     const d = new Date(y, m - 1 + delta, 1)
     const mm =
@@ -24,7 +24,7 @@ function addMonth(month: string, delta: number) {
     return mm
 }
 
-export function BudgetMonthSelector({ month, onChange }: MonthSelectorProps) {
+export const BudgetMonthSelector = ({ month, onChange }: MonthSelectorProps) => {
     const label = useMemo(() => toLabel(month), [month])
 
     return (

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { SignupForm } from '@/features/auth/components'
 
-export function SignupPage() {
+export const SignupPage = () => {
     return (
         <>
             <h1 className="sr-only">Create account</h1>

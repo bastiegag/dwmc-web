@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteCategory } from '@/features/categories/api'
 import { categoryQueryKeys } from './use-sections'
 
-export function useDeleteCategory() {
+export const useDeleteCategory = () => {
     const queryClient = useQueryClient()
 
     return useMutation({

@@ -19,7 +19,7 @@ Object.defineProperty(window, 'matchMedia', {
     })),
 })
 
-function renderWithTheme(defaultTheme: 'light' | 'dark' | 'system' = 'light') {
+const renderWithTheme = (defaultTheme: 'light' | 'dark' | 'system' = 'light') => {
     return render(
         <ThemeProvider defaultTheme={defaultTheme} storageKey="test-theme">
             <ThemeToggle />

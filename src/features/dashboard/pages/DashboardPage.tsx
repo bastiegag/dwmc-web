@@ -15,7 +15,7 @@ import { useSections } from '@/features/categories/hooks'
 import { TransactionDialog, useCreateTransaction } from '@/features/transactions'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
 
-function toErrorMessage(error: unknown, fallback: string) {
+const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error) {
         return (error as { message?: string }).message ?? fallback
     }
@@ -23,7 +23,7 @@ function toErrorMessage(error: unknown, fallback: string) {
     return fallback
 }
 
-export function DashboardPage() {
+export const DashboardPage = () => {
     const { month } = useSelectedMonth()
     const summaryQuery = useMonthlySummary({ month, recentLimit: 5 })
     const accountsQuery = useAccounts()

@@ -3,7 +3,7 @@ import { authService } from '@/features/auth/services'
 import { authSessionQueryKey } from '@/features/auth/hooks'
 import { toast } from 'sonner'
 
-export function useLogout() {
+export const useLogout = () => {
     const queryClient = useQueryClient()
     const { mutateAsync, isPending } = useMutation({
         mutationFn: () => authService.logout(),

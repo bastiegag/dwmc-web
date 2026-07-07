@@ -29,7 +29,7 @@ vi.mock('react-router-dom', async () => {
     }
 })
 
-function renderNav(props?: Partial<React.ComponentProps<typeof AppNav>>) {
+const renderNav = (props?: Partial<React.ComponentProps<typeof AppNav>>) => {
     const defaults = { onLogout: vi.fn(), isLoggingOut: false }
     return render(
         <ThemeProvider storageKey="test-theme">
