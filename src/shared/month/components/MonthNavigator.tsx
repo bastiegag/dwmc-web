@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSelectedMonth } from '../hooks/use-selected-month'
 
-export function MonthNavigator() {
+export const MonthNavigator = () => {
     const { label, goToPreviousMonth, goToNextMonth } = useSelectedMonth()
 
     return (

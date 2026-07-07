@@ -32,7 +32,7 @@ export class ApiError extends Error {
 // Internal helpers
 // ---------------------------------------------------------------------------
 
-function getApiBaseUrl(): string {
+const getApiBaseUrl = (): string => {
     const url = import.meta.env.VITE_API_URL
     if (!url) {
         throw new Error(
@@ -43,14 +43,14 @@ function getApiBaseUrl(): string {
     return url.replace(/\/$/, '')
 }
 
-function buildApiUrl(path: string): string {
+const buildApiUrl = (path: string): string => {
     const base = getApiBaseUrl()
     // Ensure path always starts with /
     const normalised = path.startsWith('/') ? path : `/${path}`
     return `${base}${normalised}`
 }
 
-async function getAuthHeaders(): Promise<HeadersInit> {
+const getAuthHeaders = async (): Promise<HeadersInit> => {
     const {
         data: { session },
     } = await supabase.auth.getSession()
@@ -85,7 +85,7 @@ interface BackendErrorBody {
 // Core client
 // ---------------------------------------------------------------------------
 
-export async function apiClient<T>(path: string, options: ApiClientOptions = {}): Promise<T> {
+export const apiClient = async <T>(path: string, options: ApiClientOptions = {}): Promise<T> => {
     const { method = 'GET', body, headers: extraHeaders } = options
 
     const url = buildApiUrl(path)

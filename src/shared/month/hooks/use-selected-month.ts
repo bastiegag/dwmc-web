@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useMemo, useCallback } from 'react'
 import { getCurrentMonth, isValidMonth, formatMonthLabel, addMonths } from '../utils/month.utils'
 
-export function useSelectedMonth() {
+export const useSelectedMonth = () => {
     const [searchParams, setSearchParams] = useSearchParams()
 
     const month = useMemo(() => {

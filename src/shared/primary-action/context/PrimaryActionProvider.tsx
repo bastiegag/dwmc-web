@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, type ReactNode } from 'react'
 import { PrimaryActionContext } from './primary-action.context'
 import type { PrimaryAction } from '../types/primary-action.types'
 
-export function PrimaryActionProvider({ children }: { children: ReactNode }) {
+export const PrimaryActionProvider = ({ children }: { children: ReactNode }) => {
     const [action, setAction] = useState<PrimaryAction | null>(null)
 
     const registerAction = useCallback((newAction: PrimaryAction | null) => {

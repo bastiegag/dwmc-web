@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react'
 import { PrimaryActionContext } from '../context/primary-action.context'
 import type { PrimaryAction } from '../types/primary-action.types'
 
-export function usePrimaryAction(action: PrimaryAction | null) {
+export const usePrimaryAction = (action: PrimaryAction | null) => {
     const context = useContext(PrimaryActionContext)
     if (!context) {
         throw new Error('usePrimaryAction must be used within a PrimaryActionProvider')

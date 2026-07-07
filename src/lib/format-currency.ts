@@ -4,7 +4,7 @@ const formatter = new Intl.NumberFormat('fr-CA', {
     maximumFractionDigits: 2,
 })
 
-export function formatCurrency(value: number): string {
+export const formatCurrency = (value: number): string => {
     return formatter.format(value)
 }
 

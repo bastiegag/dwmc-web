@@ -1,7 +1,7 @@
 /**
  * Returns the current month in YYYY-MM format.
  */
-export function getCurrentMonth(): string {
+export const getCurrentMonth = (): string => {
     return new Date().toISOString().slice(0, 7)
 }
 
@@ -10,7 +10,7 @@ export function getCurrentMonth(): string {
  * @param value The string to validate.
  * @returns True if the string is a valid month, false otherwise.
  */
-export function isValidMonth(value: unknown): value is string {
+export const isValidMonth = (value: unknown): value is string => {
     if (typeof value !== 'string') {
         return false
     }
@@ -23,7 +23,7 @@ export function isValidMonth(value: unknown): value is string {
  * @param locale The locale to use for formatting.
  * @returns The formatted month label (e.g., "June 2026").
  */
-export function formatMonthLabel(month: string, locale = 'fr-CA'): string {
+export const formatMonthLabel = (month: string, locale = 'fr-CA'): string => {
     const [year, monthIndex] = month.split('-').map(Number)
     const date = new Date(year, monthIndex - 1)
     return new Intl.DateTimeFormat(locale, {
@@ -39,7 +39,7 @@ export function formatMonthLabel(month: string, locale = 'fr-CA'): string {
  * @param delta The number of months to add (can be negative).
  * @returns The new month in YYYY-MM format.
  */
-export function addMonths(month: string, delta: number): string {
+export const addMonths = (month: string, delta: number): string => {
     const [year, monthIndex] = month.split('-').map(Number)
     const date = new Date(Date.UTC(year, monthIndex - 1, 1))
     date.setUTCMonth(date.getUTCMonth() + delta)

@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PrimaryActionContext } from '../context/primary-action.context'
 
-export function PrimaryActionButton() {
+export const PrimaryActionButton = () => {
     const context = useContext(PrimaryActionContext)
     if (!context) {
         return null

@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PrimaryActionProvider } from '@/shared/primary-action'
 
-function createTestQueryClient() {
+const createTestQueryClient = () => {
     return new QueryClient({
         defaultOptions: {
             queries: { retry: false, gcTime: 0 },
@@ -14,13 +14,13 @@ function createTestQueryClient() {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-function TestWrapper({
+const TestWrapper = ({
     children,
     initialEntries = ['/'],
 }: {
     children: ReactNode
     initialEntries?: string[]
-}) {
+}) => {
     const testQueryClient = createTestQueryClient()
     return (
         <QueryClientProvider client={testQueryClient}>
@@ -31,10 +31,10 @@ function TestWrapper({
     )
 }
 
-function customRender(
+const customRender = (
     ui: React.ReactElement,
     options?: Omit<RenderOptions, 'wrapper'> & { initialEntries?: string[] },
-) {
+) => {
     const { initialEntries, ...renderOptions } = options ?? {}
     return render(ui, {
         wrapper: ({ children }) => (
