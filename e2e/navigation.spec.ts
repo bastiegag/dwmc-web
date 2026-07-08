@@ -11,7 +11,7 @@ test('unknown path shows 404 page', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
 })
 
-test('/app redirects to /login when not authenticated', async ({ page }) => {
-    await page.goto('/app')
+test('/dashboard redirects to /login when not authenticated', async ({ page }) => {
+    await page.goto('/dashboard')
     await expect(page).toHaveURL('/login')
 })

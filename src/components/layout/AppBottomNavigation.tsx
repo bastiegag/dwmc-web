@@ -4,10 +4,10 @@ import { cn } from '@/lib/utils'
 import { useSelectedMonth } from '@/shared/month'
 
 const navigation = [
-    { name: 'Overview', to: '/app/dashboard', icon: LayoutDashboard },
-    { name: 'Budgets', to: '/app/budgets', icon: Target },
-    { name: 'Accounts', to: '/app/accounts', icon: WalletCards },
-    { name: 'Tools', to: '/app/tools', icon: Wrench, matchPrefix: true },
+    { name: 'Overview', to: '/dashboard', icon: LayoutDashboard },
+    { name: 'Budgets', to: '/budgets', icon: Target },
+    { name: 'Accounts', to: '/accounts', icon: WalletCards },
+    { name: 'Tools', to: '/tools', icon: Wrench, matchPrefix: true },
 ]
 
 export const AppBottomNavigation = () => {
@@ -15,7 +15,10 @@ export const AppBottomNavigation = () => {
     const location = useLocation()
 
     return (
-        <nav className="fixed bottom-0 z-40 grid h-[calc(4rem+env(safe-area-inset-bottom))] w-full grid-cols-5 items-start border-t bg-background pt-2 lg:hidden">
+        <nav
+            data-testid="mobile-bottom-nav"
+            className="fixed bottom-0 z-40 grid h-[calc(4rem+env(safe-area-inset-bottom))] w-full grid-cols-5 items-start border-t bg-background pt-2 lg:hidden"
+        >
             {navigation.slice(0, 2).map((item) => (
                 <NavLink
                     key={item.name}

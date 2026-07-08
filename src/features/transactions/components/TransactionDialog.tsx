@@ -29,7 +29,7 @@ export const TransactionDialog = ({
 }: TransactionDialogProps) => {
     if (!open) return null
 
-    const title = mode === 'create' ? 'Create transaction' : 'Edit transaction'
+    const title = mode === 'create' ? 'New Transaction' : 'Edit transaction'
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">

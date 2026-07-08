@@ -1,12 +1,33 @@
 import { test, expect } from '@playwright/test'
 import { LoginPage } from './pages/login.page.js'
 
+const MOCK_SESSION = {
+    access_token: 'mock-access-token',
+    token_type: 'bearer',
+    expires_in: 3600,
+    refresh_token: 'mock-refresh-token',
+    user: {
+        id: 'mock-user-id',
+        email: 'test@example.com',
+        aud: 'authenticated',
+        created_at: new Date().toISOString(),
+    },
+}
+
 test.describe('App Layout', () => {
     test.beforeEach(async ({ page }) => {
+        await page.route(/\/auth\/v1\/token/, (route) =>
+            route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify(MOCK_SESSION),
+            }),
+        )
+
         const loginPage = new LoginPage(page)
         await loginPage.goto()
         await loginPage.login('test@example.com', 'Password123')
-        await expect(page).toHaveURL('/app/dashboard')
+        await expect(page).toHaveURL('/dashboard')
     })
 
     test.describe('Mobile viewport', () => {
@@ -27,7 +48,7 @@ test.describe('App Layout', () => {
         test('floating action button opens the budget dialog on the budgets page', async ({
             page,
         }) => {
-            await page.goto('/app/budgets')
+            await page.goto('/budgets')
             await page.getByTestId('primary-action-button').click()
             await expect(page.getByRole('heading', { name: 'New Budget' })).toBeVisible()
         })
@@ -48,7 +69,7 @@ test.describe('App Layout', () => {
             const month = (nextMonth.getMonth() + 1).toString().padStart(2, '0')
 
             await page.getByLabel('Go to next month').click()
-            await expect(page).toHaveURL(`/app/dashboard?month=${year}-${month}`)
+            await expect(page).toHaveURL(`/dashboard?month=${year}-${month}`)
         })
     })
 })

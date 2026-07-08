@@ -10,7 +10,7 @@ export const MonthNavigator = () => {
             <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Previous month"
+                aria-label="Go to previous month"
                 onClick={goToPreviousMonth}
             >
                 <ChevronLeft className="size-5" />
@@ -22,7 +22,12 @@ export const MonthNavigator = () => {
             >
                 {label}
             </span>
-            <Button variant="ghost" size="icon" aria-label="Next month" onClick={goToNextMonth}>
+            <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Go to next month"
+                onClick={goToNextMonth}
+            >
                 <ChevronRight className="size-5" />
             </Button>
         </div>

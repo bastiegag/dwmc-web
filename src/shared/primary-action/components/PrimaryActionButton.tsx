@@ -19,6 +19,7 @@ export const PrimaryActionButton = () => {
 
     return (
         <Button
+            data-testid="primary-action-button"
             aria-label={action.label}
             disabled={action.disabled}
             onClick={action.onClick}

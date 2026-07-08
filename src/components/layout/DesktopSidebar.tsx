@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils'
 import { useSelectedMonth } from '@/shared/month'
 
 const navigation = [
-    { name: 'Overview', to: '/app/dashboard', icon: LayoutDashboard },
-    { name: 'Budgets', to: '/app/budgets', icon: Target },
-    { name: 'Transactions', to: '/app/transactions', icon: ReceiptText },
-    { name: 'Accounts', to: '/app/accounts', icon: WalletCards },
-    { name: 'Tools', to: '/app/tools', icon: Wrench, matchPrefix: true },
+    { name: 'Overview', to: '/dashboard', icon: LayoutDashboard },
+    { name: 'Budgets', to: '/budgets', icon: Target },
+    { name: 'Transactions', to: '/transactions', icon: ReceiptText },
+    { name: 'Accounts', to: '/accounts', icon: WalletCards },
+    { name: 'Tools', to: '/tools', icon: Wrench, matchPrefix: true },
 ]
 
 export const DesktopSidebar = () => {
@@ -16,7 +16,10 @@ export const DesktopSidebar = () => {
     const location = useLocation()
 
     return (
-        <aside className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
+        <aside
+            data-testid="desktop-sidebar"
+            className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col"
+        >
             <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r bg-background px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center text-xl font-bold tracking-tight">
                     DWMC

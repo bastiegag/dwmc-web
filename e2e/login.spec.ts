@@ -47,7 +47,7 @@ test.describe('Login page', () => {
         await expect(page).toHaveURL('/signup')
     })
 
-    test('redirects to /app after successful login', async ({ page }) => {
+    test('redirects to /dashboard after successful login', async ({ page }) => {
         await page.route(/\/auth\/v1\/token/, (route) =>
             route.fulfill({
                 status: 200,
@@ -60,7 +60,7 @@ test.describe('Login page', () => {
         await page.locator('#password').fill('Password123')
         await page.getByRole('button', { name: /sign in/i }).click()
 
-        await expect(page).toHaveURL('/app')
+        await expect(page).toHaveURL('/dashboard')
     })
 
     test('shows an error for wrong credentials', async ({ page }) => {

@@ -12,7 +12,7 @@ export const LoginForm = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { login, isPending } = useLogin()
-    const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/app'
+    const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/dashboard'
 
     const {
         register,

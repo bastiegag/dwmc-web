@@ -38,7 +38,7 @@ export const RecentTransactionsCard = ({ transactions }: Props) => {
                 )}
 
                 <div className="mt-4 text-right">
-                    <Link to="/app/transactions" className="text-sm text-primary">
+                    <Link to="/transactions" className="text-sm text-primary">
                         View all transactions
                     </Link>
                 </div>

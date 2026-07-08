@@ -4,7 +4,7 @@ export class LoginPage {
     constructor(public readonly page: Page) {}
 
     async goto() {
-        await this.page.goto('/auth/login')
+        await this.page.goto('/login')
     }
 
     async login(email: string, password: string) {

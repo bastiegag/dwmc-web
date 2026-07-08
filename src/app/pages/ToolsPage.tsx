@@ -7,7 +7,7 @@ const tools = [
         title: 'Categories',
         description: 'Manage your expense categories and sections.',
         icon: Tags,
-        to: '/app/tools/categories',
+        to: '/categories',
     },
     {
         title: 'Profile',

@@ -28,7 +28,7 @@ export const BudgetDialog = ({
 }: Props) => {
     if (!open) return null
 
-    const title = mode === 'create' ? 'Create budget' : 'Edit budget'
+    const title = mode === 'create' ? 'New Budget' : 'Edit budget'
 
     const values =
         initialValues ??

@@ -59,16 +59,15 @@ const PageLoader = () => {
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Navigate to="/app/dashboard" replace />,
+        element: <Navigate to="/login" replace />,
     },
     {
-        path: '/app',
         element: <ProtectedRoute />,
         children: [
             {
                 element: <AppLayout />,
                 children: [
-                    { index: true, element: <Navigate to="/app/dashboard" replace /> },
+                    { index: true, element: <Navigate to="/dashboard" replace /> },
                     {
                         path: 'dashboard',
                         element: <DashboardPage />,
@@ -90,23 +89,58 @@ const router = createBrowserRouter([
                         element: <Outlet />,
                         children: [
                             { index: true, element: <ToolsPage /> },
-                            { path: 'categories', element: <CategoriesPage /> },
+                            { path: 'categories', element: <Navigate to="/categories" replace /> },
                         ],
+                    },
+                    {
+                        path: 'categories',
+                        element: <CategoriesPage />,
                     },
                 ],
             },
         ],
     },
     {
-        path: '/auth',
         element: <AuthLayout />,
         children: [
-            { index: true, element: <Navigate to="/auth/login" replace /> },
+            { index: true, element: <Navigate to="/login" replace /> },
             { path: 'login', element: <LoginPage /> },
             { path: 'signup', element: <SignupPage /> },
             { path: 'forgot-password', element: <ForgotPasswordPage /> },
             { path: 'reset-password', element: <ResetPasswordPage /> },
         ],
+    },
+    {
+        path: '/app',
+        element: <Navigate to="/dashboard" replace />,
+    },
+    {
+        path: '/app/dashboard',
+        element: <Navigate to="/dashboard" replace />,
+    },
+    {
+        path: '/app/transactions',
+        element: <Navigate to="/transactions" replace />,
+    },
+    {
+        path: '/app/budgets',
+        element: <Navigate to="/budgets" replace />,
+    },
+    {
+        path: '/app/accounts',
+        element: <Navigate to="/accounts" replace />,
+    },
+    {
+        path: '/app/tools',
+        element: <Navigate to="/tools" replace />,
+    },
+    {
+        path: '/app/categories',
+        element: <Navigate to="/categories" replace />,
+    },
+    {
+        path: '/app/tools/categories',
+        element: <Navigate to="/categories" replace />,
     },
     {
         path: '*',

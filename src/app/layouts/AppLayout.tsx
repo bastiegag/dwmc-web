@@ -9,7 +9,7 @@ import {
     ContextualFloatingActionButton,
 } from '@/components/layout'
 
-const monthNavRoutes = ['/app/dashboard', '/app/transactions', '/app/budgets']
+const monthNavRoutes = ['/dashboard', '/transactions', '/budgets']
 
 export const AppLayout = () => {
     const { logout, isPending: isLoggingOut } = useLogout()
