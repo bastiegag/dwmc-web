@@ -1,42 +1,323 @@
-# dwmc-web
+# Frontend
 
-React + TypeScript single-page application with a full authentication flow (login, signup, forgot password, reset password) backed by Supabase Auth.
+React + TypeScript frontend for a personal budget app. It focuses on a polished, portfolio-quality user experience for managing accounts, budgets, transactions, categories, sections, and monthly summaries.
 
----
+## Overview
+
+This app helps users manage:
+
+- accounts
+- categories and sections
+- transactions
+- monthly summaries
+- budgets
+- month-based navigation
+
+Authentication is handled with Supabase Auth. Once signed in, the frontend uses the Supabase session to protect app routes and attach access tokens to backend API requests.
+
+## Features
+
+### Authentication
+
+- Supabase Auth integration for sign in, sign up, forgot password, and reset password flows
+- Protected app routes that redirect unauthenticated users to `/login`
+- Supabase access token attached to backend API requests through the shared API client
+
+### Dashboard
+
+- Monthly summary view
+- Income and expense totals
+- Recent transactions
+- Account breakdown
+- Category breakdown
+
+### Transactions
+
+- Create, edit, and archive transactions
+- Income, expense, transfer, and adjustment transaction types
+- Month filtering through the global selected month
+- Default transaction date based on the selected month
+- Last transaction date per month stored in `localStorage` for small UX improvements
+
+### Budgets
+
+- Monthly budgets by category
+- Planned amount
+- Spent amount
+- Remaining amount
+- Progress tracking
+- Over-budget state
+
+### Accounts
+
+- Account list
+- Account creation and editing
+- Starting balance
+- Current balance
+- Goal, icon, and color support
+
+### Categories and Sections
+
+- Section management
+- Category management
+- Section colors
+- Category icons
+
+### Navigation
+
+- Global selected month stored in the URL
+- Bottom navigation for core app areas
+- Contextual floating `+` action
+- Global month navigation shown on Dashboard, Transactions, and Budgets
 
 ## Tech Stack
 
-| Concern            | Library / Tool                      |
-| ------------------ | ----------------------------------- |
-| Framework          | React 19 + TypeScript 6             |
-| Build              | Vite 8                              |
-| CSS                | Tailwind CSS v4                     |
-| Routing            | React Router DOM v7                 |
-| Server state       | TanStack React Query v5             |
-| Forms              | React Hook Form v7 + Zod v4         |
-| Backend / Auth     | Supabase JS SDK v2                  |
-| Testing            | Vitest 4 + Testing Library + MSW v2 |
-| E2E                | Playwright 1.49                     |
-| Component explorer | Storybook 10                        |
+- React
+- TypeScript
+- Vite
+- React Router
+- TanStack Query
+- React Hook Form
+- Zod
+- shadcn/ui
+- Tailwind CSS
+- Supabase Auth
+- Storybook
+- Vitest
+- Playwright
+- ESLint
+- Prettier
 
----
+## Project Structure
 
-## Getting Started
-
-```bash
-# Install dependencies
-npm ci
-
-# Add environment variables
-cp .env.example .env.local
-# Fill in VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
-
-# Start dev server
-npm run dev
-# http://localhost:5182
+```
+e2e/                        # Playwright end-to-end specs
+src/
+  app/
+    layouts/                # AppLayout and AuthLayout
+    pages/                  # App-level pages such as NotFoundPage and ToolsPage
+    providers/              # AppProviders, AuthSyncProvider
+    router/                 # Lazy-loaded route tree and protected route wiring
+  components/
+    feedback/               # ErrorBoundary, LoadingSpinner
+    form/                   # Reusable form primitives
+    layout/                 # App chrome, theme, page headers, contextual action button
+    ui/                     # shadcn-style primitives
+  features/
+    accounts/               # Account CRUD feature
+    auth/                   # Authentication feature
+    budgets/                # Monthly budget feature
+    categories/             # Sections and categories feature
+    dashboard/              # Monthly summary feature
+    transactions/           # Transaction feature
+  shared/
+    month/                  # Global month navigation and helpers
+    primary-action/         # Contextual floating action button state
+  lib/
+    api-client.ts           # Shared API client
+    format-currency.ts      # Currency formatting helper
+    query/                  # Shared QueryClient instance
+    supabase/               # Supabase client singleton
+    utils.ts                # cn() helper
+  stories/                  # Storybook stories
+  styles/globals.css        # Tailwind base and theme tokens
+  test/                     # Vitest setup, mocks, and render helpers
 ```
 
----
+## Feature Folder Convention
+
+Features follow the same vertical-slice structure:
+
+```
+src/features/budgets/
+  api/
+    budgets.api.ts
+  components/
+    BudgetCard.tsx
+    BudgetDialog.tsx
+  hooks/
+    use-budgets.ts
+    use-create-budget.ts
+  pages/
+    BudgetsPage.tsx
+  schemas/
+    budget.schema.ts
+  types/
+    budget.types.ts
+  index.ts
+```
+
+- API functions live in `api/` and call the shared `apiClient`
+- TanStack Query hooks live in `hooks/`
+- Zod schemas live in `schemas/`
+- Types live in `types/`
+- Feature UI components live in `components/`
+- Route pages live in `pages/`
+
+## Naming Conventions
+
+- React component files use PascalCase filenames: `BudgetCard.tsx`, `MonthNavigator.tsx`
+- Hooks use kebab-case filenames and camelCase exports: `use-selected-month.ts` exports `useSelectedMonth`
+- Types use `.types.ts`: `budget.types.ts`
+- Schemas use `.schema.ts`: `budget.schema.ts`
+- API modules use `.api.ts`: `budgets.api.ts`
+- Contexts use `.context.ts`: `primary-action.context.ts`
+- Provider components use `ProviderName.tsx`: `PrimaryActionProvider.tsx`
+- Files with JSX use `.tsx`
+- Files without JSX use `.ts`
+
+## React Fast Refresh Convention
+
+React Fast Refresh works best when files exporting React components only export components.
+
+Therefore:
+
+- Do not export raw React contexts from the same file as a React component
+- Put raw contexts in `.context.ts` files
+- Put provider components in separate `.tsx` files
+- Put hooks in `.ts` files unless they contain JSX
+
+Example:
+
+```
+src/shared/primary-action/
+  context/
+    primary-action.context.ts
+    PrimaryActionProvider.tsx
+  hooks/
+    use-primary-action.ts
+  types/
+    primary-action.types.ts
+```
+
+This avoids the Fast Refresh warning:
+
+`Fast refresh only works when a file only exports components.`
+
+## API Client
+
+The frontend uses a shared `apiClient` in `src/lib/api-client.ts`.
+
+- The client reads the backend base URL from `VITE_API_URL`
+- It attaches the Supabase access token as `Authorization: Bearer <token>`
+- Feature API modules should use the shared `apiClient`
+- Components should not call `fetch` directly
+- Supabase should not be called directly for app domain data
+
+Expected response shape:
+
+Success:
+
+```json
+{
+    "data": {}
+}
+```
+
+Error:
+
+```json
+{
+    "error": {
+        "code": "string",
+        "message": "string",
+        "issues": []
+    }
+}
+```
+
+## Authentication
+
+- Users sign in with Supabase Auth
+- Supabase returns a session with an access token
+- The frontend reads the token from the current session
+- Protected routes require an authenticated user
+- Backend API requests include the access token
+- App data is loaded from backend endpoints, not directly from Supabase tables
+
+## TanStack Query
+
+- API calls live in feature API files
+- Query hooks wrap API calls
+- Query keys should be stable
+- Query keys should include filters such as `month`
+- Mutations should invalidate affected queries
+- Prefer invalidation over manual refetch when possible
+
+Examples:
+
+- Creating a transaction should invalidate transactions and any dependent dashboard or budget data
+- Creating a budget should invalidate budgets and any dependent dashboard/monthly summary data
+
+## Forms
+
+- Forms use React Hook Form
+- Validation uses Zod
+- Schemas live in `.schema.ts`
+- Form components should display validation errors
+- API errors should be shown in a user-friendly way
+- Avoid duplicating validation logic inside components
+
+## Month Navigation
+
+- Selected month comes from the URL query param `?month=YYYY-MM`
+- If missing, default to the current month
+- If invalid, fall back to the current month
+- Do not store the selected month in `localStorage`
+- Navigation links should preserve the selected month
+- Dashboard, Transactions, and Budgets use the same selected month
+
+Examples:
+
+- `/dashboard?month=2026-06`
+- `/transactions?month=2026-06`
+- `/budgets?month=2026-06`
+
+Accounts can preserve the month in the URL, but it does not need to filter by month.
+
+## Transaction Date UX
+
+- Creating a transaction uses the selected month to choose the default date
+- If the selected month is the current month, default to today
+- If the selected month is not the current month, default to the first day of that month
+- The user can still change the date manually
+- The last transaction date per month may be stored in `localStorage` for faster batch entry
+
+`localStorage` is allowed for small UX helpers, but not as the source of truth for app data.
+
+## Contextual Primary Action
+
+- Dashboard: `+` opens create transaction
+- Transactions: `+` opens create transaction
+- Budgets: `+` opens create budget with the selected month
+- Accounts: `+` opens create account
+- Tools: hide the action by default unless there is a clear primary action
+
+Architecture:
+
+- `PrimaryActionProvider` stores the current page action
+- Pages register their primary action through `usePrimaryAction`
+- The layout renders the floating action button
+- Actions are cleared on unmount to avoid stale actions
+
+## Styling and UI
+
+- Use shadcn/ui components when appropriate
+- Use Tailwind utility classes
+- Follow the existing theme tokens
+- Keep UI accessible
+- Do not rely only on color to communicate status
+- Use clear labels and accessible dialogs
+
+## Accessibility
+
+- Buttons must have accessible names
+- Icon-only buttons must use `aria-label`
+- Active navigation states should be clear
+- Dialogs must have titles
+- Forms must have labels and errors
+- Over-budget states should not rely only on color
+- Keyboard focus should remain visible
 
 ## Environment Variables
 
@@ -45,73 +326,51 @@ npm run dev
 | `VITE_SUPABASE_URL`      | Supabase project REST/Auth URL          | Yes      |
 | `VITE_SUPABASE_ANON_KEY` | Supabase public anon key                | Yes      |
 | `VITE_APP_URL`           | App origin for auth email redirect URLs | Yes      |
+| `VITE_API_URL`           | Backend API base URL                    | Yes      |
 
----
-
-## Commands
+## Available Scripts
 
 ```bash
-npm run dev              # dev server at http://localhost:5182
-npm run build            # typecheck + production build
-npm run typecheck        # TypeScript check only
-npm run lint             # ESLint (zero warnings)
-npm run lint:fix         # auto-fix ESLint issues
-npm run format           # Prettier write
-npm run format:check     # Prettier check
-npm run test             # Vitest (all tests once)
-npm run test:watch       # Vitest watch mode
-npm run test:coverage    # coverage report
-npm run test:e2e         # Playwright E2E tests
-npm run storybook        # Storybook at http://localhost:6006
+npm run dev
+npm run build
+npm run preview
+npm run typecheck
+npm run lint
+npm run lint:fix
+npm run format
+npm run format:check
+npm run test
+npm run test:watch
+npm run test:coverage
+npm run test:e2e
+npm run storybook
+npm run build-storybook
 ```
 
-**Before committing:** `npm run typecheck && npm run lint && npm run test`
+## Running Locally
 
----
-
-## Project Structure
-
+```bash
+npm ci
+cp .env.example .env.local
+npm run dev
 ```
-e2e/                  # Playwright E2E specs
-src/
-  app/
-    layouts/          # AppLayout, AuthLayout
-    providers/        # QueryClient + ThemeProvider + Toaster
-    router/           # Lazy-loaded routes
-  components/
-    feedback/         # ErrorBoundary, LoadingSpinner
-    form/             # TextField, PasswordField, FormError, FormSubmitButton
-    layout/           # AppNav, ThemeProvider, ThemeToggle
-    ui/               # shadcn-style primitives (button, card, input, label, toast, alert)
-  features/
-    auth/             # Vertical slice: components, hooks, pages, schemas, services, types
-  lib/
-    api/              # API client
-    query/            # Shared QueryClient
-    supabase/         # Supabase client singleton
-    utils.ts          # cn() helper
-  styles/globals.css  # Tailwind base + CSS custom properties
-  test/               # Vitest setup, MSW handlers, custom render
-```
-
----
 
 ## Testing
 
-Unit and component tests use Vitest + Testing Library + MSW. All Supabase calls are intercepted by MSW — no real backend needed.
+- Vitest for unit and component tests
+- Testing Library for component interaction tests
+- Playwright for end-to-end tests
+- Storybook for UI documentation and isolated component work
 
-E2E tests use Playwright and mock Supabase via `page.route()`. Run against a local dev server that starts automatically.
+## Roadmap
 
-```bash
-npm run test             # 136 unit/component tests
-npm run test:e2e         # 19 E2E tests (Chromium)
-```
+Planned frontend improvements only:
 
----
-
-## CI
-
-GitHub Actions runs on every push and pull request to `main`:
-
-- Typecheck, lint, unit tests (with coverage artifact)
-- E2E tests on Chromium (Playwright report artifact on failure)
+- Reports and charts
+- Better dashboard budget overview
+- Recurring transaction UI
+- CSV import UI
+- Demo mode
+- Deployment polish
+- Improved responsive desktop layout
+- More Storybook coverage

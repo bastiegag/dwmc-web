@@ -15,6 +15,12 @@ const config: StorybookConfig = {
                 '@': path.resolve(__dirname, '../src'),
             }
         }
+        config.define = {
+            ...config.define,
+            'import.meta.env.VITE_SUPABASE_URL': '"https://test.supabase.co"',
+            'import.meta.env.VITE_SUPABASE_ANON_KEY': '"test-anon-key"',
+            'import.meta.env.VITE_APP_URL': '"http://localhost:6006"',
+        }
         return config
     },
 }
