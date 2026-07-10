@@ -1,30 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
 import { http, HttpResponse, delay } from 'msw'
-import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ForgotPasswordForm } from '@/features/auth/components/ForgotPasswordForm'
+import { withCenteredLayout, withQueryClient, withRouter } from './decorators'
 
 const meta: Meta<typeof ForgotPasswordForm> = {
     title: 'Auth/ForgotPasswordForm',
     component: ForgotPasswordForm,
-    decorators: [
-        (Story) => (
-            <QueryClientProvider
-                client={
-                    new QueryClient({
-                        defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
-                    })
-                }
-            >
-                <MemoryRouter>
-                    <div className="mx-auto max-w-md p-6">
-                        <Story />
-                    </div>
-                </MemoryRouter>
-            </QueryClientProvider>
-        ),
-    ],
+    decorators: [withQueryClient, withRouter, withCenteredLayout],
     tags: ['autodocs'],
 }
 

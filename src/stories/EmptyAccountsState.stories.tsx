@@ -1,22 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MemoryRouter } from 'react-router-dom'
 import { EmptyAccountsState } from '@/features/accounts/components/EmptyAccountsState'
+import { withCenteredLayout, withQueryClient, withRouter } from './decorators'
 
 const meta: Meta<typeof EmptyAccountsState> = {
     title: 'Accounts/EmptyAccountsState',
     component: EmptyAccountsState,
-    decorators: [
-        (Story) => (
-            <QueryClientProvider client={new QueryClient()}>
-                <MemoryRouter>
-                    <div className="p-6 max-w-md">
-                        <Story />
-                    </div>
-                </MemoryRouter>
-            </QueryClientProvider>
-        ),
-    ],
+    decorators: [withQueryClient, withRouter, withCenteredLayout],
 }
 
 export default meta

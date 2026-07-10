@@ -1,25 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MemoryRouter } from 'react-router-dom'
 import { AccountCard } from '@/features/accounts/components/AccountCard'
 import type { Account } from '@/features/accounts/types/account.types'
+import { withCompactLayout, withQueryClient, withRouter } from './decorators'
 
 const meta: Meta<typeof AccountCard> = {
     title: 'Accounts/AccountCard',
     component: AccountCard,
-    decorators: [
-        (Story) => (
-            <QueryClientProvider
-                client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}
-            >
-                <MemoryRouter>
-                    <div className="p-6 max-w-sm">
-                        <Story />
-                    </div>
-                </MemoryRouter>
-            </QueryClientProvider>
-        ),
-    ],
+    decorators: [withQueryClient, withRouter, withCompactLayout],
 }
 
 export default meta
