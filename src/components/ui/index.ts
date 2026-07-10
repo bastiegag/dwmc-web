@@ -1,5 +1,6 @@
 export { Alert, AlertTitle, AlertDescription } from './alert'
-export { Button, buttonVariants } from './button'
+export { Button } from './button'
+export { buttonVariants } from './button-variants'
 export type { ButtonProps } from './button'
 export { Card, CardHeader, CardTitle, CardDescription, CardContent } from './card'
 export { Input } from './input'

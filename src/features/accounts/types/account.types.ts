@@ -1,11 +1,5 @@
 export type AccountType =
-    | 'CHECKING'
-    | 'SAVINGS'
-    | 'CREDIT_CARD'
-    | 'CASH'
-    | 'INVESTMENT'
-    | 'LOAN'
-    | 'OTHER'
+    'CHECKING' | 'SAVINGS' | 'CREDIT_CARD' | 'CASH' | 'INVESTMENT' | 'LOAN' | 'OTHER'
 
 export type Account = {
     id: string

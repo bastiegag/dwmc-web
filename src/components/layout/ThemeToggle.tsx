@@ -1,6 +1,6 @@
 import { Moon, Monitor, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useTheme } from './ThemeProvider'
+import { useTheme } from './useTheme'
 
 type Theme = 'light' | 'dark' | 'system'
 

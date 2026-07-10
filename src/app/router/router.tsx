@@ -111,38 +111,6 @@ const router = createBrowserRouter([
         ],
     },
     {
-        path: '/app',
-        element: <Navigate to="/dashboard" replace />,
-    },
-    {
-        path: '/app/dashboard',
-        element: <Navigate to="/dashboard" replace />,
-    },
-    {
-        path: '/app/transactions',
-        element: <Navigate to="/transactions" replace />,
-    },
-    {
-        path: '/app/budgets',
-        element: <Navigate to="/budgets" replace />,
-    },
-    {
-        path: '/app/accounts',
-        element: <Navigate to="/accounts" replace />,
-    },
-    {
-        path: '/app/tools',
-        element: <Navigate to="/tools" replace />,
-    },
-    {
-        path: '/app/categories',
-        element: <Navigate to="/categories" replace />,
-    },
-    {
-        path: '/app/tools/categories',
-        element: <Navigate to="/categories" replace />,
-    },
-    {
         path: '*',
         element: <NotFoundPage />,
     },
