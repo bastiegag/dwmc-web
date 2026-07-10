@@ -1,19 +1,25 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { axe } from 'vitest-axe'
 import { render, screen, waitFor } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
 import { ResetPasswordForm } from '@/features/auth/components/ResetPasswordForm'
+import { useResetPassword } from '@/features/auth/hooks'
 
 vi.mock('@/features/auth/hooks', () => ({
-    useResetPassword: vi.fn(() => ({
-        resetPassword: vi.fn().mockResolvedValue(undefined),
-        isPending: false,
-        isSuccess: false,
-        error: null,
-    })),
+    useResetPassword: vi.fn(),
 }))
 
 describe('ResetPasswordForm', () => {
+    beforeEach(() => {
+        vi.clearAllMocks()
+        vi.mocked(useResetPassword).mockReturnValue({
+            resetPassword: vi.fn().mockResolvedValue(undefined),
+            isPending: false,
+            isSuccess: false,
+            error: null,
+        })
+    })
+
     it('renders new-password and confirm-new-password fields', () => {
         render(<ResetPasswordForm />)
         expect(screen.getByLabelText(/^new password/i)).toBeInTheDocument()
@@ -37,7 +43,6 @@ describe('ResetPasswordForm', () => {
     })
 
     it('shows a success alert when isSuccess is true', async () => {
-        const { useResetPassword } = await import('@/features/auth/hooks')
         vi.mocked(useResetPassword).mockReturnValue({
             resetPassword: vi.fn(),
             isPending: false,
@@ -49,7 +54,6 @@ describe('ResetPasswordForm', () => {
     })
 
     it('shows loading text when isPending is true', async () => {
-        const { useResetPassword } = await import('@/features/auth/hooks')
         vi.mocked(useResetPassword).mockReturnValue({
             resetPassword: vi.fn(),
             isPending: true,
@@ -66,7 +70,6 @@ describe('ResetPasswordForm', () => {
     })
 
     it('marks password field as invalid and links error when validation fails', async () => {
-        const { useResetPassword } = await import('@/features/auth/hooks')
         vi.mocked(useResetPassword).mockReturnValue({
             resetPassword: vi.fn(),
             isPending: false,

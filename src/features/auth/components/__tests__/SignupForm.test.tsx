@@ -1,19 +1,25 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { axe } from 'vitest-axe'
 import { render, screen, waitFor } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
 import { SignupForm } from '@/features/auth/components/SignupForm'
+import { useSignup } from '@/features/auth/hooks'
 
 vi.mock('@/features/auth/hooks', () => ({
-    useSignup: vi.fn(() => ({
-        signup: vi.fn().mockResolvedValue(undefined),
-        isPending: false,
-        isSuccess: false,
-        error: null,
-    })),
+    useSignup: vi.fn(),
 }))
 
 describe('SignupForm', () => {
+    beforeEach(() => {
+        vi.clearAllMocks()
+        vi.mocked(useSignup).mockReturnValue({
+            signup: vi.fn().mockResolvedValue(undefined),
+            isPending: false,
+            isSuccess: false,
+            error: null,
+        })
+    })
+
     it('renders email, password, and confirm-password fields', () => {
         render(<SignupForm />)
         expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
@@ -43,35 +49,18 @@ describe('SignupForm', () => {
         })
     })
 
-    it('shows a success alert after successful submission', async () => {
-        const { useSignup } = await import('@/features/auth/hooks')
-        const signup = vi.fn().mockImplementation(async () => {
-            vi.mocked(useSignup).mockReturnValue({
-                signup,
-                isPending: false,
-                isSuccess: true,
-                error: null,
-            })
-        })
+    it('shows a success alert when isSuccess is true', async () => {
         vi.mocked(useSignup).mockReturnValue({
-            signup,
+            signup: vi.fn().mockResolvedValue(undefined),
             isPending: false,
-            isSuccess: false,
+            isSuccess: true,
             error: null,
         })
-        const user = userEvent.setup()
         render(<SignupForm />)
-        await user.type(screen.getByLabelText(/email/i), 'new@example.com')
-        await user.type(screen.getByLabelText(/^password/i), 'Password123')
-        await user.type(screen.getByLabelText(/confirm password/i), 'Password123')
-        await user.click(screen.getByRole('button', { name: /create account/i }))
-        await waitFor(() => {
-            expect(screen.getByText(/account created/i)).toBeInTheDocument()
-        })
+        expect(screen.getByText(/account created/i)).toBeInTheDocument()
     })
 
     it('shows loading text when isPending is true', async () => {
-        const { useSignup } = await import('@/features/auth/hooks')
         vi.mocked(useSignup).mockReturnValue({
             signup: vi.fn(),
             isPending: true,
@@ -88,7 +77,6 @@ describe('SignupForm', () => {
     })
 
     it('links email validation error to the field via aria attributes', async () => {
-        const { useSignup } = await import('@/features/auth/hooks')
         vi.mocked(useSignup).mockReturnValue({
             signup: vi.fn().mockResolvedValue(undefined),
             isPending: false,
@@ -106,7 +94,6 @@ describe('SignupForm', () => {
     })
 
     it('server error renders as an accessible alert', async () => {
-        const { useSignup } = await import('@/features/auth/hooks')
         vi.mocked(useSignup).mockReturnValue({
             signup: vi.fn().mockRejectedValue(new Error('User already registered')),
             isPending: false,

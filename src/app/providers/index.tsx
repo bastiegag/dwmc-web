@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { authService } from '@/features/auth/services'
 import { authSessionQueryKey } from '@/features/auth/hooks'
 
-const AuthSyncProvider = ({ children }: { children: ReactNode }) => {
+export const AuthSyncProvider = ({ children }: { children: ReactNode }) => {
     const qc = useQueryClient()
 
     useEffect(() => {

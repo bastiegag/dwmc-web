@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { render, type RenderOptions } from '@testing-library/react'
+import { render, renderHook, type RenderOptions } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PrimaryActionProvider } from '@/shared/primary-action'
@@ -45,3 +45,20 @@ const customRender = (
 
 export * from '@testing-library/react'
 export { customRender as render }
+
+export const renderHookWithQuery = <Result,>(
+    hook: () => Result,
+    options?: { setupClient?: (qc: QueryClient) => void },
+) => {
+    const testQueryClient = createTestQueryClient()
+    options?.setupClient?.(testQueryClient)
+
+    return {
+        ...renderHook(hook, {
+            wrapper: ({ children }: { children: ReactNode }) => (
+                <QueryClientProvider client={testQueryClient}>{children}</QueryClientProvider>
+            ),
+        }),
+        qc: testQueryClient,
+    }
+}

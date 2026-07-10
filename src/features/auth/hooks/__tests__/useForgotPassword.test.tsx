@@ -1,23 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { renderHook, waitFor } from '@testing-library/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { http, HttpResponse } from 'msw'
-import { type ReactNode } from 'react'
 import { server } from '@/test/mocks/server'
 import { useForgotPassword } from '@/features/auth/hooks/useForgotPassword'
+import { renderHookWithQuery, waitFor } from '@/test/utils/render'
 
 vi.mock('sonner', () => ({
     toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
 }))
-
-const createWrapper = () => {
-    const qc = new QueryClient({
-        defaultOptions: { mutations: { retry: false }, queries: { retry: false, gcTime: 0 } },
-    })
-    return ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={qc}>{children}</QueryClientProvider>
-    )
-}
 
 describe('useForgotPassword', () => {
     beforeEach(() => {
@@ -26,7 +15,7 @@ describe('useForgotPassword', () => {
 
     it('sets isSuccess to true and calls success toast on success', async () => {
         const { toast } = await import('sonner')
-        const { result } = renderHook(() => useForgotPassword(), { wrapper: createWrapper() })
+        const { result } = renderHookWithQuery(() => useForgotPassword())
         await result.current.forgotPassword('test@example.com')
         await waitFor(() => {
             expect(result.current.isSuccess).toBe(true)
@@ -40,7 +29,7 @@ describe('useForgotPassword', () => {
                 HttpResponse.json({ error: 'Server error' }, { status: 500 }),
             ),
         )
-        const { result } = renderHook(() => useForgotPassword(), { wrapper: createWrapper() })
+        const { result } = renderHookWithQuery(() => useForgotPassword())
         await expect(result.current.forgotPassword('test@example.com')).rejects.toThrow()
     })
 })

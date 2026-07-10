@@ -1,19 +1,25 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { axe } from 'vitest-axe'
 import { render, screen, waitFor } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
 import { ForgotPasswordForm } from '@/features/auth/components/ForgotPasswordForm'
+import { useForgotPassword } from '@/features/auth/hooks'
 
 vi.mock('@/features/auth/hooks', () => ({
-    useForgotPassword: vi.fn(() => ({
-        forgotPassword: vi.fn().mockResolvedValue(undefined),
-        isPending: false,
-        isSuccess: false,
-        error: null,
-    })),
+    useForgotPassword: vi.fn(),
 }))
 
 describe('ForgotPasswordForm', () => {
+    beforeEach(() => {
+        vi.clearAllMocks()
+        vi.mocked(useForgotPassword).mockReturnValue({
+            forgotPassword: vi.fn().mockResolvedValue(undefined),
+            isPending: false,
+            isSuccess: false,
+            error: null,
+        })
+    })
+
     it('renders email field and send-reset-link button', () => {
         render(<ForgotPasswordForm />)
         expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
@@ -36,7 +42,6 @@ describe('ForgotPasswordForm', () => {
     })
 
     it('shows a success alert when isSuccess is true', async () => {
-        const { useForgotPassword } = await import('@/features/auth/hooks')
         vi.mocked(useForgotPassword).mockReturnValue({
             forgotPassword: vi.fn(),
             isPending: false,
@@ -48,7 +53,6 @@ describe('ForgotPasswordForm', () => {
     })
 
     it('shows loading text when isPending is true', async () => {
-        const { useForgotPassword } = await import('@/features/auth/hooks')
         vi.mocked(useForgotPassword).mockReturnValue({
             forgotPassword: vi.fn(),
             isPending: true,
@@ -65,7 +69,6 @@ describe('ForgotPasswordForm', () => {
     })
 
     it('success state has no accessibility violations', async () => {
-        const { useForgotPassword } = await import('@/features/auth/hooks')
         vi.mocked(useForgotPassword).mockReturnValue({
             forgotPassword: vi.fn(),
             isPending: false,

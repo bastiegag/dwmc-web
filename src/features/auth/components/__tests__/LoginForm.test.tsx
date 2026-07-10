@@ -1,16 +1,13 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { axe } from 'vitest-axe'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils/render'
 import { LoginForm } from '@/features/auth/components/LoginForm'
+import { useLogin } from '@/features/auth/hooks/useLogin'
 
 vi.mock('@/features/auth/hooks/useLogin', () => ({
-    useLogin: vi.fn(() => ({
-        login: vi.fn().mockResolvedValue(undefined),
-        isPending: false,
-        error: null,
-    })),
+    useLogin: vi.fn(),
 }))
 
 vi.mock('react-router-dom', async () => {
@@ -20,6 +17,15 @@ vi.mock('react-router-dom', async () => {
         useNavigate: () => vi.fn(),
         useLocation: () => ({ state: null, pathname: '/login' }),
     }
+})
+
+beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(useLogin).mockReturnValue({
+        login: vi.fn().mockResolvedValue(undefined),
+        isPending: false,
+        error: null,
+    })
 })
 
 describe('LoginForm', () => {
@@ -71,7 +77,6 @@ describe('LoginForm', () => {
     })
 
     it('submit button is disabled with loading label while pending', async () => {
-        const { useLogin } = await import('@/features/auth/hooks/useLogin')
         vi.mocked(useLogin).mockReturnValue({ login: vi.fn(), isPending: true, error: null })
         render(<LoginForm />)
         expect(screen.getByRole('button', { name: /signing in/i })).toBeDisabled()
