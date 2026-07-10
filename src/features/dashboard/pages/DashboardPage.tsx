@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
-import DashboardPageHeader from '@/features/dashboard/components/DashboardPageHeader'
 import SummaryCards from '@/features/dashboard/components/SummaryCards'
 import CategoryBreakdownCard from '@/features/dashboard/components/CategoryBreakdownCard'
 import AccountBreakdownCard from '@/features/dashboard/components/AccountBreakdownCard'
@@ -14,6 +13,7 @@ import { useAccounts } from '@/features/accounts/hooks'
 import { useSections } from '@/features/categories/hooks'
 import { TransactionDialog, useCreateTransaction } from '@/features/transactions'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
+import { PageHeader } from '@/components/layout'
 
 const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error) {
@@ -84,7 +84,11 @@ export const DashboardPage = () => {
     return (
         <>
             <section className="space-y-6" aria-labelledby="dashboard-heading">
-                <DashboardPageHeader />
+                <PageHeader
+                    id="dashboard-heading"
+                    title="Dashboard"
+                    description="Overview of your finances for the selected month."
+                />
 
                 {summaryQuery.isLoading ? (
                     <div className="py-6" role="status" aria-live="polite">

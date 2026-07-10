@@ -14,12 +14,12 @@ import {
     useUpdateSection,
 } from '@/features/categories/hooks'
 import {
-    CategoriesPageHeader,
     CategoryDialog,
     EmptyCategoriesState,
     SectionDialog,
     SectionList,
 } from '@/features/categories/components'
+import { PageHeader } from '@/components/layout'
 import { usePrimaryAction } from '@/shared/primary-action'
 
 const toErrorMessage = (error: unknown, fallback: string): string => {
@@ -169,7 +169,11 @@ export const CategoriesPage = () => {
 
     return (
         <section className="space-y-6" aria-labelledby="categories-heading">
-            <CategoriesPageHeader />
+            <PageHeader
+                id="categories-heading"
+                title="Categories"
+                description="Group your categories into sections for clearer budgeting."
+            />
 
             {sectionsQuery.isLoading ? (
                 <div className="py-6" role="status" aria-live="polite">

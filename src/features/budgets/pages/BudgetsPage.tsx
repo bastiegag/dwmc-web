@@ -8,7 +8,6 @@ import {
     useDeleteBudget,
 } from '@/features/budgets/hooks'
 import { useSections } from '@/features/categories/hooks/use-sections'
-import BudgetsPageHeader from '@/features/budgets/components/BudgetsPageHeader'
 import BudgetList from '@/features/budgets/components/BudgetList'
 import BudgetDialog from '@/features/budgets/components/BudgetDialog'
 import EmptyBudgetsState from '@/features/budgets/components/EmptyBudgetsState'
@@ -20,6 +19,7 @@ import type {
 } from '@/features/budgets/types/budget.types'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
+import { PageHeader } from '@/components/layout'
 
 const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error) {
@@ -112,7 +112,11 @@ export const BudgetsPage = () => {
 
     return (
         <section className="space-y-6" aria-labelledby="budgets-heading">
-            <BudgetsPageHeader />
+            <PageHeader
+                id="budgets-heading"
+                title="Budgets"
+                description="Manage monthly spending targets by category."
+            />
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div className="rounded-lg border bg-card p-4">

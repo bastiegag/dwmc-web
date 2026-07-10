@@ -10,12 +10,8 @@ import {
     useUpdateAccount,
     useDeleteAccount,
 } from '@/features/accounts/hooks'
-import {
-    AccountsPageHeader,
-    AccountDialog,
-    EmptyAccountsState,
-    AccountList,
-} from '@/features/accounts/components'
+import { AccountDialog, EmptyAccountsState, AccountList } from '@/features/accounts/components'
+import { PageHeader } from '@/components/layout'
 import { usePrimaryAction } from '@/shared/primary-action'
 
 const toErrorMessage = (error: unknown, fallback: string): string => {
@@ -90,7 +86,11 @@ export const AccountsPage = () => {
 
     return (
         <section className="space-y-6" aria-labelledby="accounts-heading">
-            <AccountsPageHeader />
+            <PageHeader
+                id="accounts-heading"
+                title="Accounts"
+                description="Manage accounts where your money lives"
+            />
 
             {accountsQuery.isLoading ? (
                 <div className="py-6" role="status" aria-live="polite">

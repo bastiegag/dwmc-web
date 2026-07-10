@@ -9,7 +9,6 @@ import {
 } from '@/features/transactions/hooks'
 import { useAccounts } from '@/features/accounts/hooks/use-accounts'
 import { useSections } from '@/features/categories/hooks/use-sections'
-import TransactionsPageHeader from '@/features/transactions/components/TransactionsPageHeader'
 import TransactionFilters from '@/features/transactions/components/TransactionFilters'
 import TransactionList from '@/features/transactions/components/TransactionList'
 import TransactionDialog from '@/features/transactions/components/TransactionDialog'
@@ -19,6 +18,7 @@ import type { GetTransactionsParams } from '@/features/transactions/types/transa
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
+import { PageHeader } from '@/components/layout'
 
 const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error)
@@ -177,7 +177,11 @@ export const TransactionsPage = () => {
 
     return (
         <section className="space-y-6" aria-labelledby="transactions-heading">
-            <TransactionsPageHeader />
+            <PageHeader
+                id="transactions-heading"
+                title="Transactions"
+                description="Log and manage your transactions"
+            />
 
             <div className="pt-4">
                 <TransactionFilters accounts={accounts} sections={sections} onChange={setFilters} />

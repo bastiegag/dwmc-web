@@ -1,4 +1,3 @@
-export * from './CategoriesPageHeader'
 export * from './CategoryDialog'
 export * from './CategoryForm'
 export * from './CategoryItem'
