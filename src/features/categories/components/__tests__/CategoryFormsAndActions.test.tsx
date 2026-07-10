@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@/test/utils/render'
 import { CategoryForm, SectionForm } from '@/features/categories/components'
 import { CategoriesPage } from '@/features/categories/pages/CategoriesPage'
 import type { SectionWithCategories } from '@/features/categories/types'
+import { createSectionWithCategories } from '@/test/fixtures/domain'
 
 const createSectionMock = vi.fn().mockResolvedValue(undefined)
 const updateSectionMock = vi.fn().mockResolvedValue(undefined)
@@ -31,27 +32,7 @@ vi.mock('@/features/categories/hooks', () => ({
 
 describe('categories forms and actions', () => {
     beforeEach(() => {
-        sectionsData = [
-            {
-                id: 'section-1',
-                name: 'Food',
-                color: '#22c55e',
-                isArchived: false,
-                createdAt: '2024-01-01T00:00:00.000Z',
-                updatedAt: '2024-01-01T00:00:00.000Z',
-                categories: [
-                    {
-                        id: 'category-1',
-                        name: 'Groceries',
-                        icon: 'shopping-cart',
-                        sectionId: 'section-1',
-                        isArchived: false,
-                        createdAt: '2024-01-01T00:00:00.000Z',
-                        updatedAt: '2024-01-01T00:00:00.000Z',
-                    },
-                ],
-            },
-        ]
+        sectionsData = [createSectionWithCategories()]
 
         createSectionMock.mockClear()
         updateSectionMock.mockClear()

@@ -3,6 +3,7 @@ import { delay, http, HttpResponse } from 'msw'
 import { render, screen } from '@/test/utils/render'
 import { server } from '@/test/mocks/server'
 import { CategoriesPage } from '@/features/categories/pages/CategoriesPage'
+import { createSectionWithCategories } from '@/test/fixtures/domain'
 
 const sectionsUrl = 'http://localhost:8787/api/v1/sections'
 
@@ -41,27 +42,7 @@ describe('CategoriesPage', () => {
         server.use(
             http.get(sectionsUrl, () => {
                 return HttpResponse.json({
-                    data: [
-                        {
-                            id: 'section-1',
-                            name: 'Food',
-                            color: '#22c55e',
-                            isArchived: false,
-                            createdAt: '2024-01-01T00:00:00.000Z',
-                            updatedAt: '2024-01-01T00:00:00.000Z',
-                            categories: [
-                                {
-                                    id: 'category-1',
-                                    name: 'Groceries',
-                                    icon: 'shopping-cart',
-                                    sectionId: 'section-1',
-                                    isArchived: false,
-                                    createdAt: '2024-01-01T00:00:00.000Z',
-                                    updatedAt: '2024-01-01T00:00:00.000Z',
-                                },
-                            ],
-                        },
-                    ],
+                    data: [createSectionWithCategories()],
                 })
             }),
         )

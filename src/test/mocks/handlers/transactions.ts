@@ -3,6 +3,7 @@ import type {
     CreateTransactionPayload,
     UpdateTransactionPayload,
 } from '@/features/transactions/types/transaction.types'
+import { createAccount } from '@/test/fixtures/domain'
 
 const API_URL = 'http://localhost:8787'
 
@@ -27,7 +28,12 @@ export const transactionHandlers = [
             isArchived: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            account: { id: 'a1', name: 'Checking', color: '#3b82f6', icon: 'wallet' },
+            account: {
+                id: createAccount().id,
+                name: createAccount().name,
+                color: createAccount().color,
+                icon: createAccount().icon,
+            },
         }
         return HttpResponse.json({ data: t })
     }),

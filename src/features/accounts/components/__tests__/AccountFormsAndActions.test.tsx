@@ -4,6 +4,7 @@ import { render, screen, waitFor } from '@/test/utils/render'
 import { within } from '@testing-library/react'
 import { AccountsPage } from '@/features/accounts/pages/AccountsPage'
 import type { Account } from '@/features/accounts/types/account.types'
+import { createAccount } from '@/test/fixtures/domain'
 
 const createMock = vi.fn().mockResolvedValue(undefined)
 const updateMock = vi.fn().mockResolvedValue(undefined)
@@ -20,21 +21,7 @@ vi.mock('@/features/accounts/hooks', () => ({
 
 describe('accounts forms and actions', () => {
     beforeEach(() => {
-        accountsData = [
-            {
-                id: 'a1',
-                name: 'Checking',
-                type: 'CHECKING',
-                startingBalance: 1250.75,
-                currentBalance: 1250.75,
-                goal: null,
-                color: '#3b82f6',
-                icon: 'wallet',
-                isArchived: false,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            },
-        ]
+        accountsData = [createAccount()]
         createMock.mockClear()
         updateMock.mockClear()
         deleteMock.mockClear()

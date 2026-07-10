@@ -1,2 +1,2 @@
-export * from './categories.api'
-export * from './sections.api'
+export { getCategories, createCategory, updateCategory, deleteCategory } from './categories.api'
+export { getSections, createSection, updateSection, deleteSection } from './sections.api'

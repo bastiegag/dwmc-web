@@ -3,28 +3,9 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils/render'
 import BudgetForm from '@/features/budgets/components/BudgetForm'
+import { createSectionWithCategories } from '@/test/fixtures/domain'
 
-const sections = [
-    {
-        id: 'sec-1',
-        name: 'Food',
-        color: '#3b82f6',
-        isArchived: false,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-        categories: [
-            {
-                id: 'cat-1',
-                name: 'Groceries',
-                icon: 'shopping-cart',
-                sectionId: 'sec-1',
-                isArchived: false,
-                createdAt: '2024-01-01T00:00:00.000Z',
-                updatedAt: '2024-01-01T00:00:00.000Z',
-            },
-        ],
-    },
-]
+const sections = [createSectionWithCategories()]
 
 describe('BudgetForm', () => {
     it('validates required fields and negative amount', async () => {

@@ -300,6 +300,37 @@ Architecture:
 - The layout renders the floating action button
 - Actions are cleared on unmount to avoid stale actions
 
+## System Rules
+
+These rules are invariants. Breaking one requires a deliberate decision and a clear rationale, not a shortcut.
+
+### Auth
+
+1. All backend requests must go through `apiClient`. Never call `fetch` directly and never use the Supabase client for domain data.
+2. The Supabase access token is attached automatically by `apiClient`. Do not attach it manually in feature code.
+3. Never read or decode the Supabase session outside of `authService` or `apiClient`.
+4. Protected routes always redirect unauthenticated users to `/login`. Do not add route-level auth bypasses.
+
+### Month
+
+5. The selected month is always read from the URL query param `?month=YYYY-MM`. It is never stored in component state, context, `localStorage`, or any other mechanism.
+6. A missing or invalid `month` param falls back silently to the current calendar month. Do not throw an error or surface it to the user.
+7. Navigation links between Dashboard, Transactions, and Budgets must preserve the `month` param.
+8. Query keys for data that varies by month must include the `month` value. A query without `month` in its key will not refetch when the month changes.
+
+### Query Invalidation
+
+9. After every mutation, invalidate all affected query keys before the hook resolves. Do not leave stale data in the cache.
+10. Never manually trigger a refetch after a mutation. Use `invalidateQueries` so all dependents re-fetch automatically.
+11. Never hardcode query key strings inline. Always reference the `*QueryKeys` constants exported from the relevant hook file.
+12. Cross-feature invalidation is intentional. `useCreateTransaction` invalidates both transactions and accounts. `useCreateBudget` invalidates both budgets and the dashboard.
+
+### Feature Boundaries
+
+13. Features must not import from another feature's internal files. Only import from a feature's public `index.ts` barrel.
+14. Cross-feature logic belongs in `src/shared`, not inside any feature folder.
+15. A feature's public API is its `index.ts`. Anything not exported there is an implementation detail and may change without notice.
+
 ## Styling and UI
 
 - Use shadcn/ui components when appropriate

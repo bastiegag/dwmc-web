@@ -60,6 +60,37 @@ src/shared/primary-action/
     types/primary-action.types.ts
 ```
 
+## System Invariants
+
+These invariants define the app's non-negotiable contracts. Violating one is a bug, not a style issue.
+
+### Auth
+
+- All backend requests must use the shared `apiClient`. Never call `fetch` directly or use the Supabase client for domain data.
+- `apiClient` attaches the Supabase access token automatically. Do not attach it manually in feature code.
+- Never read or decode the Supabase session outside of `authService` or `apiClient`.
+- Protected routes must always redirect unauthenticated users to `/login`.
+
+### Month
+
+- The selected month lives exclusively in the URL query param `?month=YYYY-MM`. It is never stored in state, context, `localStorage`, or any other mechanism.
+- A missing or invalid `month` param falls back silently to the current calendar month. Never throw or surface this to the user.
+- Navigation links between Dashboard, Transactions, and Budgets must preserve the `month` param - use `useSelectedMonth` to read it and build links with `?month=<value>`.
+- Query keys for data that varies by month must include the `month` value. Omitting it means the query will not refetch when the month changes.
+
+### Query Invalidation
+
+- After every mutation, call `invalidateQueries` for all affected keys before the mutation hook resolves.
+- Never call `refetch()` manually after a mutation. Invalidation is the mechanism.
+- Never hardcode query key strings inline. Reference the `*QueryKeys` constants from the relevant hook file.
+- Cross-feature invalidation is intentional: creating a transaction also invalidates accounts; creating a budget also invalidates the dashboard.
+
+### Feature Boundaries
+
+- Import only from a feature's public `index.ts` barrel, never from its internal files.
+- Cross-feature logic belongs in `src/shared`, not in any feature folder.
+- If a symbol is not exported from `index.ts`, treat it as an internal detail that may change without notice.
+
 ## API and Auth
 
 - Use the shared `apiClient` for backend requests

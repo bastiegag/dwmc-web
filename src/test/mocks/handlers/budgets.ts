@@ -1,29 +1,15 @@
 import { http, HttpResponse } from 'msw'
+import { createBudget, createSectionWithCategories } from '@/test/fixtures/domain'
 
 const API_URL = 'http://localhost:8787'
 
-const now = new Date().toISOString()
-
-const mockBudget = {
-    id: 'budget-1',
+const mockBudget = createBudget({
     month: new Date().toISOString().slice(0, 7),
-    amount: 500,
     spent: 150,
     remaining: 350,
     progress: 30,
     isOverBudget: false,
-    transactionCount: 3,
-    isArchived: false,
-    createdAt: now,
-    updatedAt: now,
-    category: {
-        id: 'cat-1',
-        name: 'Groceries',
-        icon: 'shopping-cart',
-        sectionId: 'sec-1',
-        section: { id: 'sec-1', name: 'Food', color: '#3b82f6' },
-    },
-}
+})
 
 export const budgetHandlers = [
     http.get(`${API_URL}/api/v1/budgets`, ({ request }) => {
@@ -42,22 +28,7 @@ export const budgetHandlers = [
         const url = new URL(request.url)
         const includeCategories = url.searchParams.get('includeCategories') === 'true'
         if (includeCategories) {
-            const sections = [
-                {
-                    id: 'sec-1',
-                    name: 'Food',
-                    color: '#3b82f6',
-                    categories: [
-                        {
-                            id: 'cat-1',
-                            name: 'Groceries',
-                            icon: 'shopping-cart',
-                            sectionId: 'sec-1',
-                        },
-                    ],
-                },
-            ]
-            return HttpResponse.json({ data: sections })
+            return HttpResponse.json({ data: [createSectionWithCategories()] })
         }
 
         return HttpResponse.json({ data: [] })
@@ -77,13 +48,10 @@ export const budgetHandlers = [
             isArchived: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            category: {
-                id: body.categoryId ?? mockBudget.category.id,
-                name: mockBudget.category.name,
-                icon: mockBudget.category.icon,
-                sectionId: mockBudget.category.sectionId,
-                section: mockBudget.category.section,
-            },
+            category:
+                body.categoryId === mockBudget.category.id
+                    ? mockBudget.category
+                    : mockBudget.category,
         }
 
         return HttpResponse.json({ data: created }, { status: 201 })

@@ -3,6 +3,7 @@ import { delay, http, HttpResponse } from 'msw'
 import { render, screen } from '@/test/utils/render'
 import { server } from '@/test/mocks/server'
 import { AccountsPage } from '@/features/accounts/pages/AccountsPage'
+import { createAccount } from '@/test/fixtures/domain'
 
 const accountsUrl = 'http://localhost:8787/api/v1/accounts'
 
@@ -58,7 +59,7 @@ describe('AccountsPage', () => {
 
         render(<AccountsPage />)
 
-        expect(await screen.findByText('Checking')).toBeInTheDocument()
+        expect(await screen.findByText(createAccount().name)).toBeInTheDocument()
         // match numeric portion allowing for non-breaking spaces and locale separators
         const matches = await screen.findAllByText(/1\s*250[.,]\s*75/)
         expect(matches.length).toBeGreaterThanOrEqual(1)

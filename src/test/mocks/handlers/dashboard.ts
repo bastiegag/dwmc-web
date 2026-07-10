@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw'
+import { createAccount, createCategory } from '@/test/fixtures/domain'
 
 const API_URL = 'http://localhost:8787'
 
@@ -73,11 +74,11 @@ export const dashboardHandlers = [
                 ],
                 accountBreakdown: [
                     {
-                        accountId: 'a1',
-                        name: 'Checking',
-                        type: 'CHECKING',
-                        color: '#3b82f6',
-                        icon: 'wallet',
+                        accountId: createAccount().id,
+                        name: createAccount().name,
+                        type: createAccount().type,
+                        color: createAccount().color,
+                        icon: createAccount().icon,
                         incomeTotal: 5000,
                         expenseTotal: 2500,
                         adjustmentTotal: 0,
@@ -95,12 +96,17 @@ export const dashboardHandlers = [
                         date: new Date().toISOString(),
                         merchant: 'Grocery Store',
                         note: null,
-                        accountId: 'a1',
-                        categoryId: 'c1',
-                        account: { id: 'a1', name: 'Checking', color: '#3b82f6', icon: 'wallet' },
+                        accountId: createAccount().id,
+                        categoryId: createCategory().id,
+                        account: {
+                            id: createAccount().id,
+                            name: createAccount().name,
+                            color: createAccount().color,
+                            icon: createAccount().icon,
+                        },
                         category: {
-                            id: 'c1',
-                            name: 'Groceries',
+                            id: createCategory().id,
+                            name: createCategory().name,
                             icon: 'shopping-bag',
                             sectionId: 's1',
                         },
@@ -112,9 +118,14 @@ export const dashboardHandlers = [
                         date: new Date().toISOString(),
                         merchant: null,
                         note: 'June salary',
-                        accountId: 'a1',
+                        accountId: createAccount().id,
                         categoryId: 'ic1',
-                        account: { id: 'a1', name: 'Checking', color: '#3b82f6', icon: 'wallet' },
+                        account: {
+                            id: createAccount().id,
+                            name: createAccount().name,
+                            color: createAccount().color,
+                            icon: createAccount().icon,
+                        },
                         category: { id: 'ic1', name: 'Salary', icon: 'dollar-sign', sectionId: '' },
                     },
                 ],
