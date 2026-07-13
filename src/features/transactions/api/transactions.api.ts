@@ -31,18 +31,18 @@ export const getTransactions = async (
     params?: GetTransactionsParams,
 ): Promise<{ data: Transaction[]; meta?: TransactionsMeta }> => {
     const response = await apiClient<{ data: Transaction[]; meta?: TransactionsMeta }>(
-        `/api/v1/transactions${buildQuery(params)}`,
+        `/transactions${buildQuery(params)}`,
     )
     return response
 }
 
 export const getTransaction = async (id: string): Promise<Transaction> => {
-    const response = await apiClient<{ data: Transaction }>(`/api/v1/transactions/${id}`)
+    const response = await apiClient<{ data: Transaction }>(`/transactions/${id}`)
     return response.data
 }
 
 export const createTransaction = async (input: CreateTransactionPayload): Promise<Transaction> => {
-    const response = await apiClient<{ data: Transaction }>(`/api/v1/transactions`, {
+    const response = await apiClient<{ data: Transaction }>(`/transactions`, {
         method: 'POST',
         body: input,
     })
@@ -53,7 +53,7 @@ export const updateTransaction = async (
     id: string,
     input: UpdateTransactionPayload,
 ): Promise<Transaction> => {
-    const response = await apiClient<{ data: Transaction }>(`/api/v1/transactions/${id}`, {
+    const response = await apiClient<{ data: Transaction }>(`/transactions/${id}`, {
         method: 'PATCH',
         body: input,
     })
@@ -61,7 +61,7 @@ export const updateTransaction = async (
 }
 
 export const deleteTransaction = async (id: string): Promise<void> => {
-    await apiClient<{ data: unknown }>(`/api/v1/transactions/${id}`, {
+    await apiClient<{ data: unknown }>(`/transactions/${id}`, {
         method: 'DELETE',
     })
 }

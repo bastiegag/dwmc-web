@@ -4,7 +4,7 @@ import { createAccount, createCategory } from '@/test/fixtures/domain'
 const API_URL = 'http://localhost:8787'
 
 export const dashboardHandlers = [
-    http.get(`${API_URL}/api/v1/summary/monthly*`, ({ request }) => {
+    http.get(`${API_URL}/summary/monthly*`, ({ request }) => {
         const url = new URL(request.url)
         const month = url.searchParams.get('month') ?? ''
 

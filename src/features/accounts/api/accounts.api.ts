@@ -16,17 +16,17 @@ const buildQuery = (params?: GetAccountsParams) => {
 }
 
 export const getAccounts = async (params?: GetAccountsParams): Promise<Account[]> => {
-    const response = await apiClient<{ data: Account[] }>(`/api/v1/accounts${buildQuery(params)}`)
+    const response = await apiClient<{ data: Account[] }>(`/accounts${buildQuery(params)}`)
     return response.data
 }
 
 export const getAccount = async (id: string): Promise<Account> => {
-    const response = await apiClient<{ data: Account }>(`/api/v1/accounts/${id}`)
+    const response = await apiClient<{ data: Account }>(`/accounts/${id}`)
     return response.data
 }
 
 export const createAccount = async (input: CreateAccountPayload): Promise<Account> => {
-    const response = await apiClient<{ data: Account }>('/api/v1/accounts', {
+    const response = await apiClient<{ data: Account }>('/accounts', {
         method: 'POST',
         body: input,
     })
@@ -34,7 +34,7 @@ export const createAccount = async (input: CreateAccountPayload): Promise<Accoun
 }
 
 export const updateAccount = async (id: string, input: UpdateAccountPayload): Promise<Account> => {
-    const response = await apiClient<{ data: Account }>(`/api/v1/accounts/${id}`, {
+    const response = await apiClient<{ data: Account }>(`/accounts/${id}`, {
         method: 'PATCH',
         body: input,
     })
@@ -42,7 +42,7 @@ export const updateAccount = async (id: string, input: UpdateAccountPayload): Pr
 }
 
 export const deleteAccount = async (id: string): Promise<void> => {
-    await apiClient<{ data: Account }>(`/api/v1/accounts/${id}`, {
+    await apiClient<{ data: Account }>(`/accounts/${id}`, {
         method: 'DELETE',
     })
 }

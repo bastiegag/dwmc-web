@@ -6,13 +6,13 @@ import type {
 } from '@/features/categories/types'
 
 export const getCategories = async (): Promise<Category[]> => {
-    const response = await apiClient<{ data: Category[] }>('/api/v1/categories')
+    const response = await apiClient<{ data: Category[] }>('/categories')
 
     return response.data
 }
 
 export const createCategory = async (input: CreateCategoryInput): Promise<Category> => {
-    const response = await apiClient<{ data: Category }>('/api/v1/categories', {
+    const response = await apiClient<{ data: Category }>('/categories', {
         method: 'POST',
         body: input,
     })
@@ -21,7 +21,7 @@ export const createCategory = async (input: CreateCategoryInput): Promise<Catego
 }
 
 export const updateCategory = async (id: string, input: UpdateCategoryInput): Promise<Category> => {
-    const response = await apiClient<{ data: Category }>(`/api/v1/categories/${id}`, {
+    const response = await apiClient<{ data: Category }>(`/categories/${id}`, {
         method: 'PATCH',
         body: input,
     })
@@ -30,7 +30,7 @@ export const updateCategory = async (id: string, input: UpdateCategoryInput): Pr
 }
 
 export const deleteCategory = async (id: string): Promise<void> => {
-    await apiClient<{ data: Category }>(`/api/v1/categories/${id}`, {
+    await apiClient<{ data: Category }>(`/categories/${id}`, {
         method: 'DELETE',
     })
 }

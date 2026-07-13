@@ -17,7 +17,7 @@ export const getMonthlySummary = async (
     params?: GetMonthlySummaryParams,
 ): Promise<MonthlySummary> => {
     const response = await apiClient<{ data: MonthlySummary }>(
-        `/api/v1/summary/monthly${buildQuery(params)}`,
+        `/summary/monthly${buildQuery(params)}`,
     )
     return response.data
 }

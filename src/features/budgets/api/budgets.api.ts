@@ -18,17 +18,17 @@ const buildQuery = (params?: GetBudgetsParams) => {
 }
 
 export const getBudgets = async (params?: GetBudgetsParams): Promise<Budget[]> => {
-    const response = await apiClient<{ data: Budget[] }>(`/api/v1/budgets${buildQuery(params)}`)
+    const response = await apiClient<{ data: Budget[] }>(`/budgets${buildQuery(params)}`)
     return response.data
 }
 
 export const getBudget = async (id: string): Promise<Budget> => {
-    const response = await apiClient<{ data: Budget }>(`/api/v1/budgets/${id}`)
+    const response = await apiClient<{ data: Budget }>(`/budgets/${id}`)
     return response.data
 }
 
 export const createBudget = async (input: CreateBudgetPayload): Promise<Budget> => {
-    const response = await apiClient<{ data: Budget }>(`/api/v1/budgets`, {
+    const response = await apiClient<{ data: Budget }>(`/budgets`, {
         method: 'POST',
         body: input,
     })
@@ -36,7 +36,7 @@ export const createBudget = async (input: CreateBudgetPayload): Promise<Budget> 
 }
 
 export const updateBudget = async (id: string, input: UpdateBudgetPayload): Promise<Budget> => {
-    const response = await apiClient<{ data: Budget }>(`/api/v1/budgets/${id}`, {
+    const response = await apiClient<{ data: Budget }>(`/budgets/${id}`, {
         method: 'PATCH',
         body: input,
     })
@@ -44,7 +44,7 @@ export const updateBudget = async (id: string, input: UpdateBudgetPayload): Prom
 }
 
 export const deleteBudget = async (id: string): Promise<void> => {
-    await apiClient<{ data: unknown }>(`/api/v1/budgets/${id}`, {
+    await apiClient<{ data: unknown }>(`/budgets/${id}`, {
         method: 'DELETE',
     })
 }

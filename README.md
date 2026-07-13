@@ -199,6 +199,7 @@ This avoids the Fast Refresh warning:
 The frontend uses a shared `apiClient` in `src/lib/api-client.ts`.
 
 - The client reads the backend base URL from `VITE_API_URL`
+- In local development, set `VITE_API_URL=/api/v1` and let Vite proxy that path to the backend to avoid CORS
 - It attaches the Supabase access token as `Authorization: Bearer <token>`
 - Feature API modules should use the shared `apiClient`
 - Components should not call `fetch` directly

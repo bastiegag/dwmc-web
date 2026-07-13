@@ -8,11 +8,11 @@ import { createAccount } from '@/test/fixtures/domain'
 const API_URL = 'http://localhost:8787'
 
 export const transactionHandlers = [
-    http.get(`${API_URL}/api/v1/transactions`, () =>
+    http.get(`${API_URL}/transactions`, () =>
         HttpResponse.json({ data: [], meta: { page: 1, pageSize: 25, total: 0, totalPages: 0 } }),
     ),
 
-    http.get(`${API_URL}/api/v1/transactions/:id`, ({ params }) => {
+    http.get(`${API_URL}/transactions/:id`, ({ params }) => {
         const id = params.id as string
         const t = {
             id,
@@ -38,7 +38,7 @@ export const transactionHandlers = [
         return HttpResponse.json({ data: t })
     }),
 
-    http.post(`${API_URL}/api/v1/transactions`, async ({ request }) => {
+    http.post(`${API_URL}/transactions`, async ({ request }) => {
         const body = (await request.json()) as CreateTransactionPayload
         const created = {
             id: 'tx-' + String(Math.floor(Math.random() * 10000)),
@@ -50,7 +50,7 @@ export const transactionHandlers = [
         return HttpResponse.json({ data: created }, { status: 201 })
     }),
 
-    http.patch(`${API_URL}/api/v1/transactions/:id`, async ({ request, params }) => {
+    http.patch(`${API_URL}/transactions/:id`, async ({ request, params }) => {
         const id = params.id as string
         const body = (await request.json()) as UpdateTransactionPayload
         const updated = {
@@ -61,8 +61,5 @@ export const transactionHandlers = [
         return HttpResponse.json({ data: updated })
     }),
 
-    http.delete(
-        `${API_URL}/api/v1/transactions/:id`,
-        () => new HttpResponse(null, { status: 204 }),
-    ),
+    http.delete(`${API_URL}/transactions/:id`, () => new HttpResponse(null, { status: 204 })),
 ]

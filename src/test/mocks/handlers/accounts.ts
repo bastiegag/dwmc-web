@@ -3,9 +3,9 @@ import { http, HttpResponse } from 'msw'
 const API_URL = 'http://localhost:8787'
 
 export const accountHandlers = [
-    http.get(`${API_URL}/api/v1/accounts`, () => HttpResponse.json({ data: [] })),
+    http.get(`${API_URL}/accounts`, () => HttpResponse.json({ data: [] })),
 
-    http.post(`${API_URL}/api/v1/accounts`, async ({ request }) => {
+    http.post(`${API_URL}/accounts`, async ({ request }) => {
         const body = (await request.json()) as Record<string, unknown>
         const created = {
             id: 'account-1',
@@ -24,7 +24,7 @@ export const accountHandlers = [
         return HttpResponse.json({ data: created }, { status: 201 })
     }),
 
-    http.patch(`${API_URL}/api/v1/accounts/:id`, async ({ request, params }) => {
+    http.patch(`${API_URL}/accounts/:id`, async ({ request, params }) => {
         const id = params.id as string
         const body = (await request.json()) as Record<string, unknown>
         const updated = {
@@ -44,5 +44,5 @@ export const accountHandlers = [
         return HttpResponse.json({ data: updated })
     }),
 
-    http.delete(`${API_URL}/api/v1/accounts/:id`, () => new HttpResponse(null, { status: 204 })),
+    http.delete(`${API_URL}/accounts/:id`, () => new HttpResponse(null, { status: 204 })),
 ]

@@ -8,14 +8,14 @@ import type {
 
 export const getSections = async (): Promise<SectionWithCategories[]> => {
     const response = await apiClient<{ data: SectionWithCategories[] }>(
-        '/api/v1/sections?includeCategories=true',
+        '/sections?includeCategories=true',
     )
 
     return response.data
 }
 
 export const createSection = async (input: CreateSectionInput): Promise<Section> => {
-    const response = await apiClient<{ data: Section }>('/api/v1/sections', {
+    const response = await apiClient<{ data: Section }>('/sections', {
         method: 'POST',
         body: input,
     })
@@ -24,7 +24,7 @@ export const createSection = async (input: CreateSectionInput): Promise<Section>
 }
 
 export const updateSection = async (id: string, input: UpdateSectionInput): Promise<Section> => {
-    const response = await apiClient<{ data: Section }>(`/api/v1/sections/${id}`, {
+    const response = await apiClient<{ data: Section }>(`/sections/${id}`, {
         method: 'PATCH',
         body: input,
     })
@@ -33,7 +33,7 @@ export const updateSection = async (id: string, input: UpdateSectionInput): Prom
 }
 
 export const deleteSection = async (id: string): Promise<void> => {
-    await apiClient<{ data: Section }>(`/api/v1/sections/${id}`, {
+    await apiClient<{ data: Section }>(`/sections/${id}`, {
         method: 'DELETE',
     })
 }

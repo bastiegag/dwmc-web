@@ -12,7 +12,7 @@ const mockBudget = createBudget({
 })
 
 export const budgetHandlers = [
-    http.get(`${API_URL}/api/v1/budgets`, ({ request }) => {
+    http.get(`${API_URL}/budgets`, ({ request }) => {
         // allow query filtering but default to returning a single mock
         const url = new URL(request.url)
         const params = url.searchParams
@@ -24,7 +24,7 @@ export const budgetHandlers = [
     }),
 
     // Sections with categories used by the budgets UI
-    http.get(`${API_URL}/api/v1/sections`, ({ request }) => {
+    http.get(`${API_URL}/sections`, ({ request }) => {
         const url = new URL(request.url)
         const includeCategories = url.searchParams.get('includeCategories') === 'true'
         if (includeCategories) {
@@ -34,7 +34,7 @@ export const budgetHandlers = [
         return HttpResponse.json({ data: [] })
     }),
 
-    http.post(`${API_URL}/api/v1/budgets`, async ({ request }) => {
+    http.post(`${API_URL}/budgets`, async ({ request }) => {
         const body = (await request.json()) as Record<string, unknown>
         const created = {
             id: `budget-${Math.random().toString(36).slice(2, 9)}`,
@@ -57,13 +57,13 @@ export const budgetHandlers = [
         return HttpResponse.json({ data: created }, { status: 201 })
     }),
 
-    http.get(`${API_URL}/api/v1/budgets/:id`, ({ params }) => {
+    http.get(`${API_URL}/budgets/:id`, ({ params }) => {
         const id = params.id as string
         if (id === mockBudget.id) return HttpResponse.json({ data: mockBudget })
         return new HttpResponse(null, { status: 404 })
     }),
 
-    http.patch(`${API_URL}/api/v1/budgets/:id`, async ({ request, params }) => {
+    http.patch(`${API_URL}/budgets/:id`, async ({ request, params }) => {
         const id = params.id as string
         const body = (await request.json()) as Record<string, unknown>
         const updated = {
@@ -79,5 +79,5 @@ export const budgetHandlers = [
         return HttpResponse.json({ data: updated })
     }),
 
-    http.delete(`${API_URL}/api/v1/budgets/:id`, () => new HttpResponse(null, { status: 204 })),
+    http.delete(`${API_URL}/budgets/:id`, () => new HttpResponse(null, { status: 204 })),
 ]
