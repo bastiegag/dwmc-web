@@ -6,6 +6,10 @@ on:
     pull_request:
         branches: [main]
 
+concurrency:
+    group: chromatic-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 env:
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -16,6 +20,9 @@ jobs:
         name: Visual regression tests
         if: github.actor != 'dependabot[bot]'
         runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
 
         steps:
             - name: Checkout repository

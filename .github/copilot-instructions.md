@@ -157,8 +157,9 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 
 ## Documentation
 
-- Update the frontend README when adding major features
-- Document new environment variables
-- Document new scripts
-- Keep docs aligned with actual code
-- Move planned but unfinished features to Roadmap
+- Treat the docs folder as the source of truth for frontend implementation details.
+- Update the frontend README when adding major features.
+- Keep README content concise and link to the deeper docs instead of duplicating them.
+- Document new environment variables and scripts when they affect setup or development.
+- Keep `docs/frontend-architecture.md`, `docs/frontend-conventions.md`, `docs/frontend-routing.md`, `docs/frontend-state-management.md`, `docs/frontend-api.md`, `docs/testing.md`, and `docs/roadmap.md` aligned with the actual code.
+- Move planned but unfinished features to `docs/roadmap.md` instead of presenting them as shipped.

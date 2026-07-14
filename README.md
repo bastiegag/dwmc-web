@@ -2,6 +2,16 @@
 
 React + TypeScript frontend for a personal budget app. It focuses on a polished, portfolio-quality user experience for managing accounts, budgets, transactions, categories, sections, and monthly summaries.
 
+Detailed implementation notes live in the docs folder:
+
+- [Frontend architecture](docs/frontend-architecture.md)
+- [Frontend conventions](docs/frontend-conventions.md)
+- [Routing and navigation](docs/frontend-routing.md)
+- [State management](docs/frontend-state-management.md)
+- [API integration](docs/frontend-api.md)
+- [Testing](docs/testing.md)
+- [Roadmap](docs/roadmap.md)
+
 ## Overview
 
 This app helps users manage:
@@ -154,6 +164,8 @@ src/features/budgets/
 - Feature UI components live in `components/`
 - Route pages live in `pages/`
 
+See [Frontend architecture](docs/frontend-architecture.md) and [Frontend conventions](docs/frontend-conventions.md) for the full set of folder and naming rules used in the codebase.
+
 ## Naming Conventions
 
 - React component files use PascalCase filenames: `BudgetCard.tsx`, `MonthNavigator.tsx`
@@ -205,6 +217,8 @@ The frontend uses a shared `apiClient` in `src/lib/api-client.ts`.
 - Components should not call `fetch` directly
 - Supabase should not be called directly for app domain data
 
+See [Frontend API integration](docs/frontend-api.md) for the full request, auth, and error-handling contract.
+
 Expected response shape:
 
 Success:
@@ -250,6 +264,8 @@ Examples:
 - Creating a transaction should invalidate transactions and any dependent dashboard or budget data
 - Creating a budget should invalidate budgets and any dependent dashboard/monthly summary data
 
+See [Frontend state management](docs/frontend-state-management.md) for query ownership and invalidation rules.
+
 ## Forms
 
 - Forms use React Hook Form
@@ -258,6 +274,8 @@ Examples:
 - Form components should display validation errors
 - API errors should be shown in a user-friendly way
 - Avoid duplicating validation logic inside components
+
+See [Frontend conventions](docs/frontend-conventions.md) for the form, component, and accessibility rules used across the app.
 
 ## Month Navigation
 

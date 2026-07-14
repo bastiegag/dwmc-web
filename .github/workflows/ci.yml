@@ -8,10 +8,17 @@ on:
         branches:
             - main
 
+concurrency:
+    group: ci-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
     quality:
         name: Lint, typecheck, test and build
         runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
 
         steps:
             - name: Checkout repository

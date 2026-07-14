@@ -1,0 +1,130 @@
+# Frontend Testing
+
+## Overview
+
+The project uses a layered testing setup with:
+
+- Vitest for unit and component tests
+- Testing Library for user-focused React tests
+- Playwright for end-to-end tests
+- Storybook for interactive UI documentation
+- MSW for request mocking in tests and stories
+
+## Unit Tests
+
+Use unit tests for pure utilities and validation logic.
+
+Good candidates include:
+
+- month helpers
+- date helpers
+- formatters
+- storage helpers
+- Zod schemas
+- small data transformations
+
+## Component Tests
+
+Use component tests for isolated UI behavior such as:
+
+- forms
+- cards
+- lists
+- empty states
+- loading states
+- error states
+- navigation components
+- the contextual primary action button
+
+## Integration Tests
+
+Use integration tests for flows that combine UI, hooks, and mocked API data.
+
+Good examples:
+
+- page-level render flows with mocked backend data
+- TanStack Query behavior
+- dialog open and submit flows
+- query invalidation after mutations when practical
+
+## E2E Tests
+
+Playwright is available for end-to-end coverage.
+
+Useful flows include:
+
+- sign in
+- create a transaction
+- create a budget
+- change the selected month
+- verify transactions reflect the selected month
+- verify budget progress updates
+- navigate with the bottom navigation
+- use the contextual `+` button
+
+## Storybook
+
+Storybook is used for reusable UI states.
+
+Use stories for:
+
+- cards
+- forms
+- empty states
+- navigation elements
+- design-system-like UI pieces
+
+Stories document component behavior, but they do not replace tests.
+
+## What To Test By Feature
+
+### Month Navigation
+
+- Defaults to the current month.
+- Rejects invalid month values.
+- Previous and next controls work.
+- Other query params are preserved when applicable.
+
+### Budgets
+
+- Shows planned, spent, remaining, and progress data.
+- Shows over-budget states when relevant.
+- Validates required form fields.
+- Displays duplicate or API errors clearly.
+
+### Transactions
+
+- Validates form fields.
+- Uses the selected month when choosing a default date.
+- Restores the last transaction date per month when available.
+- Invalidates the affected queries after create, update, and delete.
+
+### Primary Action
+
+- Dashboard registers Add transaction.
+- Transactions registers Add transaction.
+- Budgets registers Add budget.
+- Accounts registers Add account.
+- Categories registers the appropriate create action.
+- The action clears when the page unmounts.
+
+## Commands
+
+Use the package scripts that exist in `package.json`.
+
+- `npm run test`
+- `npm run test:watch`
+- `npm run test:coverage`
+- `npm run test:e2e`
+- `npm run test:e2e:ui`
+- `npm run storybook`
+- `npm run build-storybook`
+
+## Testing Guidelines
+
+- Prefer user behavior over implementation details.
+- Use accessible queries when possible.
+- Avoid brittle snapshots.
+- Mock network calls consistently.
+- Keep tests focused and readable.
+- Do not add a new testing framework without a clear reason.
