@@ -1,0 +1,41 @@
+name: Release Tags
+
+on:
+    push:
+        tags:
+            - 'v*'
+
+concurrency:
+    group: release-tags-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        name: Create Git tags and GitHub Releases
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Validate project
+              run: npm run validate
+
+            - name: Create Git tags and GitHub Releases
+              uses: changesets/action/publish@v2
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  create-github-releases: true
+                  push-git-tags: true

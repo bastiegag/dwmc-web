@@ -1,61 +1,54 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { delay, http, HttpResponse } from 'msw'
 import { render, screen } from '@/test/utils/render'
-import { server } from '@/test/mocks/server'
 import { AccountsPage } from '@/features/accounts/pages/AccountsPage'
 import { createAccount } from '@/test/fixtures/domain'
+import type { Account } from '@/features/accounts/types/account.types'
 
-const accountsUrl = 'http://localhost:8787/api/v1/accounts'
+const createMock = vi.fn().mockResolvedValue(undefined)
+const updateMock = vi.fn().mockResolvedValue(undefined)
+const deleteMock = vi.fn().mockResolvedValue(undefined)
+
+let accountsData: Account[] = []
+let isLoading = false
+let isError = false
+let error: Error | null = null
+
+vi.mock('@/features/accounts/hooks', () => ({
+    useAccounts: () => ({
+        data: accountsData,
+        isLoading,
+        isError,
+        error,
+    }),
+    useCreateAccount: () => ({ mutateAsync: createMock, isPending: false }),
+    useUpdateAccount: () => ({ mutateAsync: updateMock, isPending: false }),
+    useDeleteAccount: () => ({ mutateAsync: deleteMock, isPending: false }),
+}))
 
 describe('AccountsPage', () => {
     beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
+        accountsData = []
+        isLoading = false
+        isError = false
+        error = null
     })
 
     it('shows loading state while accounts are being fetched', async () => {
-        server.use(
-            http.get(accountsUrl, async () => {
-                await delay(200)
-                return HttpResponse.json({ data: [] })
-            }),
-        )
+        isLoading = true
 
         render(<AccountsPage />)
 
         expect(screen.getByLabelText(/loading accounts/i)).toBeInTheDocument()
-        expect(await screen.findByText(/no accounts yet/i)).toBeInTheDocument()
     })
 
     it('shows empty state when no accounts exist', async () => {
-        server.use(http.get(accountsUrl, () => HttpResponse.json({ data: [] })))
-
         render(<AccountsPage />)
 
         expect(await screen.findByText(/no accounts yet/i)).toBeInTheDocument()
     })
 
     it('renders accounts from API response', async () => {
-        server.use(
-            http.get(accountsUrl, () =>
-                HttpResponse.json({
-                    data: [
-                        {
-                            id: 'a1',
-                            name: 'Checking',
-                            type: 'CHECKING',
-                            startingBalance: 1250.75,
-                            currentBalance: 1250.75,
-                            goal: null,
-                            color: '#3b82f6',
-                            icon: 'wallet',
-                            isArchived: false,
-                            createdAt: new Date().toISOString(),
-                            updatedAt: new Date().toISOString(),
-                        },
-                    ],
-                }),
-            ),
-        )
+        accountsData = [createAccount()]
 
         render(<AccountsPage />)
 

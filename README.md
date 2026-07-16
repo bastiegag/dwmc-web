@@ -23,6 +23,12 @@ This app helps users manage:
 - budgets
 - month-based navigation
 
+## Releases
+
+This repository uses Changesets, Conventional Commits, and GitHub Actions to manage releases.
+
+See [Releasing](docs/RELEASING.md) for the full workflow.
+
 Authentication is handled with Supabase Auth. Once signed in, the frontend uses the Supabase session to protect app routes and attach access tokens to backend API requests.
 
 ## Features
