@@ -4,7 +4,7 @@ import { categoryQueryKeys } from './use-sections'
 
 export const useCategories = () => {
     return useQuery({
-        queryKey: categoryQueryKeys.all,
+        queryKey: categoryQueryKeys.list(),
         queryFn: getCategories,
     })
 }

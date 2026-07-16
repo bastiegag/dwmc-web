@@ -1,19 +1,7 @@
-import { useLocation } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { render, screen } from '@/test/utils/render'
+import { renderMonthAwareNavigation, screen } from '@/test/utils/render'
 import { AppBottomNavigation } from '@/components/layout/AppBottomNavigation'
-
-const LocationProbe = () => {
-    const location = useLocation()
-
-    return (
-        <output data-testid="location-probe">
-            {location.pathname}
-            {location.search}
-        </output>
-    )
-}
 
 describe('AppBottomNavigation', () => {
     beforeEach(() => {
@@ -23,13 +11,7 @@ describe('AppBottomNavigation', () => {
     it('preserves the selected month when navigating between screens', async () => {
         const user = userEvent.setup()
 
-        render(
-            <>
-                <AppBottomNavigation />
-                <LocationProbe />
-            </>,
-            { initialEntries: ['/dashboard?month=2026-06'] },
-        )
+        renderMonthAwareNavigation(<AppBottomNavigation />, '2026-06')
 
         expect(screen.getByTestId('location-probe')).toHaveTextContent('/dashboard?month=2026-06')
 

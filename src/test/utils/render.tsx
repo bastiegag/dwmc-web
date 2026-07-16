@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 import { render, renderHook, type RenderOptions } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PrimaryActionProvider } from '@/shared/primary-action'
 
@@ -45,6 +45,31 @@ const customRender = (
 
 export * from '@testing-library/react'
 export { customRender as render }
+
+export const MonthLocationProbe = () => {
+    const location = useLocation()
+
+    return (
+        <output data-testid="location-probe">
+            {location.pathname}
+            {location.search}
+        </output>
+    )
+}
+
+export const renderMonthAwareNavigation = (
+    ui: React.ReactElement,
+    month: string,
+    initialPath = '/dashboard',
+) => {
+    return customRender(
+        <>
+            {ui}
+            <MonthLocationProbe />
+        </>,
+        { initialEntries: [`${initialPath}?month=${month}`] },
+    )
+}
 
 export const renderHookWithQuery = <Result,>(
     hook: () => Result,

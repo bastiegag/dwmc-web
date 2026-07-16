@@ -121,7 +121,8 @@ Current invalidation patterns in the app:
 - Transaction create, update, and delete mutations invalidate `transactionQueryKeys.lists()` and `accountQueryKeys.lists()`.
 - Budget create, update, and delete mutations invalidate `budgetQueryKeys.lists()` and `dashboardQueryKeys.lists()`.
 - Account create, update, and delete mutations invalidate `accountQueryKeys.lists()`.
-- Category and section mutations invalidate category and section queries.
+- Category mutations invalidate `categoryQueryKeys.lists()` and `sectionQueryKeys.lists()`.
+- Section mutations invalidate `sectionQueryKeys.lists()`.
 
 The dashboard retry action invalidates `dashboardQueryKeys.lists()` instead of calling `refetch()` directly.
 

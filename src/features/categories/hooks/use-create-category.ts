@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createCategory } from '@/features/categories/api'
 import type { CreateCategoryInput } from '@/features/categories/types'
-import { categoryQueryKeys } from './use-sections'
+import { categoryQueryKeys, sectionQueryKeys } from './use-sections'
 
 export const useCreateCategory = () => {
     const queryClient = useQueryClient()
@@ -10,10 +10,8 @@ export const useCreateCategory = () => {
         mutationFn: (input: CreateCategoryInput) => createCategory(input),
         onSuccess: async () => {
             await Promise.all([
-                queryClient.invalidateQueries({
-                    queryKey: categoryQueryKeys.sectionsWithCategories(),
-                }),
-                queryClient.invalidateQueries({ queryKey: categoryQueryKeys.all }),
+                queryClient.invalidateQueries({ queryKey: categoryQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: sectionQueryKeys.lists() }),
             ])
         },
     })

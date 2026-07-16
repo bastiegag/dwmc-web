@@ -45,7 +45,17 @@ Examples of invalidation behavior in the current app:
 - Transaction mutations invalidate `transactionQueryKeys.lists()` and `accountQueryKeys.lists()`.
 - Budget mutations invalidate `budgetQueryKeys.lists()` and `dashboardQueryKeys.lists()`.
 - Account mutations invalidate `accountQueryKeys.lists()`.
-- Category and section mutations invalidate category and section queries.
+- Category mutations invalidate `categoryQueryKeys.lists()` and `sectionQueryKeys.lists()`.
+- Section mutations invalidate `sectionQueryKeys.lists()`.
+
+Current feature key factories follow the same shape:
+
+- `accountQueryKeys`
+- `budgetQueryKeys`
+- `categoryQueryKeys`
+- `dashboardQueryKeys`
+- `sectionQueryKeys`
+- `transactionQueryKeys`
 
 ## Form State
 

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateSection } from '@/features/categories/api'
 import type { UpdateSectionInput } from '@/features/categories/types'
-import { categoryQueryKeys } from './use-sections'
+import { sectionQueryKeys } from './use-sections'
 
 export const useUpdateSection = () => {
     const queryClient = useQueryClient()
@@ -11,7 +11,7 @@ export const useUpdateSection = () => {
             updateSection(id, input),
         onSuccess: async () => {
             await queryClient.invalidateQueries({
-                queryKey: categoryQueryKeys.sectionsWithCategories(),
+                queryKey: sectionQueryKeys.lists(),
             })
         },
     })

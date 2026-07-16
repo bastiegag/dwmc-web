@@ -49,6 +49,13 @@ Good examples:
 
 When asserting query invalidation, prefer the shared query-key helpers used by the implementation, such as `budgetQueryKeys.lists()` and `dashboardQueryKeys.lists()`.
 
+For month-aware navigation assertions, prefer the shared test helper in `src/test/utils/render.tsx`:
+
+- `renderMonthAwareNavigation(ui, month, initialPath?)`
+- `MonthLocationProbe`
+
+Use that helper for bottom navigation and desktop sidebar tests so the setup stays identical.
+
 ## E2E Tests
 
 Playwright is available for end-to-end coverage.
@@ -86,6 +93,7 @@ Stories document component behavior, but they do not replace tests.
 - Rejects invalid month values.
 - Previous and next controls work.
 - Other query params are preserved when applicable.
+- Bottom navigation and desktop sidebar tests should use the shared month-aware navigation helper.
 
 ### Budgets
 
@@ -94,6 +102,14 @@ Stories document component behavior, but they do not replace tests.
 - Validates required form fields.
 - Displays duplicate or API errors clearly.
 - Invalidates budget lists and dashboard summary data after create, update, and delete mutations.
+
+### Accounts
+
+- Invalidates the accounts list after create, update, and delete mutations.
+
+### Categories and Sections
+
+- Invalidates category and section list queries after create, update, and delete mutations.
 
 ### Transactions
 
