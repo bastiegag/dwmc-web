@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateBudget } from '@/features/budgets/api/budgets.api'
 import { budgetQueryKeys } from './use-budgets'
 import type { UpdateBudgetPayload } from '@/features/budgets/types/budget.types'
+import { dashboardQueryKeys } from '@/features/dashboard'
 
 export const useUpdateBudget = () => {
     const queryClient = useQueryClient()
@@ -16,7 +17,7 @@ export const useUpdateBudget = () => {
                     queryKey: budgetQueryKeys.detail(variables.id),
                 })
             }
-            await queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
         },
     })
 }

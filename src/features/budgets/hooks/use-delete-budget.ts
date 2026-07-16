@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteBudget } from '@/features/budgets/api/budgets.api'
 import { budgetQueryKeys } from './use-budgets'
+import { dashboardQueryKeys } from '@/features/dashboard'
 
 export const useDeleteBudget = () => {
     const queryClient = useQueryClient()
@@ -9,7 +10,7 @@ export const useDeleteBudget = () => {
         mutationFn: (id: string) => deleteBudget(id),
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: budgetQueryKeys.lists() })
-            await queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
         },
     })
 }

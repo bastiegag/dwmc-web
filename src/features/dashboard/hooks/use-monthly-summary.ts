@@ -7,6 +7,7 @@ import type {
 
 export const dashboardQueryKeys = {
     all: ['dashboard'] as const,
+    lists: () => dashboardQueryKeys.all,
     monthlySummary: (params?: GetMonthlySummaryParams) =>
         [...dashboardQueryKeys.all, 'monthly-summary', params ?? {}] as const,
 }

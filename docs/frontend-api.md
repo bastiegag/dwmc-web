@@ -106,6 +106,8 @@ Query keys should be stable and should include filters.
 
 Month-scoped queries must include the month value so they refetch when the selected month changes.
 
+The dashboard summary query also includes `recentLimit`; the current page requests 5 recent transactions.
+
 Examples:
 
 - budgets list for `{ month: '2026-06' }`
@@ -116,10 +118,12 @@ Examples:
 
 Current invalidation patterns in the app:
 
-- Transaction create, update, and delete mutations invalidate transaction lists and account lists.
-- Budget create, update, and delete mutations invalidate budget lists and dashboard summary data.
-- Account create, update, and delete mutations invalidate account lists.
+- Transaction create, update, and delete mutations invalidate `transactionQueryKeys.lists()` and `accountQueryKeys.lists()`.
+- Budget create, update, and delete mutations invalidate `budgetQueryKeys.lists()` and `dashboardQueryKeys.lists()`.
+- Account create, update, and delete mutations invalidate `accountQueryKeys.lists()`.
 - Category and section mutations invalidate category and section queries.
+
+The dashboard retry action invalidates `dashboardQueryKeys.lists()` instead of calling `refetch()` directly.
 
 The current implementation uses query invalidation instead of manual refetching after writes.
 

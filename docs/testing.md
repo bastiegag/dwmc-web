@@ -47,6 +47,8 @@ Good examples:
 - dialog open and submit flows
 - query invalidation after mutations when practical
 
+When asserting query invalidation, prefer the shared query-key helpers used by the implementation, such as `budgetQueryKeys.lists()` and `dashboardQueryKeys.lists()`.
+
 ## E2E Tests
 
 Playwright is available for end-to-end coverage.
@@ -91,6 +93,7 @@ Stories document component behavior, but they do not replace tests.
 - Shows over-budget states when relevant.
 - Validates required form fields.
 - Displays duplicate or API errors clearly.
+- Invalidates budget lists and dashboard summary data after create, update, and delete mutations.
 
 ### Transactions
 

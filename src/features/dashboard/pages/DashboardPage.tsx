@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 import SummaryCards from '@/features/dashboard/components/SummaryCards'
@@ -6,7 +7,10 @@ import CategoryBreakdownCard from '@/features/dashboard/components/CategoryBreak
 import AccountBreakdownCard from '@/features/dashboard/components/AccountBreakdownCard'
 import RecentTransactionsCard from '@/features/dashboard/components/RecentTransactionsCard'
 import EmptyDashboardState from '@/features/dashboard/components/EmptyDashboardState'
-import { useMonthlySummary } from '@/features/dashboard/hooks/use-monthly-summary'
+import {
+    dashboardQueryKeys,
+    useMonthlySummary,
+} from '@/features/dashboard/hooks/use-monthly-summary'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 import { useAccounts } from '@/features/accounts/hooks'
@@ -25,6 +29,7 @@ const toErrorMessage = (error: unknown, fallback: string) => {
 
 export const DashboardPage = () => {
     const { month } = useSelectedMonth()
+    const queryClient = useQueryClient()
     const summaryQuery = useMonthlySummary({ month, recentLimit: 5 })
     const accountsQuery = useAccounts()
     const sectionsQuery = useSections()
@@ -106,7 +111,11 @@ export const DashboardPage = () => {
                             <div className="mt-2">
                                 <button
                                     className="text-sm text-primary"
-                                    onClick={() => summaryQuery.refetch()}
+                                    onClick={() =>
+                                        queryClient.invalidateQueries({
+                                            queryKey: dashboardQueryKeys.lists(),
+                                        })
+                                    }
                                 >
                                     Retry
                                 </button>

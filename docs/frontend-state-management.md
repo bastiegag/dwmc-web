@@ -36,13 +36,15 @@ Rules:
 
 - Query keys must include filters such as `month`.
 - Mutations invalidate affected queries after success.
-- Avoid manual refetches after writes unless a specific flow really needs them.
+- Prefer invalidation over manual refetches whenever a shared query key exists.
+- Use exported query-key helpers instead of raw string literals.
+- The current dashboard retry behavior invalidates `dashboardQueryKeys.lists()`.
 
 Examples of invalidation behavior in the current app:
 
-- Transaction mutations invalidate transaction lists and account lists.
-- Budget mutations invalidate budget lists and dashboard summary data.
-- Account mutations invalidate account lists.
+- Transaction mutations invalidate `transactionQueryKeys.lists()` and `accountQueryKeys.lists()`.
+- Budget mutations invalidate `budgetQueryKeys.lists()` and `dashboardQueryKeys.lists()`.
+- Account mutations invalidate `accountQueryKeys.lists()`.
 - Category and section mutations invalidate category and section queries.
 
 ## Form State

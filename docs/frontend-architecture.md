@@ -97,10 +97,10 @@ For example, the dashboard summary flow is:
 
 ```text
 DashboardPage
-→ useMonthlySummary({ month })
-→ getMonthlySummary(params)
+→ useMonthlySummary({ month, recentLimit: 5 })
+→ getMonthlySummary({ month, recentLimit: 5 })
 → apiClient
-→ GET /summary/monthly?month=YYYY-MM
+→ GET /summary/monthly?month=YYYY-MM&recentLimit=5
 ```
 
 ## Authentication Flow
@@ -121,6 +121,7 @@ Server state is managed with TanStack Query.
 - Query hooks own reads from the backend.
 - Query keys include relevant filters such as `month`.
 - Mutations invalidate affected query keys after they succeed.
+- In the current dashboard implementation, `dashboardQueryKeys.monthlySummary({ month, recentLimit: 5 })` is the read key and `dashboardQueryKeys.lists()` is the base key used for invalidation.
 - The app avoids manual refetches after writes when invalidation is sufficient.
 
 ## Form State
