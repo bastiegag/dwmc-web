@@ -134,6 +134,8 @@ src/shared/primary-action/
 - Reuse existing theme tokens.
 - Avoid hardcoded colors when theme tokens already exist.
 - Keep responsive behavior intentional.
+- Style guide helper components such as `StyleGuideSection`, `TokenSwatch`, and `ComponentPreview` are documentation-only and must not replace canonical UI primitives.
+- The style guide should reuse the same `components/ui`, `components/form`, and feature components that production screens import.
 
 ## Accessibility Conventions
 

@@ -85,6 +85,7 @@ Authentication is handled with Supabase Auth. Once signed in, the frontend uses 
 - Bottom navigation for core app areas
 - Contextual floating `+` action
 - Global month navigation shown on Dashboard, Transactions, and Budgets
+- In-app Style Guide at `/style-guide` for design-system reference
 
 ## Tech Stack
 

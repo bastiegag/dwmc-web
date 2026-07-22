@@ -1,6 +1,7 @@
 import { useState, type FC } from 'react'
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Budget } from '@/features/budgets/types/budget.types'
 
@@ -70,13 +71,10 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                 </div>
 
                 <div className="mb-3">
-                    <div className="h-2 w-full rounded-full bg-muted">
-                        <div
-                            className={`h-2 rounded-full ${budget.isOverBudget ? 'bg-destructive' : 'bg-primary'}`}
-                            style={{ width: `${Math.min(budget.progress, 100)}%` }}
-                            aria-hidden
-                        />
-                    </div>
+                    <Progress
+                        value={Math.min(budget.progress, 100)}
+                        indicatorClassName={budget.isOverBudget ? 'bg-destructive' : 'bg-primary'}
+                    />
                     <div className="mt-2 flex items-center justify-between text-sm">
                         <div>{Math.round(budget.progress)}% used</div>
                         <div>

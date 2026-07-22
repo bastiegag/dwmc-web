@@ -36,17 +36,9 @@ export const SignupForm = () => {
 
     if (isSuccess) {
         return (
-            <Alert
-                ref={successRef}
-                role="status"
-                tabIndex={-1}
-                className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950"
-            >
-                <CheckCircle
-                    className="h-4 w-4 text-green-600 dark:text-green-400"
-                    aria-hidden="true"
-                />
-                <AlertDescription className="text-green-800 dark:text-green-200">
+            <Alert ref={successRef} role="status" tabIndex={-1} variant="success">
+                <CheckCircle className="h-4 w-4" aria-hidden="true" />
+                <AlertDescription>
                     Account created! Please check your email to verify your account.
                 </AlertDescription>
             </Alert>

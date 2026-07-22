@@ -2,6 +2,7 @@ import type { Account } from '@/features/accounts/types/account.types'
 import type { Budget } from '@/features/budgets/types/budget.types'
 import type { Category } from '@/features/categories/types/category.types'
 import type { Section, SectionWithCategories } from '@/features/categories/types/section.types'
+import type { Transaction } from '@/features/transactions/types/transaction.types'
 
 const fixtureTimestamp = '2024-01-01T00:00:00.000Z'
 
@@ -71,6 +72,35 @@ export const createBudget = (overrides: Partial<Budget> = {}): Budget => ({
             name: 'Food',
             color: '#3b82f6',
         },
+    },
+    ...overrides,
+})
+
+export const createTransaction = (overrides: Partial<Transaction> = {}): Transaction => ({
+    id: 'tx-1',
+    type: 'EXPENSE',
+    amount: 48.5,
+    date: fixtureTimestamp,
+    merchant: 'Local Market',
+    note: 'Groceries for the week',
+    accountId: 'a1',
+    fromAccountId: null,
+    toAccountId: null,
+    categoryId: 'cat-1',
+    isArchived: false,
+    createdAt: fixtureTimestamp,
+    updatedAt: fixtureTimestamp,
+    account: {
+        id: 'a1',
+        name: 'Checking',
+        color: '#3b82f6',
+        icon: 'wallet',
+    },
+    category: {
+        id: 'cat-1',
+        name: 'Groceries',
+        icon: 'shopping-cart',
+        sectionId: 'section-1',
     },
     ...overrides,
 })

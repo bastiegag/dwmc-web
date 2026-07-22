@@ -30,17 +30,9 @@ export const ResetPasswordForm = () => {
     if (isSuccess) {
         return (
             <div className="space-y-4">
-                <Alert
-                    role="status"
-                    className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950"
-                >
-                    <CheckCircle
-                        className="h-4 w-4 text-green-600 dark:text-green-400"
-                        aria-hidden="true"
-                    />
-                    <AlertDescription className="text-green-800 dark:text-green-200">
-                        Password updated successfully!
-                    </AlertDescription>
+                <Alert role="status" variant="success">
+                    <CheckCircle className="h-4 w-4" aria-hidden="true" />
+                    <AlertDescription>Password updated successfully!</AlertDescription>
                 </Alert>
                 <p className="text-center text-sm">
                     <Link to="/login" className="text-primary underline-offset-4 hover:underline">

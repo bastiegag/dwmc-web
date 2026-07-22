@@ -2,6 +2,7 @@ import { useState, useMemo, createElement } from 'react'
 import * as LucideIcons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Account } from '@/features/accounts/types/account.types'
 
@@ -102,13 +103,7 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                                 <div className="text-sm text-muted-foreground">
                                     Goal: {formatCurrency(goal!)}
                                 </div>
-                                <div className="mt-2 h-2 w-full rounded-full bg-muted">
-                                    <div
-                                        className="h-2 rounded-full bg-primary"
-                                        style={{ width: `${progress}%` }}
-                                        aria-hidden="true"
-                                    />
-                                </div>
+                                <Progress className="mt-2" value={progress} />
                             </div>
                         ) : null}
                     </div>

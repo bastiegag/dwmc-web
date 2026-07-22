@@ -85,6 +85,10 @@ Use stories for:
 
 Stories document component behavior, but they do not replace tests.
 
+The in-app Style Guide has a different role: it shows the complete UI foundation in one authenticated page, while Storybook stays focused on isolated components and states.
+
+Use tests for the Style Guide itself to cover route rendering, key section headings, navigation entry points, and a few interactive examples like theme toggles and toast triggers.
+
 ## What To Test By Feature
 
 ### Month Navigation

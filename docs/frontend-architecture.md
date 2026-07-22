@@ -64,6 +64,9 @@ Examples of the current feature organization:
 - `src/features/transactions`
 - `src/features/budgets`
 - `src/features/categories`
+- `src/features/style-guide` for the in-app design-system reference page and its documentation helpers.
+
+The style guide follows the same feature pattern, but its internal components are documentation helpers rather than production primitives. It should always consume the canonical UI and feature components it documents.
 
 ## Shared Code
 
