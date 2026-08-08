@@ -1,153 +1,43 @@
 # Frontend Testing
 
-## Overview
+## Stack and Layers
 
-The project uses a layered testing setup with:
+- **Vitest** runs unit, component, and integration tests.
+- **Testing Library** exercises React through user-visible behavior.
+- **MSW** supplies network mocks for tests and Storybook.
+- **Playwright** covers browser workflows and accessibility checks.
+- **Storybook** documents reusable component states; it does not replace tests.
 
-- Vitest for unit and component tests
-- Testing Library for user-focused React tests
-- Playwright for end-to-end tests
-- Storybook for interactive UI documentation
-- MSW for request mocking in tests and stories
+Tests and shared helpers live under `src/test/`; browser tests live under `e2e/`.
 
-## Unit Tests
+## What to Test
 
-Use unit tests for pure utilities and validation logic.
+Unit-test pure month/date utilities, formatters, storage helpers, schemas, and transformations. Component and integration tests should cover forms, loading/error/empty states, navigation, dialog flows, query behavior, contextual actions, and API-error presentation. End-to-end tests should cover important authenticated workflows such as sign-in, transaction and budget entry, month navigation, responsive navigation, and the contextual action.
 
-Good candidates include:
+Prioritize behavior, accessibility, ownership of state, month boundaries, validation, and regressions. Avoid brittle implementation-detail assertions and meaningless coverage chasing.
 
-- month helpers
-- date helpers
-- formatters
-- storage helpers
-- Zod schemas
-- small data transformations
+## Existing Cross-Feature Coverage
 
-## Component Tests
+When changing these areas, preserve or extend the relevant behavior:
 
-Use component tests for isolated UI behavior such as:
-
-- forms
-- cards
-- lists
-- empty states
-- loading states
-- error states
-- navigation components
-- the contextual primary action button
-
-## Integration Tests
-
-Use integration tests for flows that combine UI, hooks, and mocked API data.
-
-Good examples:
-
-- page-level render flows with mocked backend data
-- TanStack Query behavior
-- dialog open and submit flows
-- query invalidation after mutations when practical
-
-When asserting query invalidation, prefer the shared query-key helpers used by the implementation, such as `budgetQueryKeys.lists()` and `dashboardQueryKeys.lists()`.
-
-For month-aware navigation assertions, prefer the shared test helper in `src/test/utils/render.tsx`:
-
-- `renderMonthAwareNavigation(ui, month, initialPath?)`
-- `MonthLocationProbe`
-
-Use that helper for bottom navigation and desktop sidebar tests so the setup stays identical.
-
-## E2E Tests
-
-Playwright is available for end-to-end coverage.
-
-Useful flows include:
-
-- sign in
-- create a transaction
-- create a budget
-- change the selected month
-- verify transactions reflect the selected month
-- verify budget progress updates
-- navigate with the bottom navigation
-- use the contextual `+` button
-
-## Storybook
-
-Storybook is used for reusable UI states.
-
-Use stories for:
-
-- cards
-- forms
-- empty states
-- navigation elements
-- design-system-like UI pieces
-
-Stories document component behavior, but they do not replace tests.
-
-The in-app Style Guide has a different role: it shows the complete UI foundation in one authenticated page, while Storybook stays focused on isolated components and states.
-
-Use tests for the Style Guide itself to cover route rendering, key section headings, navigation entry points, and a few interactive examples like theme toggles and toast triggers.
-
-## What To Test By Feature
-
-### Month Navigation
-
-- Defaults to the current month.
-- Rejects invalid month values.
-- Previous and next controls work.
-- Other query params are preserved when applicable.
-- Bottom navigation and desktop sidebar tests should use the shared month-aware navigation helper.
-
-### Budgets
-
-- Shows planned, spent, remaining, and progress data.
-- Shows over-budget states when relevant.
-- Validates required form fields.
-- Displays duplicate or API errors clearly.
-- Invalidates budget lists and dashboard summary data after create, update, and delete mutations.
-
-### Accounts
-
-- Invalidates the accounts list after create, update, and delete mutations.
-
-### Categories and Sections
-
-- Invalidates category and section list queries after create, update, and delete mutations.
-
-### Transactions
-
-- Validates form fields.
-- Uses the selected month when choosing a default date.
-- Restores the last transaction date per month when available.
-- Invalidates the affected queries after create, update, and delete.
-
-### Primary Action
-
-- Dashboard registers Add transaction.
-- Transactions registers Add transaction.
-- Budgets registers Add budget.
-- Accounts registers Add account.
-- Categories registers the appropriate create action.
-- The action clears when the page unmounts.
+- Month navigation defaults and invalid-value fallback.
+- Navigation links preserve the selected month.
+- Transaction forms use the selected month for default dates.
+- Budget progress and over-budget states render backend values.
+- Mutation hooks invalidate the query keys currently owned by their feature.
+- The contextual primary action registers and clears page actions.
+- Auth flows expose accessible validation and error states.
 
 ## Commands
 
-Use the package scripts that exist in `package.json`.
+```bash
+npm run test
+npm run test:watch
+npm run test:coverage
+npm run test:e2e
+npm run test:e2e:ui
+npm run storybook
+npm run build-storybook
+```
 
-- `npm run test`
-- `npm run test:watch`
-- `npm run test:coverage`
-- `npm run test:e2e`
-- `npm run test:e2e:ui`
-- `npm run storybook`
-- `npm run build-storybook`
-
-## Testing Guidelines
-
-- Prefer user behavior over implementation details.
-- Use accessible queries when possible.
-- Avoid brittle snapshots.
-- Mock network calls consistently.
-- Keep tests focused and readable.
-- Do not add a new testing framework without a clear reason.
+Use MSW or the existing test helpers for API behavior. Do not add another test framework without a documented reason.

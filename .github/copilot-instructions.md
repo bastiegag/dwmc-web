@@ -1,165 +1,59 @@
-# Copilot Instructions for dwmc-web
+# Copilot Instructions for `dwmc-web`
 
-## Frontend Project Context
+## Context
 
-dwmc-web is the frontend for a personal budget app built with React, Vite, TypeScript, React Router, TanStack Query, React Hook Form, Zod, shadcn/ui, Tailwind CSS, Supabase Auth, Storybook, Vitest, Playwright, ESLint, and Prettier.
+This is the React/Vite frontend for Dude, Where's My Cash?, a personal budgeting application. It uses TypeScript, React Router, TanStack Query, React Hook Form, Zod, Supabase Auth, shadcn-style UI, Tailwind CSS, Vitest, Testing Library, MSW, Playwright, and Storybook. Verify versions and scripts in `package.json`.
 
-The goal is to keep the app maintainable, accessible, type-safe, and polished enough for a senior frontend portfolio project.
-
-## General Frontend Principles
-
-- Follow existing patterns before introducing new ones
-- Prefer simple, maintainable code over clever abstractions
-- Keep features modular
-- Use TypeScript strictly
-- Avoid `any`
-- Avoid unnecessary dependencies
-- Do not rewrite unrelated code
-- Keep frontend and backend responsibilities separate
-- Do not calculate backend-owned values on the frontend when the backend already returns them
-- Do not store app domain data in `localStorage`
+The sibling `../dwmc-api` repository owns the backend API, persistence, authorization, financial calculations, and response contract. When implementing or changing an API-dependent feature, inspect `../dwmc-api` when available before assuming the contract.
 
 ## Architecture
 
-- Use a feature-based architecture
-- Keep feature code inside `src/features/<feature-name>`
-- Keep cross-feature logic inside `src/shared`
-- Keep reusable layout components outside feature folders
-- Keep API calls in `.api.ts` files
-- Keep TanStack Query logic in hooks
-- Keep form validation in Zod schemas
-- Keep types in `.types.ts` files
+- Keep domain code in `src/features/<feature>`.
+- Keep app setup, layouts, providers, and routing in `src/app`.
+- Keep reusable UI and layout primitives in `src/components`.
+- Keep cross-feature systems in `src/shared`.
+- Keep API client, Supabase client, QueryClient, and low-level helpers in `src/lib`.
+- Keep API calls in feature `.api.ts` modules and server-state logic in TanStack Query hooks.
 
-## Naming
+Follow existing feature structure. Do not refactor unrelated code or rename legacy files only to match a convention.
 
-- Components: PascalCase filenames and exports
-- Hooks: kebab-case filenames, camelCase exports
-- Types: `.types.ts`
-- Schemas: `.schema.ts`
-- API modules: `.api.ts`
-- Contexts: `.context.ts`
-- Provider components: `ProviderName.tsx`
-- Use `.tsx` only when a file contains JSX
-- Use `.ts` when there is no JSX
+## Naming and Fast Refresh
 
-## React Fast Refresh
-
-- Files exporting React components should only export React components
-- Do not export raw React contexts from the same file as components
-- Put contexts in `.context.ts`
-- Put provider components in separate `.tsx` files
-- Put hooks in `.ts` files unless they contain JSX
-
-Example:
-
-```
-src/shared/primary-action/
-    context/primary-action.context.ts
-    context/PrimaryActionProvider.tsx
-    hooks/use-primary-action.ts
-    types/primary-action.types.ts
-```
-
-## System Invariants
-
-These invariants define the app's non-negotiable contracts. Violating one is a bug, not a style issue.
-
-### Auth
-
-- All backend requests must use the shared `apiClient`. Never call `fetch` directly or use the Supabase client for domain data.
-- `apiClient` attaches the Supabase access token automatically. Do not attach it manually in feature code.
-- Never read or decode the Supabase session outside of `authService` or `apiClient`.
-- Protected routes must always redirect unauthenticated users to `/login`.
-
-### Month
-
-- The selected month lives exclusively in the URL query param `?month=YYYY-MM`. It is never stored in state, context, `localStorage`, or any other mechanism.
-- A missing or invalid `month` param falls back silently to the current calendar month. Never throw or surface this to the user.
-- Navigation links between Dashboard, Transactions, and Budgets must preserve the `month` param - use `useSelectedMonth` to read it and build links with `?month=<value>`.
-- Query keys for data that varies by month must include the `month` value. Omitting it means the query will not refetch when the month changes.
-
-### Query Invalidation
-
-- After every mutation, call `invalidateQueries` for all affected keys before the mutation hook resolves.
-- Never call `refetch()` manually after a mutation. Invalidation is the mechanism.
-- Never hardcode query key strings inline. Reference the `*QueryKeys` constants from the relevant hook file.
-- Cross-feature invalidation is intentional: creating a transaction also invalidates accounts; creating a budget also invalidates the dashboard.
-
-### Feature Boundaries
-
-- Import only from a feature's public `index.ts` barrel, never from its internal files.
-- Cross-feature logic belongs in `src/shared`, not in any feature folder.
-- If a symbol is not exported from `index.ts`, treat it as an internal detail that may change without notice.
+- Components and providers use PascalCase filenames and exports.
+- Hooks use kebab-case filenames and camelCase exports.
+- Use `.types.ts`, `.schema.ts`, `.api.ts`, and `.context.ts` for their respective roles.
+- Use `.tsx` only when JSX exists.
+- Keep raw React contexts separate from provider components to satisfy `react-refresh/only-export-components`.
 
 ## API and Auth
 
-- Use the shared `apiClient` for backend requests
-- Do not call `fetch` directly from components
-- Do not call Supabase directly for app domain data
-- Supabase Auth is used for authentication
-- Backend requests include the Supabase access token
-- Handle API errors with the existing error envelope
+- Use `src/lib/api-client.ts` through a feature API module.
+- Do not call `fetch` directly from components or call Supabase tables for domain data.
+- Let `apiClient` attach the Supabase access token.
+- Treat backend response and error envelopes as authoritative; see `dwmc-api/docs/api.md`.
+- Do not calculate backend-owned balances, spending, or summaries in the frontend.
 
-## TanStack Query
+## State and Month Navigation
 
-- Query keys must be stable
-- Include filters like `month` in query keys
-- Use query hooks for reads
-- Use mutation hooks for creates, updates, and archives
-- Invalidate affected queries after mutations
-- Prefer precise invalidation over manual refetch
-
-## Forms
-
-- Use React Hook Form
-- Use Zod for validation
-- Keep schemas outside components
-- Show clear validation messages
-- Show API errors in a user-friendly way
-- Reset dialog forms when appropriate
-
-## Month Navigation
-
-- The selected month comes from the URL query param `month=YYYY-MM`
-- Do not store selected month in `localStorage`
-- Preserve the selected month when navigating between app screens
-- Dashboard, Transactions, and Budgets should use the selected month
-- Transaction creation should default to a date inside the selected month
-
-## Contextual Primary Action
-
-- The floating `+` button is contextual
-- Dashboard and Transactions: add transaction
-- Budgets: add budget using the selected month
-- Accounts: add account
-- Tools: hide by default unless there is a clear action
-- Clear registered actions when pages unmount
+- TanStack Query owns backend data.
+- React Hook Form plus Zod owns forms.
+- Local component state owns transient UI such as dialogs.
+- The selected month is URL state: `?month=YYYY-MM`; use `useSelectedMonth` and preserve the parameter in app navigation.
+- Do not store domain data or selected month in `localStorage`.
+- Use React Context only for justified cross-layout concerns such as theme and contextual primary actions.
+- Include response-changing filters such as `month` in query keys.
+- Use existing query-key helpers and invalidate the keys observed in the mutation hooks. Do not claim broader invalidation without verifying source.
 
 ## UI and Accessibility
 
-- Use shadcn/ui components where appropriate
-- Use Tailwind CSS
-- Keep components small and focused
-- Add accessible labels to icon buttons
-- Use proper dialog titles
-- Do not rely only on color for state
-- Keep keyboard focus visible
+Use existing shadcn/Radix primitives and Tailwind tokens. Keep components focused. Icon buttons need accessible labels, dialogs need titles, forms need labels, state must not rely on color alone, and keyboard focus must remain visible.
 
-## Testing
+The contextual primary action is page-registered and layout-rendered. Preserve cleanup on unmount and inspect neighboring registrations before adding a new one.
 
-- Add or update tests for meaningful behavior
-- Test month navigation
-- Test contextual primary actions
-- Test form validation
-- Test query invalidation behavior where practical
-- Use existing test utilities
-- Do not add a new test framework
+## Testing and Storybook
+
+Prefer behavior-focused tests with accessible queries. Use Vitest and Testing Library for utilities/components/integration flows, MSW for network mocks, Playwright for user workflows, and Storybook for reusable UI states. Add regression coverage for meaningful bugs and cross-feature behavior; do not chase coverage numbers without behavioral value.
 
 ## Documentation
 
-- Treat the docs folder as the source of truth for frontend implementation details.
-- Update the frontend README when adding major features.
-- Keep README content concise and link to the deeper docs instead of duplicating them.
-- Document new environment variables and scripts when they affect setup or development.
-- Keep `docs/frontend-architecture.md`, `docs/frontend-conventions.md`, `docs/frontend-routing.md`, `docs/frontend-state-management.md`, `docs/frontend-api.md`, `docs/testing.md`, and `docs/roadmap.md` aligned with the actual code.
-- Move planned but unfinished features to `docs/roadmap.md` instead of presenting them as shipped.
+Keep the README concise. Update the relevant document under `docs/` when routes, state ownership, API usage, testing commands, setup variables, release behavior, or roadmap status changes. Do not document planned work as implemented.

@@ -1,127 +1,36 @@
 # Frontend State Management
 
-## Overview
+State belongs to the smallest owner that can provide the required lifetime and sharing.
 
-The app separates state by responsibility:
+| State                                                 | Owner                                                                             |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Supabase session                                      | Supabase Auth, synchronized into TanStack Query.                                  |
+| Accounts, categories, sections, transactions, budgets | Backend plus TanStack Query.                                                      |
+| Monthly summary                                       | Backend plus TanStack Query.                                                      |
+| Selected month                                        | URL query parameter `month=YYYY-MM`.                                              |
+| Form inputs and validation                            | React Hook Form plus Zod.                                                         |
+| Dialog visibility and temporary UI state              | Local component state.                                                            |
+| Contextual primary action                             | Primary-action React Context because the layout renders it and pages register it. |
+| Theme preference                                      | Existing ThemeProvider and its storage key.                                       |
+| Last transaction date per month                       | `localStorage` UX helper.                                                         |
 
-- URL state
-- Server state
-- Form state
-- Local UI state
-- Small browser UX helpers
+## TanStack Query
 
-## URL State
+Query hooks wrap feature API functions. Query keys include filters that change the response, including `month` and the dashboard summary's `recentLimit`. Mutations use query invalidation rather than manual `refetch()` when the affected key is known.
 
-The selected month belongs in the URL.
+The current observed invalidation rules are:
 
-Examples:
+| Mutation                            | Invalidated keys                     |
+| ----------------------------------- | ------------------------------------ |
+| Transaction create, update, archive | Transaction lists and account lists. |
+| Budget create, update, archive      | Budget lists and dashboard lists.    |
+| Account create, update, archive     | Account lists.                       |
+| Category create, update, archive    | Category lists and section lists.    |
+| Section create, update, archive     | Section lists.                       |
+| Dashboard retry                     | Dashboard lists.                     |
 
-- `?month=2026-06`
+This table describes current implementation, not a promise that every derived view is already invalidated. When changing a mutation, inspect the relevant hooks and backend effects across both repositories.
 
-URL state is the source of truth for navigational state that should survive refreshes and sharing.
+## Context and Storage Boundaries
 
-## Server State
-
-Backend data is managed with TanStack Query.
-
-Current server-backed domains include:
-
-- transactions
-- budgets
-- accounts
-- categories and sections
-- monthly summary data
-
-Rules:
-
-- Query keys must include filters such as `month`.
-- Mutations invalidate affected queries after success.
-- Prefer invalidation over manual refetches whenever a shared query key exists.
-- Use exported query-key helpers instead of raw string literals.
-- The current dashboard retry behavior invalidates `dashboardQueryKeys.lists()`.
-
-Examples of invalidation behavior in the current app:
-
-- Transaction mutations invalidate `transactionQueryKeys.lists()` and `accountQueryKeys.lists()`.
-- Budget mutations invalidate `budgetQueryKeys.lists()` and `dashboardQueryKeys.lists()`.
-- Account mutations invalidate `accountQueryKeys.lists()`.
-- Category mutations invalidate `categoryQueryKeys.lists()` and `sectionQueryKeys.lists()`.
-- Section mutations invalidate `sectionQueryKeys.lists()`.
-
-Current feature key factories follow the same shape:
-
-- `accountQueryKeys`
-- `budgetQueryKeys`
-- `categoryQueryKeys`
-- `dashboardQueryKeys`
-- `sectionQueryKeys`
-- `transactionQueryKeys`
-
-## Form State
-
-React Hook Form owns form input state.
-Zod owns validation.
-
-- Form state should not be stored globally.
-- Form schemas live outside components.
-- Dialog forms should reset when they close if the next open should start fresh.
-
-## Local UI State
-
-Local state is appropriate for dialog open and close behavior, selected item editing, and temporary error messages.
-
-Examples:
-
-- create/edit dialogs on the budgets, transactions, accounts, and categories screens
-- inline loading and error states
-- temporary archive and submit error messages
-
-## React Context
-
-React context is reserved for shared cross-layout concerns.
-
-Current acceptable use cases:
-
-- auth/session sync provider
-- contextual primary action state
-- theme provider
-
-Avoid using context for:
-
-- server data that TanStack Query already owns
-- large feature datasets
-- state that belongs in the URL
-
-## LocalStorage
-
-LocalStorage is only used for small browser UX helpers.
-
-Do not store app domain data or the selected month in localStorage.
-
-Current uses in the codebase:
-
-- theme preference
-- the last transaction date per month, used to prefill the next transaction entry
-
-Example shape for the transaction date helper:
-
-```json
-{
-    "2026-05": "2026-05-14",
-    "2026-06": "2026-06-08"
-}
-```
-
-## State Ownership Rules
-
-| State                           | Owner                    |
-| ------------------------------- | ------------------------ |
-| selected month                  | URL                      |
-| transactions                    | backend + TanStack Query |
-| budgets                         | backend + TanStack Query |
-| accounts                        | backend + TanStack Query |
-| categories and sections         | backend + TanStack Query |
-| form inputs                     | React Hook Form          |
-| dialog open state               | local component state    |
-| contextual `+` action           | PrimaryAction context    |
-| last transaction date per month | localStorage UX helper   |
+Do not put backend collections, selected month, or form state in React Context. Do not use `localStorage` for domain records or authorization. Small browser preferences and the transaction-date helper are the current exceptions.

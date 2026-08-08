@@ -1,147 +1,48 @@
 # Frontend Conventions
 
-## Naming Conventions
+Follow the closest existing feature pattern before introducing a new abstraction. These are conventions for new work; existing legacy names do not need to be renamed solely to match them.
 
-### Components
+## Names and Extensions
 
-- Use PascalCase filenames.
-- Use PascalCase exports.
-- Use `.tsx` when the file contains JSX.
+| Kind         | Convention                            | Example                                      |
+| ------------ | ------------------------------------- | -------------------------------------------- |
+| Components   | PascalCase filename and export        | `BudgetCard.tsx`                             |
+| Hooks        | kebab-case filename, camelCase export | `use-selected-month.ts` → `useSelectedMonth` |
+| Types        | `.types.ts`                           | `budget.types.ts`                            |
+| Schemas      | `.schema.ts`                          | `budget.schema.ts`                           |
+| API modules  | `.api.ts`                             | `budgets.api.ts`                             |
+| Raw contexts | `.context.ts`                         | `primary-action.context.ts`                  |
+| Providers    | PascalCase `.tsx` component file      | `PrimaryActionProvider.tsx`                  |
 
-Examples:
+Use `.tsx` only when JSX exists. Use `.ts` for non-JSX modules.
 
-- `BudgetCard.tsx`
-- `MonthNavigator.tsx`
-- `PrimaryActionButton.tsx`
+## Feature Boundaries
 
-### Hooks
+Keep domain code in `src/features/<feature>`. Pages orchestrate hooks and components. API modules contain transport calls, hooks contain TanStack Query integration, schemas contain validation, and types remain close to their feature. Use public feature exports where they exist; do not reach into another feature's internals without a concrete reason.
 
-- Use kebab-case filenames for custom hooks.
-- Export the hook with camelCase.
-- Use `.ts` unless the file contains JSX.
+Reusable layout, feedback, form, and UI primitives belong in `src/components`. Cross-feature systems belong in `src/shared`. Low-level clients belong in `src/lib`.
 
-Examples:
+## Fast Refresh
 
-- `use-selected-month.ts` exports `useSelectedMonth`
-- `use-primary-action.ts` exports `usePrimaryAction`
-- `use-budgets.ts` exports `useBudgets`
-
-### Types
-
-- Use `.types.ts` for domain types.
-
-Examples:
-
-- `budget.types.ts`
-- `transaction.types.ts`
-
-### Schemas
-
-- Use `.schema.ts` for Zod schemas.
-
-Examples:
-
-- `budget.schema.ts`
-- `transaction.schema.ts`
-
-### API Files
-
-- Use `.api.ts` for backend calls.
-
-Examples:
-
-- `budgets.api.ts`
-- `transactions.api.ts`
-
-### Contexts
-
-- Use `.context.ts` for raw React context values.
-
-Example:
-
-- `primary-action.context.ts`
-
-### Providers
-
-- Use PascalCase `.tsx` files for provider components.
-
-Example:
-
-- `PrimaryActionProvider.tsx`
-
-## TypeScript Conventions
-
-- Prefer explicit types for public exports.
-- Avoid `any`.
-- Keep domain-specific types inside feature folders.
-- Keep API response types close to the feature that uses them.
-- Use type-only imports when possible.
-
-## React Fast Refresh
-
-Files that export React components should only export React components.
-
-To keep Fast Refresh reliable:
-
-- Put raw contexts in `.context.ts`.
-- Put provider components in separate `.tsx` files.
-- Put hooks in `.ts` files unless they contain JSX.
-
-This avoids the `react-refresh/only-export-components` rule from becoming a problem.
-
-Example structure:
+Do not export a raw React context from the same file as a component when that violates `react-refresh/only-export-components`.
 
 ```text
-src/shared/primary-action/
-  context/
-    primary-action.context.ts
-    PrimaryActionProvider.tsx
-  hooks/
-    use-primary-action.ts
-  types/
-    primary-action.types.ts
+context/primary-action.context.ts
+PrimaryActionProvider.tsx
+hooks/use-primary-action.ts
 ```
 
-## Component Conventions
+Keep providers and contexts separate, and keep hooks in `.ts` files unless they contain JSX.
 
-- Keep components focused.
-- Prefer composition over large components.
-- Pass data and callbacks through props.
-- Avoid API calls directly inside UI components.
-- Keep route pages responsible for orchestration.
-- Extract reusable UI only after there is clear reuse.
+## Forms, API, and UI
 
-## Form Conventions
+- Use React Hook Form with Zod schemas for forms.
+- Use `apiClient` through feature API modules; components must not call `fetch` directly for domain data.
+- Keep backend-derived calculations in the backend response.
+- Use existing shadcn/Radix primitives and Tailwind tokens before adding custom UI.
+- Give icon buttons accessible labels, dialogs titles, and forms labels.
+- Do not rely on color alone to communicate state, and preserve visible keyboard focus.
 
-- Use React Hook Form.
-- Use Zod schemas for validation.
-- Keep schemas outside components.
-- Show field-level validation messages.
-- Show API errors in user-friendly language.
-- Reset dialog forms when closing if the form should start clean on the next open.
+## Money and Dates
 
-## API Conventions
-
-- Components should not call `fetch` directly.
-- Feature API files should use the shared `apiClient`.
-- API files should not contain UI logic.
-- Hooks should wrap API calls with TanStack Query.
-
-## Styling Conventions
-
-- Use shadcn/ui components when available.
-- Use Tailwind utility classes.
-- Reuse existing theme tokens.
-- Avoid hardcoded colors when theme tokens already exist.
-- Keep responsive behavior intentional.
-- Style guide helper components such as `StyleGuideSection`, `TokenSwatch`, and `ComponentPreview` are documentation-only and must not replace canonical UI primitives.
-- The style guide should reuse the same `components/ui`, `components/form`, and feature components that production screens import.
-
-## Accessibility Conventions
-
-- Icon buttons need an `aria-label`.
-- Dialogs need titles.
-- Forms need labels.
-- Error messages should be clear.
-- Do not rely only on color to communicate state.
-- Keep keyboard focus visible.
+Use the existing currency-formatting helpers and backend-provided numeric values. Use the shared month utilities for `YYYY-MM` navigation and preserve the selected month when building app links.
