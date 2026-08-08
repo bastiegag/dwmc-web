@@ -75,6 +75,7 @@ describe('AuthSyncProvider', () => {
     it('clears the query cache entry when the callback fires with null', async () => {
         const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
         qc.setQueryData(authSessionQueryKey, { user: { id: 'u1' } })
+        qc.setQueryData(['accounts', 'list'], [{ id: 'account-a' }])
         render(<div>child</div>, { wrapper: createWrapper(qc) })
 
         await act(async () => {
@@ -83,6 +84,7 @@ describe('AuthSyncProvider', () => {
 
         await waitFor(() => {
             expect(qc.getQueryData(authSessionQueryKey)).toBeNull()
+            expect(qc.getQueryData(['accounts', 'list'])).toBeUndefined()
         })
     })
 

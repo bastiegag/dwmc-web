@@ -39,7 +39,7 @@ export const authService = {
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
-            options: { emailRedirectTo: `${appUrl}/app` },
+            options: { emailRedirectTo: `${appUrl}/dashboard` },
         })
         if (error) throw toAuthServiceError(error)
         return data

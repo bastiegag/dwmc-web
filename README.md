@@ -70,13 +70,10 @@ Additional formatting, coverage, UI, Changesets, and release commands are listed
 
 ## Documentation
 
-- [Frontend architecture](docs/frontend-architecture.md)
-- [Frontend conventions](docs/frontend-conventions.md)
-- [Routing and navigation](docs/frontend-routing.md)
-- [State management](docs/frontend-state-management.md)
-- [API integration](docs/frontend-api.md)
+- [Frontend architecture](docs/architecture.md)
+- [API integration](docs/api.md)
 - [Testing](docs/testing.md)
 - [Roadmap](docs/roadmap.md)
-- [Releasing](docs/RELEASING.md)
+- [Releasing](docs/releasing.md)
 
 The backend implementation and API source of truth live in the sibling `dwmc-api` repository.

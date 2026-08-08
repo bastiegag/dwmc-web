@@ -9,7 +9,7 @@ page or hook
 → dwmc-api
 ```
 
-The backend API documentation is the contract authority. See the sibling repository's `docs/api.md`, `docs/auth.md`, and module documentation for server-side details.
+The backend API documentation is the contract authority. See the sibling repository's `docs/api.md`, `docs/domains/auth.md`, and relevant domain documentation for server-side details.
 
 ## Client Behavior
 
@@ -59,10 +59,14 @@ Feature API modules live under feature `api/` directories for accounts, categori
 
 Month-scoped query keys include the selected month. The dashboard summary request currently includes `recentLimit: 5` from the page.
 
-Current invalidation behavior is documented in [state management](frontend-state-management.md). It is intentionally limited to the keys currently invalidated by source code; do not assume that every derived view refreshes after every mutation.
+Current invalidation behavior is documented in [frontend architecture](architecture.md). It is intentionally limited to the keys currently invalidated by source code; do not assume that every derived view refreshes after every mutation.
 
 ## Authentication Boundary
 
 Supabase owns browser authentication. The backend validates the access token and scopes domain data to the authenticated user's `UserProfile`. Frontend route protection improves UX but is not authorization; the backend remains authoritative.
+
+The backend auth contract includes bearer-token validation on protected routes and `GET /api/v1/auth/me` profile synchronization. See `../dwmc-api/docs/domains/auth.md` for the canonical behavior.
+
+On logout or any auth event that removes the session, the frontend removes cached user-sensitive domain queries while preserving the auth-session query so protected-route loading can settle correctly.
 
 When changing an API-dependent feature, inspect `../dwmc-api` when available before changing request types, response handling, filters, or mutation behavior.

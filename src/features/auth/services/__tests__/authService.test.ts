@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { authService } from '@/features/auth/services'
+import { supabase } from '@/lib/supabase'
 
 describe('authService', () => {
     describe('login', () => {
@@ -32,6 +33,18 @@ describe('authService', () => {
             await expect(
                 authService.signup({ email: 'existing@example.com', password: 'Password123' }),
             ).rejects.toThrow()
+        })
+
+        it('redirects confirmed users to the protected dashboard', async () => {
+            const signUp = vi.spyOn(supabase.auth, 'signUp')
+            await authService.signup({ email: 'newuser@example.com', password: 'Password123' })
+            expect(signUp).toHaveBeenCalledWith(expect.anything())
+            expect(signUp.mock.calls[signUp.mock.calls.length - 1]?.[0]).toEqual(
+                expect.objectContaining({
+                    options: { emailRedirectTo: expect.stringContaining('/dashboard') },
+                }),
+            )
+            signUp.mockRestore()
         })
     })
 

@@ -1,59 +1,55 @@
 # Copilot Instructions for `dwmc-web`
 
-## Context
+## Project Overview
 
-This is the React/Vite frontend for Dude, Where's My Cash?, a personal budgeting application. It uses TypeScript, React Router, TanStack Query, React Hook Form, Zod, Supabase Auth, shadcn-style UI, Tailwind CSS, Vitest, Testing Library, MSW, Playwright, and Storybook. Verify versions and scripts in `package.json`.
+`dwmc-web` is the React/Vite frontend for Dude, Where's My Cash?. The sibling `../dwmc-api` repository owns persistence, authorization, financial calculations, and the API contract. Treat both repositories as one product when a change crosses the API boundary.
 
-The sibling `../dwmc-api` repository owns the backend API, persistence, authorization, financial calculations, and response contract. When implementing or changing an API-dependent feature, inspect `../dwmc-api` when available before assuming the contract.
+## Documentation Hierarchy
 
-## Architecture
+Consult documentation in this order before making design decisions:
 
-- Keep domain code in `src/features/<feature>`.
-- Keep app setup, layouts, providers, and routing in `src/app`.
-- Keep reusable UI and layout primitives in `src/components`.
-- Keep cross-feature systems in `src/shared`.
-- Keep API client, Supabase client, QueryClient, and low-level helpers in `src/lib`.
-- Keep API calls in feature `.api.ts` modules and server-state logic in TanStack Query hooks.
+1. [Developer Playbook](../docs/dev-playbook.md) for development principles and feature workflow.
+2. [Engineering Audit Playbook](../docs/engineering-audit-playbook.md) for review scope, severity, and closure criteria.
+3. [Frontend Architecture](../docs/architecture.md) and [backend architecture](../../dwmc-api/docs/architecture.md) for responsibilities and boundaries.
+4. [API integration](../docs/api.md), [backend API design](../../dwmc-api/docs/api.md), and relevant [backend domain docs](../../dwmc-api/docs/domains/) for contracts and business rules.
+5. ADRs, when present, for decisions that constrain the implementation.
+6. The relevant [README](../README.md) and package scripts for setup, commands, and repository orientation.
 
-Follow existing feature structure. Do not refactor unrelated code or rename legacy files only to match a convention.
+Also consult [frontend testing](../docs/testing.md), [backend testing](../../dwmc-api/docs/testing.md), and [releasing](../docs/releasing.md) or [backend releasing](../../dwmc-api/docs/releasing.md) when the change affects those areas. The roadmap is context, not a specification: do not implement planned or placeholder work without confirmed scope.
 
-## Naming and Fast Refresh
+## Development Expectations
 
-- Components and providers use PascalCase filenames and exports.
-- Hooks use kebab-case filenames and camelCase exports.
-- Use `.types.ts`, `.schema.ts`, `.api.ts`, and `.context.ts` for their respective roles.
-- Use `.tsx` only when JSX exists.
-- Keep raw React contexts separate from provider components to satisfy `react-refresh/only-export-components`.
+- Inspect the nearest existing implementation and its tests before adding a pattern.
+- Follow the documented architecture and existing feature boundaries; prefer consistency over cleverness.
+- Reuse existing components, helpers, API modules, query patterns, and public feature exports.
+- Keep pages orchestration-focused and keep domain code inside its feature.
+- Keep frontend and backend changes aligned. Verify request/response shapes, authentication, ownership, dates, money, and downstream query effects in both repositories.
+- Avoid unrelated refactors, duplicate business logic, unnecessary abstractions, and breaking changes.
 
-## API and Auth
+## Documentation Expectations
 
-- Use `src/lib/api-client.ts` through a feature API module.
-- Do not call `fetch` directly from components or call Supabase tables for domain data.
-- Let `apiClient` attach the Supabase access token.
-- Treat backend response and error envelopes as authoritative; see `dwmc-api/docs/api.md`.
-- Do not calculate backend-owned balances, spending, or summaries in the frontend.
+Update the relevant documentation in the same task whenever code changes affect architecture, API contracts, business rules, engineering workflow, developer conventions, testing, release behavior, or roadmap status. Link to the canonical document instead of duplicating its content. Never leave documentation describing behavior that the implementation no longer provides.
 
-## State and Month Navigation
+## Engineering Expectations
 
-- TanStack Query owns backend data.
-- React Hook Form plus Zod owns forms.
-- Local component state owns transient UI such as dialogs.
-- The selected month is URL state: `?month=YYYY-MM`; use `useSelectedMonth` and preserve the parameter in app navigation.
-- Do not store domain data or selected month in `localStorage`.
-- Use React Context only for justified cross-layout concerns such as theme and contextual primary actions.
-- Include response-changing filters such as `month` in query keys.
-- Use existing query-key helpers and invalidate the keys observed in the mutation hooks. Do not claim broader invalidation without verifying source.
+Preserve separated responsibilities: the frontend coordinates presentation and server state; the backend validates, authorizes, persists, and calculates authoritative financial values. Preserve existing business rules and accessibility behavior. Prefer small, comprehensible changes that fit the codebase over speculative generalization.
 
-## UI and Accessibility
+## Code Generation Rules
 
-Use existing shadcn/Radix primitives and Tailwind tokens. Keep components focused. Icon buttons need accessible labels, dialogs need titles, forms need labels, state must not rely on color alone, and keyboard focus must remain visible.
+- Read existing code, tests, and relevant documentation first.
+- Match local naming, file layout, formatting, and testing style.
+- Modify existing code when appropriate instead of rewriting working paths.
+- Minimize breaking changes and preserve compatibility unless an intentional migration is documented.
+- Add meaningful behavior or regression tests; use Storybook for reusable UI states where appropriate.
 
-The contextual primary action is page-registered and layout-rendered. Preserve cleanup on unmount and inspect neighboring registrations before adding a new one.
+## Feature Development
 
-## Testing and Storybook
+For a new feature, consult the Developer Playbook, relevant frontend and backend architecture, the applicable domain/API documentation, and the testing guidance. Implement both sides together when needed, then update tests, Storybook coverage where appropriate, and affected documentation. Do not calculate backend-owned balances, spending, or summaries independently in the frontend.
 
-Prefer behavior-focused tests with accessible queries. Use Vitest and Testing Library for utilities/components/integration flows, MSW for network mocks, Playwright for user workflows, and Storybook for reusable UI states. Add regression coverage for meaningful bugs and cross-feature behavior; do not chase coverage numbers without behavioral value.
+## Engineering Audits
 
-## Documentation
+Before considering a feature complete, follow the Engineering Audit Playbook. Evaluate implementation against documented standards, inspect integration and cross-feature effects, report evidence-based findings using its severity levels, and conclude with `READY TO CLOSE` or `NOT READY TO CLOSE` as defined there.
 
-Keep the README concise. Update the relevant document under `docs/` when routes, state ownership, API usage, testing commands, setup variables, release behavior, or roadmap status changes. Do not document planned work as implemented.
+## General Rules
+
+Copilot must not invent undocumented requirements, duplicate project documentation, introduce architectural patterns without justification, ignore existing conventions, or leave implementation and documentation inconsistent. When documentation and assumptions conflict, inspect the code and tests, identify the discrepancy, and update the appropriate source and documentation together.

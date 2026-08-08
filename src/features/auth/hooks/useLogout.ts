@@ -8,7 +8,9 @@ export const useLogout = () => {
     const { mutateAsync, isPending } = useMutation({
         mutationFn: () => authService.logout(),
         onSuccess: () => {
-            queryClient.removeQueries({ queryKey: authSessionQueryKey })
+            queryClient.removeQueries({
+                predicate: (query) => query.queryKey[0] !== authSessionQueryKey[0],
+            })
             toast.success('Signed out', { description: 'You have been signed out.' })
         },
         onError: (error: Error) => {

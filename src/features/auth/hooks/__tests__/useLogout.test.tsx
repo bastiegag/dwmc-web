@@ -15,11 +15,18 @@ describe('useLogout', () => {
     it('calls queryClient.removeQueries() and success toast on success', async () => {
         vi.spyOn(authService, 'logout').mockResolvedValueOnce(undefined)
         const { toast } = await import('sonner')
-        const { result, qc } = renderHookWithQuery(() => useLogout())
+        const { result, qc } = renderHookWithQuery(() => useLogout(), {
+            setupClient: (client) => {
+                client.setQueryData(['accounts', 'list'], [{ id: 'account-a' }])
+                client.setQueryData(['transactions', 'list'], [{ id: 'transaction-a' }])
+            },
+        })
         const removeQueriesSpy = vi.spyOn(qc, 'removeQueries')
         await result.current.logout()
         await waitFor(() => {
             expect(removeQueriesSpy).toHaveBeenCalledOnce()
+            expect(qc.getQueryData(['accounts', 'list'])).toBeUndefined()
+            expect(qc.getQueryData(['transactions', 'list'])).toBeUndefined()
             expect(toast.success).toHaveBeenCalledWith(
                 'Signed out',
                 expect.objectContaining({ description: 'You have been signed out.' }),
