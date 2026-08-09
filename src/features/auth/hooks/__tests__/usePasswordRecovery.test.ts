@@ -43,6 +43,16 @@ describe('usePasswordRecovery', () => {
         expect(result.current.isValid).toBe(false)
     })
 
+    it('starts valid when the recovery callback hash is present', () => {
+        window.history.replaceState({}, '', '/reset-password#type=recovery')
+
+        const { result } = renderHook(() => usePasswordRecovery())
+
+        expect(result.current.isLoading).toBe(false)
+        expect(result.current.isValid).toBe(true)
+        window.history.replaceState({}, '', '/')
+    })
+
     it('resolves to valid when PASSWORD_RECOVERY event fires', async () => {
         const { result } = renderHook(() => usePasswordRecovery())
         await fireAuthEvent('PASSWORD_RECOVERY', { user: { id: 'user-1' } })

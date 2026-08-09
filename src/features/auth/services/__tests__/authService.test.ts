@@ -18,6 +18,38 @@ describe('authService', () => {
                 authService.login({ email: 'test@example.com', password: 'wrongpassword' }),
             ).rejects.toThrow()
         })
+
+        it('does not expose the provider error message', async () => {
+            const signIn = vi.spyOn(supabase.auth, 'signInWithPassword').mockResolvedValueOnce({
+                data: { user: null, session: null },
+                error: { message: 'provider internals: secret database detail' } as never,
+            })
+
+            await expect(
+                authService.login({ email: 'test@example.com', password: 'wrongpassword' }),
+            ).rejects.toMatchObject({
+                message: 'Something went wrong. Please try again.',
+                code: 'AUTH_FAILED',
+            })
+            signIn.mockRestore()
+        })
+
+        it('maps invalid credentials to a stable message', async () => {
+            const signIn = vi.spyOn(supabase.auth, 'signInWithPassword').mockResolvedValueOnce({
+                data: { user: null, session: null },
+                error: Object.assign(new Error('Invalid login credentials'), {
+                    code: 'invalid_credentials',
+                }) as never,
+            })
+
+            await expect(
+                authService.login({ email: 'test@example.com', password: 'wrongpassword' }),
+            ).rejects.toMatchObject({
+                message: 'The email or password is incorrect.',
+                code: 'INVALID_CREDENTIALS',
+            })
+            signIn.mockRestore()
+        })
     })
 
     describe('signup', () => {
@@ -33,6 +65,21 @@ describe('authService', () => {
             await expect(
                 authService.signup({ email: 'existing@example.com', password: 'Password123' }),
             ).rejects.toThrow()
+        })
+
+        it('maps duplicate emails to a stable message', async () => {
+            const signUp = vi.spyOn(supabase.auth, 'signUp').mockResolvedValueOnce({
+                data: { user: null, session: null },
+                error: { message: 'User already registered' } as never,
+            })
+
+            await expect(
+                authService.signup({ email: 'existing@example.com', password: 'Password123' }),
+            ).rejects.toMatchObject({
+                message: 'An account with this email already exists.',
+                code: 'EMAIL_IN_USE',
+            })
+            signUp.mockRestore()
         })
 
         it('redirects confirmed users to the protected dashboard', async () => {
@@ -52,6 +99,19 @@ describe('authService', () => {
         it('resolves without throwing', async () => {
             await expect(authService.forgotPassword('test@example.com')).resolves.toBeUndefined()
         })
+
+        it('maps provider failures to a stable recovery message', async () => {
+            const reset = vi.spyOn(supabase.auth, 'resetPasswordForEmail').mockResolvedValueOnce({
+                data: {},
+                error: { message: 'provider reset failure' } as never,
+            })
+
+            await expect(authService.forgotPassword('test@example.com')).rejects.toMatchObject({
+                message: 'We could not send a password reset link. Please try again.',
+                code: 'RECOVERY_FAILED',
+            })
+            reset.mockRestore()
+        })
     })
 
     describe('resetPassword', () => {
@@ -59,6 +119,19 @@ describe('authService', () => {
             const result = await authService.resetPassword('NewPassword123')
             expect(result.user).not.toBeNull()
             expect(result.user?.email).toBe('test@example.com')
+        })
+
+        it('maps provider failures to a stable reset message', async () => {
+            const update = vi.spyOn(supabase.auth, 'updateUser').mockResolvedValueOnce({
+                data: { user: null },
+                error: { message: 'provider update failure' } as never,
+            })
+
+            await expect(authService.resetPassword('NewPassword123')).rejects.toMatchObject({
+                message: 'We could not update your password. Please request a new reset link.',
+                code: 'RESET_FAILED',
+            })
+            update.mockRestore()
         })
     })
 

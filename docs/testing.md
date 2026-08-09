@@ -10,6 +10,18 @@
 
 Tests and shared helpers live under `src/test/`; browser tests live under `e2e/`.
 
+Authentication browser tests use deterministic Supabase response routes from
+`e2e/auth-fixtures.ts`. The fixture also mocks the protected summary, account, and
+section requests needed to render authenticated pages. Keep protected API mocks
+explicit and add a handler for each endpoint a workflow needs; do not globally
+bypass unexpected `/api` requests.
+
+The authentication E2E boundary includes successful login, anonymous-only route
+redirects, logout protection and cache isolation, invalid and valid password
+recovery links, and authenticated API page rendering. Password recovery tests use
+a JWT-shaped fixture token and the same token in the mocked session and callback
+hash so the browser lifecycle remains deterministic.
+
 ## What to Test
 
 Unit-test pure month/date utilities, formatters, storage helpers, schemas, and transformations. Component and integration tests should cover forms, loading/error/empty states, navigation, dialog flows, query behavior, contextual actions, and API-error presentation. End-to-end tests should cover important authenticated workflows such as sign-in, transaction and budget entry, month navigation, responsive navigation, and the contextual action.
@@ -24,7 +36,7 @@ When changing these areas, preserve or extend the relevant behavior:
 - Navigation links preserve the selected month.
 - Transaction forms use the selected month for default dates.
 - Budget progress and over-budget states render backend values.
-- Mutation hooks invalidate the query keys currently owned by their feature.
+- Mutation hooks invalidate every known affected query family, including cross-feature dependencies.
 - The contextual primary action registers and clears page actions.
 - Auth flows expose accessible validation and error states.
 

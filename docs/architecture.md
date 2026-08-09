@@ -44,6 +44,12 @@ Feature folders commonly contain `api/`, `components/`, `hooks/`, `pages/`, `sch
 
 `main.tsx` validates required frontend environment configuration, then mounts the error boundary, `AppProviders`, and `AppRouter`. Providers currently include TanStack Query, the theme provider, Supabase auth-session synchronization, and the toast renderer. Routes are lazy-loaded where configured and render through auth or application layouts.
 
+Anonymous-only routes (`/login`, `/signup`, and `/forgot-password`) redirect an
+authenticated user to `/dashboard`. The recovery route (`/reset-password`) remains
+available to an authenticated recovery session so Supabase password-reset callbacks
+can complete. Supabase provider failures are converted by the auth service into
+stable, safe user-facing messages before they reach forms.
+
 ## State Ownership
 
 - State belongs to the smallest owner that can provide the required lifetime and sharing.
@@ -64,14 +70,14 @@ TanStack Query hooks wrap feature API functions. Query keys include filters that
 
 The current observed invalidation rules are:
 
-| Mutation                            | Invalidated keys                     |
-| ----------------------------------- | ------------------------------------ |
-| Transaction create, update, archive | Transaction lists and account lists. |
-| Budget create, update, archive      | Budget lists and dashboard lists.    |
-| Account create, update, archive     | Account lists.                       |
-| Category create, update, archive    | Category lists and section lists.    |
-| Section create, update, archive     | Section lists.                       |
-| Dashboard retry                     | Dashboard lists.                     |
+| Mutation                            | Invalidated keys                                                     |
+| ----------------------------------- | -------------------------------------------------------------------- |
+| Transaction create, update, archive | Transaction lists, account lists, budget lists, and dashboard lists. |
+| Budget create, update, archive      | Budget lists and dashboard lists.                                    |
+| Account create, update, archive     | Account lists.                                                       |
+| Category create, update, archive    | Category lists and section lists.                                    |
+| Section create, update, archive     | Section lists.                                                       |
+| Dashboard retry                     | Dashboard lists.                                                     |
 
 This table describes current implementation, not a promise that every derived view is already invalidated. When changing a mutation, inspect the relevant hooks and backend effects across both repositories.
 

@@ -1,1 +1,1 @@
-export { supabase } from './client'
+export { recoveryCallbackStorageKey, supabase } from './client'

@@ -59,7 +59,7 @@ Feature API modules live under feature `api/` directories for accounts, categori
 
 Month-scoped query keys include the selected month. The dashboard summary request currently includes `recentLimit: 5` from the page.
 
-Current invalidation behavior is documented in [frontend architecture](architecture.md). It is intentionally limited to the keys currently invalidated by source code; do not assume that every derived view refreshes after every mutation.
+Current invalidation behavior is documented in [frontend architecture](architecture.md). Mutation hooks invalidate the known dependent query families, including cross-feature views such as budgets and the dashboard when transactions change.
 
 ## Authentication Boundary
 
