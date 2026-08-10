@@ -11,7 +11,7 @@ import { useSections } from '@/features/categories/hooks/use-sections'
 import BudgetList from '@/features/budgets/components/BudgetList'
 import BudgetDialog from '@/features/budgets/components/BudgetDialog'
 import EmptyBudgetsState from '@/features/budgets/components/EmptyBudgetsState'
-import { formatCurrency } from '@/lib/format-currency'
+import { formatCurrency, sumCurrency } from '@/lib/format-currency'
 import type {
     Budget,
     CreateBudgetPayload,
@@ -59,9 +59,9 @@ export const BudgetsPage = () => {
     const budgets = useMemo(() => budgetsQuery.data ?? [], [budgetsQuery.data])
 
     const totals = useMemo(() => {
-        const totalPlanned = budgets.reduce((s, b) => s + b.amount, 0)
-        const totalSpent = budgets.reduce((s, b) => s + b.spent, 0)
-        const totalRemaining = budgets.reduce((s, b) => s + b.remaining, 0)
+        const totalPlanned = sumCurrency(budgets.map((budget) => budget.amount))
+        const totalSpent = sumCurrency(budgets.map((budget) => budget.spent))
+        const totalRemaining = sumCurrency(budgets.map((budget) => budget.remaining))
         return { totalPlanned, totalSpent, totalRemaining }
     }, [budgets])
 

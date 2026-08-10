@@ -37,14 +37,14 @@ const MOCK_SUMMARY = {
 }
 
 export const mockAuthenticatedSession = async (page: Page, summary = MOCK_SUMMARY) => {
-    await page.route(/\/auth\/v1\/token/, (route) =>
+    await page.route('**/auth/v1/token*', (route) =>
         route.fulfill({
             status: 200,
             contentType: 'application/json',
             body: JSON.stringify(MOCK_SESSION),
         }),
     )
-    await page.route(/\/auth\/v1\/user/, (route) =>
+    await page.route('**/auth/v1/user*', (route) =>
         route.fulfill({
             status: 200,
             contentType: 'application/json',
@@ -79,18 +79,18 @@ export const mockAuthenticatedSession = async (page: Page, summary = MOCK_SUMMAR
             body: JSON.stringify({ data: [] }),
         }),
     )
-    await page.route(/\/auth\/v1\/logout/, (route) => route.fulfill({ status: 204, body: '' }))
+    await page.route('**/auth/v1/logout*', (route) => route.fulfill({ status: 204, body: '' }))
 }
 
 export const mockPasswordRecoverySession = async (page: Page) => {
-    await page.route(/\/auth\/v1\/token/, (route) =>
+    await page.route('**/auth/v1/token*', (route) =>
         route.fulfill({
             status: 200,
             contentType: 'application/json',
             body: JSON.stringify(MOCK_SESSION),
         }),
     )
-    await page.route(/\/auth\/v1\/user/, (route) =>
+    await page.route('**/auth/v1/user*', (route) =>
         route.request().method() === 'PUT'
             ? route.fulfill({
                   status: 200,

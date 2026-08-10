@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 import {
@@ -13,6 +13,7 @@ import TransactionFilters from '@/features/transactions/components/TransactionFi
 import TransactionList from '@/features/transactions/components/TransactionList'
 import TransactionDialog from '@/features/transactions/components/TransactionDialog'
 import EmptyTransactionsState from '@/features/transactions/components/EmptyTransactionsState'
+import PaginationControls from '@/components/ui/PaginationControls'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 import type { GetTransactionsParams } from '@/features/transactions/types/transaction.types'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
@@ -30,11 +31,8 @@ const toErrorMessage = (error: unknown, fallback: string) => {
 export const TransactionsPage = () => {
     const { month } = useSelectedMonth()
     const [filters, setFilters] = useState<Omit<GetTransactionsParams, 'month'>>({})
-
-    useEffect(() => {
-        // When the global month changes, we could reset local filters if needed.
-        // For now, we just let the transactionsQuery refetch with the new month.
-    }, [month])
+    const [paginationState, setPaginationState] = useState({ month, page: 1 })
+    const page = paginationState.month === month ? paginationState.page : 1
 
     const [isDialogOpen, setDialogOpen] = useState(false)
     const [activeTransaction, setActiveTransaction] = useState<Transaction | null>(null)
@@ -43,7 +41,7 @@ export const TransactionsPage = () => {
 
     const accountsQuery = useAccounts({ includeArchived: Boolean(activeTransaction) })
     const sectionsQuery = useSections({ includeArchived: Boolean(activeTransaction) })
-    const transactionsQuery = useTransactions({ ...filters, month })
+    const transactionsQuery = useTransactions({ ...filters, month, page })
 
     const createMutation = useCreateTransaction()
     const updateMutation = useUpdateTransaction()
@@ -67,6 +65,19 @@ export const TransactionsPage = () => {
         () => transactionsQuery.data?.data ?? [],
         [transactionsQuery.data],
     )
+    const pagination = transactionsQuery.data?.meta
+
+    const handleFiltersChange = useCallback(
+        (nextFilters: GetTransactionsParams) => {
+            setFilters(nextFilters)
+            setPaginationState({ month, page: 1 })
+        },
+        [month],
+    )
+
+    const handlePageChange = (nextPage: number) => {
+        setPaginationState({ month, page: nextPage })
+    }
 
     const openEdit = (t: Transaction) => {
         setActiveTransaction(t)
@@ -184,7 +195,11 @@ export const TransactionsPage = () => {
             />
 
             <div className="pt-4">
-                <TransactionFilters accounts={accounts} sections={sections} onChange={setFilters} />
+                <TransactionFilters
+                    accounts={accounts}
+                    sections={sections}
+                    onChange={handleFiltersChange}
+                />
             </div>
 
             {transactionsQuery.isLoading ? (
@@ -225,6 +240,15 @@ export const TransactionsPage = () => {
                     transactions={transactions as Transaction[]}
                     onEdit={openEdit}
                     onArchive={handleArchive}
+                />
+            ) : null}
+
+            {!transactionsQuery.isLoading && !transactionsQuery.isError && pagination ? (
+                <PaginationControls
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    total={pagination.total}
+                    onPageChange={handlePageChange}
                 />
             ) : null}
 

@@ -38,3 +38,62 @@ export const Transfer: Story = {
         onArchive: () => undefined,
     },
 }
+
+export const Income: Story = {
+    args: {
+        transaction: createTransaction({
+            type: 'INCOME',
+            amount: 2500,
+            merchant: 'Acme Payroll',
+            note: null,
+        }),
+        onEdit: () => undefined,
+        onArchive: () => undefined,
+    },
+}
+
+export const Adjustment: Story = {
+    args: {
+        transaction: createTransaction({
+            type: 'ADJUSTMENT',
+            amount: -125.5,
+            categoryId: null,
+            merchant: null,
+            note: 'Corrected opening balance',
+        }),
+        onEdit: () => undefined,
+        onArchive: () => undefined,
+    },
+}
+
+export const LongText: Story = {
+    args: {
+        transaction: createTransaction({
+            merchant:
+                'Neighborhood market and household supplies with a deliberately long merchant name',
+            note: 'A longer note helps verify the transaction remains readable without shifting the action controls.',
+        }),
+        onEdit: () => undefined,
+        onArchive: () => undefined,
+    },
+}
+
+export const LargeAmount: Story = {
+    args: {
+        transaction: createTransaction({ amount: 9999999999.99, merchant: 'Large settlement' }),
+        onEdit: () => undefined,
+        onArchive: () => undefined,
+    },
+}
+
+export const Archived: Story = {
+    args: {
+        transaction: createTransaction({
+            isArchived: true,
+            merchant: null,
+            note: 'Archived historical transaction',
+        }),
+        onEdit: () => undefined,
+        onArchive: () => undefined,
+    },
+}

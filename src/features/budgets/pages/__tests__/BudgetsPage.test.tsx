@@ -1,7 +1,11 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
 import { screen, waitForElementToBeRemoved } from '@testing-library/react'
+import { http, HttpResponse } from 'msw'
 import { render } from '@/test/utils/render'
 import { BudgetsPage } from '@/features/budgets/pages/BudgetsPage'
+import { server } from '@/test/mocks/server'
+import { createBudget } from '@/test/fixtures/domain'
+import { formatCurrency } from '@/lib/format-currency'
 
 describe('BudgetsPage', () => {
     beforeEach(() => {
@@ -21,5 +25,36 @@ describe('BudgetsPage', () => {
 
         expect(screen.getByText(/groceries/i)).toBeInTheDocument()
         expect(screen.getByText(/total planned/i)).toBeInTheDocument()
+    })
+
+    it('sums page totals at cent precision', async () => {
+        server.use(
+            http.get('http://localhost:8787/budgets', () =>
+                HttpResponse.json({
+                    data: [
+                        createBudget({
+                            amount: 0.1,
+                            spent: 0.1,
+                            remaining: 0.1,
+                        }),
+                        createBudget({
+                            id: 'budget-2',
+                            amount: 0.2,
+                            spent: 0.2,
+                            remaining: 0.2,
+                        }),
+                    ],
+                }),
+            ),
+        )
+
+        render(<BudgetsPage />)
+
+        await waitForElementToBeRemoved(() => screen.queryByLabelText(/loading budgets/i))
+
+        const expectedTotal = formatCurrency(0.3).replace(/\u00a0/g, ' ')
+        expect(screen.getByText(/total planned/i).parentElement).toHaveTextContent(expectedTotal)
+        expect(screen.getByText(/total spent/i).parentElement).toHaveTextContent(expectedTotal)
+        expect(screen.getByText(/total remaining/i).parentElement).toHaveTextContent(expectedTotal)
     })
 })
