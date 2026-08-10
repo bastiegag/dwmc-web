@@ -28,6 +28,10 @@ Unit-test pure month/date utilities, formatters, storage helpers, schemas, and t
 
 Category and Section tests should also cover cursor-page consumption, archived Category preservation in historical Transaction and Budget edits, disabled archived options for new selections, and keyboard focus management for dialogs and archive confirmations.
 
+Transaction form tests should cover archived Account preservation when editing a historical record. Archived accounts may remain selected for existing transactions, but must be disabled for new account selections.
+
+Account form tests should cover savings-only positive goals, empty goals, and the distinction between the setup starting balance and later adjustment transactions.
+
 Prioritize behavior, accessibility, ownership of state, month boundaries, validation, and regressions. Avoid brittle implementation-detail assertions and meaningless coverage chasing.
 
 ## Existing Cross-Feature Coverage

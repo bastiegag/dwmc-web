@@ -39,7 +39,12 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
 
     const { currentBalance, startingBalance, goal } = account
 
-    const showGoal = goal !== null && goal !== undefined && goal !== 0 && typeof goal === 'number'
+    const showGoal =
+        account.type === 'SAVINGS' &&
+        goal !== null &&
+        goal !== undefined &&
+        typeof goal === 'number' &&
+        goal > 0
     const progress =
         showGoal && goal > 0 ? Math.max(0, Math.min(100, (currentBalance / goal) * 100)) : 0
 
@@ -101,7 +106,7 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                         {showGoal ? (
                             <div>
                                 <div className="text-sm text-muted-foreground">
-                                    Goal: {formatCurrency(goal!)}
+                                    Savings goal: {formatCurrency(goal!)}
                                 </div>
                                 <Progress className="mt-2" value={progress} />
                             </div>

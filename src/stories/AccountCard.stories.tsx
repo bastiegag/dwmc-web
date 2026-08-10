@@ -49,3 +49,63 @@ export const SavingsWithGoal: Story = {
         onArchive: async () => {},
     },
 }
+
+export const LongName: Story = {
+    args: {
+        account: createAccount({
+            id: 'a4',
+            name: 'Household expenses and recurring bills account',
+            currentBalance: 2450.5,
+        }),
+        onEdit: () => {},
+        onArchive: async () => {},
+    },
+}
+
+export const ZeroBalance: Story = {
+    args: {
+        account: createAccount({
+            id: 'a5',
+            name: 'Empty Cash',
+            startingBalance: 0,
+            currentBalance: 0,
+            color: '#64748b',
+            icon: 'coins',
+        }),
+        onEdit: () => {},
+        onArchive: async () => {},
+    },
+}
+
+export const Archived: Story = {
+    args: {
+        account: createAccount({
+            id: 'a6',
+            name: 'Archived Savings',
+            type: 'SAVINGS',
+            currentBalance: 125,
+            goal: 500,
+            isArchived: true,
+            color: '#94a3b8',
+            icon: 'archive',
+        }),
+        onEdit: () => {},
+        onArchive: async () => {},
+    },
+}
+
+export const LargeValue: Story = {
+    args: {
+        account: createAccount({
+            id: 'a7',
+            name: 'Long Term Investments',
+            type: 'INVESTMENT',
+            startingBalance: 9999999999.99,
+            currentBalance: 10000000000.01,
+            color: '#0f766e',
+            icon: 'landmark',
+        }),
+        onEdit: () => {},
+        onArchive: async () => {},
+    },
+}

@@ -44,5 +44,7 @@ export const accountHandlers = [
         return HttpResponse.json({ data: updated })
     }),
 
-    http.delete(`${API_URL}/accounts/:id`, () => new HttpResponse(null, { status: 204 })),
+    http.delete(`${API_URL}/accounts/:id`, ({ params }) =>
+        HttpResponse.json({ data: { id: params.id, isArchived: true } }),
+    ),
 ]

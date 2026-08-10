@@ -41,7 +41,7 @@ export const TransactionsPage = () => {
     const [formError, setFormError] = useState<string | null>(null)
     const [archiveError, setArchiveError] = useState<string | null>(null)
 
-    const accountsQuery = useAccounts()
+    const accountsQuery = useAccounts({ includeArchived: Boolean(activeTransaction) })
     const sectionsQuery = useSections({ includeArchived: Boolean(activeTransaction) })
     const transactionsQuery = useTransactions({ ...filters, month })
 

@@ -4,7 +4,7 @@ import type { KeyboardEvent } from 'react'
 const focusableSelector =
     'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"]):not([disabled])'
 
-type DialogElement = HTMLDivElement
+type DialogElement = HTMLDialogElement
 
 type UseDialogFocusOptions = {
     open: boolean

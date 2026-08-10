@@ -47,6 +47,9 @@ export const TransactionForm = ({
     useEffect(() => reset(initialValues ?? defaultTransactionFormValues), [initialValues, reset])
 
     const type = useWatch({ control, name: 'type' })
+    const selectedAccountId = useWatch({ control, name: 'accountId' })
+    const selectedFromAccountId = useWatch({ control, name: 'fromAccountId' })
+    const selectedToAccountId = useWatch({ control, name: 'toAccountId' })
     const selectedCategoryId = useWatch({ control, name: 'categoryId' })
 
     useEffect(() => {
@@ -87,7 +90,7 @@ export const TransactionForm = ({
 
             <TextField
                 id="amount"
-                label="Amount"
+                label={type === 'ADJUSTMENT' ? 'Balance adjustment' : 'Amount'}
                 type="number"
                 step="0.01"
                 {...register('amount' as const)}
@@ -107,7 +110,11 @@ export const TransactionForm = ({
                     <select id="accountId" {...register('accountId' as const)} className="w-full">
                         <option value="">Select account</option>
                         {accounts.map((a) => (
-                            <option key={a.id} value={a.id}>
+                            <option
+                                key={a.id}
+                                value={a.id}
+                                disabled={a.isArchived && a.id !== selectedAccountId}
+                            >
                                 {a.name}
                             </option>
                         ))}
@@ -168,7 +175,11 @@ export const TransactionForm = ({
                         >
                             <option value="">Select account</option>
                             {accounts.map((a) => (
-                                <option key={a.id} value={a.id}>
+                                <option
+                                    key={a.id}
+                                    value={a.id}
+                                    disabled={a.isArchived && a.id !== selectedFromAccountId}
+                                >
                                     {a.name}
                                 </option>
                             ))}
@@ -186,7 +197,11 @@ export const TransactionForm = ({
                         >
                             <option value="">Select account</option>
                             {accounts.map((a) => (
-                                <option key={a.id} value={a.id}>
+                                <option
+                                    key={a.id}
+                                    value={a.id}
+                                    disabled={a.isArchived && a.id !== selectedToAccountId}
+                                >
                                     {a.name}
                                 </option>
                             ))}
