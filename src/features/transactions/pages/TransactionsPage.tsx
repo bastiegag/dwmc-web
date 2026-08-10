@@ -42,7 +42,7 @@ export const TransactionsPage = () => {
     const [archiveError, setArchiveError] = useState<string | null>(null)
 
     const accountsQuery = useAccounts()
-    const sectionsQuery = useSections()
+    const sectionsQuery = useSections({ includeArchived: Boolean(activeTransaction) })
     const transactionsQuery = useTransactions({ ...filters, month })
 
     const createMutation = useCreateTransaction()

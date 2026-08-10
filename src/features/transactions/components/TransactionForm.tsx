@@ -47,6 +47,7 @@ export const TransactionForm = ({
     useEffect(() => reset(initialValues ?? defaultTransactionFormValues), [initialValues, reset])
 
     const type = useWatch({ control, name: 'type' })
+    const selectedCategoryId = useWatch({ control, name: 'categoryId' })
 
     useEffect(() => {
         if (type === 'TRANSFER') {
@@ -123,10 +124,19 @@ export const TransactionForm = ({
                     <select id="categoryId" {...register('categoryId' as const)} className="w-full">
                         <option value="">No category</option>
                         {sections.map((s) => (
-                            <optgroup key={s.id} label={s.name}>
+                            <optgroup
+                                key={s.id}
+                                label={s.isArchived ? `${s.name} (archived)` : s.name}
+                            >
                                 {s.categories.map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.name}
+                                    <option
+                                        key={c.id}
+                                        value={c.id}
+                                        disabled={
+                                            c.isArchived && c.id !== (selectedCategoryId ?? '')
+                                        }
+                                    >
+                                        {c.isArchived ? `${c.name} (archived)` : c.name}
                                     </option>
                                 ))}
                             </optgroup>

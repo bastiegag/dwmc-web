@@ -87,6 +87,7 @@ describe('category and section mutations', () => {
         })
 
         await waitFor(() => {
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
         })
     })
@@ -103,6 +104,7 @@ describe('category and section mutations', () => {
         })
 
         await waitFor(() => {
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
         })
     })
@@ -114,6 +116,7 @@ describe('category and section mutations', () => {
         await result.current.mutateAsync('section-1')
 
         await waitFor(() => {
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
         })
     })

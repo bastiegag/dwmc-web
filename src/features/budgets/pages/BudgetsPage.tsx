@@ -33,15 +33,15 @@ const toErrorMessage = (error: unknown, fallback: string) => {
 export const BudgetsPage = () => {
     const { month } = useSelectedMonth()
 
+    const [activeBudget, setActiveBudget] = useState<Budget | null>(null)
     const budgetsQuery = useBudgets({ month })
-    const sectionsQuery = useSections()
+    const sectionsQuery = useSections({ includeArchived: Boolean(activeBudget) })
 
     const createMutation = useCreateBudget()
     const updateMutation = useUpdateBudget()
     const deleteMutation = useDeleteBudget()
 
     const [isDialogOpen, setDialogOpen] = useState(false)
-    const [activeBudget, setActiveBudget] = useState<Budget | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
     const [archiveError, setArchiveError] = useState<string | null>(null)
 

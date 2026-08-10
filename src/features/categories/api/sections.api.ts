@@ -5,13 +5,13 @@ import type {
     SectionWithCategories,
     UpdateSectionInput,
 } from '@/features/categories/types'
+import { fetchAllCursorPages } from './cursor-pagination'
 
-export const getSections = async (): Promise<SectionWithCategories[]> => {
-    const response = await apiClient<{ data: SectionWithCategories[] }>(
-        '/sections?includeCategories=true',
-    )
-
-    return response.data
+export const getSections = async (options: { includeArchived?: boolean } = {}) => {
+    return fetchAllCursorPages<SectionWithCategories>('/sections', {
+        includeCategories: 'true',
+        ...(options.includeArchived ? { includeArchived: 'true' } : {}),
+    })
 }
 
 export const createSection = async (input: CreateSectionInput): Promise<Section> => {

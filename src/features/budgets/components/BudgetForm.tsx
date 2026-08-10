@@ -59,10 +59,16 @@ export const BudgetForm = ({
                 >
                     <option value="">Select a category</option>
                     {sections.map((s) => (
-                        <optgroup key={s.id} label={s.name}>
+                        <optgroup key={s.id} label={s.isArchived ? `${s.name} (archived)` : s.name}>
                             {s.categories.map((c) => (
-                                <option key={c.id} value={c.id}>
-                                    {c.name}
+                                <option
+                                    key={c.id}
+                                    value={c.id}
+                                    disabled={
+                                        c.isArchived && c.id !== (initialValues?.categoryId ?? '')
+                                    }
+                                >
+                                    {c.isArchived ? `${c.name} (archived)` : c.name}
                                 </option>
                             ))}
                         </optgroup>

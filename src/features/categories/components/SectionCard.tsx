@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { SectionWithCategories } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
+import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CategoryList } from './CategoryList'
 
@@ -22,6 +23,10 @@ export const SectionCard = ({
     onArchiveCategory,
 }: SectionCardProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const { dialogRef, handleKeyDown } = useDialogFocus({
+        open: isConfirmOpen,
+        onClose: () => setIsConfirmOpen(false),
+    })
 
     return (
         <Card>
@@ -72,11 +77,14 @@ export const SectionCard = ({
 
             {isConfirmOpen ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div
+                    <dialog
+                        ref={dialogRef}
                         role="alertdialog"
-                        aria-modal="true"
                         aria-labelledby={`archive-section-${section.id}`}
+                        tabIndex={-1}
+                        onKeyDown={handleKeyDown}
                         className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
+                        open
                     >
                         <h3
                             id={`archive-section-${section.id}`}
@@ -106,7 +114,7 @@ export const SectionCard = ({
                                 Archive
                             </Button>
                         </div>
-                    </div>
+                    </dialog>
                 </div>
             ) : null}
         </Card>
