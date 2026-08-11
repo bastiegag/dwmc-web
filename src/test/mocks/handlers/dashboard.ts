@@ -2,17 +2,28 @@ import { http, HttpResponse } from 'msw'
 import { createAccount, createCategory } from '@/test/fixtures/domain'
 
 const API_URL = 'http://localhost:8787'
+const TIMESTAMP = '2026-01-15T00:00:00.000Z'
+
+const getPeriod = (month: string) => {
+    const [year, monthNumber] = month.split('-').map(Number)
+    const lastDay = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate()
+    return {
+        startDate: `${month}-01`,
+        endDate: `${month}-${String(lastDay).padStart(2, '0')}`,
+    }
+}
 
 export const dashboardHandlers = [
     http.get(`${API_URL}/summary/monthly*`, ({ request }) => {
         const url = new URL(request.url)
-        const month = url.searchParams.get('month') ?? ''
+        const month = url.searchParams.get('month') || '2026-06'
+        const recentLimit = Number(url.searchParams.get('recentLimit') ?? 5)
 
         if (month === '2026-02') {
             return HttpResponse.json({
                 data: {
                     month,
-                    period: { startDate: '2026-05-01', endDate: '2026-05-31' },
+                    period: getPeriod(month),
                     totals: {
                         incomeTotal: 0,
                         expenseTotal: 0,
@@ -31,8 +42,8 @@ export const dashboardHandlers = [
 
         return HttpResponse.json({
             data: {
-                month: month || '2026-06',
-                period: { startDate: '2026-06-01', endDate: '2026-06-30' },
+                month,
+                period: getPeriod(month),
                 totals: {
                     incomeTotal: 5000,
                     expenseTotal: 3200,
@@ -93,7 +104,7 @@ export const dashboardHandlers = [
                         id: 'tx1',
                         type: 'EXPENSE',
                         amount: 45.5,
-                        date: new Date().toISOString(),
+                        date: TIMESTAMP,
                         merchant: 'Grocery Store',
                         note: null,
                         accountId: createAccount().id,
@@ -115,7 +126,7 @@ export const dashboardHandlers = [
                         id: 'tx2',
                         type: 'INCOME',
                         amount: 5000,
-                        date: new Date().toISOString(),
+                        date: TIMESTAMP,
                         merchant: null,
                         note: 'June salary',
                         accountId: createAccount().id,
@@ -128,7 +139,7 @@ export const dashboardHandlers = [
                         },
                         category: { id: 'ic1', name: 'Salary', icon: 'dollar-sign', sectionId: '' },
                     },
-                ],
+                ].slice(0, recentLimit),
             },
         })
     }),

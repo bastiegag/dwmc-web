@@ -238,6 +238,7 @@ test('creates and archives an expense while keeping the account balance synchron
 
     await page.goto('/transactions?month=2026-01')
     await page.getByRole('button', { name: 'Archive' }).click()
+    await page.getByRole('alertdialog').getByRole('button', { name: 'Archive' }).click()
     await expect(page.getByText('Coffee shop')).not.toBeVisible()
 
     await page.goto('/accounts')

@@ -52,8 +52,6 @@ stable, safe user-facing messages before they reach forms.
 
 ## State Ownership
 
-- State belongs to the smallest owner that can provide the required lifetime and sharing.
-
 | State                                                 | Owner                                                                             |
 | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
 | Supabase session                                      | Supabase Auth, synchronized into TanStack Query.                                  |
@@ -65,6 +63,20 @@ stable, safe user-facing messages before they reach forms.
 | Contextual primary action                             | Primary-action React Context because the layout renders it and pages register it. |
 | Theme preference                                      | Existing ThemeProvider and its storage key.                                       |
 | Last transaction date per month                       | `localStorage` UX helper.                                                         |
+
+### Navigation Context
+
+The selected month is URL state on month-aware application routes:
+
+- `dashboard`, `transactions`, and `budgets` consume `?month=YYYY-MM`.
+- A valid query value is used as-is; a missing or invalid value falls back to the current UTC month without rewriting the URL.
+- Previous and next month controls replace the query value and preserve unrelated query parameters.
+- Month changes use replacement history intentionally: moving between months does not add one Back/Forward entry per click. Browser history remains focused on route and document navigation.
+- Application navigation links carry the selected month so a route change does not silently reset the month. The transaction-date helper may remember a valid date per month in `localStorage`, but it never overrides the URL month.
+
+The layout renders the shared `MonthNavigator` on month-aware routes. The desktop sidebar and mobile bottom navigation expose the same five primary destinations: Overview, Budgets, Transactions, Accounts, and Tools. The mobile bar reserves a sixth slot for the contextual action, while the layout owns that mobile action slot.
+
+Contextual primary actions are registered by the current page and rendered by the layout. Current actions are Add transaction on Dashboard and Transactions, Add budget on Budgets, and Add account on Accounts. Categories registers Add category or Add section based on its current data; Tools and the style guide do not register an action. Registration cleanup is scoped to the registering page so an unmount cannot clear a newer page action.
 
 TanStack Query hooks wrap feature API functions. Query keys include filters that change the response, including `month` and the dashboard summary's `recentLimit`. Mutations use query invalidation rather than manual `refetch()` when the affected key is known.
 

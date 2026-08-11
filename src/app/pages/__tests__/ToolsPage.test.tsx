@@ -9,7 +9,7 @@ describe('ToolsPage', () => {
 
         expect(screen.getByRole('link', { name: /style guide/i })).toHaveAttribute(
             'href',
-            '/style-guide',
+            '/style-guide?month=2026-06',
         )
     })
 })

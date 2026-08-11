@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
+import { QueryState } from '@/components/feedback'
 import {
     useBudgets,
     useCreateBudget,
@@ -139,20 +139,14 @@ export const BudgetsPage = () => {
                 </div>
             </div>
 
-            {budgetsQuery.isLoading ? (
-                <div className="py-6" role="status" aria-live="polite">
-                    <LoadingSpinner aria-label="Loading budgets" />
-                </div>
-            ) : null}
-
-            {budgetsQuery.isError ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Could not load budgets</AlertTitle>
-                    <AlertDescription>
-                        {toErrorMessage(budgetsQuery.error, 'Please refresh and try again.')}
-                    </AlertDescription>
-                </Alert>
-            ) : null}
+            <QueryState
+                isLoading={budgetsQuery.isLoading}
+                isError={budgetsQuery.isError}
+                loadingLabel="Loading budgets"
+                errorTitle="Could not load budgets"
+                errorMessage={toErrorMessage(budgetsQuery.error, '')}
+                fallbackErrorMessage="Please refresh and try again."
+            />
 
             {archiveError ? (
                 <Alert variant="destructive">

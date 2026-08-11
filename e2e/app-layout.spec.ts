@@ -53,5 +53,17 @@ test.describe('App Layout', () => {
             await page.getByLabel('Go to next month').click()
             await expect(page).toHaveURL(`/dashboard?month=${year}-${month}`)
         })
+
+        test('month navigation replaces history instead of adding month entries', async ({
+            page,
+        }) => {
+            await page.goto('/dashboard?month=2026-05')
+            const historyLength = await page.evaluate(() => window.history.length)
+
+            await page.getByLabel('Go to next month').click()
+
+            await expect(page).toHaveURL('/dashboard?month=2026-06')
+            await expect.poll(() => page.evaluate(() => window.history.length)).toBe(historyLength)
+        })
     })
 })

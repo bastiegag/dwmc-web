@@ -9,6 +9,7 @@ export const usePrimaryAction = (action: PrimaryAction | null) => {
     }
 
     const { registerAction } = context
+    const ownerRef = useRef(Symbol())
     const onClickRef = useRef(action?.onClick)
     const { label, isVisible, disabled, icon } = action ?? {}
 
@@ -17,20 +18,25 @@ export const usePrimaryAction = (action: PrimaryAction | null) => {
     }, [action?.onClick])
 
     useEffect(() => {
+        const owner = ownerRef.current
+
         if (label !== undefined) {
-            registerAction({
-                label,
-                onClick: () => onClickRef.current?.(),
-                ...(isVisible !== undefined ? { isVisible } : {}),
-                ...(disabled !== undefined ? { disabled } : {}),
-                ...(icon !== undefined ? { icon } : {}),
-            })
+            registerAction(
+                {
+                    label,
+                    onClick: () => onClickRef.current?.(),
+                    ...(isVisible !== undefined ? { isVisible } : {}),
+                    ...(disabled !== undefined ? { disabled } : {}),
+                    ...(icon !== undefined ? { icon } : {}),
+                },
+                owner,
+            )
         } else {
-            registerAction(null)
+            registerAction(null, owner)
         }
 
         return () => {
-            registerAction(null)
+            registerAction(null, owner)
         }
     }, [label, isVisible, disabled, icon, registerAction])
 }

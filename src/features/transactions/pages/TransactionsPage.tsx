@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
+import { QueryState } from '@/components/feedback'
 import {
     useTransactions,
     useCreateTransaction,
@@ -20,6 +20,11 @@ import type { TransactionFormValues } from '@/features/transactions/schemas/tran
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 import { PageHeader } from '@/components/layout'
+import { useAuth } from '@/features/auth/hooks'
+import {
+    getRememberedTransactionDate,
+    rememberTransactionDate,
+} from '@/features/transactions/utils/transaction-date-storage'
 
 const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error)
@@ -30,6 +35,7 @@ const toErrorMessage = (error: unknown, fallback: string) => {
 
 export const TransactionsPage = () => {
     const { month } = useSelectedMonth()
+    const { user } = useAuth()
     const [filters, setFilters] = useState<Omit<GetTransactionsParams, 'month'>>({})
     const [paginationState, setPaginationState] = useState({ month, page: 1 })
     const page = paginationState.month === month ? paginationState.page : 1
@@ -119,7 +125,7 @@ export const TransactionsPage = () => {
                             }
 
                 await createMutation.mutateAsync(payload)
-                localStorage.setItem(`last-tx-date-${month}`, values.date)
+                rememberTransactionDate(user?.id, month, values.date)
             }
 
             setDialogOpen(false)
@@ -152,7 +158,7 @@ export const TransactionsPage = () => {
             }
         }
         // Default date logic for new transactions
-        const lastDate = localStorage.getItem(`last-tx-date-${month}`)
+        const lastDate = getRememberedTransactionDate(user?.id, month)
         const today = new Date().toISOString().slice(0, 10)
         const firstDayOfMonth = `${month}-01`
         const isCurrentMonth = month === today.slice(0, 7)
@@ -173,7 +179,7 @@ export const TransactionsPage = () => {
             merchant: null,
             note: null,
         }
-    }, [activeTransaction, month])
+    }, [activeTransaction, month, user?.id])
 
     const handleDialogOpenChange = useCallback(
         (open: boolean) => {
@@ -202,23 +208,14 @@ export const TransactionsPage = () => {
                 />
             </div>
 
-            {transactionsQuery.isLoading ? (
-                <div className="py-6" role="status" aria-live="polite">
-                    <LoadingSpinner aria-label="Loading transactions" />
-                </div>
-            ) : null}
-
-            {transactionsQuery.isError ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Could not load transactions</AlertTitle>
-                    <AlertDescription>
-                        {toErrorMessage(
-                            transactionsQuery.error,
-                            'Please refresh and try again in a moment.',
-                        )}
-                    </AlertDescription>
-                </Alert>
-            ) : null}
+            <QueryState
+                isLoading={transactionsQuery.isLoading}
+                isError={transactionsQuery.isError}
+                loadingLabel="Loading transactions"
+                errorTitle="Could not load transactions"
+                errorMessage={toErrorMessage(transactionsQuery.error, '')}
+                fallbackErrorMessage="Please refresh and try again in a moment."
+            />
 
             {archiveError ? (
                 <Alert variant="destructive">

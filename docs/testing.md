@@ -1,5 +1,9 @@
 # Frontend Testing
 
+## Bundle profiling
+
+Run `npm run profile:build` to build the production bundle and list the ten largest generated assets. The command also identifies assets above the 500 kB warning threshold so bundle work can be based on measured output rather than source import counts.
+
 ## Stack and Layers
 
 - **Vitest** runs unit, component, and integration tests.

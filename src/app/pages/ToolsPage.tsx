@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Palette, Settings, Tags, User } from 'lucide-react'
+import { useSelectedMonth } from '@/shared/month'
 
 const tools = [
     {
@@ -30,6 +31,8 @@ const tools = [
 ]
 
 export const ToolsPage = () => {
+    const { month } = useSelectedMonth()
+
     return (
         <section className="space-y-6" aria-labelledby="tools-heading">
             <div className="px-4 sm:px-6 lg:px-8">
@@ -41,7 +44,7 @@ export const ToolsPage = () => {
                 {tools.map((tool) => (
                     <Link
                         key={tool.title}
-                        to={tool.to}
+                        to={tool.to === '#' ? tool.to : `${tool.to}?month=${month}`}
                         className={`rounded-lg border bg-card text-card-foreground shadow-sm transition-colors ${
                             tool.to === '#'
                                 ? 'cursor-not-allowed opacity-50'

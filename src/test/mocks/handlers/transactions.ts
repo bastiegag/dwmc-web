@@ -6,19 +6,27 @@ import type {
 import { createAccount } from '@/test/fixtures/domain'
 
 const API_URL = 'http://localhost:8787'
+const TIMESTAMP = '2026-01-01T00:00:00.000Z'
 
 export const transactionHandlers = [
-    http.get(`${API_URL}/transactions`, () =>
-        HttpResponse.json({ data: [], meta: { page: 1, pageSize: 25, total: 0, totalPages: 0 } }),
-    ),
+    http.get(`${API_URL}/transactions`, ({ request }) => {
+        const url = new URL(request.url)
+        const page = Number(url.searchParams.get('page') ?? 1)
+        const pageSize = Number(url.searchParams.get('pageSize') ?? 25)
+        return HttpResponse.json({
+            data: [],
+            meta: { page, pageSize, total: 0, totalPages: 0 },
+        })
+    }),
 
     http.get(`${API_URL}/transactions/:id`, ({ params }) => {
         const id = params.id as string
+        const account = createAccount()
         const t = {
             id,
             type: 'EXPENSE',
             amount: 12.34,
-            date: new Date().toISOString(),
+            date: '2026-06-15',
             merchant: 'Mock merchant',
             note: null,
             accountId: 'a1',
@@ -26,13 +34,13 @@ export const transactionHandlers = [
             toAccountId: null,
             categoryId: null,
             isArchived: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: TIMESTAMP,
+            updatedAt: TIMESTAMP,
             account: {
-                id: createAccount().id,
-                name: createAccount().name,
-                color: createAccount().color,
-                icon: createAccount().icon,
+                id: account.id,
+                name: account.name,
+                color: account.color,
+                icon: account.icon,
             },
         }
         return HttpResponse.json({ data: t })
@@ -41,11 +49,11 @@ export const transactionHandlers = [
     http.post(`${API_URL}/transactions`, async ({ request }) => {
         const body = (await request.json()) as CreateTransactionPayload
         const created = {
-            id: 'tx-' + String(Math.floor(Math.random() * 10000)),
+            id: 'transaction-created',
             ...body,
             isArchived: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: TIMESTAMP,
+            updatedAt: TIMESTAMP,
         }
         return HttpResponse.json({ data: created }, { status: 201 })
     }),
@@ -56,7 +64,7 @@ export const transactionHandlers = [
         const updated = {
             id,
             ...body,
-            updatedAt: new Date().toISOString(),
+            updatedAt: TIMESTAMP,
         }
         return HttpResponse.json({ data: updated })
     }),

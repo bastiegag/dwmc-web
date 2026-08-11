@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw'
 
 const SUPABASE_URL = 'https://test.supabase.co'
+const TIMESTAMP = '2026-01-01T00:00:00.000Z'
 
 export const authHandlers = [
     http.post(`${SUPABASE_URL}/auth/v1/token`, async ({ request }) => {
@@ -18,7 +19,7 @@ export const authHandlers = [
                     user: {
                         id: 'mock-user-id',
                         email: 'test@example.com',
-                        created_at: new Date().toISOString(),
+                        created_at: TIMESTAMP,
                     },
                 })
             }
@@ -38,7 +39,7 @@ export const authHandlers = [
         return HttpResponse.json({
             id: 'new-user-id',
             email: body.email,
-            created_at: new Date().toISOString(),
+            created_at: TIMESTAMP,
         })
     }),
 
@@ -53,8 +54,8 @@ export const authHandlers = [
             id: 'mock-user-id',
             email: 'test@example.com',
             aud: 'authenticated',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
+            created_at: TIMESTAMP,
+            updated_at: TIMESTAMP,
             user_metadata: {},
             app_metadata: {},
         }),

@@ -1,4 +1,6 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { PrimaryActionButton } from '@/shared/primary-action'
 import { screen, waitForElementToBeRemoved } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { render } from '@/test/utils/render'
@@ -56,5 +58,20 @@ describe('BudgetsPage', () => {
         expect(screen.getByText(/total planned/i).parentElement).toHaveTextContent(expectedTotal)
         expect(screen.getByText(/total spent/i).parentElement).toHaveTextContent(expectedTotal)
         expect(screen.getByText(/total remaining/i).parentElement).toHaveTextContent(expectedTotal)
+    })
+
+    it('opens a new budget for the selected month', async () => {
+        const user = userEvent.setup()
+        render(
+            <>
+                <BudgetsPage />
+                <PrimaryActionButton />
+            </>,
+            { initialEntries: ['/budgets?month=2026-05'] },
+        )
+
+        await user.click(await screen.findByRole('button', { name: /add budget/i }))
+
+        expect(screen.getByLabelText('Month')).toHaveValue('2026-05')
     })
 })

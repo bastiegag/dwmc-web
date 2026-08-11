@@ -58,6 +58,16 @@ describe('ThemeProvider', () => {
         expect(screen.getByTestId('theme')).toHaveTextContent('dark')
     })
 
+    it('falls back to defaultTheme for an invalid stored value', () => {
+        localStorage.setItem('test-theme', 'sepia')
+        render(
+            <ThemeProvider defaultTheme="light" storageKey="test-theme">
+                <ThemeDisplay />
+            </ThemeProvider>,
+        )
+        expect(screen.getByTestId('theme')).toHaveTextContent('light')
+    })
+
     it('applies the theme class to document.documentElement', async () => {
         const user = userEvent.setup()
         render(

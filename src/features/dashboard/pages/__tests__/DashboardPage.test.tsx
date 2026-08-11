@@ -20,7 +20,7 @@ describe('DashboardPage', () => {
     })
 
     it('shows summary cards when data is present', async () => {
-        render(<DashboardPage />)
+        render(<DashboardPage />, { initialEntries: ['/dashboard?month=2026-06'] })
         expect(
             await screen.findByRole('heading', { name: /income/i, level: 2 }),
         ).toBeInTheDocument()
@@ -32,6 +32,10 @@ describe('DashboardPage', () => {
         expect(screen.getByText('23')).toBeInTheDocument()
         expect(screen.getByText('Groceries')).toBeInTheDocument()
         expect(screen.getByText('Grocery Store')).toBeInTheDocument()
+        expect(screen.getByRole('link', { name: /view all transactions/i })).toHaveAttribute(
+            'href',
+            '/transactions?month=2026-06',
+        )
     })
 
     it('shows the empty state for a month with no activity', async () => {

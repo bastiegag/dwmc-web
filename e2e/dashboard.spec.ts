@@ -69,3 +69,39 @@ test('renders the selected month summary with financial totals and recent activi
     await expect(page.getByText('Groceries')).toBeVisible()
     await expect(page.getByText('Market purchase')).toBeVisible()
 })
+
+test('preserves a deep-linked month across month-aware navigation', async ({ page }) => {
+    await mockAuthenticatedSession(page)
+    await page.route(/\/api\/v1\/transactions(?:\?.*)?$/, (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                data: [],
+                meta: { page: 1, pageSize: 20, total: 0, totalPages: 0 },
+            }),
+        }),
+    )
+
+    const loginPage = new LoginPage(page)
+    await loginPage.goto()
+    await loginPage.login('test@example.com', 'Password123')
+    await expect(page).toHaveURL('/dashboard')
+
+    await page.goto('/dashboard?month=2026-05')
+
+    await expect(page).toHaveURL('/dashboard?month=2026-05')
+    await expect(page.locator('span[role="status"]').filter({ hasText: 'mai 2026' })).toBeVisible()
+
+    await page.getByTestId('desktop-sidebar').getByRole('link', { name: 'Transactions' }).click()
+    await expect(page).toHaveURL('/transactions?month=2026-05')
+    await expect(page.locator('span[role="status"]').filter({ hasText: 'mai 2026' })).toBeVisible()
+
+    await page.getByTestId('desktop-sidebar').getByRole('link', { name: 'Budgets' }).click()
+    await expect(page).toHaveURL('/budgets?month=2026-05')
+    await expect(page.locator('span[role="status"]').filter({ hasText: 'mai 2026' })).toBeVisible()
+
+    await page.getByTestId('desktop-sidebar').getByRole('link', { name: 'Overview' }).click()
+    await expect(page).toHaveURL('/dashboard?month=2026-05')
+    await expect(page.locator('span[role="status"]').filter({ hasText: 'mai 2026' })).toBeVisible()
+})
