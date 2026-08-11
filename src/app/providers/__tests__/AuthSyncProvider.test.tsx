@@ -3,7 +3,7 @@ import { act, render, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type ReactNode } from 'react'
 import { AuthSyncProvider } from '@/app/providers'
-import { authSessionQueryKey } from '@/features/auth/hooks/useAuth'
+import { authSessionQueryKey } from '@/features/auth/hooks'
 import { authService } from '@/features/auth/services/authService'
 import type { Session, AuthChangeEvent } from '@supabase/supabase-js'
 

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Route } from '@playwright/test'
 import { mockAuthenticatedSession } from './auth-fixtures.js'
 import { LoginPage } from './pages/login.page.js'
 
@@ -99,7 +99,7 @@ const setupBudgetApi = async (page: Parameters<typeof mockAuthenticatedSession>[
     const transactions: Transaction[] = []
     let nextTransactionId = 1
 
-    const fulfill = (route: Parameters<typeof page.route>[1], data: unknown, status = 200) =>
+    const fulfill = (route: Route, data: unknown, status = 200) =>
         route.fulfill({
             status,
             contentType: 'application/json',

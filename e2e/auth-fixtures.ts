@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test'
+import type { MonthlySummary } from '../src/features/dashboard/types/summary.types'
 
 export const MOCK_ACCESS_TOKEN =
     'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJtb2NrLXVzZXItaWQiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoyMDAwMDAwMDAwfQ.'
@@ -16,7 +17,7 @@ export const MOCK_SESSION = {
     },
 }
 
-const MOCK_SUMMARY = {
+const MOCK_SUMMARY: MonthlySummary = {
     month: '2026-01',
     period: {
         startDate: '2026-01-01T00:00:00.000Z',

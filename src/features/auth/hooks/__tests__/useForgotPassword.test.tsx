@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { http, HttpResponse } from 'msw'
 import { server } from '@/test/mocks/server'
-import { useForgotPassword } from '@/features/auth/hooks/useForgotPassword'
+import { useForgotPassword } from '@/features/auth/hooks'
 import { renderHookWithQuery, waitFor } from '@/test/utils/render'
 
 vi.mock('sonner', () => ({

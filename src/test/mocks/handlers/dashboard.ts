@@ -8,7 +8,7 @@ export const dashboardHandlers = [
         const url = new URL(request.url)
         const month = url.searchParams.get('month') ?? ''
 
-        if (month === 'empty-month') {
+        if (month === '2026-02') {
             return HttpResponse.json({
                 data: {
                     month,

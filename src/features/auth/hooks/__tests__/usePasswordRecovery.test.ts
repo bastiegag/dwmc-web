@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
-import { usePasswordRecovery } from '@/features/auth/hooks/usePasswordRecovery'
+import { usePasswordRecovery } from '@/features/auth/hooks'
 
 const mockUnsubscribe = vi.fn()
 

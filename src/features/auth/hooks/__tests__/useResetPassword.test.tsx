@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useResetPassword } from '@/features/auth/hooks/useResetPassword'
+import { useResetPassword } from '@/features/auth/hooks'
 import { authService } from '@/features/auth/services'
 import { renderHookWithQuery, waitFor } from '@/test/utils/render'
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { useAuth, authSessionQueryKey } from '@/features/auth/hooks/useAuth'
+import { useAuth, authSessionQueryKey } from '@/features/auth/hooks'
 import type { Session } from '@supabase/supabase-js'
 import { renderHookWithQuery, waitFor } from '@/test/utils/render'
 

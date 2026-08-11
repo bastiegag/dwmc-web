@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useLogout } from '@/features/auth/hooks/useLogout'
+import { useLogout } from '@/features/auth/hooks'
 import { authService } from '@/features/auth/services'
 import { renderHookWithQuery, waitFor } from '@/test/utils/render'
 

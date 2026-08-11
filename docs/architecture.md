@@ -74,9 +74,9 @@ The current observed invalidation rules are:
 | ----------------------------------- | -------------------------------------------------------------------- |
 | Transaction create, update, archive | Transaction lists, account lists, budget lists, and dashboard lists. |
 | Budget create, update, archive      | Budget lists and dashboard lists.                                    |
-| Account create, update, archive     | Account lists.                                                       |
-| Category create, update, archive    | Category lists and section lists.                                    |
-| Section create, update, archive     | Section lists.                                                       |
+| Account create, update, archive     | Account lists and dashboard lists.                                   |
+| Category create, update, archive    | Category lists, section lists, and dashboard lists.                  |
+| Section create, update, archive     | Section lists, category lists, and dashboard lists.                  |
 | Dashboard retry                     | Dashboard lists.                                                     |
 
 This table describes current implementation, not a promise that every derived view is already invalidated. When changing a mutation, inspect the relevant hooks and backend effects across both repositories.
