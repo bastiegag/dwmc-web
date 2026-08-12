@@ -48,6 +48,9 @@ const BudgetsPage = lazy(() =>
 const ToolsPage = lazy(() =>
     import('@/app/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })),
 )
+const ProfilePage = lazy(() =>
+    import('@/features/profile/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+)
 const StyleGuidePage = lazy(() =>
     import('@/features/style-guide').then((m) => ({ default: m.StyleGuidePage })),
 )
@@ -93,6 +96,7 @@ const router = createBrowserRouter([
                         element: <Outlet />,
                         children: [
                             { index: true, element: <ToolsPage /> },
+                            { path: 'profile', element: <ProfilePage /> },
                             { path: 'categories', element: <Navigate to="/categories" replace /> },
                         ],
                     },

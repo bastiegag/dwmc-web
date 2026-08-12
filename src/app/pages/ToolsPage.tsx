@@ -20,7 +20,7 @@ const tools = [
         title: 'Profile',
         description: 'Update your personal information.',
         icon: User,
-        to: '#', // Placeholder
+        to: '/tools/profile',
     },
     {
         title: 'Settings',
@@ -44,13 +44,13 @@ export const ToolsPage = () => {
                 {tools.map((tool) => (
                     <Link
                         key={tool.title}
-                        to={tool.to === '#' ? tool.to : `${tool.to}?month=${month}`}
+                        to={`${tool.to}?month=${month}`}
                         className={`rounded-lg border bg-card text-card-foreground shadow-sm transition-colors ${
                             tool.to === '#'
                                 ? 'cursor-not-allowed opacity-50'
                                 : 'hover:bg-accent hover:text-accent-foreground'
                         }`}
-                        aria-disabled={tool.to === '#'}
+                        aria-disabled={tool.to === '#' ? true : undefined}
                         tabIndex={tool.to === '#' ? -1 : undefined}
                         onClick={(e) => {
                             if (tool.to === '#') e.preventDefault()

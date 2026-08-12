@@ -78,6 +78,8 @@ The layout renders the shared `MonthNavigator` on month-aware routes. The deskto
 
 Contextual primary actions are registered by the current page and rendered by the layout. Current actions are Add transaction on Dashboard and Transactions, Add budget on Budgets, and Add account on Accounts. Categories registers Add category or Add section based on its current data; Tools and the style guide do not register an action. Registration cleanup is scoped to the registering page so an unmount cannot clear a newer page action.
 
+The Profile experience is nested under the existing Tools route at `/tools/profile`. It uses the shared API client and a stable `['profile']` TanStack Query key; email is read from the Supabase session and profile mutations send only application fields.
+
 TanStack Query hooks wrap feature API functions. Query keys include filters that change the response, including `month` and the dashboard summary's `recentLimit`. Mutations use query invalidation rather than manual `refetch()` when the affected key is known.
 
 The current observed invalidation rules are:

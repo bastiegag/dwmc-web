@@ -69,6 +69,8 @@ Supabase owns browser authentication. The backend validates the access token and
 
 The backend auth contract includes bearer-token validation on protected routes and `GET /api/v1/auth/me` profile synchronization. See `../dwmc-api/docs/domains/auth.md` for the canonical behavior.
 
+The authenticated profile contract is `GET/PATCH /api/v1/profile`. The client sends only editable application fields; identity comes from the bearer token and email remains Supabase Auth data.
+
 On logout or any auth event that removes the session, the frontend removes cached user-sensitive domain queries while preserving the auth-session query so protected-route loading can settle correctly.
 
 When changing an API-dependent feature, inspect `../dwmc-api` when available before changing request types, response handling, filters, or mutation behavior.

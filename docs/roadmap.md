@@ -14,18 +14,19 @@ This is the frontend roadmap only. It separates shipped behavior from work that 
 - Responsive desktop/mobile navigation.
 - Contextual primary actions.
 - Shared API client and TanStack Query integration.
+- Profile editing from the Tools area.
 - Vitest, Testing Library, MSW, Playwright, and Storybook coverage infrastructure.
 
 ## Placeholder or In Progress
 
-- The Tools area has real Categories and Style Guide destinations, while Profile and Settings remain placeholders.
+- The Tools area has real Categories, Style Guide, and Profile destinations; Settings remains a placeholder.
 - Dashboard visualizations, responsive polish, accessibility polish, and broader component coverage may continue to evolve with the current product.
 
 ## Planned or Unconfirmed
 
 The following are not implemented and should not be treated as commitments until product scope is confirmed:
 
-- Profile and Settings screens.
+- Settings screens.
 - Reports or richer analytics.
 - Recurring transactions.
 - Import/export workflows.

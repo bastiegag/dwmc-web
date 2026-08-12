@@ -88,6 +88,29 @@ describe('AuthSyncProvider', () => {
         })
     })
 
+    it('clears user-sensitive queries when the authenticated user changes', async () => {
+        const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
+        qc.setQueryData(authSessionQueryKey, { user: { id: 'user-a' } })
+        qc.setQueryData(['profile'], { id: 'profile-a' })
+        render(<div>child</div>, { wrapper: createWrapper(qc) })
+
+        await act(async () => {
+            await capturedCallback?.(
+                'SIGNED_IN' as AuthChangeEvent,
+                {
+                    user: { id: 'user-b' },
+                } as Session,
+            )
+        })
+
+        await waitFor(() => {
+            expect(qc.getQueryData(['profile'])).toBeUndefined()
+            expect(qc.getQueryData(authSessionQueryKey)).toMatchObject({
+                user: { id: 'user-b' },
+            })
+        })
+    })
+
     it('unsubscribes on unmount', () => {
         const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
         const { unmount } = render(<div>child</div>, { wrapper: createWrapper(qc) })
