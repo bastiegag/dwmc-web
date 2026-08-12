@@ -17,7 +17,7 @@ The frontend owns the authenticated user experience, navigation, forms, presenta
 - Monthly category budgets with spent, remaining, progress, and over-budget values.
 - URL-based month navigation, desktop sidebar navigation, mobile bottom navigation, and contextual primary actions.
 
-Profile and Settings are currently placeholders in the Tools area. Reports, recurring transactions, imports, and exports are not implemented.
+Profile editing and device-local theme Settings are available from the Tools area. Reports, recurring transactions, imports, and exports are not implemented.
 
 ## Tech Stack
 

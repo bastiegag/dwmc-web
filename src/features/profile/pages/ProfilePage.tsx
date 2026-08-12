@@ -42,7 +42,7 @@ export const ProfilePage = () => {
                     Profile
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Manage your personal information and application preferences.
+                    Manage your personal information and profile preferences.
                 </p>
             </div>
             <div className="max-w-2xl rounded-lg border bg-card p-6 text-card-foreground shadow-sm">

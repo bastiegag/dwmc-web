@@ -26,7 +26,7 @@ const tools = [
         title: 'Settings',
         description: 'Adjust application preferences.',
         icon: Settings,
-        to: '#', // Placeholder
+        to: '/tools/settings',
     },
 ]
 
@@ -45,16 +45,7 @@ export const ToolsPage = () => {
                     <Link
                         key={tool.title}
                         to={`${tool.to}?month=${month}`}
-                        className={`rounded-lg border bg-card text-card-foreground shadow-sm transition-colors ${
-                            tool.to === '#'
-                                ? 'cursor-not-allowed opacity-50'
-                                : 'hover:bg-accent hover:text-accent-foreground'
-                        }`}
-                        aria-disabled={tool.to === '#' ? true : undefined}
-                        tabIndex={tool.to === '#' ? -1 : undefined}
-                        onClick={(e) => {
-                            if (tool.to === '#') e.preventDefault()
-                        }}
+                        className="rounded-lg border bg-card text-card-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                         <Card className="h-full border-0 shadow-none">
                             <CardHeader className="flex flex-row items-center gap-4">

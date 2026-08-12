@@ -61,7 +61,7 @@ stable, safe user-facing messages before they reach forms.
 | Form inputs and validation                            | React Hook Form plus Zod.                                                         |
 | Dialog visibility and temporary UI state              | Local component state.                                                            |
 | Contextual primary action                             | Primary-action React Context because the layout renders it and pages register it. |
-| Theme preference                                      | Existing ThemeProvider and its storage key.                                       |
+| Theme preference                                      | Existing ThemeProvider and the namespaced `dwmc-theme` storage key.               |
 | Last transaction date per month                       | `localStorage` UX helper.                                                         |
 
 ### Navigation Context
@@ -79,6 +79,12 @@ The layout renders the shared `MonthNavigator` on month-aware routes. The deskto
 Contextual primary actions are registered by the current page and rendered by the layout. Current actions are Add transaction on Dashboard and Transactions, Add budget on Budgets, and Add account on Accounts. Categories registers Add category or Add section based on its current data; Tools and the style guide do not register an action. Registration cleanup is scoped to the registering page so an unmount cannot clear a newer page action.
 
 The Profile experience is nested under the existing Tools route at `/tools/profile`. It uses the shared API client and a stable `['profile']` TanStack Query key; email is read from the Supabase session and profile mutations send only application fields.
+
+The Settings experience is nested under `/tools/settings` and currently owns only the
+device-local theme preference (`system`, `light`, or `dark`). It reuses the existing
+ThemeProvider; Settings does not duplicate Profile identity fields or preferred currency,
+and no backend Settings resource exists until an account-level preference needs
+cross-device persistence. Invalid stored theme values fall back to the provider default.
 
 TanStack Query hooks wrap feature API functions. Query keys include filters that change the response, including `month` and the dashboard summary's `recentLimit`. Mutations use query invalidation rather than manual `refetch()` when the affected key is known.
 

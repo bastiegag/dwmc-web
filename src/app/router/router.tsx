@@ -51,6 +51,9 @@ const ToolsPage = lazy(() =>
 const ProfilePage = lazy(() =>
     import('@/features/profile/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
 )
+const SettingsPage = lazy(() =>
+    import('@/features/settings').then((m) => ({ default: m.SettingsPage })),
+)
 const StyleGuidePage = lazy(() =>
     import('@/features/style-guide').then((m) => ({ default: m.StyleGuidePage })),
 )
@@ -97,6 +100,7 @@ const router = createBrowserRouter([
                         children: [
                             { index: true, element: <ToolsPage /> },
                             { path: 'profile', element: <ProfilePage /> },
+                            { path: 'settings', element: <SettingsPage /> },
                             { path: 'categories', element: <Navigate to="/categories" replace /> },
                         ],
                     },
