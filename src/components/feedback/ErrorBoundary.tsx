@@ -10,17 +10,16 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
     hasError: boolean
-    error: Error | null
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     constructor(props: ErrorBoundaryProps) {
         super(props)
-        this.state = { hasError: false, error: null }
+        this.state = { hasError: false }
     }
 
-    static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-        return { hasError: true, error }
+    static getDerivedStateFromError(): ErrorBoundaryState {
+        return { hasError: true }
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -29,7 +28,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
 
     handleReset = () => {
-        this.setState({ hasError: false, error: null })
+        this.setState({ hasError: false })
     }
 
     render() {
@@ -44,7 +43,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                     <div>
                         <h2 className="text-xl font-semibold">Something went wrong</h2>
                         <p className="mt-2 text-sm text-muted-foreground">
-                            {this.state.error?.message ?? 'An unexpected error occurred'}
+                            An unexpected error occurred. Please try again.
                         </p>
                     </div>
                     <Button onClick={this.handleReset} variant="outline">
