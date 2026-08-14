@@ -52,6 +52,12 @@ Set these in `.env.local`:
 
 Do not put service-role keys or other backend secrets in frontend environment files.
 
+For hosted deployments, Vercel owns these variables separately for its Development,
+Preview, and Production environments. Configure Preview with the staging API and
+Supabase project, and Production with the production API and Supabase project.
+Deployment details and the required GitHub secrets are documented in
+[`docs/RELEASING.md`](docs/RELEASING.md).
+
 ## Scripts
 
 | Command             | Purpose                                                             |
