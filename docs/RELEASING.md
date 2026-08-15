@@ -1,175 +1,109 @@
 # Releasing
 
-This project uses Semantic Versioning, Changesets, Conventional Commits, and GitHub Actions to manage releases.
+`dwmc-web` is a private application repository versioned independently from `dwmc-api`. Changesets, Conventional Commits, Husky, and GitHub Actions support release bookkeeping; this repository is not published as an npm package.
 
-## Versioning Model
+## Quality Gate
 
-Versions follow SemVer:
+The `validate` script runs:
 
-- `patch` for bug fixes and small internal improvements with no user-facing API change
-- `minor` for backward-compatible features
-- `major` for breaking changes
+```bash
+npm run format:check
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+```
 
-The app is currently in the `0.x.x` range, so breaking changes may still land before `1.0.0`, but they should still be documented clearly with a major changeset when they affect users.
+The release workflows install with `npm ci` and run this validation before release automation proceeds.
 
-## Conventional Commits
+## Changesets
 
-Commit messages must follow Conventional Commits so release intent is easy to read and review.
-
-Examples:
-
-- `feat(auth): add forgot password`
-- `fix(budget): recalculate totals`
-- `docs(readme): update installation guide`
-- `refactor(api): simplify request handling`
-- `test(accounts): add integration tests`
-- `chore(deps): update dependencies`
-- `ci(github): improve release workflow`
-- `perf(transactions): optimize rendering`
-
-The repo enforces this with Commitlint in the Husky `commit-msg` hook.
-
-## When A Changeset Is Needed
-
-Create a changeset when a change should appear in the next release notes or should bump the app version.
-
-Usually required:
-
-- new user-facing features
-- bug fixes
-- breaking changes
-- changes that should be visible in the changelog
-
-Usually not required:
-
-- internal refactoring with no user-visible impact
-- CI changes
-- documentation-only updates
-- dependency maintenance that does not affect users
-
-If you are unsure, prefer adding a changeset. It is safer to document a release-worthy change than to miss one.
-
-## Creating A Changeset
-
-From the repository root:
+Create a changeset for user-visible or release-worthy frontend changes:
 
 ```bash
 npm run changeset
 ```
 
-Choose one of:
+Documentation-only, CI-only, and internal changes normally do not need a changeset. The repository configuration versions private packages and creates tags while keeping package publication restricted.
 
-- `patch`
-- `minor`
-- `major`
+## GitHub Workflows
 
-Then write a short user-facing summary of the change.
+- `.github/workflows/deploy.yml` runs the reusable quality gates, deploys same-repository pull requests to Vercel Preview, and deploys pushes to `main` to Vercel Production.
+- `.github/workflows/e2e.yml`, `.github/workflows/chromatic.yml`, and security workflows remain separate checks.
 
-Keep the description focused on what a user would notice, not implementation details.
+The frontend workflow does not publish to npm. The frontend and backend repositories have independent versions and workflows; coordinate only when a shared API contract changes.
 
-## How Version PRs Work
+## Vercel Deployment
 
-The main release workflow runs on pushes to `main` and uses Changesets to maintain a Version PR.
+GitHub Actions is the deployment owner. A merge to `main` follows this path:
 
-When there are pending changesets, GitHub Actions creates or updates a PR named `chore(release): version packages`.
-
-That PR contains:
-
-- the version bump
-- the generated changelog entry
-- any updated dependency ranges for internal package relationships
-
-Merge the Version PR after review. That merge is what drives the final release step.
-
-## How GitHub Releases Are Generated
-
-After the Version PR is merged, the tag-based release workflow runs on `v*` tags.
-
-That workflow:
-
-- installs dependencies with `npm ci`
-- runs the project validation script
-- uses Changesets to create Git tags and GitHub Releases
-
-The workflow never publishes anything to npm.
-
-## Changesets Configuration
-
-The repo is configured as a private application:
-
-- `access: restricted`
-- `baseBranch: main`
-- `updateInternalDependencies: patch`
-- `privatePackages.version: true`
-- `privatePackages.tag: true`
-
-This keeps the app versioned locally while still allowing Git tags and GitHub Releases.
-
-## Editing Or Removing A Changeset
-
-Before the Version PR is merged, you can edit or delete changeset files in `.changeset/`.
-
-Use this when:
-
-- the change was described incorrectly
-- the SemVer bump level was wrong
-- the change no longer belongs in the upcoming release
-
-If you remove the changeset entirely, the next release PR update will reflect that automatically.
-
-## Hotfixes
-
-For a hotfix:
-
-1. Branch from `main`
-2. Make the fix
-3. Add a `patch` changeset
-4. Open a PR with a Conventional Commit message
-5. Merge it
-6. Let the release workflow update the Version PR
-
-If the hotfix is urgent, keep the changeset description short and user-facing.
-
-## Breaking Changes
-
-For breaking changes:
-
-1. Add a `major` changeset
-2. Clearly describe the user impact
-3. Update any docs or migration notes that explain the change
-
-Even in the `0.x.x` range, use a major changeset when the change is not backward compatible.
-
-## Verifying Git Tags
-
-After a release, check that tags were created in the repository:
-
-```bash
-git fetch --tags
-git tag --list
+```text
+main merge
+	-> quality gates (format, lint, typecheck, unit tests, build)
+	-> GitHub Actions: vercel pull, vercel build --prod, vercel deploy --prebuilt --prod
+	-> smoke verification
 ```
 
-You can also inspect the latest tag locally:
+Pull requests from this repository receive a Preview deployment after the same quality gates pass. Pull requests from forks still run quality checks, but do not deploy because GitHub does not expose deployment secrets to untrusted fork code. Production deployments only run for pushes to `main`.
 
-```bash
-git describe --tags --abbrev=0
-```
+### GitHub secrets
 
-## Recovering From A Failed Release
+Add these repository or environment secrets in GitHub. They are consumed only by the deployment workflow:
 
-If the workflow fails before the Version PR is merged, fix the underlying issue and push again.
+| Secret              | Where to obtain it                                                          |
+| ------------------- | --------------------------------------------------------------------------- |
+| `VERCEL_TOKEN`      | Vercel account settings, under Tokens.                                      |
+| `VERCEL_ORG_ID`     | Vercel project settings or the `orgId` returned by `vercel project ls`.     |
+| `VERCEL_PROJECT_ID` | Vercel project settings or the `projectId` returned by `vercel project ls`. |
 
-If the Version PR was merged but the tag/release workflow failed:
+The `preview` and `production` GitHub Environments are used by the workflow. Configure production approval rules there if required. Do not put frontend application variables in GitHub Actions YAML.
 
-1. Fix the workflow or repository issue
-2. Re-run the failed workflow from GitHub Actions, or push a new tag if needed
-3. Confirm the GitHub Release was created
+### Vercel environment variables
 
-Do not manually publish to npm. This project is intentionally configured to avoid npm publication.
+Configure these variables in the Vercel project under each environment. Values are pulled by `vercel pull` before Vercel builds the bundle:
+
+| Variable                 | Development                            | Preview                       | Production                        |
+| ------------------------ | -------------------------------------- | ----------------------------- | --------------------------------- |
+| `VITE_APP_URL`           | `http://localhost:5182`                | The Preview deployment origin | The production application origin |
+| `VITE_API_URL`           | `/api/v1` through the local Vite proxy | Staging API base URL          | Production API base URL           |
+| `VITE_SUPABASE_URL`      | Development Supabase project           | Staging Supabase project      | Production Supabase project       |
+| `VITE_SUPABASE_ANON_KEY` | Development project anon key           | Staging project anon key      | Production project anon key       |
+
+Only browser-safe Supabase anon keys belong in the frontend. Never configure service-role keys, database credentials, or other backend secrets in Vercel frontend environments. Preview must use staging infrastructure so it cannot access production financial data.
+
+### Duplicate deployment prevention
+
+Disable Vercel's automatic Git deployments for this project, or otherwise configure its Git integration not to deploy the `main` and pull-request refs handled by `.github/workflows/deploy.yml`. Keeping both enabled would deploy the same commit twice and can make the GitHub status and production target ambiguous. This repository cannot verify or change that Vercel dashboard setting automatically.
+
+### Troubleshooting and redeploying
+
+Inspect the failed job in the repository's Actions tab first. Quality failures stop before any Vercel command; Vercel build or deployment failures are reported by the deployment job. After correcting the issue, push a new commit or re-run the failed workflow from GitHub Actions. A production redeploy must still be performed from `main`; do not deploy arbitrary branches with production credentials.
+
+### Production smoke check
+
+After a production deployment, use a dedicated safe test account and verify:
+
+1. Open the application.
+2. Direct-load a nested route such as `/app/dashboard` and refresh it.
+3. Log in.
+4. Confirm Dashboard loads and the API connection works.
+5. Switch month.
+6. Navigate to Transactions and Budgets.
+7. Log out.
+
+Do not automate this check against real production financial data without a dedicated safe test account.
+
+## Commit and Review Expectations
+
+Use Conventional Commit messages such as `feat(transactions): ...`, `fix(budgets): ...`, or `docs(readme): ...`. Review user impact, API compatibility with `dwmc-api`, migrations on the backend side, tests, and documentation before merging.
 
 ## Local Commands
 
-- `npm run changeset` - create a new changeset
-- `npm run version` - run the versioning command used by the release workflow
-- `npm run release` - create git tags for the current release state
-- `npm run validate` - run the main quality gate locally
+```bash
+npm run validate
+npm run changeset
+npm run version
+npm run release
+```
+
+`version` consumes pending changesets and updates the repository version/changelog. `release` is the Changesets tag command used by the release process. Do not manually publish this private application to npm.

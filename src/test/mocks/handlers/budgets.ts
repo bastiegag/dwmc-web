@@ -2,9 +2,27 @@ import { http, HttpResponse } from 'msw'
 import { createBudget, createSectionWithCategories } from '@/test/fixtures/domain'
 
 const API_URL = 'http://localhost:8787'
+const TIMESTAMP = '2026-01-01T00:00:00.000Z'
 
 const mockBudget = createBudget({
-    month: new Date().toISOString().slice(0, 7),
+    id: 'budget-groceries',
+    month: '2026-06',
+    spent: 150,
+    remaining: 350,
+    progress: 30,
+    isOverBudget: false,
+})
+const julyBudget = createBudget({
+    id: 'budget-groceries-july',
+    month: '2026-07',
+    spent: 150,
+    remaining: 350,
+    progress: 30,
+    isOverBudget: false,
+})
+const augustBudget = createBudget({
+    id: 'budget-groceries-august',
+    month: '2026-08',
     spent: 150,
     remaining: 350,
     progress: 30,
@@ -13,14 +31,18 @@ const mockBudget = createBudget({
 
 export const budgetHandlers = [
     http.get(`${API_URL}/budgets`, ({ request }) => {
-        // allow query filtering but default to returning a single mock
         const url = new URL(request.url)
         const params = url.searchParams
-        if (params.get('includeArchived') === 'true') {
-            return HttpResponse.json({ data: [mockBudget] })
-        }
-
-        return HttpResponse.json({ data: [mockBudget] })
+        const includeArchived = params.get('includeArchived') === 'true'
+        const month = params.get('month')
+        const categoryId = params.get('categoryId')
+        const data = [mockBudget, julyBudget, augustBudget].filter(
+            (budget) =>
+                (includeArchived || !budget.isArchived) &&
+                (!month || budget.month === month) &&
+                (!categoryId || budget.category.id === categoryId),
+        )
+        return HttpResponse.json({ data })
     }),
 
     // Sections with categories used by the budgets UI
@@ -37,7 +59,7 @@ export const budgetHandlers = [
     http.post(`${API_URL}/budgets`, async ({ request }) => {
         const body = (await request.json()) as Record<string, unknown>
         const created = {
-            id: `budget-${Math.random().toString(36).slice(2, 9)}`,
+            id: 'budget-created',
             month: body.month ?? mockBudget.month,
             amount: Number((body as Record<string, unknown>).amount ?? 0),
             spent: 0,
@@ -46,12 +68,9 @@ export const budgetHandlers = [
             isOverBudget: false,
             transactionCount: 0,
             isArchived: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            category:
-                body.categoryId === mockBudget.category.id
-                    ? mockBudget.category
-                    : mockBudget.category,
+            createdAt: TIMESTAMP,
+            updatedAt: TIMESTAMP,
+            category: body.categoryId === mockBudget.category.id ? mockBudget.category : null,
         }
 
         return HttpResponse.json({ data: created }, { status: 201 })
@@ -74,7 +93,7 @@ export const budgetHandlers = [
                 (body as Record<string, unknown>).amount !== undefined
                     ? Number((body as Record<string, unknown>).amount)
                     : mockBudget.amount,
-            updatedAt: new Date().toISOString(),
+            updatedAt: TIMESTAMP,
         }
         return HttpResponse.json({ data: updated })
     }),

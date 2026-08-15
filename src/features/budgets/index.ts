@@ -15,7 +15,6 @@ export {
     type CreateBudgetPayload,
     type UpdateBudgetPayload,
 } from './types/budget.types'
-export { BudgetMonthSelector } from './components/BudgetMonthSelector'
 export { EmptyBudgetsState } from './components/EmptyBudgetsState'
 export { BudgetCard } from './components/BudgetCard'
 export { BudgetList } from './components/BudgetList'

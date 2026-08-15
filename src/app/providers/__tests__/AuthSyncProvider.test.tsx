@@ -3,7 +3,7 @@ import { act, render, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type ReactNode } from 'react'
 import { AuthSyncProvider } from '@/app/providers'
-import { authSessionQueryKey } from '@/features/auth/hooks/useAuth'
+import { authSessionQueryKey } from '@/features/auth/hooks'
 import { authService } from '@/features/auth/services/authService'
 import type { Session, AuthChangeEvent } from '@supabase/supabase-js'
 
@@ -75,6 +75,7 @@ describe('AuthSyncProvider', () => {
     it('clears the query cache entry when the callback fires with null', async () => {
         const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
         qc.setQueryData(authSessionQueryKey, { user: { id: 'u1' } })
+        qc.setQueryData(['accounts', 'list'], [{ id: 'account-a' }])
         render(<div>child</div>, { wrapper: createWrapper(qc) })
 
         await act(async () => {
@@ -83,6 +84,30 @@ describe('AuthSyncProvider', () => {
 
         await waitFor(() => {
             expect(qc.getQueryData(authSessionQueryKey)).toBeNull()
+            expect(qc.getQueryData(['accounts', 'list'])).toBeUndefined()
+        })
+    })
+
+    it('clears user-sensitive queries when the authenticated user changes', async () => {
+        const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
+        qc.setQueryData(authSessionQueryKey, { user: { id: 'user-a' } })
+        qc.setQueryData(['profile'], { id: 'profile-a' })
+        render(<div>child</div>, { wrapper: createWrapper(qc) })
+
+        await act(async () => {
+            await capturedCallback?.(
+                'SIGNED_IN' as AuthChangeEvent,
+                {
+                    user: { id: 'user-b' },
+                } as Session,
+            )
+        })
+
+        await waitFor(() => {
+            expect(qc.getQueryData(['profile'])).toBeUndefined()
+            expect(qc.getQueryData(authSessionQueryKey)).toMatchObject({
+                user: { id: 'user-b' },
+            })
         })
     })
 

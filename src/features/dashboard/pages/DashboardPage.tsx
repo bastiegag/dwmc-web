@@ -1,16 +1,11 @@
 import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
+import { QueryState } from '@/components/feedback'
 import SummaryCards from '@/features/dashboard/components/SummaryCards'
 import CategoryBreakdownCard from '@/features/dashboard/components/CategoryBreakdownCard'
 import AccountBreakdownCard from '@/features/dashboard/components/AccountBreakdownCard'
 import RecentTransactionsCard from '@/features/dashboard/components/RecentTransactionsCard'
 import EmptyDashboardState from '@/features/dashboard/components/EmptyDashboardState'
-import {
-    dashboardQueryKeys,
-    useMonthlySummary,
-} from '@/features/dashboard/hooks/use-monthly-summary'
+import { useMonthlySummary } from '@/features/dashboard/hooks/use-monthly-summary'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 import { useAccounts } from '@/features/accounts/hooks'
@@ -18,6 +13,8 @@ import { useSections } from '@/features/categories/hooks'
 import { TransactionDialog, useCreateTransaction } from '@/features/transactions'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
 import { PageHeader } from '@/components/layout'
+import { useAuth } from '@/features/auth/hooks'
+import { rememberTransactionDate } from '@/features/transactions/utils/transaction-date-storage'
 
 const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error) {
@@ -29,7 +26,7 @@ const toErrorMessage = (error: unknown, fallback: string) => {
 
 export const DashboardPage = () => {
     const { month } = useSelectedMonth()
-    const queryClient = useQueryClient()
+    const { user } = useAuth()
     const summaryQuery = useMonthlySummary({ month, recentLimit: 5 })
     const accountsQuery = useAccounts()
     const sectionsQuery = useSections()
@@ -79,7 +76,7 @@ export const DashboardPage = () => {
                             note: values.note ?? undefined,
                         }
             await createTransaction.mutateAsync(payload)
-            localStorage.setItem(`last-tx-date-${month}`, values.date)
+            rememberTransactionDate(user?.id, month, values.date)
             setCreateOpen(false)
         } catch (err) {
             setFormError(toErrorMessage(err, 'Unable to create transaction.'))
@@ -95,34 +92,15 @@ export const DashboardPage = () => {
                     description="Overview of your finances for the selected month."
                 />
 
-                {summaryQuery.isLoading ? (
-                    <div className="py-6" role="status" aria-live="polite">
-                        <LoadingSpinner aria-label="Loading summary" />
-                    </div>
-                ) : null}
-
-                {summaryQuery.isError ? (
-                    <Alert variant="destructive">
-                        <AlertTitle>Could not load summary</AlertTitle>
-                        <AlertDescription>
-                            {summaryQuery.error instanceof Error
-                                ? summaryQuery.error.message
-                                : 'Please refresh and try again.'}
-                            <div className="mt-2">
-                                <button
-                                    className="text-sm text-primary"
-                                    onClick={() =>
-                                        queryClient.invalidateQueries({
-                                            queryKey: dashboardQueryKeys.lists(),
-                                        })
-                                    }
-                                >
-                                    Retry
-                                </button>
-                            </div>
-                        </AlertDescription>
-                    </Alert>
-                ) : null}
+                <QueryState
+                    isLoading={summaryQuery.isLoading}
+                    isError={summaryQuery.isError}
+                    loadingLabel="Loading summary"
+                    errorTitle="Could not load summary"
+                    errorMessage={toErrorMessage(summaryQuery.error, '')}
+                    fallbackErrorMessage="Please refresh and try again."
+                    onRetry={() => void summaryQuery.refetch()}
+                />
 
                 {!summaryQuery.isLoading && !summaryQuery.isError && data && isEmpty ? (
                     <EmptyDashboardState />

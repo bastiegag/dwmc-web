@@ -1,165 +1,55 @@
-# Copilot Instructions for dwmc-web
+# Copilot Instructions for `dwmc-web`
 
-## Frontend Project Context
+## Project Overview
 
-dwmc-web is the frontend for a personal budget app built with React, Vite, TypeScript, React Router, TanStack Query, React Hook Form, Zod, shadcn/ui, Tailwind CSS, Supabase Auth, Storybook, Vitest, Playwright, ESLint, and Prettier.
+`dwmc-web` is the React/Vite frontend for Dude, Where's My Cash?. The sibling `../dwmc-api` repository owns persistence, authorization, financial calculations, and the API contract. Treat both repositories as one product when a change crosses the API boundary.
 
-The goal is to keep the app maintainable, accessible, type-safe, and polished enough for a senior frontend portfolio project.
+## Documentation Hierarchy
 
-## General Frontend Principles
+Consult documentation in this order before making design decisions:
 
-- Follow existing patterns before introducing new ones
-- Prefer simple, maintainable code over clever abstractions
-- Keep features modular
-- Use TypeScript strictly
-- Avoid `any`
-- Avoid unnecessary dependencies
-- Do not rewrite unrelated code
-- Keep frontend and backend responsibilities separate
-- Do not calculate backend-owned values on the frontend when the backend already returns them
-- Do not store app domain data in `localStorage`
+1. [Developer Playbook](../docs/dev-playbook.md) for development principles and feature workflow.
+2. [Engineering Audit Playbook](../docs/engineering-audit-playbook.md) for review scope, severity, and closure criteria.
+3. [Frontend Architecture](../docs/architecture.md) and [backend architecture](../../dwmc-api/docs/architecture.md) for responsibilities and boundaries.
+4. [API integration](../docs/api.md), [backend API design](../../dwmc-api/docs/api.md), and relevant [backend domain docs](../../dwmc-api/docs/domains/) for contracts and business rules.
+5. ADRs, when present, for decisions that constrain the implementation.
+6. The relevant [README](../README.md) and package scripts for setup, commands, and repository orientation.
 
-## Architecture
+Also consult [frontend testing](../docs/testing.md), [backend testing](../../dwmc-api/docs/testing.md), and [releasing](../docs/releasing.md) or [backend releasing](../../dwmc-api/docs/releasing.md) when the change affects those areas. The roadmap is context, not a specification: do not implement planned or placeholder work without confirmed scope.
 
-- Use a feature-based architecture
-- Keep feature code inside `src/features/<feature-name>`
-- Keep cross-feature logic inside `src/shared`
-- Keep reusable layout components outside feature folders
-- Keep API calls in `.api.ts` files
-- Keep TanStack Query logic in hooks
-- Keep form validation in Zod schemas
-- Keep types in `.types.ts` files
+## Development Expectations
 
-## Naming
+- Inspect the nearest existing implementation and its tests before adding a pattern.
+- Follow the documented architecture and existing feature boundaries; prefer consistency over cleverness.
+- Reuse existing components, helpers, API modules, query patterns, and public feature exports.
+- Keep pages orchestration-focused and keep domain code inside its feature.
+- Keep frontend and backend changes aligned. Verify request/response shapes, authentication, ownership, dates, money, and downstream query effects in both repositories.
+- Avoid unrelated refactors, duplicate business logic, unnecessary abstractions, and breaking changes.
 
-- Components: PascalCase filenames and exports
-- Hooks: kebab-case filenames, camelCase exports
-- Types: `.types.ts`
-- Schemas: `.schema.ts`
-- API modules: `.api.ts`
-- Contexts: `.context.ts`
-- Provider components: `ProviderName.tsx`
-- Use `.tsx` only when a file contains JSX
-- Use `.ts` when there is no JSX
+## Documentation Expectations
 
-## React Fast Refresh
+Update the relevant documentation in the same task whenever code changes affect architecture, API contracts, business rules, engineering workflow, developer conventions, testing, release behavior, or roadmap status. Link to the canonical document instead of duplicating its content. Never leave documentation describing behavior that the implementation no longer provides.
 
-- Files exporting React components should only export React components
-- Do not export raw React contexts from the same file as components
-- Put contexts in `.context.ts`
-- Put provider components in separate `.tsx` files
-- Put hooks in `.ts` files unless they contain JSX
+## Engineering Expectations
 
-Example:
+Preserve separated responsibilities: the frontend coordinates presentation and server state; the backend validates, authorizes, persists, and calculates authoritative financial values. Preserve existing business rules and accessibility behavior. Prefer small, comprehensible changes that fit the codebase over speculative generalization.
 
-```
-src/shared/primary-action/
-    context/primary-action.context.ts
-    context/PrimaryActionProvider.tsx
-    hooks/use-primary-action.ts
-    types/primary-action.types.ts
-```
+## Code Generation Rules
 
-## System Invariants
+- Read existing code, tests, and relevant documentation first.
+- Match local naming, file layout, formatting, and testing style.
+- Modify existing code when appropriate instead of rewriting working paths.
+- Minimize breaking changes and preserve compatibility unless an intentional migration is documented.
+- Add meaningful behavior or regression tests; use Storybook for reusable UI states where appropriate.
 
-These invariants define the app's non-negotiable contracts. Violating one is a bug, not a style issue.
+## Feature Development
 
-### Auth
+For a new feature, consult the Developer Playbook, relevant frontend and backend architecture, the applicable domain/API documentation, and the testing guidance. Implement both sides together when needed, then update tests, Storybook coverage where appropriate, and affected documentation. Do not calculate backend-owned balances, spending, or summaries independently in the frontend.
 
-- All backend requests must use the shared `apiClient`. Never call `fetch` directly or use the Supabase client for domain data.
-- `apiClient` attaches the Supabase access token automatically. Do not attach it manually in feature code.
-- Never read or decode the Supabase session outside of `authService` or `apiClient`.
-- Protected routes must always redirect unauthenticated users to `/login`.
+## Engineering Audits
 
-### Month
+Before considering a feature complete, follow the Engineering Audit Playbook. Evaluate implementation against documented standards, inspect integration and cross-feature effects, report evidence-based findings using its severity levels, and conclude with `READY TO CLOSE` or `NOT READY TO CLOSE` as defined there.
 
-- The selected month lives exclusively in the URL query param `?month=YYYY-MM`. It is never stored in state, context, `localStorage`, or any other mechanism.
-- A missing or invalid `month` param falls back silently to the current calendar month. Never throw or surface this to the user.
-- Navigation links between Dashboard, Transactions, and Budgets must preserve the `month` param - use `useSelectedMonth` to read it and build links with `?month=<value>`.
-- Query keys for data that varies by month must include the `month` value. Omitting it means the query will not refetch when the month changes.
+## General Rules
 
-### Query Invalidation
-
-- After every mutation, call `invalidateQueries` for all affected keys before the mutation hook resolves.
-- Never call `refetch()` manually after a mutation. Invalidation is the mechanism.
-- Never hardcode query key strings inline. Reference the `*QueryKeys` constants from the relevant hook file.
-- Cross-feature invalidation is intentional: creating a transaction also invalidates accounts; creating a budget also invalidates the dashboard.
-
-### Feature Boundaries
-
-- Import only from a feature's public `index.ts` barrel, never from its internal files.
-- Cross-feature logic belongs in `src/shared`, not in any feature folder.
-- If a symbol is not exported from `index.ts`, treat it as an internal detail that may change without notice.
-
-## API and Auth
-
-- Use the shared `apiClient` for backend requests
-- Do not call `fetch` directly from components
-- Do not call Supabase directly for app domain data
-- Supabase Auth is used for authentication
-- Backend requests include the Supabase access token
-- Handle API errors with the existing error envelope
-
-## TanStack Query
-
-- Query keys must be stable
-- Include filters like `month` in query keys
-- Use query hooks for reads
-- Use mutation hooks for creates, updates, and archives
-- Invalidate affected queries after mutations
-- Prefer precise invalidation over manual refetch
-
-## Forms
-
-- Use React Hook Form
-- Use Zod for validation
-- Keep schemas outside components
-- Show clear validation messages
-- Show API errors in a user-friendly way
-- Reset dialog forms when appropriate
-
-## Month Navigation
-
-- The selected month comes from the URL query param `month=YYYY-MM`
-- Do not store selected month in `localStorage`
-- Preserve the selected month when navigating between app screens
-- Dashboard, Transactions, and Budgets should use the selected month
-- Transaction creation should default to a date inside the selected month
-
-## Contextual Primary Action
-
-- The floating `+` button is contextual
-- Dashboard and Transactions: add transaction
-- Budgets: add budget using the selected month
-- Accounts: add account
-- Tools: hide by default unless there is a clear action
-- Clear registered actions when pages unmount
-
-## UI and Accessibility
-
-- Use shadcn/ui components where appropriate
-- Use Tailwind CSS
-- Keep components small and focused
-- Add accessible labels to icon buttons
-- Use proper dialog titles
-- Do not rely only on color for state
-- Keep keyboard focus visible
-
-## Testing
-
-- Add or update tests for meaningful behavior
-- Test month navigation
-- Test contextual primary actions
-- Test form validation
-- Test query invalidation behavior where practical
-- Use existing test utilities
-- Do not add a new test framework
-
-## Documentation
-
-- Treat the docs folder as the source of truth for frontend implementation details.
-- Update the frontend README when adding major features.
-- Keep README content concise and link to the deeper docs instead of duplicating them.
-- Document new environment variables and scripts when they affect setup or development.
-- Keep `docs/frontend-architecture.md`, `docs/frontend-conventions.md`, `docs/frontend-routing.md`, `docs/frontend-state-management.md`, `docs/frontend-api.md`, `docs/testing.md`, and `docs/roadmap.md` aligned with the actual code.
-- Move planned but unfinished features to `docs/roadmap.md` instead of presenting them as shipped.
+Copilot must not invent undocumented requirements, duplicate project documentation, introduce architectural patterns without justification, ignore existing conventions, or leave implementation and documentation inconsistent. When documentation and assumptions conflict, inspect the code and tests, identify the discrepancy, and update the appropriate source and documentation together.

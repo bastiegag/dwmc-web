@@ -79,7 +79,9 @@ test.describe('Login page', () => {
         await page.locator('#password').fill('wrongpassword')
         await page.getByRole('button', { name: /sign in/i }).click()
 
-        await expect(page.getByRole('alert').getByText(/invalid login credentials/i)).toBeVisible()
+        await expect(
+            page.getByRole('alert').getByText(/email or password is incorrect/i),
+        ).toBeVisible()
     })
 
     test('has no accessibility violations', async ({ page }) => {

@@ -7,6 +7,7 @@ import { useCreateSection } from '@/features/categories/hooks/use-create-section
 import { useUpdateSection } from '@/features/categories/hooks/use-update-section'
 import { useDeleteSection } from '@/features/categories/hooks/use-delete-section'
 import { categoryQueryKeys, sectionQueryKeys } from '@/features/categories/hooks/use-sections'
+import { dashboardQueryKeys } from '@/features/dashboard'
 
 const apiMocks = vi.hoisted(() => ({
     createCategoryMock: vi.fn().mockResolvedValue(undefined),
@@ -45,6 +46,7 @@ describe('category and section mutations', () => {
         await waitFor(() => {
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: dashboardQueryKeys.lists() })
         })
     })
 
@@ -62,6 +64,7 @@ describe('category and section mutations', () => {
         await waitFor(() => {
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: dashboardQueryKeys.lists() })
         })
     })
 
@@ -74,6 +77,7 @@ describe('category and section mutations', () => {
         await waitFor(() => {
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: dashboardQueryKeys.lists() })
         })
     })
 
@@ -87,7 +91,9 @@ describe('category and section mutations', () => {
         })
 
         await waitFor(() => {
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: dashboardQueryKeys.lists() })
         })
     })
 
@@ -103,7 +109,9 @@ describe('category and section mutations', () => {
         })
 
         await waitFor(() => {
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: dashboardQueryKeys.lists() })
         })
     })
 
@@ -114,7 +122,9 @@ describe('category and section mutations', () => {
         await result.current.mutateAsync('section-1')
 
         await waitFor(() => {
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: categoryQueryKeys.lists() })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: sectionQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: dashboardQueryKeys.lists() })
         })
     })
 })

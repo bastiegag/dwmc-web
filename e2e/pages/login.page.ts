@@ -11,5 +11,6 @@ export class LoginPage {
         await this.page.getByLabel('Email').fill(email)
         await this.page.locator('#password').fill(password)
         await this.page.getByRole('button', { name: 'Sign in' }).click()
+        await this.page.waitForURL(/\/dashboard(?:\?|$)/)
     }
 }

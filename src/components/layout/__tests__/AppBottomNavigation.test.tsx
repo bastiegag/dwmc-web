@@ -18,5 +18,20 @@ describe('AppBottomNavigation', () => {
         await user.click(screen.getByRole('link', { name: /budgets/i }))
 
         expect(screen.getByTestId('location-probe')).toHaveTextContent('/budgets?month=2026-06')
+
+        await user.click(screen.getByRole('link', { name: /transactions/i }))
+
+        expect(screen.getByTestId('location-probe')).toHaveTextContent(
+            '/transactions?month=2026-06',
+        )
+    })
+
+    it('marks Transactions active on the selected route', () => {
+        renderMonthAwareNavigation(<AppBottomNavigation />, '2026-06', '/transactions')
+
+        expect(screen.getByRole('link', { name: /transactions/i })).toHaveAttribute(
+            'aria-current',
+            'page',
+        )
     })
 })

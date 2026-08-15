@@ -34,7 +34,10 @@ describe('ErrorBoundary', () => {
         )
         expect(screen.getByRole('alert')).toBeInTheDocument()
         expect(screen.getByText('Something went wrong')).toBeInTheDocument()
-        expect(screen.getByText('Test error message')).toBeInTheDocument()
+        expect(
+            screen.getByText('An unexpected error occurred. Please try again.'),
+        ).toBeInTheDocument()
+        expect(screen.queryByText('Test error message')).not.toBeInTheDocument()
     })
 
     it('shows "Try again" button in the default fallback', () => {

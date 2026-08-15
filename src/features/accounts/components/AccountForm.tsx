@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import type { Resolver } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
 import { FormSubmitButton } from '@/components/form/FormSubmitButton'
@@ -39,6 +39,8 @@ export const AccountForm = ({
     const {
         register,
         handleSubmit,
+        control,
+        setValue,
         formState: { errors },
         reset,
     } = useForm<AccountFormValues>({
@@ -46,6 +48,8 @@ export const AccountForm = ({
         mode: 'onBlur',
         defaultValues: initialValues ?? defaultValues,
     })
+
+    const accountType = useWatch({ control, name: 'type' })
 
     useEffect(() => {
         reset(initialValues ?? defaultValues)
@@ -60,6 +64,10 @@ export const AccountForm = ({
         { value: 'LOAN', label: 'Loan' },
         { value: 'OTHER', label: 'Other' },
     ]
+
+    useEffect(() => {
+        if (accountType !== 'SAVINGS') setValue('goal', null)
+    }, [accountType, setValue])
 
     return (
         <form
@@ -92,21 +100,29 @@ export const AccountForm = ({
 
             <TextField
                 id="starting-balance"
-                label="Starting balance"
+                label="Starting balance (at setup)"
                 type="number"
                 step="0.01"
                 {...register('startingBalance' as const)}
                 error={errors.startingBalance?.message}
             />
 
-            <TextField
-                id="goal"
-                label="Goal (optional)"
-                type="number"
-                step="0.01"
-                {...register('goal' as const)}
-                error={errors.goal?.message}
-            />
+            {accountType === 'SAVINGS' ? (
+                <TextField
+                    id="goal"
+                    label="Savings goal (optional)"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    {...register('goal' as const)}
+                    error={errors.goal?.message}
+                />
+            ) : null}
+
+            <p className="text-sm text-muted-foreground">
+                Use a balance adjustment transaction later when you need to reconcile this account
+                with reality.
+            </p>
 
             <TextField
                 id="color"

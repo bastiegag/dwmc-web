@@ -3,6 +3,7 @@ import { getSections } from '@/features/categories/api'
 
 type SectionQueryFilters = {
     includeCategories?: boolean
+    includeArchived?: boolean
 }
 
 export const categoryQueryKeys = {
@@ -19,9 +20,9 @@ export const sectionQueryKeys = {
     detail: (id: string) => [...sectionQueryKeys.all, 'detail', id] as const,
 }
 
-export const useSections = () => {
+export const useSections = (filters: SectionQueryFilters = {}) => {
     return useQuery({
-        queryKey: sectionQueryKeys.list({ includeCategories: true }),
-        queryFn: getSections,
+        queryKey: sectionQueryKeys.list({ includeCategories: true, ...filters }),
+        queryFn: () => getSections(filters),
     })
 }

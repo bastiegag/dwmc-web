@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils/render'
 import BudgetForm from '@/features/budgets/components/BudgetForm'
-import { createSectionWithCategories } from '@/test/fixtures/domain'
+import { createCategory, createSectionWithCategories } from '@/test/fixtures/domain'
 
 const sections = [createSectionWithCategories()]
 
@@ -22,5 +22,24 @@ describe('BudgetForm', () => {
         await user.type(screen.getByLabelText(/Amount/i), '0')
         await user.click(screen.getByRole('button', { name: /create budget/i }))
         expect(onSubmit).toHaveBeenCalled()
+    })
+
+    it('preserves an archived category when editing an existing budget', () => {
+        const archivedCategory = createCategory({ isArchived: true })
+        const archivedSection = createSectionWithCategories([archivedCategory], {
+            isArchived: true,
+        })
+
+        render(
+            <BudgetForm
+                sections={[archivedSection]}
+                initialValues={{ categoryId: archivedCategory.id, month: '2026-06', amount: 25 }}
+                submitLabel="Save changes"
+                onSubmit={vi.fn()}
+            />,
+        )
+
+        const option = screen.getByRole('option', { name: /groceries \(archived\)/i })
+        expect(option).not.toBeDisabled()
     })
 })

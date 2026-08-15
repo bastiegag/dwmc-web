@@ -1,6 +1,6 @@
-import { useMemo, useState, useCallback, useEffect } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
+import { QueryState } from '@/components/feedback'
 import {
     useTransactions,
     useCreateTransaction,
@@ -13,12 +13,18 @@ import TransactionFilters from '@/features/transactions/components/TransactionFi
 import TransactionList from '@/features/transactions/components/TransactionList'
 import TransactionDialog from '@/features/transactions/components/TransactionDialog'
 import EmptyTransactionsState from '@/features/transactions/components/EmptyTransactionsState'
+import PaginationControls from '@/components/ui/PaginationControls'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 import type { GetTransactionsParams } from '@/features/transactions/types/transaction.types'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 import { PageHeader } from '@/components/layout'
+import { useAuth } from '@/features/auth/hooks'
+import {
+    getRememberedTransactionDate,
+    rememberTransactionDate,
+} from '@/features/transactions/utils/transaction-date-storage'
 
 const toErrorMessage = (error: unknown, fallback: string) => {
     if (error && typeof error === 'object' && 'message' in error)
@@ -29,21 +35,19 @@ const toErrorMessage = (error: unknown, fallback: string) => {
 
 export const TransactionsPage = () => {
     const { month } = useSelectedMonth()
+    const { user } = useAuth()
     const [filters, setFilters] = useState<Omit<GetTransactionsParams, 'month'>>({})
-
-    useEffect(() => {
-        // When the global month changes, we could reset local filters if needed.
-        // For now, we just let the transactionsQuery refetch with the new month.
-    }, [month])
+    const [paginationState, setPaginationState] = useState({ month, page: 1 })
+    const page = paginationState.month === month ? paginationState.page : 1
 
     const [isDialogOpen, setDialogOpen] = useState(false)
     const [activeTransaction, setActiveTransaction] = useState<Transaction | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
     const [archiveError, setArchiveError] = useState<string | null>(null)
 
-    const accountsQuery = useAccounts()
-    const sectionsQuery = useSections()
-    const transactionsQuery = useTransactions({ ...filters, month })
+    const accountsQuery = useAccounts({ includeArchived: Boolean(activeTransaction) })
+    const sectionsQuery = useSections({ includeArchived: Boolean(activeTransaction) })
+    const transactionsQuery = useTransactions({ ...filters, month, page })
 
     const createMutation = useCreateTransaction()
     const updateMutation = useUpdateTransaction()
@@ -67,6 +71,19 @@ export const TransactionsPage = () => {
         () => transactionsQuery.data?.data ?? [],
         [transactionsQuery.data],
     )
+    const pagination = transactionsQuery.data?.meta
+
+    const handleFiltersChange = useCallback(
+        (nextFilters: GetTransactionsParams) => {
+            setFilters(nextFilters)
+            setPaginationState({ month, page: 1 })
+        },
+        [month],
+    )
+
+    const handlePageChange = (nextPage: number) => {
+        setPaginationState({ month, page: nextPage })
+    }
 
     const openEdit = (t: Transaction) => {
         setActiveTransaction(t)
@@ -108,7 +125,7 @@ export const TransactionsPage = () => {
                             }
 
                 await createMutation.mutateAsync(payload)
-                localStorage.setItem(`last-tx-date-${month}`, values.date)
+                rememberTransactionDate(user?.id, month, values.date)
             }
 
             setDialogOpen(false)
@@ -141,7 +158,7 @@ export const TransactionsPage = () => {
             }
         }
         // Default date logic for new transactions
-        const lastDate = localStorage.getItem(`last-tx-date-${month}`)
+        const lastDate = getRememberedTransactionDate(user?.id, month)
         const today = new Date().toISOString().slice(0, 10)
         const firstDayOfMonth = `${month}-01`
         const isCurrentMonth = month === today.slice(0, 7)
@@ -162,7 +179,7 @@ export const TransactionsPage = () => {
             merchant: null,
             note: null,
         }
-    }, [activeTransaction, month])
+    }, [activeTransaction, month, user?.id])
 
     const handleDialogOpenChange = useCallback(
         (open: boolean) => {
@@ -184,26 +201,21 @@ export const TransactionsPage = () => {
             />
 
             <div className="pt-4">
-                <TransactionFilters accounts={accounts} sections={sections} onChange={setFilters} />
+                <TransactionFilters
+                    accounts={accounts}
+                    sections={sections}
+                    onChange={handleFiltersChange}
+                />
             </div>
 
-            {transactionsQuery.isLoading ? (
-                <div className="py-6" role="status" aria-live="polite">
-                    <LoadingSpinner aria-label="Loading transactions" />
-                </div>
-            ) : null}
-
-            {transactionsQuery.isError ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Could not load transactions</AlertTitle>
-                    <AlertDescription>
-                        {toErrorMessage(
-                            transactionsQuery.error,
-                            'Please refresh and try again in a moment.',
-                        )}
-                    </AlertDescription>
-                </Alert>
-            ) : null}
+            <QueryState
+                isLoading={transactionsQuery.isLoading}
+                isError={transactionsQuery.isError}
+                loadingLabel="Loading transactions"
+                errorTitle="Could not load transactions"
+                errorMessage={toErrorMessage(transactionsQuery.error, '')}
+                fallbackErrorMessage="Please refresh and try again in a moment."
+            />
 
             {archiveError ? (
                 <Alert variant="destructive">
@@ -225,6 +237,15 @@ export const TransactionsPage = () => {
                     transactions={transactions as Transaction[]}
                     onEdit={openEdit}
                     onArchive={handleArchive}
+                />
+            ) : null}
+
+            {!transactionsQuery.isLoading && !transactionsQuery.isError && pagination ? (
+                <PaginationControls
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    total={pagination.total}
+                    onPageChange={handlePageChange}
                 />
             ) : null}
 

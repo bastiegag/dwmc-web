@@ -16,7 +16,6 @@ export const TransactionFilters = ({ accounts, sections, onChange }: Transaction
     const [type, setType] = useState<string>('')
     const [accountId, setAccountId] = useState<string>('')
     const [categoryId, setCategoryId] = useState<string>('')
-    const [month, setMonth] = useState<string>('')
     const [search, setSearch] = useState<string>('')
 
     useEffect(() => {
@@ -24,10 +23,9 @@ export const TransactionFilters = ({ accounts, sections, onChange }: Transaction
         if (type) filters.type = type as GetTransactionsParams['type']
         if (accountId) filters.accountId = accountId
         if (categoryId) filters.categoryId = categoryId
-        if (month) filters.month = month
         if (search) filters.search = search
         onChange(filters)
-    }, [type, accountId, categoryId, month, search, onChange])
+    }, [type, accountId, categoryId, search, onChange])
 
     return (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
@@ -86,16 +84,6 @@ export const TransactionFilters = ({ accounts, sections, onChange }: Transaction
             </div>
 
             <div>
-                <Label htmlFor="filter-month">Month</Label>
-                <Input
-                    id="filter-month"
-                    type="month"
-                    value={month}
-                    onChange={(e) => setMonth(e.target.value)}
-                />
-            </div>
-
-            <div>
                 <Label htmlFor="filter-search">Search</Label>
                 <div className="flex gap-2">
                     <Input
@@ -109,7 +97,6 @@ export const TransactionFilters = ({ accounts, sections, onChange }: Transaction
                             setType('')
                             setAccountId('')
                             setCategoryId('')
-                            setMonth('')
                             setSearch('')
                         }}
                     >

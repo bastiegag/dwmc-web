@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateAccount } from '@/features/accounts/api/accounts.api'
 import { accountQueryKeys } from './use-accounts'
 import type { UpdateAccountPayload } from '@/features/accounts/types/account.types'
+import { dashboardQueryKeys } from '@/features/dashboard'
 
 export const useUpdateAccount = () => {
     const queryClient = useQueryClient()
@@ -16,6 +17,7 @@ export const useUpdateAccount = () => {
                     queryKey: accountQueryKeys.detail(variables.id),
                 })
             }
+            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
         },
     })
 }

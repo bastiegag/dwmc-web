@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
+import { QueryState } from '@/components/feedback'
 import { ApiError } from '@/lib/api-client'
 import { type CategoryFormValues, type SectionFormValues } from '@/features/categories/schemas'
 import type { Category, SectionWithCategories } from '@/features/categories/types'
@@ -175,23 +175,14 @@ export const CategoriesPage = () => {
                 description="Group your categories into sections for clearer budgeting."
             />
 
-            {sectionsQuery.isLoading ? (
-                <div className="py-6" role="status" aria-live="polite">
-                    <LoadingSpinner aria-label="Loading categories" />
-                </div>
-            ) : null}
-
-            {sectionsQuery.isError ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Could not load categories</AlertTitle>
-                    <AlertDescription>
-                        {toErrorMessage(
-                            sectionsQuery.error,
-                            'Please refresh and try again in a moment.',
-                        )}
-                    </AlertDescription>
-                </Alert>
-            ) : null}
+            <QueryState
+                isLoading={sectionsQuery.isLoading}
+                isError={sectionsQuery.isError}
+                loadingLabel="Loading categories"
+                errorTitle="Could not load categories"
+                errorMessage={toErrorMessage(sectionsQuery.error, '')}
+                fallbackErrorMessage="Please refresh and try again in a moment."
+            />
 
             {archiveError ? (
                 <Alert variant="destructive">

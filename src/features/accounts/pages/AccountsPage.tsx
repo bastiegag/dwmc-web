@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
+import { QueryState } from '@/components/feedback'
 import { ApiError } from '@/lib/api-client'
 import type { Account } from '@/features/accounts/types/account.types'
 import type { AccountFormValues } from '@/features/accounts/schemas/account.schema'
@@ -92,23 +92,14 @@ export const AccountsPage = () => {
                 description="Manage accounts where your money lives"
             />
 
-            {accountsQuery.isLoading ? (
-                <div className="py-6" role="status" aria-live="polite">
-                    <LoadingSpinner aria-label="Loading accounts" />
-                </div>
-            ) : null}
-
-            {accountsQuery.isError ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Could not load accounts</AlertTitle>
-                    <AlertDescription>
-                        {toErrorMessage(
-                            accountsQuery.error,
-                            'Please refresh and try again in a moment.',
-                        )}
-                    </AlertDescription>
-                </Alert>
-            ) : null}
+            <QueryState
+                isLoading={accountsQuery.isLoading}
+                isError={accountsQuery.isError}
+                loadingLabel="Loading accounts"
+                errorTitle="Could not load accounts"
+                errorMessage={toErrorMessage(accountsQuery.error, '')}
+                fallbackErrorMessage="Please refresh and try again in a moment."
+            />
 
             {archiveError ? (
                 <Alert variant="destructive">

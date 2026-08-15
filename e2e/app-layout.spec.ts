@@ -1,28 +1,10 @@
 import { test, expect } from '@playwright/test'
 import { LoginPage } from './pages/login.page.js'
-
-const MOCK_SESSION = {
-    access_token: 'mock-access-token',
-    token_type: 'bearer',
-    expires_in: 3600,
-    refresh_token: 'mock-refresh-token',
-    user: {
-        id: 'mock-user-id',
-        email: 'test@example.com',
-        aud: 'authenticated',
-        created_at: new Date().toISOString(),
-    },
-}
+import { mockAuthenticatedSession } from './auth-fixtures.js'
 
 test.describe('App Layout', () => {
     test.beforeEach(async ({ page }) => {
-        await page.route(/\/auth\/v1\/token/, (route) =>
-            route.fulfill({
-                status: 200,
-                contentType: 'application/json',
-                body: JSON.stringify(MOCK_SESSION),
-            }),
-        )
+        await mockAuthenticatedSession(page)
 
         const loginPage = new LoginPage(page)
         await loginPage.goto()
@@ -70,6 +52,18 @@ test.describe('App Layout', () => {
 
             await page.getByLabel('Go to next month').click()
             await expect(page).toHaveURL(`/dashboard?month=${year}-${month}`)
+        })
+
+        test('month navigation replaces history instead of adding month entries', async ({
+            page,
+        }) => {
+            await page.goto('/dashboard?month=2026-05')
+            const historyLength = await page.evaluate(() => window.history.length)
+
+            await page.getByLabel('Go to next month').click()
+
+            await expect(page).toHaveURL('/dashboard?month=2026-06')
+            await expect.poll(() => page.evaluate(() => window.history.length)).toBe(historyLength)
         })
     })
 })

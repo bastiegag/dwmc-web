@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
+import { QueryState } from '@/components/feedback'
 import {
     useBudgets,
     useCreateBudget,
@@ -11,7 +11,7 @@ import { useSections } from '@/features/categories/hooks/use-sections'
 import BudgetList from '@/features/budgets/components/BudgetList'
 import BudgetDialog from '@/features/budgets/components/BudgetDialog'
 import EmptyBudgetsState from '@/features/budgets/components/EmptyBudgetsState'
-import { formatCurrency } from '@/lib/format-currency'
+import { formatCurrency, sumCurrency } from '@/lib/format-currency'
 import type {
     Budget,
     CreateBudgetPayload,
@@ -33,15 +33,15 @@ const toErrorMessage = (error: unknown, fallback: string) => {
 export const BudgetsPage = () => {
     const { month } = useSelectedMonth()
 
+    const [activeBudget, setActiveBudget] = useState<Budget | null>(null)
     const budgetsQuery = useBudgets({ month })
-    const sectionsQuery = useSections()
+    const sectionsQuery = useSections({ includeArchived: Boolean(activeBudget) })
 
     const createMutation = useCreateBudget()
     const updateMutation = useUpdateBudget()
     const deleteMutation = useDeleteBudget()
 
     const [isDialogOpen, setDialogOpen] = useState(false)
-    const [activeBudget, setActiveBudget] = useState<Budget | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
     const [archiveError, setArchiveError] = useState<string | null>(null)
 
@@ -59,9 +59,9 @@ export const BudgetsPage = () => {
     const budgets = useMemo(() => budgetsQuery.data ?? [], [budgetsQuery.data])
 
     const totals = useMemo(() => {
-        const totalPlanned = budgets.reduce((s, b) => s + b.amount, 0)
-        const totalSpent = budgets.reduce((s, b) => s + b.spent, 0)
-        const totalRemaining = budgets.reduce((s, b) => s + b.remaining, 0)
+        const totalPlanned = sumCurrency(budgets.map((budget) => budget.amount))
+        const totalSpent = sumCurrency(budgets.map((budget) => budget.spent))
+        const totalRemaining = sumCurrency(budgets.map((budget) => budget.remaining))
         return { totalPlanned, totalSpent, totalRemaining }
     }, [budgets])
 
@@ -139,20 +139,14 @@ export const BudgetsPage = () => {
                 </div>
             </div>
 
-            {budgetsQuery.isLoading ? (
-                <div className="py-6" role="status" aria-live="polite">
-                    <LoadingSpinner aria-label="Loading budgets" />
-                </div>
-            ) : null}
-
-            {budgetsQuery.isError ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Could not load budgets</AlertTitle>
-                    <AlertDescription>
-                        {toErrorMessage(budgetsQuery.error, 'Please refresh and try again.')}
-                    </AlertDescription>
-                </Alert>
-            ) : null}
+            <QueryState
+                isLoading={budgetsQuery.isLoading}
+                isError={budgetsQuery.isError}
+                loadingLabel="Loading budgets"
+                errorTitle="Could not load budgets"
+                errorMessage={toErrorMessage(budgetsQuery.error, '')}
+                fallbackErrorMessage="Please refresh and try again."
+            />
 
             {archiveError ? (
                 <Alert variant="destructive">
