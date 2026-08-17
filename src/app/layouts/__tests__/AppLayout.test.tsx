@@ -27,10 +27,14 @@ describe('AppLayout', () => {
     })
 
     it('renders the month navigator on dashboard routes', () => {
-        render(<AppLayout />, { initialEntries: ['/dashboard'] })
+        render(<AppLayout />, { initialEntries: ['/dashboard?month=2026-06'] })
         expect(screen.getByRole('status')).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /previous month/i })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /next month/i })).toBeInTheDocument()
+        expect(screen.getByRole('link', { name: 'DWMC' })).toHaveAttribute(
+            'href',
+            '/dashboard?month=2026-06',
+        )
     })
 
     it('hides the month navigator on routes that do not need it', () => {

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Palette, Settings, Tags, User } from 'lucide-react'
+import { useSelectedMonth } from '@/shared/month'
 
 const tools = [
     {
@@ -19,17 +20,19 @@ const tools = [
         title: 'Profile',
         description: 'Update your personal information.',
         icon: User,
-        to: '#', // Placeholder
+        to: '/tools/profile',
     },
     {
         title: 'Settings',
         description: 'Adjust application preferences.',
         icon: Settings,
-        to: '#', // Placeholder
+        to: '/tools/settings',
     },
 ]
 
 export const ToolsPage = () => {
+    const { month } = useSelectedMonth()
+
     return (
         <section className="space-y-6" aria-labelledby="tools-heading">
             <div className="px-4 sm:px-6 lg:px-8">
@@ -41,17 +44,8 @@ export const ToolsPage = () => {
                 {tools.map((tool) => (
                     <Link
                         key={tool.title}
-                        to={tool.to}
-                        className={`rounded-lg border bg-card text-card-foreground shadow-sm transition-colors ${
-                            tool.to === '#'
-                                ? 'cursor-not-allowed opacity-50'
-                                : 'hover:bg-accent hover:text-accent-foreground'
-                        }`}
-                        aria-disabled={tool.to === '#'}
-                        tabIndex={tool.to === '#' ? -1 : undefined}
-                        onClick={(e) => {
-                            if (tool.to === '#') e.preventDefault()
-                        }}
+                        to={`${tool.to}?month=${month}`}
+                        className="rounded-lg border bg-card text-card-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                         <Card className="h-full border-0 shadow-none">
                             <CardHeader className="flex flex-row items-center gap-4">

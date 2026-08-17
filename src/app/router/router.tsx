@@ -4,6 +4,7 @@ import { NotFoundPage } from '@/app/pages/NotFoundPage'
 import { AuthLayout } from '@/app/layouts/AuthLayout'
 import { AppLayout } from '@/app/layouts/AppLayout'
 import { ProtectedRoute } from '@/features/auth/routes/ProtectedRoute'
+import { AnonymousRoute } from '@/features/auth/routes/AnonymousRoute'
 import { ErrorBoundary } from '@/components/feedback/ErrorBoundary'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 
@@ -46,6 +47,12 @@ const BudgetsPage = lazy(() =>
 )
 const ToolsPage = lazy(() =>
     import('@/app/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })),
+)
+const ProfilePage = lazy(() =>
+    import('@/features/profile/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+)
+const SettingsPage = lazy(() =>
+    import('@/features/settings').then((m) => ({ default: m.SettingsPage })),
 )
 const StyleGuidePage = lazy(() =>
     import('@/features/style-guide').then((m) => ({ default: m.StyleGuidePage })),
@@ -92,6 +99,8 @@ const router = createBrowserRouter([
                         element: <Outlet />,
                         children: [
                             { index: true, element: <ToolsPage /> },
+                            { path: 'profile', element: <ProfilePage /> },
+                            { path: 'settings', element: <SettingsPage /> },
                             { path: 'categories', element: <Navigate to="/categories" replace /> },
                         ],
                     },
@@ -110,10 +119,15 @@ const router = createBrowserRouter([
     {
         element: <AuthLayout />,
         children: [
-            { index: true, element: <Navigate to="/login" replace /> },
-            { path: 'login', element: <LoginPage /> },
-            { path: 'signup', element: <SignupPage /> },
-            { path: 'forgot-password', element: <ForgotPasswordPage /> },
+            {
+                element: <AnonymousRoute />,
+                children: [
+                    { index: true, element: <Navigate to="/login" replace /> },
+                    { path: 'login', element: <LoginPage /> },
+                    { path: 'signup', element: <SignupPage /> },
+                    { path: 'forgot-password', element: <ForgotPasswordPage /> },
+                ],
+            },
             { path: 'reset-password', element: <ResetPasswordPage /> },
         ],
     },

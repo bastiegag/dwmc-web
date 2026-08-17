@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useLogin } from '@/features/auth/hooks/useLogin'
+import { useLogin } from '@/features/auth/hooks'
 import { renderHookWithQuery } from '@/test/utils/render'
 
 vi.mock('sonner', () => ({

@@ -11,6 +11,26 @@ const Registrar = ({ action }: { action: PrimaryAction | null }) => {
     return null
 }
 
+const SwitchingRegistrars = ({ showFirst }: { showFirst: boolean }) => (
+    <>
+        {showFirst ? (
+            <Registrar
+                action={{
+                    label: 'First action',
+                    onClick: vi.fn(),
+                }}
+            />
+        ) : null}
+        <Registrar
+            action={{
+                label: 'Second action',
+                onClick: vi.fn(),
+            }}
+        />
+        <PrimaryActionButton />
+    </>
+)
+
 describe('PrimaryActionProvider', () => {
     beforeEach(() => {
         vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
@@ -59,6 +79,16 @@ describe('PrimaryActionProvider', () => {
 
         await waitFor(() => {
             expect(screen.queryByRole('button', { name: /create budget/i })).not.toBeInTheDocument()
+        })
+    })
+
+    it('does not let an unmounted registrar clear the current action', async () => {
+        const { rerender } = render(<SwitchingRegistrars showFirst />)
+
+        rerender(<SwitchingRegistrars showFirst={false} />)
+
+        await waitFor(() => {
+            expect(screen.getByRole('button', { name: /second action/i })).toBeInTheDocument()
         })
     })
 })

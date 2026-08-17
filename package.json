@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
+        "profile:build": "npm run build && node scripts/report-bundle-size.mjs",
         "preview": "vite preview",
         "lint": "eslint . --max-warnings 0",
         "lint:fix": "eslint . --fix",

@@ -1,11 +1,12 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Target, WalletCards, Wrench } from 'lucide-react'
+import { LayoutDashboard, Target, ReceiptText, WalletCards, Wrench } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSelectedMonth } from '@/shared/month'
 
 const navigation = [
     { name: 'Overview', to: '/dashboard', icon: LayoutDashboard },
     { name: 'Budgets', to: '/budgets', icon: Target },
+    { name: 'Transactions', to: '/transactions', icon: ReceiptText },
     { name: 'Accounts', to: '/accounts', icon: WalletCards },
     { name: 'Tools', to: '/tools', icon: Wrench, matchPrefix: true },
 ]
@@ -17,7 +18,7 @@ export const AppBottomNavigation = () => {
     return (
         <nav
             data-testid="mobile-bottom-nav"
-            className="fixed bottom-0 z-40 grid h-[calc(4rem+env(safe-area-inset-bottom))] w-full grid-cols-5 items-start border-t bg-background pt-2 lg:hidden"
+            className="fixed bottom-0 z-40 grid h-[calc(4rem+env(safe-area-inset-bottom))] w-full grid-cols-6 items-start border-t bg-background pt-2 lg:hidden"
         >
             {navigation.slice(0, 2).map((item) => (
                 <NavLink

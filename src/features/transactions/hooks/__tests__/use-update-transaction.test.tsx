@@ -3,13 +3,15 @@ import { renderHookWithQuery, waitFor } from '@/test/utils/render'
 import { useUpdateTransaction } from '@/features/transactions/hooks/use-update-transaction'
 import { transactionQueryKeys } from '@/features/transactions/hooks/use-transactions'
 import { accountQueryKeys } from '@/features/accounts/hooks/use-accounts'
+import { budgetQueryKeys } from '@/features/budgets/hooks/use-budgets'
+import { dashboardQueryKeys } from '@/features/dashboard'
 
 describe('useUpdateTransaction', () => {
     beforeEach(() => {
         vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
     })
 
-    it('invalidates transactions, the updated transaction, and accounts after a successful update', async () => {
+    it('invalidates affected queries after a successful update', async () => {
         const { result, qc } = renderHookWithQuery(() => useUpdateTransaction())
         const invalidateSpy = vi.spyOn(qc, 'invalidateQueries')
 
@@ -27,6 +29,8 @@ describe('useUpdateTransaction', () => {
                 queryKey: transactionQueryKeys.detail('tx-1'),
             })
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: accountQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: budgetQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: dashboardQueryKeys.lists() })
         })
     })
 })

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteSection } from '@/features/categories/api'
-import { sectionQueryKeys } from './use-sections'
+import { categoryQueryKeys, sectionQueryKeys } from './use-sections'
+import { dashboardQueryKeys } from '@/features/dashboard'
 
 export const useDeleteSection = () => {
     const queryClient = useQueryClient()
@@ -8,9 +9,11 @@ export const useDeleteSection = () => {
     return useMutation({
         mutationFn: (id: string) => deleteSection(id),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({
-                queryKey: sectionQueryKeys.lists(),
-            })
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: categoryQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: sectionQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() }),
+            ])
         },
     })
 }

@@ -26,6 +26,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
+<<<<<<< HEAD
 Local Vite development proxies `/api/v1` to `http://localhost:3000`. Set the Supabase values and `VITE_APP_URL` for the environment being used. All `VITE_*` values are bundled into browser code and are public; never put database credentials, service-role keys, or deployment tokens in them.
 
 ## Commands

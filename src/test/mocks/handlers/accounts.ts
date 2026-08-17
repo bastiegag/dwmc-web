@@ -1,9 +1,48 @@
 import { http, HttpResponse } from 'msw'
 
 const API_URL = 'http://localhost:8787'
+const TIMESTAMP = '2026-01-01T00:00:00.000Z'
+
+const accounts = [
+    {
+        id: 'account-checking',
+        name: 'Checking',
+        type: 'CHECKING',
+        startingBalance: 1000,
+        currentBalance: 1000,
+        goal: null,
+        color: '#3b82f6',
+        icon: 'wallet',
+        isArchived: false,
+        createdAt: TIMESTAMP,
+        updatedAt: TIMESTAMP,
+    },
+    {
+        id: 'account-archived',
+        name: 'Archived account',
+        type: 'SAVINGS',
+        startingBalance: 500,
+        currentBalance: 500,
+        goal: null,
+        color: '#64748b',
+        icon: 'archive',
+        isArchived: true,
+        createdAt: TIMESTAMP,
+        updatedAt: TIMESTAMP,
+    },
+]
 
 export const accountHandlers = [
-    http.get(`${API_URL}/accounts`, () => HttpResponse.json({ data: [] })),
+    http.get(`${API_URL}/accounts`, ({ request }) => {
+        const url = new URL(request.url)
+        const includeArchived = url.searchParams.get('includeArchived') === 'true'
+        const type = url.searchParams.get('type')
+        const data = accounts.filter(
+            (account) =>
+                (includeArchived || !account.isArchived) && (!type || account.type === type),
+        )
+        return HttpResponse.json({ data })
+    }),
 
     http.post(`${API_URL}/accounts`, async ({ request }) => {
         const body = (await request.json()) as Record<string, unknown>
@@ -17,8 +56,8 @@ export const accountHandlers = [
             color: (body.color as string) ?? '#3b82f6',
             icon: (body.icon as string) ?? 'wallet',
             isArchived: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: TIMESTAMP,
+            updatedAt: TIMESTAMP,
         }
 
         return HttpResponse.json({ data: created }, { status: 201 })
@@ -37,12 +76,14 @@ export const accountHandlers = [
             color: (body.color as string) ?? '#3b82f6',
             icon: (body.icon as string) ?? 'wallet',
             isArchived: body.isArchived ?? false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: TIMESTAMP,
+            updatedAt: TIMESTAMP,
         }
 
         return HttpResponse.json({ data: updated })
     }),
 
-    http.delete(`${API_URL}/accounts/:id`, () => new HttpResponse(null, { status: 204 })),
+    http.delete(`${API_URL}/accounts/:id`, ({ params }) =>
+        HttpResponse.json({ data: { id: params.id, isArchived: true } }),
+    ),
 ]

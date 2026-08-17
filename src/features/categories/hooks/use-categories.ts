@@ -5,6 +5,6 @@ import { categoryQueryKeys } from './use-sections'
 export const useCategories = () => {
     return useQuery({
         queryKey: categoryQueryKeys.list(),
-        queryFn: getCategories,
+        queryFn: () => getCategories(),
     })
 }

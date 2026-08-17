@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import * as LucideIcons from 'lucide-react'
 import type { Category } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
+import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
 
 type CategoryItemProps = {
     category: Category
@@ -21,6 +22,10 @@ const toPascalCase = (value: string) => {
 
 export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const { dialogRef, handleKeyDown } = useDialogFocus({
+        open: isConfirmOpen,
+        onClose: () => setIsConfirmOpen(false),
+    })
 
     const Icon = useMemo(() => {
         const iconName = toPascalCase(category.icon)
@@ -59,11 +64,14 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
 
             {isConfirmOpen ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div
+                    <dialog
+                        ref={dialogRef}
                         role="alertdialog"
-                        aria-modal="true"
                         aria-labelledby={`archive-category-${category.id}`}
+                        tabIndex={-1}
+                        onKeyDown={handleKeyDown}
                         className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
+                        open
                     >
                         <h3
                             id={`archive-category-${category.id}`}
@@ -93,7 +101,7 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
                                 Archive
                             </Button>
                         </div>
-                    </div>
+                    </dialog>
                 </div>
             ) : null}
         </li>

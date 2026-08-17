@@ -12,7 +12,15 @@ export const LoginForm = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { login, isPending } = useLogin()
-    const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/dashboard'
+    const from = (
+        location.state as { from?: string | { pathname?: string; search?: string; hash?: string } }
+    )?.from
+    const destination =
+        typeof from === 'string'
+            ? from
+            : from
+              ? `${from.pathname ?? ''}${from.search ?? ''}${from.hash ?? ''}` || '/dashboard'
+              : '/dashboard'
 
     const {
         register,
@@ -24,7 +32,7 @@ export const LoginForm = () => {
     const onSubmit = async (data: LoginInput) => {
         try {
             await login(data)
-            navigate(from, { replace: true })
+            navigate(destination, { replace: true })
         } catch (err) {
             if (err instanceof Error) setError('root', { message: err.message })
         }

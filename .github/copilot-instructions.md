@@ -1,10 +1,8 @@
-# Copilot Instructions for dwmc-web
+# Copilot Instructions for `dwmc-web`
 
-## Frontend Project Context
+## Project Overview
 
-dwmc-web is the frontend for a personal budget app built with React, Vite, TypeScript, React Router, TanStack Query, React Hook Form, Zod, shadcn/ui, Tailwind CSS, Supabase Auth, Storybook, Vitest, Playwright, ESLint, and Prettier.
-
-The goal is to keep the app maintainable, accessible, type-safe, and polished enough for a senior frontend portfolio project.
+`dwmc-web` is the React/Vite frontend for Dude, Where's My Cash?. The sibling `../dwmc-api` repository owns persistence, authorization, financial calculations, and the API contract. Treat both repositories as one product when a change crosses the API boundary.
 
 ## General Frontend Principles
 

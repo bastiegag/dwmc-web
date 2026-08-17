@@ -60,6 +60,22 @@ describe('SignupForm', () => {
         expect(screen.getByText(/account created/i)).toBeInTheDocument()
     })
 
+    it('redirects to the dashboard when signup returns an authenticated session', async () => {
+        vi.mocked(useSignup).mockReturnValue({
+            signup: vi.fn().mockResolvedValue({ session: { user: { id: 'user-1' } } }),
+            isPending: false,
+            isSuccess: false,
+            error: null,
+        })
+        const user = userEvent.setup()
+        render(<SignupForm />)
+        await user.type(screen.getByLabelText(/email/i), 'new@example.com')
+        await user.type(screen.getByLabelText(/^password/i), 'Password123')
+        await user.type(screen.getByLabelText(/confirm password/i), 'Password123')
+        await user.click(screen.getByRole('button', { name: /create account/i }))
+        await waitFor(() => expect(screen.queryByText(/check your email/i)).not.toBeInTheDocument())
+    })
+
     it('shows loading text when isPending is true', async () => {
         vi.mocked(useSignup).mockReturnValue({
             signup: vi.fn(),

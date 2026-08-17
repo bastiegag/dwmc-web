@@ -4,9 +4,9 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils/render'
 import { LoginForm } from '@/features/auth/components/LoginForm'
-import { useLogin } from '@/features/auth/hooks/useLogin'
+import { useLogin } from '@/features/auth/hooks'
 
-vi.mock('@/features/auth/hooks/useLogin', () => ({
+vi.mock('@/features/auth/hooks/use-login', () => ({
     useLogin: vi.fn(),
 }))
 

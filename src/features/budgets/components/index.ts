@@ -1,4 +1,3 @@
-export * from './BudgetMonthSelector'
 export * from './EmptyBudgetsState'
 export * from './BudgetCard'
 export * from './BudgetList'

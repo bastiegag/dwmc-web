@@ -5,6 +5,7 @@ node_modules
 dist
 dist-ssr
 storybook-static
+.vercel
 
 # Test outputs
 coverage
@@ -37,3 +38,4 @@ Thumbs.db
 .idea
 .vscode/*
 !.vscode/extensions.json
+.env*

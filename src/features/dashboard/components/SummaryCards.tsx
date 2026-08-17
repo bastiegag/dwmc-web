@@ -15,7 +15,7 @@ export const SummaryCards = ({ totals }: SummaryCardsProps) => {
             <SummaryCard label="Income" value={incomeTotal} />
             <SummaryCard label="Expenses" value={expenseTotal} />
             <SummaryCard label="Net" value={netTotal} subtitle={netSubtitle} />
-            <SummaryCard label="Transactions" value={transactionCount} />
+            <SummaryCard label="Transactions" value={String(transactionCount)} />
         </div>
     )
 }

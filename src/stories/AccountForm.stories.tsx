@@ -29,3 +29,19 @@ export const Default: Story = {
         onSubmit: async () => {},
     },
 }
+
+export const SavingsGoal: Story = {
+    args: {
+        initialValues: {
+            ...defaultValues,
+            name: 'Emergency Fund',
+            type: 'SAVINGS',
+            startingBalance: 3000,
+            goal: 10000,
+            icon: 'shield',
+        },
+        submitLabel: 'Save changes',
+        isPending: false,
+        onSubmit: async () => {},
+    },
+}

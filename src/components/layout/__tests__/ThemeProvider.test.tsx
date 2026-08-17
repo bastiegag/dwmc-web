@@ -58,6 +58,16 @@ describe('ThemeProvider', () => {
         expect(screen.getByTestId('theme')).toHaveTextContent('dark')
     })
 
+    it('falls back to defaultTheme for an invalid stored value', () => {
+        localStorage.setItem('test-theme', 'sepia')
+        render(
+            <ThemeProvider defaultTheme="light" storageKey="test-theme">
+                <ThemeDisplay />
+            </ThemeProvider>,
+        )
+        expect(screen.getByTestId('theme')).toHaveTextContent('light')
+    })
+
     it('applies the theme class to document.documentElement', async () => {
         const user = userEvent.setup()
         render(
@@ -79,5 +89,62 @@ describe('ThemeProvider', () => {
         )
         await user.click(screen.getByRole('button', { name: 'Set Dark' }))
         expect(localStorage.getItem('test-theme')).toBe('dark')
+    })
+
+    it('applies a dark system preference and responds to changes', () => {
+        let matches = true
+        let changeHandler: (() => void) | undefined
+        vi.spyOn(window, 'matchMedia').mockImplementation((query: string) => ({
+            get matches() {
+                return matches
+            },
+            media: query,
+            onchange: null,
+            addEventListener: (_event: string, listener: EventListenerOrEventListenerObject) => {
+                changeHandler = listener as () => void
+            },
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+        }))
+
+        render(
+            <ThemeProvider defaultTheme="system" storageKey="test-theme">
+                <ThemeDisplay />
+            </ThemeProvider>,
+        )
+
+        expect(document.documentElement.classList.contains('dark')).toBe(true)
+
+        matches = false
+        changeHandler?.()
+
+        expect(document.documentElement.classList.contains('light')).toBe(true)
+    })
+
+    it('lets an explicit theme override the system preference', async () => {
+        const user = userEvent.setup()
+        vi.spyOn(window, 'matchMedia').mockImplementation(() => ({
+            matches: true,
+            media: '(prefers-color-scheme: dark)',
+            onchange: null,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+        }))
+
+        render(
+            <ThemeProvider defaultTheme="system" storageKey="test-theme">
+                <ThemeControl />
+            </ThemeProvider>,
+        )
+
+        await user.click(screen.getByRole('button', { name: 'Set Light' }))
+
+        expect(document.documentElement.classList.contains('light')).toBe(true)
+        expect(document.documentElement.classList.contains('dark')).toBe(false)
     })
 })

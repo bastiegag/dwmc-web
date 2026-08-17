@@ -1,5 +1,6 @@
 import type { SectionFormValues } from '@/features/categories/schemas'
 import { Button } from '@/components/ui/button'
+import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
 import { SectionForm } from './SectionForm'
 
 type SectionDialogProps = {
@@ -21,17 +22,24 @@ export const SectionDialog = ({
     onOpenChange,
     onSubmit,
 }: SectionDialogProps) => {
+    const { dialogRef, handleKeyDown } = useDialogFocus({
+        open,
+        onClose: () => onOpenChange(false),
+    })
+
     if (!open) return null
 
     const title = mode === 'create' ? 'Create section' : 'Edit section'
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div
-                role="dialog"
-                aria-modal="true"
+            <dialog
+                ref={dialogRef}
                 aria-labelledby="section-dialog-title"
+                tabIndex={-1}
+                onKeyDown={handleKeyDown}
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
+                open
             >
                 <div className="mb-4 flex items-center justify-between gap-3">
                     <h2 id="section-dialog-title" className="text-lg font-semibold">
@@ -55,7 +63,7 @@ export const SectionDialog = ({
                     errorMessage={errorMessage}
                     onSubmit={onSubmit}
                 />
-            </div>
+            </dialog>
         </div>
     )
 }

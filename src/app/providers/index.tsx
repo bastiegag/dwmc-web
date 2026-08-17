@@ -14,6 +14,15 @@ export const AuthSyncProvider = ({ children }: { children: ReactNode }) => {
         const {
             data: { subscription },
         } = authService.onAuthStateChange(async (_event, session) => {
+            const previousSession = qc.getQueryData<Session | null>(authSessionQueryKey)
+            const previousUserId = previousSession?.user?.id
+            const nextUserId = session?.user?.id
+
+            if (!session || (previousUserId && previousUserId !== nextUserId)) {
+                qc.removeQueries({
+                    predicate: (query) => query.queryKey[0] !== authSessionQueryKey[0],
+                })
+            }
             qc.setQueryData<Session | null>(authSessionQueryKey, session)
         })
 

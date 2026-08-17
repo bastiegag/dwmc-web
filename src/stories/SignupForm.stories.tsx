@@ -87,3 +87,33 @@ export const ServerError: Story = {
         await expect(await canvas.findByRole('alert')).toBeVisible()
     },
 }
+
+export const AuthenticatedSession: Story = {
+    parameters: {
+        msw: {
+            handlers: [
+                http.post(/\/auth\/v1\/signup/, () =>
+                    HttpResponse.json({
+                        access_token: 'mock-access-token',
+                        token_type: 'bearer',
+                        expires_in: 3600,
+                        refresh_token: 'mock-refresh-token',
+                        user: {
+                            id: 'mock-user-id',
+                            email: 'new@example.com',
+                            aud: 'authenticated',
+                        },
+                    }),
+                ),
+            ],
+        },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await userEvent.type(canvas.getByLabelText(/email/i), 'new@example.com')
+        await userEvent.type(canvas.getByLabelText(/^password/i), 'Password123')
+        await userEvent.type(canvas.getByLabelText(/confirm password/i), 'Password123')
+        await userEvent.click(canvas.getByRole('button', { name: /create account/i }))
+        await expect(canvas.getByText(/account created/i)).toBeVisible()
+    },
+}

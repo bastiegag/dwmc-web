@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateSection } from '@/features/categories/api'
 import type { UpdateSectionInput } from '@/features/categories/types'
-import { sectionQueryKeys } from './use-sections'
+import { categoryQueryKeys, sectionQueryKeys } from './use-sections'
+import { dashboardQueryKeys } from '@/features/dashboard'
 
 export const useUpdateSection = () => {
     const queryClient = useQueryClient()
@@ -10,9 +11,11 @@ export const useUpdateSection = () => {
         mutationFn: ({ id, input }: { id: string; input: UpdateSectionInput }) =>
             updateSection(id, input),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({
-                queryKey: sectionQueryKeys.lists(),
-            })
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: categoryQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: sectionQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() }),
+            ])
         },
     })
 }

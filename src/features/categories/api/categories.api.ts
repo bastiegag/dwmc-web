@@ -4,11 +4,12 @@ import type {
     CreateCategoryInput,
     UpdateCategoryInput,
 } from '@/features/categories/types'
+import { fetchAllCursorPages } from './cursor-pagination'
 
-export const getCategories = async (): Promise<Category[]> => {
-    const response = await apiClient<{ data: Category[] }>('/categories')
-
-    return response.data
+export const getCategories = async (options: { includeArchived?: boolean } = {}) => {
+    return fetchAllCursorPages<Category>('/categories', {
+        ...(options.includeArchived ? { includeArchived: 'true' } : {}),
+    })
 }
 
 export const createCategory = async (input: CreateCategoryInput): Promise<Category> => {

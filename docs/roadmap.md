@@ -26,29 +26,35 @@ The current codebase shows a focus on:
 - Add recurring transaction UX if that feature is introduced.
 - Add CSV import UX if that feature is introduced.
 
-## Not Yet Implemented
+## Implemented
 
-- Profile and Settings entries on the Tools page are still placeholders.
-- The Tools page currently only links Categories to a real screen.
-- Any future report, import, or recurring-transaction UI is not implemented yet.
-
-## Done
-
-- Authentication with Supabase Auth.
-- Protected application routing.
+- Supabase authentication flows and protected routing.
 - Dashboard monthly summary.
-- Categories and sections.
-- Accounts.
-- Transactions.
-- Budgets.
-- Global month navigation.
-- Bottom navigation.
-- Contextual primary action behavior.
-- Shared API client with Supabase access token support.
+- Sections and categories.
+- Accounts and computed account balances.
+- Transactions for income, expense, transfer, and adjustment types.
+- Monthly category budgets.
+- URL-based month navigation.
+- Responsive desktop/mobile navigation.
+- Contextual primary actions.
+- Shared API client and TanStack Query integration.
+- Profile editing from the Tools area.
+- Settings appearance controls from the Tools area (device-local theme preference).
+- Vitest, Testing Library, MSW, Playwright, and Storybook coverage infrastructure.
 
-## Roadmap Rules
+## Placeholder or In Progress
 
-- Keep this file honest.
-- Move completed items from Planned to Done.
-- Do not document planned items as implemented in feature docs.
-- Keep roadmap entries short and easy to scan.
+- The Tools area has real Categories, Style Guide, Profile, and Settings destinations.
+- Dashboard visualizations, responsive polish, accessibility polish, and broader component coverage may continue to evolve with the current product.
+
+## Planned or Unconfirmed
+
+The following are not implemented and should not be treated as commitments until product scope is confirmed:
+
+- Additional Settings preferences beyond the initial theme control.
+- Reports or richer analytics.
+- Recurring transactions.
+- Import/export workflows.
+- Error monitoring and deployment-specific integrations.
+
+Update this document when a planned item becomes an accepted implementation target or ships. Do not list speculative ideas as current features.
