@@ -16,7 +16,7 @@ The current codebase shows a focus on:
 
 ## Planned Improvements
 
-- Improve the Tools area beyond the current placeholder cards.
+- Improve the Tools area beyond the current placeholder entries.
 - Add real Profile and Settings screens.
 - Expand dashboard visualizations and summary depth.
 - Improve responsive behavior on wider screens.

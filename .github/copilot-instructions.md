@@ -161,5 +161,8 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Update the frontend README when adding major features.
 - Keep README content concise and link to the deeper docs instead of duplicating them.
 - Document new environment variables and scripts when they affect setup or development.
-- Keep `docs/frontend-architecture.md`, `docs/frontend-conventions.md`, `docs/frontend-routing.md`, `docs/frontend-state-management.md`, `docs/frontend-api.md`, `docs/testing.md`, and `docs/roadmap.md` aligned with the actual code.
+- Keep `docs/frontend-architecture.md`, `docs/frontend-conventions.md`, `docs/frontend-routing.md`, `docs/frontend-state-management.md`, `docs/frontend-api.md`, `docs/testing.md`, `docs/development-playbook.md`, `docs/engineering-standards.md`, and `docs/roadmap.md` aligned with the actual code.
+- `dwmc-web` deploys to Vercel; `dwmc-api` deploys separately to Render; Supabase provides Auth and PostgreSQL.
+- Treat every `VITE_*` value as browser-visible. Backend secrets never belong in this repository's frontend runtime configuration.
+- Keep environment-specific API and Supabase service URLs configuration-driven, and ensure staging never targets production infrastructure.
 - Move planned but unfinished features to `docs/roadmap.md` instead of presenting them as shipped.

@@ -143,6 +143,8 @@ Use the package scripts that exist in `package.json`.
 - `npm run storybook`
 - `npm run build-storybook`
 
+CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml`. Playwright runs separately in `.github/workflows/e2e.yml`; it starts the local Vite server and uses the configured local proxy, so authenticated backend smoke tests require suitable test environment setup.
+
 ## Testing Guidelines
 
 - Prefer user behavior over implementation details.

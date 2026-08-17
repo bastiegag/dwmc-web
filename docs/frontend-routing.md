@@ -99,7 +99,7 @@ The current Tools page contains:
 - Settings placeholder
 
 Categories and Style Guide currently link to real screens.
-Profile and Settings are present as disabled placeholders.
+Profile and Settings are present as disabled placeholders and are not implemented routes.
 
 ## Style Guide Route
 
@@ -117,3 +117,5 @@ Profile and Settings are present as disabled placeholders.
 - Preserve month in app navigation where relevant.
 - Keep route-level logic in pages or layouts, not low-level components.
 - Avoid duplicating navigation config when a shared nav source already exists.
+
+Vercel hosts the built SPA. Direct navigation and refreshes of nested routes must be verified after deployment; the repository currently has no Vercel deployment workflow or tracked `vercel.json`, so SPA fallback behavior is owned by the Vercel project configuration.

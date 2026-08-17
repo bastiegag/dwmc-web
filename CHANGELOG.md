@@ -1,3 +1,3 @@
 # Changelog
 
-All notable changes to this application will be recorded here by Changesets.
+All notable changes to this application are recorded here.
