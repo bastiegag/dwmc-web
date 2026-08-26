@@ -118,4 +118,4 @@ Profile and Settings are present as disabled placeholders and are not implemente
 - Keep route-level logic in pages or layouts, not low-level components.
 - Avoid duplicating navigation config when a shared nav source already exists.
 
-Vercel hosts the built SPA. Direct navigation and refreshes of nested routes must be verified after deployment; the repository currently has no Vercel deployment workflow or tracked `vercel.json`, so SPA fallback behavior is owned by the Vercel project configuration.
+The local Vite server serves the SPA during development. Direct navigation and refreshes of nested routes should be covered by local browser tests.

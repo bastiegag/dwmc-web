@@ -5,17 +5,18 @@
 This frontend is a React + TypeScript budget app built around a feature-based architecture.
 The codebase keeps application setup, reusable UI, domain features, shared cross-feature utilities, and low-level clients separated so each layer has a clear responsibility.
 
-## Deployment Boundaries
+## Runtime Boundaries
 
-The frontend is hosted by Vercel. The backend `dwmc-api` is deployed separately on Render and owns domain operations, JWT validation, authorization, Prisma, and PostgreSQL access. Supabase provides Auth and hosts PostgreSQL; the browser only uses the Supabase Auth client.
+The frontend runs on the local Vite development server. The local `dwmc-api` owns domain operations, JWT validation, authorization, Prisma, and PostgreSQL access. Supabase is used for Auth only; the browser never connects to application data storage.
 
 ```text
-Local:       dwmc-web -> local dwmc-api -> configured Supabase environment
-Staging:     Vercel Preview -> Render staging API -> Supabase staging
-Production:  Vercel production -> Render production API -> Supabase production
+Browser -> local dwmc-web -> local dwmc-api -> Prisma -> local PostgreSQL
+                       \-> Supabase Auth -> access token -> dwmc-api
 ```
 
-`VITE_API_URL` selects the API origin for each frontend environment. Financial and domain requests go through the shared API client. The frontend must never connect directly to PostgreSQL or contain service-role, database, Render, or Vercel credentials.
+`VITE_API_URL` selects the local API origin. Financial and domain requests go
+through the shared API client. The frontend must never connect directly to
+PostgreSQL or contain service-role, database, or other backend credentials.
 
 ## Application Structure
 

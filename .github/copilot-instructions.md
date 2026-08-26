@@ -160,7 +160,7 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Keep README content concise and link to the deeper docs instead of duplicating them.
 - Document new environment variables and scripts when they affect setup or development.
 - Keep `docs/frontend-architecture.md`, `docs/frontend-conventions.md`, `docs/frontend-routing.md`, `docs/frontend-state-management.md`, `docs/frontend-api.md`, `docs/testing.md`, `docs/development-playbook.md`, `docs/engineering-standards.md`, and `docs/roadmap.md` aligned with the actual code.
-- `dwmc-web` deploys to Vercel; `dwmc-api` deploys separately to Render; Supabase provides Auth and PostgreSQL.
+- `dwmc-web` and `dwmc-api` run locally for V1. Application data uses local PostgreSQL through Prisma; Supabase is used only for Auth.
 - Treat every `VITE_*` value as browser-visible. Backend secrets never belong in this repository's frontend runtime configuration.
-- Keep environment-specific API and Supabase service URLs configuration-driven, and ensure staging never targets production infrastructure.
+- Keep local API and Supabase Auth URLs configuration-driven. Do not introduce deployment infrastructure unless explicitly requested.
 - Move planned but unfinished features to `docs/roadmap.md` instead of presenting them as shipped.

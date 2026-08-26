@@ -20,8 +20,8 @@ Keep changes focused and use Conventional Commit messages. Update the canonical 
 
 ## Environment Boundaries
 
-Use separate Vercel Preview/Staging and Production environment values. Preview must point to Render staging and Supabase staging; Production must point to the corresponding production services. `VITE_*` values are browser-visible. Backend secrets, database credentials, service-role keys, and deployment credentials belong outside this repository.
+`VITE_*` values are browser-visible. Backend secrets, database credentials, service-role keys, and deployment credentials belong outside this repository.
 
 ## Backend Changes
 
-Frontend domain calls go through `dwmc-api`. Prisma migrations and backend deployment procedures belong to the API repository. When a frontend change depends on a new backend contract, coordinate the API change first, verify the Render API, then validate the frontend against that contract.
+Frontend domain calls go through the local `dwmc-api`. Prisma migrations and backend database procedures belong to the API repository. When a frontend change depends on a new backend contract, coordinate the API change first, then validate both repositories locally.

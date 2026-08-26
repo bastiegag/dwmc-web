@@ -49,6 +49,8 @@ The current codebase shows a focus on:
 
 ## Planned or Unconfirmed
 
+- Production deployment and hosted PostgreSQL are future phases, not part of V1.
+
 The following are not implemented and should not be treated as commitments until product scope is confirmed:
 
 - Additional Settings preferences beyond the initial theme control.

@@ -13,7 +13,7 @@ page or hook
 → backend endpoint
 ```
 
-The configured API origin is selected by `VITE_API_URL`: the local Vite proxy path during local development, the Render staging API for Vercel Preview, and the Render production API for the production frontend. URLs are environment configuration, not hardcoded frontend source values.
+The configured API origin is selected by `VITE_API_URL`. Local development uses the Vite proxy path `/api/v1`, which forwards requests to the local API on port `3000`. URLs are environment configuration, not hardcoded frontend source values.
 
 ## API Client
 
