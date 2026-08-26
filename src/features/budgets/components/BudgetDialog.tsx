@@ -1,5 +1,6 @@
 import type { BudgetFormValues } from '@/features/budgets/schemas/budget.schema'
 import { Button } from '@/components/ui/button'
+import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
 import { BudgetForm } from './BudgetForm'
 import type { SectionWithCategories } from '@/features/categories/types'
 
@@ -26,6 +27,11 @@ export const BudgetDialog = ({
     onOpenChange,
     onSubmit,
 }: Props) => {
+    const { dialogRef, handleKeyDown } = useDialogFocus({
+        open,
+        onClose: () => onOpenChange(false),
+    })
+
     if (!open) return null
 
     const title = mode === 'create' ? 'New Budget' : 'Edit budget'
@@ -36,13 +42,19 @@ export const BudgetDialog = ({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div
-                role="dialog"
+            <dialog
+                ref={dialogRef}
+                onKeyDown={handleKeyDown}
+                tabIndex={-1}
                 aria-modal="true"
+                aria-labelledby="budget-dialog-title"
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
+                open
             >
                 <div className="mb-4 flex items-center justify-between gap-3">
-                    <h2 className="text-lg font-semibold">{title}</h2>
+                    <h2 id="budget-dialog-title" className="text-lg font-semibold">
+                        {title}
+                    </h2>
                     <Button
                         type="button"
                         variant="ghost"
@@ -62,7 +74,7 @@ export const BudgetDialog = ({
                     errorMessage={errorMessage}
                     onSubmit={onSubmit}
                 />
-            </div>
+            </dialog>
         </div>
     )
 }

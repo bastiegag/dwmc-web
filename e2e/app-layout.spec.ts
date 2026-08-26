@@ -36,6 +36,32 @@ test.describe('App Layout', () => {
         })
     })
 
+    test.describe('Intermediate viewport widths', () => {
+        test('avoids horizontal overflow at 430px', async ({ page }) => {
+            await page.setViewportSize({ width: 430, height: 844 })
+            await expect(page).toHaveURL('/dashboard')
+
+            const overflow = await page.evaluate(() => ({
+                documentWidth: document.documentElement.scrollWidth,
+                viewportWidth: document.documentElement.clientWidth,
+            }))
+
+            expect(overflow.documentWidth).toBeLessThanOrEqual(overflow.viewportWidth)
+        })
+
+        test('avoids horizontal overflow at 768px', async ({ page }) => {
+            await page.setViewportSize({ width: 768, height: 900 })
+            await expect(page).toHaveURL('/dashboard')
+
+            const overflow = await page.evaluate(() => ({
+                documentWidth: document.documentElement.scrollWidth,
+                viewportWidth: document.documentElement.clientWidth,
+            }))
+
+            expect(overflow.documentWidth).toBeLessThanOrEqual(overflow.viewportWidth)
+        })
+    })
+
     test.describe('Desktop viewport', () => {
         test.use({ viewport: { width: 1280, height: 720 } })
 

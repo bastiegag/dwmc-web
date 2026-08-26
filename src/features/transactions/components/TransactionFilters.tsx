@@ -28,7 +28,7 @@ export const TransactionFilters = ({ accounts, sections, onChange }: Transaction
     }, [type, accountId, categoryId, search, onChange])
 
     return (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
             <div>
                 <Label htmlFor="filter-type">Type</Label>
                 <select

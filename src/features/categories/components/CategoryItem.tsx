@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import * as LucideIcons from 'lucide-react'
+import { CircleHelp, Cookie, ShoppingCart, Tags, Utensils } from 'lucide-react'
 import type { Category } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
 import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
@@ -12,12 +12,11 @@ type CategoryItemProps = {
 
 type LucideIconComponent = React.ComponentType<{ className?: string }>
 
-const toPascalCase = (value: string) => {
-    return value
-        .split(/[-_\s]+/)
-        .filter(Boolean)
-        .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1).toLowerCase()}`)
-        .join('')
+const categoryIcons: Record<string, LucideIconComponent> = {
+    cookie: Cookie,
+    'shopping-cart': ShoppingCart,
+    tags: Tags,
+    utensils: Utensils,
 }
 
 export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps) => {
@@ -27,12 +26,7 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
         onClose: () => setIsConfirmOpen(false),
     })
 
-    const Icon = useMemo(() => {
-        const iconName = toPascalCase(category.icon)
-        const icons = LucideIcons as unknown as Record<string, LucideIconComponent>
-
-        return icons[iconName] ?? LucideIcons.CircleHelp
-    }, [category.icon])
+    const Icon = useMemo(() => categoryIcons[category.icon] ?? CircleHelp, [category.icon])
 
     return (
         <li className="flex items-center justify-between gap-2 rounded-md border px-3 py-2">

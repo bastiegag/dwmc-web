@@ -45,10 +45,10 @@ npm run build-storybook
 ## Documentation
 
 - [Frontend architecture](docs/frontend-architecture.md)
-- [Frontend conventions](docs/frontend-conventions.md)
+- [Engineering standards](docs/engineering-standards.md)
 - [API integration](docs/frontend-api.md)
 - [Authentication and routing](docs/frontend-routing.md)
-- [State management](docs/frontend-state-management.md)
+- [Frontend architecture](docs/frontend-architecture.md)
 - [Testing](docs/testing.md)
 - [Development playbook](docs/development-playbook.md)
 - [Engineering standards](docs/engineering-standards.md)

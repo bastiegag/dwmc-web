@@ -15,7 +15,6 @@ The current route map includes:
 - `/budgets`
 - `/accounts`
 - `/tools`
-- `/style-guide`
 - `/categories`
 - `/login`
 - `/signup`
@@ -94,21 +93,11 @@ The action is page-driven so the layout can stay generic.
 The current Tools page contains:
 
 - Categories
-- Style Guide
 - Profile placeholder
 - Settings placeholder
 
-Categories and Style Guide currently link to real screens.
+Categories currently links to a real screen.
 Profile and Settings are present as disabled placeholders and are not implemented routes.
-
-## Style Guide Route
-
-`/style-guide` is a protected, development-oriented reference page that documents the current UI foundation in-app.
-
-- It renders inside the authenticated app layout.
-- It reuses canonical components rather than duplicating primitives.
-- It is intentionally useful on both desktop and mobile.
-- It can be reached from the Tools page.
 
 ## Route Guidelines
 

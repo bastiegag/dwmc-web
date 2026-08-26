@@ -135,6 +135,10 @@ export const apiClient = async <T>(path: string, options: ApiClientOptions = {})
         return json as T
     }
 
+    if (response.status === 401) {
+        await supabase.auth.signOut()
+    }
+
     // Error path — try to read the standard error envelope
     const errorBody = json as BackendErrorBody | undefined
 
