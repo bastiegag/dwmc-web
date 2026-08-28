@@ -1,4 +1,4 @@
-# DWMC Web
+# Dude, Where's My Cash? Web
 
 DWMC Web is the React frontend for a personal budgeting application. It provides authentication, account, category, transaction, budget, and monthly summary workflows.
 
