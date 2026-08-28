@@ -44,7 +44,7 @@ The current codebase shows a focus on:
 
 ## Placeholder or In Progress
 
-- The Tools area has real Categories, Style Guide, Profile, and Settings destinations.
+- The Tools area has real Categories, Profile, and Settings destinations.
 - Dashboard visualizations, responsive polish, accessibility polish, and broader component coverage may continue to evolve with the current product.
 
 ## Planned or Unconfirmed

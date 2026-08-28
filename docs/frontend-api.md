@@ -50,7 +50,7 @@ It requires:
 
 Auth flows also use `VITE_APP_URL` for redirect targets.
 
-All `VITE_*` variables are browser-visible. The frontend may contain the Supabase URL and anon key, but must never receive `DATABASE_URL`, PostgreSQL credentials, `SUPABASE_SERVICE_ROLE_KEY`, Vercel tokens, Render credentials, or other backend secrets.
+All `VITE_*` variables are browser-visible. The frontend may contain the Supabase URL and anon key, but must never receive `DATABASE_URL`, PostgreSQL credentials, `SUPABASE_SERVICE_ROLE_KEY`, or other backend secrets.
 
 The frontend sends requests and Bearer tokens; `dwmc-api` owns CORS policy, preflight handling, allowed origins, methods, and headers. The frontend does not configure CORS.
 

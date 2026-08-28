@@ -27,6 +27,7 @@
 - Keep TanStack Query logic in hooks
 - Keep form validation in Zod schemas
 - Keep types in `.types.ts` files
+- Treat `dwmc-web` and `dwmc-api` as a local-first V1 system: Supabase provides authentication, while local PostgreSQL through Prisma stores application data.
 
 ## Naming
 
@@ -124,6 +125,14 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Dashboard, Transactions, and Budgets should use the selected month
 - Transaction creation should default to a date inside the selected month
 
+### Navigation
+
+- Mobile global navigation has four primary destinations: Overview, Budgets, Accounts, and Tools.
+- Transactions is not a mobile Bottom Navigation destination. It remains the independent `src/features/transactions` feature and `/transactions` route, exposed through Dashboard secondary navigation.
+- Dashboard secondary navigation is route-driven between `/dashboard` (Overview) and `/transactions` (Transactions); do not replace these routes with local tab state.
+- Keep the Dashboard global navigation item active while viewing `/transactions`.
+- Preserve `?month=YYYY-MM` when navigating between Dashboard and Transactions.
+
 ## Contextual Primary Action
 
 - The floating `+` button is contextual
@@ -159,7 +168,7 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Update the frontend README when adding major features.
 - Keep README content concise and link to the deeper docs instead of duplicating them.
 - Document new environment variables and scripts when they affect setup or development.
-- Keep `docs/frontend-architecture.md`, `docs/frontend-conventions.md`, `docs/frontend-routing.md`, `docs/frontend-state-management.md`, `docs/frontend-api.md`, `docs/testing.md`, `docs/development-playbook.md`, `docs/engineering-standards.md`, and `docs/roadmap.md` aligned with the actual code.
+- Keep `docs/frontend-architecture.md`, `docs/frontend-routing.md`, `docs/frontend-api.md`, `docs/testing.md`, `docs/development-playbook.md`, `docs/engineering-standards.md`, and `docs/roadmap.md` aligned with the actual code.
 - `dwmc-web` and `dwmc-api` run locally for V1. Application data uses local PostgreSQL through Prisma; Supabase is used only for Auth.
 - Treat every `VITE_*` value as browser-visible. Backend secrets never belong in this repository's frontend runtime configuration.
 - Keep local API and Supabase Auth URLs configuration-driven. Do not introduce deployment infrastructure unless explicitly requested.

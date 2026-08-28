@@ -54,14 +54,21 @@ Navigation updates the query string with `replace: true` so month changes do not
 
 The mobile bottom navigation links to the main app destinations and preserves the current month in each link.
 
-Current destinations:
+Current mobile global destinations:
 
 - Overview
 - Budgets
 - Accounts
 - Tools
 
-The active route is highlighted based on the current pathname.
+Transactions is not a mobile global destination. It remains an independent
+`/transactions` route and feature, exposed through the Dashboard section's
+secondary navigation alongside `/dashboard`.
+
+The Dashboard global item is active on both `/dashboard` and `/transactions`.
+Within the secondary navigation, Overview is active on `/dashboard` and
+Transactions is active on `/transactions`. The active route is highlighted
+based on the current pathname.
 Tools uses prefix matching so nested tool routes remain active when the user drills into them.
 
 Example:
@@ -93,11 +100,12 @@ The action is page-driven so the layout can stay generic.
 The current Tools page contains:
 
 - Categories
-- Profile placeholder
-- Settings placeholder
+- Profile
+- Settings
 
-Categories currently links to a real screen.
-Profile and Settings are present as disabled placeholders and are not implemented routes.
+Categories links to `/categories`; Profile and Settings link to `/tools/profile`
+and `/tools/settings`. Profile owns the user's application profile fields, while
+Settings currently owns the device-local theme preference.
 
 ## Route Guidelines
 

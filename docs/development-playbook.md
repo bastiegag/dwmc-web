@@ -1,5 +1,9 @@
 # Frontend Development Playbook
 
+This document covers the `dwmc-web` daily workflow, frontend environment, and
+frontend/backend coordination details. Product-wide engineering standards and
+the definition of done live in the [shared Developer Playbook](dev-playbook.md).
+
 ## Daily Workflow
 
 1. Start the local `dwmc-api` service.

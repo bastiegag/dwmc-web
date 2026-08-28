@@ -27,16 +27,16 @@ The backend remains authoritative for ownership, validation, persistence, balanc
 
 ## Source Layout
 
-| Path              | Responsibility                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------- |
-| `src/app/`        | Bootstrap, router, layouts, providers, and app-level pages.                                                   |
-| `src/components/` | Reusable UI, layout, feedback, form, and shadcn-style primitives.                                             |
-| `src/features/`   | Domain vertical slices such as auth, dashboard, accounts, transactions, budgets, categories, and style guide. |
-| `src/lib/`        | API client, Supabase client, QueryClient, formatting, and low-level helpers.                                  |
-| `src/shared/`     | Cross-feature systems such as month navigation and contextual primary actions.                                |
-| `src/test/`       | Vitest setup, MSW handlers, fixtures, render helpers, and test utilities.                                     |
-| `src/stories/`    | Storybook stories.                                                                                            |
-| `src/styles/`     | Global styles and theme tokens.                                                                               |
+| Path              | Responsibility                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `src/app/`        | Bootstrap, router, layouts, providers, and app-level pages.                                                         |
+| `src/components/` | Reusable UI, layout, feedback, form, and shadcn-style primitives.                                                   |
+| `src/features/`   | Domain vertical slices such as auth, dashboard, accounts, transactions, budgets, categories, profile, and settings. |
+| `src/lib/`        | API client, Supabase client, QueryClient, formatting, and low-level helpers.                                        |
+| `src/shared/`     | Cross-feature systems such as month navigation and contextual primary actions.                                      |
+| `src/test/`       | Vitest setup, MSW handlers, fixtures, render helpers, and test utilities.                                           |
+| `src/stories/`    | Storybook stories.                                                                                                  |
+| `src/styles/`     | Global styles and theme tokens.                                                                                     |
 
 Feature folders commonly contain `api/`, `components/`, `hooks/`, `pages/`, `schemas/`, `types/`, and a public `index.ts`. The exact folders vary by feature; follow the existing slice rather than creating empty layers.
 
@@ -74,9 +74,9 @@ The selected month is URL state on month-aware application routes:
 - Month changes use replacement history intentionally: moving between months does not add one Back/Forward entry per click. Browser history remains focused on route and document navigation.
 - Application navigation links carry the selected month so a route change does not silently reset the month. The transaction-date helper may remember a valid date per month in `localStorage`, but it never overrides the URL month.
 
-The layout renders the shared `MonthNavigator` on month-aware routes. The desktop sidebar and mobile bottom navigation expose the same five primary destinations: Overview, Budgets, Transactions, Accounts, and Tools. The mobile bar reserves a sixth slot for the contextual action, while the layout owns that mobile action slot.
+The layout renders the shared `MonthNavigator` on month-aware routes. Mobile global navigation exposes four primary destinations: Overview, Budgets, Accounts, and Tools. The Dashboard section also renders secondary navigation between Overview (`/dashboard`) and Transactions (`/transactions`). Transactions remains an independent feature and route even though it belongs to the Dashboard section in the information architecture. The mobile bar reserves a dedicated slot for the contextual action, while the layout owns that mobile action slot. Desktop navigation retains a separate Transactions link.
 
-Contextual primary actions are registered by the current page and rendered by the layout. Current actions are Add transaction on Dashboard and Transactions, Add budget on Budgets, and Add account on Accounts. Categories registers Add category or Add section based on its current data; Tools and the style guide do not register an action. Registration cleanup is scoped to the registering page so an unmount cannot clear a newer page action.
+Contextual primary actions are registered by the current page and rendered by the layout. Current actions are Add transaction on Dashboard and Transactions, Add budget on Budgets, and Add account on Accounts. Categories registers Add category or Add section based on its current data; Tools do not register an action. Registration cleanup is scoped to the registering page so an unmount cannot clear a newer page action.
 
 The Profile experience is nested under the existing Tools route at `/tools/profile`. It uses the shared API client and a stable `['profile']` TanStack Query key; email is read from the Supabase session and profile mutations send only application fields.
 

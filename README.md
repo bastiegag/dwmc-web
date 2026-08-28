@@ -68,6 +68,7 @@ npm run build-storybook
 - [API integration](docs/frontend-api.md)
 - [Authentication and routing](docs/frontend-routing.md)
 - [Testing](docs/testing.md)
+- [Shared developer playbook](docs/dev-playbook.md)
 - [Development playbook](docs/development-playbook.md)
 - [Development and releases](docs/RELEASING.md)
 - [Engineering audit playbook](docs/engineering-audit-playbook.md)

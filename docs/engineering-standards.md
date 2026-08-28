@@ -15,7 +15,7 @@
 - Keep cross-feature behavior in `src/shared`.
 - Keep backend calls in feature `.api.ts` files and server state in TanStack Query hooks.
 - Preserve the public `index.ts` boundary of each feature.
-- Follow the naming and Fast Refresh conventions in `frontend-conventions.md`.
+- Follow the naming and Fast Refresh conventions in [frontend architecture](frontend-architecture.md) and the repository Copilot instructions.
 
 ## Validation
 
