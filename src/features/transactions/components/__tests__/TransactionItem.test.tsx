@@ -5,6 +5,37 @@ import TransactionItem from '@/features/transactions/components/TransactionItem'
 import { createTransaction } from '@/test/fixtures/domain'
 
 describe('TransactionItem', () => {
+    it('renders fallback descriptions and transfer account labels', () => {
+        const transaction = createTransaction({
+            type: 'TRANSFER',
+            date: 'not-a-date',
+            merchant: null,
+            note: null,
+            account: null,
+            fromAccount: null,
+            toAccount: null,
+        })
+
+        render(<TransactionItem transaction={transaction} onEdit={vi.fn()} onArchive={vi.fn()} />)
+
+        expect(screen.getByText('not-a-date')).toBeInTheDocument()
+        expect(screen.getByText('No description')).toBeInTheDocument()
+        expect(screen.getByText('From → To')).toBeInTheDocument()
+    })
+
+    it('renders a note and account for non-transfer transactions and supports editing', async () => {
+        const user = userEvent.setup()
+        const onEdit = vi.fn()
+        const transaction = createTransaction({ merchant: null, note: 'Opening balance' })
+
+        render(<TransactionItem transaction={transaction} onEdit={onEdit} onArchive={vi.fn()} />)
+
+        expect(screen.getByText('Opening balance')).toBeInTheDocument()
+        expect(screen.getByText('Checking')).toBeInTheDocument()
+        await user.click(screen.getByRole('button', { name: 'Edit' }))
+        expect(onEdit).toHaveBeenCalledWith(transaction)
+    })
+
     it('requires confirmation before archiving and supports cancel, Escape, and focus wrapping', async () => {
         const user = userEvent.setup()
         const onArchive = vi.fn()

@@ -29,6 +29,18 @@ describe('BudgetsPage', () => {
         expect(screen.getByText(/total planned/i)).toBeInTheDocument()
     })
 
+    it('shows an error state when loading budgets fails', async () => {
+        server.use(
+            http.get('http://localhost:8787/budgets*', () =>
+                HttpResponse.json({ error: { message: 'Budgets unavailable' } }, { status: 500 }),
+            ),
+        )
+
+        render(<BudgetsPage />)
+
+        expect(await screen.findByText('Budgets unavailable')).toBeInTheDocument()
+    })
+
     it('sums page totals at cent precision', async () => {
         server.use(
             http.get('http://localhost:8787/budgets', () =>

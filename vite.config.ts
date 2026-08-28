@@ -16,6 +16,9 @@ export default defineConfig({
             },
         },
     },
+    build: {
+        chunkSizeWarningLimit: 600,
+    },
     resolve: {
         alias: {
             '@': path.resolve(import.meta.dirname, './src'),

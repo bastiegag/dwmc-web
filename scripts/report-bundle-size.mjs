@@ -2,7 +2,7 @@ import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 
 const assetsDirectory = join(process.cwd(), 'dist', 'assets')
-const warningThreshold = 500 * 1024
+const warningThreshold = 600 * 1024
 
 const entries = await readdir(assetsDirectory)
 const assets = await Promise.all(

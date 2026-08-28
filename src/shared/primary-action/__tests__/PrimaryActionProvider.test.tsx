@@ -91,4 +91,47 @@ describe('PrimaryActionProvider', () => {
             expect(screen.getByRole('button', { name: /second action/i })).toBeInTheDocument()
         })
     })
+
+    it('hides the button when no action or an invisible action is registered', async () => {
+        const { rerender } = render(
+            <>
+                <Registrar action={null} />
+                <PrimaryActionButton />
+            </>,
+        )
+
+        expect(screen.queryByTestId('primary-action-button')).not.toBeInTheDocument()
+
+        rerender(
+            <>
+                <Registrar
+                    action={{ label: 'Hidden action', onClick: vi.fn(), isVisible: false }}
+                />
+                <PrimaryActionButton />
+            </>,
+        )
+
+        expect(screen.queryByTestId('primary-action-button')).not.toBeInTheDocument()
+    })
+
+    it('renders disabled actions and custom icons', () => {
+        const Icon = () => <span data-testid="custom-action-icon" />
+
+        render(
+            <>
+                <Registrar
+                    action={{
+                        label: 'Disabled action',
+                        onClick: vi.fn(),
+                        disabled: true,
+                        icon: Icon,
+                    }}
+                />
+                <PrimaryActionButton />
+            </>,
+        )
+
+        expect(screen.getByRole('button', { name: 'Disabled action' })).toBeDisabled()
+        expect(screen.getByTestId('custom-action-icon')).toBeInTheDocument()
+    })
 })

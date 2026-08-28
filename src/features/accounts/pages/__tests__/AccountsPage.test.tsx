@@ -47,6 +47,15 @@ describe('AccountsPage', () => {
         expect(await screen.findByText(/no accounts yet/i)).toBeInTheDocument()
     })
 
+    it('shows an error state when loading accounts fails', async () => {
+        isError = true
+        error = new Error('Accounts unavailable')
+
+        render(<AccountsPage />)
+
+        expect(await screen.findByText('Accounts unavailable')).toBeInTheDocument()
+    })
+
     it('renders accounts from API response', async () => {
         accountsData = [createAccount()]
 

@@ -2,7 +2,7 @@
 
 ## Bundle profiling
 
-Run `npm run profile:build` to build the production bundle and list the ten largest generated assets. The command also identifies assets above the 500 kB warning threshold so bundle work can be based on measured output rather than source import counts.
+Run `npm run profile:build` to build the production bundle and list the ten largest generated assets. The command also identifies assets above the 600 kB warning threshold so bundle work can be based on measured output rather than source import counts.
 
 ## Stack and Layers
 

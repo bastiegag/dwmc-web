@@ -6,6 +6,11 @@ import { render } from '@/test/utils/render'
 import { LoginForm } from '@/features/auth/components/LoginForm'
 import { useLogin } from '@/features/auth/hooks'
 
+const { locationState, navigateMock } = vi.hoisted(() => ({
+    locationState: { current: null as unknown },
+    navigateMock: vi.fn(),
+}))
+
 vi.mock('@/features/auth/hooks/use-login', () => ({
     useLogin: vi.fn(),
 }))
@@ -14,13 +19,14 @@ vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom')
     return {
         ...actual,
-        useNavigate: () => vi.fn(),
-        useLocation: () => ({ state: null, pathname: '/login' }),
+        useNavigate: () => navigateMock,
+        useLocation: () => ({ state: locationState.current, pathname: '/login' }),
     }
 })
 
 beforeEach(() => {
     vi.clearAllMocks()
+    locationState.current = null
     vi.mocked(useLogin).mockReturnValue({
         login: vi.fn().mockResolvedValue(undefined),
         isPending: false,
@@ -74,6 +80,48 @@ describe('LoginForm', () => {
             expect(emailInput).toHaveAttribute('aria-invalid', 'true')
             expect(emailInput).toHaveAttribute('aria-describedby', 'email-error')
         })
+    })
+
+    it('shows the login error returned by the auth service', async () => {
+        const user = userEvent.setup()
+        vi.mocked(useLogin).mockReturnValue({
+            login: vi.fn().mockRejectedValue(new Error('Invalid credentials')),
+            isPending: false,
+            error: null,
+        })
+
+        render(<LoginForm />)
+        await user.type(screen.getByLabelText(/email/i), 'test@example.com')
+        await user.type(screen.getByLabelText(/^password/i), 'Password123')
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+
+        expect(await screen.findByRole('alert')).toHaveTextContent('Invalid credentials')
+    })
+
+    it('redirects to a string return location after login', async () => {
+        const user = userEvent.setup()
+        locationState.current = { from: '/transactions?month=2026-06' }
+
+        render(<LoginForm />)
+        await user.type(screen.getByLabelText(/email/i), 'test@example.com')
+        await user.type(screen.getByLabelText(/^password/i), 'Password123')
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+
+        expect(navigateMock).toHaveBeenCalledWith('/transactions?month=2026-06', { replace: true })
+    })
+
+    it('reconstructs a structured return location after login', async () => {
+        const user = userEvent.setup()
+        locationState.current = {
+            from: { pathname: '/accounts', search: '?archived=true', hash: '#list' },
+        }
+
+        render(<LoginForm />)
+        await user.type(screen.getByLabelText(/email/i), 'test@example.com')
+        await user.type(screen.getByLabelText(/^password/i), 'Password123')
+        await user.click(screen.getByRole('button', { name: /sign in/i }))
+
+        expect(navigateMock).toHaveBeenCalledWith('/accounts?archived=true#list', { replace: true })
     })
 
     it('submit button is disabled with loading label while pending', async () => {
