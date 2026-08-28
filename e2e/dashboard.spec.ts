@@ -53,7 +53,7 @@ test('renders the selected month summary with financial totals and recent activi
 
     await page.goto('/dashboard?month=2026-06')
     await expect(page).toHaveURL('/dashboard?month=2026-06')
-    await expect(page.getByRole('status')).toHaveText(/juin 2026/i)
+    await expect(page.locator('span[role="status"]').filter({ hasText: 'juin 2026' })).toBeVisible()
 
     await expect(page.getByRole('heading', { name: 'Income', level: 2 })).toBeVisible()
     await expect(page.getByText(/1.*250,00/)).toBeVisible()

@@ -14,6 +14,10 @@
 >
 > Technical implementation details belong in the architecture documentation.
 
+This is the product-wide playbook for both `dwmc-web` and `dwmc-api`. The
+frontend-only local workflow is documented separately in
+[`development-playbook.md`](development-playbook.md).
+
 ---
 
 # 1. Purpose

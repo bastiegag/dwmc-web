@@ -80,6 +80,16 @@ export const mockAuthenticatedSession = async (page: Page, summary = MOCK_SUMMAR
             body: JSON.stringify({ data: [] }),
         }),
     )
+    await page.route(/\/api\/v1\/transactions(?:\?.*)?$/, (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                data: [],
+                meta: { page: 1, pageSize: 25, total: 0, totalPages: 0 },
+            }),
+        }),
+    )
     await page.route('**/auth/v1/logout*', (route) => route.fulfill({ status: 204, body: '' }))
 }
 

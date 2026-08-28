@@ -70,6 +70,7 @@ const monthOf = (date: string) => date.slice(0, 7)
 const setupTransactionApi = async (
     page: Parameters<typeof mockAuthenticatedSession>[0],
     initialTransactions: Transaction[] = [],
+    options: { failCreate?: boolean } = {},
 ) => {
     const accounts = [
         createAccount('checking', 'Checking', 1000),
@@ -151,6 +152,18 @@ const setupTransactionApi = async (
 
     await page.route(/\/api\/v1\/transactions(?:\?.*)?$/, async (route) => {
         if (route.request().method() === 'POST') {
+            if (options.failCreate) {
+                return route.fulfill({
+                    status: 500,
+                    contentType: 'application/json',
+                    body: JSON.stringify({
+                        error: {
+                            code: 'INTERNAL_ERROR',
+                            message: 'Unable to save transaction',
+                        },
+                    }),
+                })
+            }
             const body = (await route.request().postDataJSON()) as Omit<
                 Transaction,
                 'id' | 'isArchived' | 'createdAt' | 'updatedAt'
@@ -245,6 +258,41 @@ test('creates and archives an expense while keeping the account balance synchron
     await expect(
         page.locator('.text-2xl.font-semibold').filter({ hasText: /1,000|1\s*000/ }),
     ).toBeVisible()
+})
+
+test('shows validation feedback and keeps the transaction form usable', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await mockAuthenticatedSession(page)
+    await setupTransactionApi(page)
+    await login(page)
+
+    await page.goto('/transactions?month=2026-01')
+    await expect(page.getByRole('heading', { name: 'Transactions', exact: true })).toBeVisible()
+    await page.getByTestId('primary-action-button').click()
+    const dialog = page.getByRole('dialog', { name: 'New Transaction' })
+    await dialog.getByRole('button', { name: 'Save' }).click()
+
+    await expect(dialog.getByText('Amount must be greater than 0')).toBeVisible()
+    await expect(dialog).toBeVisible()
+})
+
+test('shows an understandable API error without closing the transaction form', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await mockAuthenticatedSession(page)
+    await setupTransactionApi(page, [], { failCreate: true })
+    await login(page)
+
+    await page.goto('/transactions?month=2026-01')
+    await expect(page.getByRole('heading', { name: 'Transactions', exact: true })).toBeVisible()
+    await page.getByTestId('primary-action-button').click()
+    const dialog = page.getByRole('dialog', { name: 'New Transaction' })
+    await dialog.getByLabel('Amount').fill('25')
+    await dialog.getByLabel('Account').selectOption('checking')
+    await dialog.getByRole('button', { name: 'Save' }).click()
+
+    await expect(dialog.getByRole('alert')).toBeVisible()
+    await expect(dialog.getByRole('alert')).toContainText(/unable to save transaction/i)
+    await expect(dialog).toBeVisible()
 })
 
 test('creates a transfer and synchronizes both account balances', async ({ page }) => {

@@ -13,7 +13,7 @@ page or hook
 → backend endpoint
 ```
 
-The configured API origin is selected by `VITE_API_URL`: the local Vite proxy path during local development, the Render staging API for Vercel Preview, and the Render production API for the production frontend. URLs are environment configuration, not hardcoded frontend source values.
+The configured API origin is selected by `VITE_API_URL`. Local development uses the Vite proxy path `/api/v1`, which forwards requests to the local API on port `3000`. URLs are environment configuration, not hardcoded frontend source values.
 
 ## API Client
 
@@ -50,7 +50,7 @@ It requires:
 
 Auth flows also use `VITE_APP_URL` for redirect targets.
 
-All `VITE_*` variables are browser-visible. The frontend may contain the Supabase URL and anon key, but must never receive `DATABASE_URL`, PostgreSQL credentials, `SUPABASE_SERVICE_ROLE_KEY`, Vercel tokens, Render credentials, or other backend secrets.
+All `VITE_*` variables are browser-visible. The frontend may contain the Supabase URL and anon key, but must never receive `DATABASE_URL`, PostgreSQL credentials, `SUPABASE_SERVICE_ROLE_KEY`, or other backend secrets.
 
 The frontend sends requests and Bearer tokens; `dwmc-api` owns CORS policy, preflight handling, allowed origins, methods, and headers. The frontend does not configure CORS.
 

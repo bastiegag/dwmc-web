@@ -18,7 +18,7 @@ An audit evaluates the frontend repository against its implementation, deploymen
 
 ## Closure Criteria
 
-An audit is complete when current Local, Staging/Preview, and Production boundaries are documented; frontend secrets are excluded; no known deleted-path or documentation references remain; high-confidence obsolete artifacts are removed; REVIEW items are recorded; and available quality gates pass.
+An audit is complete when the current local-first boundary is documented; frontend secrets are excluded; no known deleted-path or documentation references remain; high-confidence obsolete artifacts are removed; REVIEW items are recorded; and available quality gates pass. Staging and production deployment are future work and are not current runtime environments.
 
 ## Evidence Rules
 

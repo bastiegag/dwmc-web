@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Palette, Settings, Tags, User } from 'lucide-react'
+import { Settings, Tags, User } from 'lucide-react'
 import { useSelectedMonth } from '@/shared/month'
 
 const tools = [
@@ -9,12 +9,6 @@ const tools = [
         description: 'Manage your expense categories and sections.',
         icon: Tags,
         to: '/categories',
-    },
-    {
-        title: 'Style Guide',
-        description: 'Browse the UI design system and component reference.',
-        icon: Palette,
-        to: '/style-guide',
     },
     {
         title: 'Profile',

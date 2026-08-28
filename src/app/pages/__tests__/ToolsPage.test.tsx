@@ -4,12 +4,12 @@ import { render } from '@/test/utils/render'
 import { ToolsPage } from '@/app/pages/ToolsPage'
 
 describe('ToolsPage', () => {
-    it('links to the style guide', () => {
+    it('links to categories', () => {
         render(<ToolsPage />, { initialEntries: ['/tools?month=2026-06'] })
 
-        expect(screen.getByRole('link', { name: /style guide/i })).toHaveAttribute(
+        expect(screen.getByRole('link', { name: /categories/i })).toHaveAttribute(
             'href',
-            '/style-guide?month=2026-06',
+            '/categories?month=2026-06',
         )
     })
 

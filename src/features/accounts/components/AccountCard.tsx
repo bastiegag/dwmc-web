@@ -1,31 +1,37 @@
 import { useState, useMemo, createElement } from 'react'
-import * as LucideIcons from 'lucide-react'
+import {
+    Archive,
+    Banknote,
+    CreditCard,
+    Coins,
+    DollarSign,
+    Landmark,
+    ShoppingBag,
+    ShoppingCart,
+    Shield,
+    Wallet,
+} from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
 import { Progress } from '@/components/ui/progress'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Account } from '@/features/accounts/types/account.types'
 
-const getIconComponent = (name: string) => {
-    try {
-        const pascal = name
-            .split('-')
-            .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-            .join('')
-        const icons = LucideIcons as unknown as Record<
-            string,
-            React.ComponentType<React.SVGProps<SVGSVGElement>>
-        >
-        const Icon = icons[pascal]
-        return Icon ?? icons.Wallet
-    } catch {
-        const icons = LucideIcons as unknown as Record<
-            string,
-            React.ComponentType<React.SVGProps<SVGSVGElement>>
-        >
-        return icons.Wallet
-    }
+const accountIcons: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
+    archive: Archive,
+    banknote: Banknote,
+    'credit-card': CreditCard,
+    coins: Coins,
+    'dollar-sign': DollarSign,
+    landmark: Landmark,
+    'shopping-bag': ShoppingBag,
+    'shopping-cart': ShoppingCart,
+    shield: Shield,
+    wallet: Wallet,
 }
+
+const getIconComponent = (name: string) => accountIcons[name] ?? Wallet
 
 type AccountCardProps = {
     account: Account
@@ -35,6 +41,10 @@ type AccountCardProps = {
 
 export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const { dialogRef, handleKeyDown } = useDialogFocus({
+        open: isConfirmOpen,
+        onClose: () => setIsConfirmOpen(false),
+    })
     const iconComp = useMemo(() => getIconComponent(account.icon), [account.icon])
 
     const { currentBalance, startingBalance, goal } = account
@@ -117,12 +127,22 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
 
             {isConfirmOpen ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div
+                    <dialog
+                        ref={dialogRef}
+                        onKeyDown={handleKeyDown}
+                        tabIndex={-1}
                         role="alertdialog"
+                        aria-labelledby={`archive-account-${account.id}`}
                         aria-modal="true"
                         className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
+                        open
                     >
-                        <h3 className="text-base font-semibold">Archive account?</h3>
+                        <h3
+                            id={`archive-account-${account.id}`}
+                            className="text-base font-semibold"
+                        >
+                            Archive account?
+                        </h3>
                         <p className="mt-2 text-sm text-muted-foreground">
                             This will archive <strong>{account.name}</strong>.
                         </p>
@@ -145,7 +165,7 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                                 Archive
                             </Button>
                         </div>
-                    </div>
+                    </dialog>
                 </div>
             ) : null}
         </Card>

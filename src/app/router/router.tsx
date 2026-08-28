@@ -54,10 +54,6 @@ const ProfilePage = lazy(() =>
 const SettingsPage = lazy(() =>
     import('@/features/settings').then((m) => ({ default: m.SettingsPage })),
 )
-const StyleGuidePage = lazy(() =>
-    import('@/features/style-guide').then((m) => ({ default: m.StyleGuidePage })),
-)
-
 const PageLoader = () => {
     return (
         <div className="flex min-h-screen items-center justify-center">
@@ -107,10 +103,6 @@ const router = createBrowserRouter([
                     {
                         path: 'categories',
                         element: <CategoriesPage />,
-                    },
-                    {
-                        path: 'style-guide',
-                        element: <StyleGuidePage />,
                     },
                 ],
             },

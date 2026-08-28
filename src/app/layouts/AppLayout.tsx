@@ -7,6 +7,7 @@ import {
     AppBottomNavigation,
     DesktopSidebar,
     ContextualFloatingActionButton,
+    DashboardSectionNavigation,
 } from '@/components/layout'
 
 const monthNavRoutes = ['/dashboard', '/transactions', '/budgets']
@@ -29,6 +30,11 @@ export const AppLayout = () => {
                         <div className="flex h-16 items-center justify-center border-b">
                             <MonthNavigator />
                         </div>
+                    )}
+
+                    {(location.pathname.startsWith('/dashboard') ||
+                        location.pathname.startsWith('/transactions')) && (
+                        <DashboardSectionNavigation />
                     )}
 
                     <main
