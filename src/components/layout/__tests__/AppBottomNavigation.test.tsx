@@ -8,28 +8,24 @@ describe('AppBottomNavigation', () => {
         vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
     })
 
-    it('preserves the selected month when navigating between screens', async () => {
+    it('contains four global destinations and preserves the selected month', async () => {
         const user = userEvent.setup()
 
         renderMonthAwareNavigation(<AppBottomNavigation />, '2026-06')
 
+        expect(screen.getAllByRole('link')).toHaveLength(4)
+        expect(screen.queryByRole('link', { name: 'Transactions' })).not.toBeInTheDocument()
         expect(screen.getByTestId('location-probe')).toHaveTextContent('/dashboard?month=2026-06')
 
         await user.click(screen.getByRole('link', { name: /budgets/i }))
 
         expect(screen.getByTestId('location-probe')).toHaveTextContent('/budgets?month=2026-06')
-
-        await user.click(screen.getByRole('link', { name: /transactions/i }))
-
-        expect(screen.getByTestId('location-probe')).toHaveTextContent(
-            '/transactions?month=2026-06',
-        )
     })
 
-    it('marks Transactions active on the selected route', () => {
+    it('keeps Overview active for the Dashboard section on the Transactions route', () => {
         renderMonthAwareNavigation(<AppBottomNavigation />, '2026-06', '/transactions')
 
-        expect(screen.getByRole('link', { name: /transactions/i })).toHaveAttribute(
+        expect(screen.getByRole('link', { name: /overview/i })).toHaveAttribute(
             'aria-current',
             'page',
         )

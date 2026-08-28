@@ -10,12 +10,26 @@ test('mobile users can navigate and safely cancel a transaction form', async ({ 
     await loginPage.login('test@example.com', 'Password123')
 
     await expect(page.getByTestId('mobile-bottom-nav')).toBeVisible()
-    await page.getByTestId('mobile-bottom-nav').getByRole('link', { name: 'Transactions' }).click()
-    await expect(page).toHaveURL(/\/transactions/)
+    await page.goto('/dashboard?month=2026-08')
+    await page
+        .getByRole('navigation', { name: 'Dashboard section' })
+        .getByRole('link', {
+            name: 'Transactions',
+        })
+        .click()
+    await expect(page).toHaveURL('/transactions?month=2026-08')
+    await expect(
+        page.getByTestId('mobile-bottom-nav').getByRole('link', { name: 'Overview' }),
+    ).toHaveAttribute('aria-current', 'page')
 
     await page.getByTestId('primary-action-button').click()
     const dialog = page.getByRole('dialog', { name: 'New Transaction' })
     await expect(dialog).toBeVisible()
     await dialog.getByRole('button', { name: 'Close transaction dialog' }).click()
     await expect(dialog).not.toBeVisible()
+
+    await page.goBack()
+    await expect(page).toHaveURL('/dashboard?month=2026-08')
+    await page.goForward()
+    await expect(page).toHaveURL('/transactions?month=2026-08')
 })

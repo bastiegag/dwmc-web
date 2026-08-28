@@ -33,7 +33,12 @@ test('a new user can understand the empty application and reach core sections', 
 
     await expect(page.getByRole('heading', { name: 'No activity this month' })).toBeVisible()
 
-    await page.getByRole('link', { name: 'Transactions' }).click()
+    await page
+        .getByRole('navigation', { name: 'Dashboard section' })
+        .getByRole('link', {
+            name: 'Transactions',
+        })
+        .click()
     await expect(page.getByRole('heading', { name: 'No transactions found' })).toBeVisible()
 
     await page.getByRole('link', { name: 'Accounts' }).click()
