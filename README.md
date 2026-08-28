@@ -1,6 +1,18 @@
-# DWMC Web
+# Dude, Where's My Cash? Web
 
-DWMC Web is the React frontend for a personal budgeting application. It provides authentication, account, category, transaction, budget, and monthly summary workflows.
+Dude, Where's My Cash? is a local-first personal budgeting app for understanding monthly cash flow, organizing accounts and categories, tracking transactions, and working with budgets and summaries. This repository contains the user-facing web application.
+
+> **Visual preview:** `SCREENSHOTS MISSING` - no checked-in product screenshots are currently available. Capture the authenticated dashboard, accounts, transactions, and budget views at desktop and mobile widths, redact personal data, and add the selected images under `docs/assets/` before linking them here.
+
+The companion backend is [`dwmc-api`](https://github.com/bastiegag/dwmc-api). The frontend is the primary portfolio entry point; the API repository documents persistence, authorization, and the HTTP contract.
+
+## Features
+
+- Review monthly income, spending, and account balances.
+- Create and organize accounts, sections, and categories.
+- Record, edit, archive, and filter transactions.
+- Plan budgets and compare activity with monthly summaries.
+- Sign up and sign in with Supabase Auth while keeping application data in the local API.
 
 ## Architecture
 
@@ -12,6 +24,15 @@ Browser -> local dwmc-web -> local dwmc-api -> Prisma -> local PostgreSQL
 ```
 
 The frontend sends Supabase access tokens to `dwmc-api` as `Authorization: Bearer <token>`. It never connects directly to PostgreSQL or receives backend secrets.
+
+## Engineering Highlights
+
+- Feature-based React structure with route-driven navigation and URL-backed month state.
+- TanStack Query for server state, with a shared API client that owns authentication headers and response handling.
+- React Hook Form and Zod for typed form validation at the UI boundary.
+- shadcn/ui, Radix primitives, and Tailwind CSS for a consistent responsive interface.
+- Accessibility-focused component tests, unit tests, Playwright end-to-end coverage, and Storybook stories.
+- CI validates formatting, linting, types, tests, and production builds; active CodeQL and Dependency Review workflows run for this repository.
 
 ## Stack
 
@@ -61,6 +82,11 @@ npm run storybook
 npm run build-storybook
 ```
 
+`npm run validate` runs the formatting check, lint, typecheck, tests, and
+production build. `npm run test:e2e` requires the local API and the configured
+Supabase Auth test environment. Storybook is available for isolated component
+development.
+
 ## Documentation
 
 - [Frontend architecture](docs/frontend-architecture.md)
@@ -73,5 +99,6 @@ npm run build-storybook
 - [Development and releases](docs/RELEASING.md)
 - [Engineering audit playbook](docs/engineering-audit-playbook.md)
 - [Roadmap](docs/roadmap.md)
+- [Backend repository](https://github.com/bastiegag/dwmc-api)
 
 Domain behavior is documented alongside the relevant feature implementation. There is currently no ADR directory; meaningful architectural decisions should be added there when one is introduced.
