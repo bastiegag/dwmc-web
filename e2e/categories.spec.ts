@@ -148,3 +148,85 @@ test('authenticated users can manage Sections and Categories', async ({ page }) 
     await page.getByRole('alertdialog').getByRole('button', { name: 'Archive' }).click()
     await expect(page.getByRole('button', { name: 'Archive section Food' })).not.toBeVisible()
 })
+
+test('a new user can create a section and then organize a category inside it', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await mockAuthenticatedSession(page)
+
+    let section: Record<string, unknown> | null = null
+    let category: Record<string, unknown> | null = null
+
+    await page.route(/\/api\/v1\/sections(?:\?.*)?$/, async (route) => {
+        if (route.request().method() === 'POST') {
+            const body = (await route.request().postDataJSON()) as { name: string; color: string }
+            section = {
+                id: 'section-new',
+                name: body.name,
+                color: body.color,
+                isArchived: false,
+                categories: category ? [category] : [],
+                createdAt: '2026-01-01T00:00:00.000Z',
+                updatedAt: '2026-01-01T00:00:00.000Z',
+            }
+            return route.fulfill({
+                status: 201,
+                contentType: 'application/json',
+                body: JSON.stringify({ data: section }),
+            })
+        }
+
+        return route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ data: section ? [section] : [], nextCursor: null }),
+        })
+    })
+
+    await page.route(/\/api\/v1\/categories(?:\?.*)?$/, async (route) => {
+        if (route.request().method() === 'POST') {
+            const body = (await route.request().postDataJSON()) as {
+                name: string
+                icon: string
+                sectionId: string
+            }
+            category = {
+                id: 'category-new',
+                ...body,
+                isArchived: false,
+                createdAt: '2026-01-01T00:00:00.000Z',
+                updatedAt: '2026-01-01T00:00:00.000Z',
+            }
+            if (section) section = { ...section, categories: [category] }
+            return route.fulfill({
+                status: 201,
+                contentType: 'application/json',
+                body: JSON.stringify({ data: category }),
+            })
+        }
+
+        return route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ data: category ? [category] : [], nextCursor: null }),
+        })
+    })
+
+    const loginPage = new LoginPage(page)
+    await loginPage.goto()
+    await loginPage.login('test@example.com', 'Password123')
+    await page.goto('/categories')
+
+    await expect(page.getByRole('heading', { name: 'No categories yet' })).toBeVisible()
+    await page.getByTestId('primary-action-button').click()
+    await page.getByLabel('Section name').fill('Food')
+    await page.getByRole('button', { name: 'Create section' }).click()
+    await expect(page.getByText('Food')).toBeVisible()
+
+    await page.getByTestId('primary-action-button').click()
+    await page.getByLabel('Category name').fill('Groceries')
+    await page.getByLabel('Icon').fill('shopping-cart')
+    await page.getByLabel('Section', { exact: true }).selectOption('section-new')
+    await page.getByRole('button', { name: 'Create category' }).click()
+
+    await expect(page.getByText('Groceries')).toBeVisible()
+})

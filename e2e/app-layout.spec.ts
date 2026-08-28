@@ -71,13 +71,10 @@ test.describe('App Layout', () => {
         })
 
         test('month navigator updates the URL', async ({ page }) => {
-            const currentMonth = new Date()
-            const nextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
-            const year = nextMonth.getFullYear()
-            const month = (nextMonth.getMonth() + 1).toString().padStart(2, '0')
+            await page.goto('/dashboard?month=2026-12')
 
             await page.getByLabel('Go to next month').click()
-            await expect(page).toHaveURL(`/dashboard?month=${year}-${month}`)
+            await expect(page).toHaveURL('/dashboard?month=2027-01')
         })
 
         test('month navigation replaces history instead of adding month entries', async ({

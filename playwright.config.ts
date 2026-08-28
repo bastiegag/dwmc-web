@@ -14,7 +14,13 @@ export default defineConfig({
     projects: [
         {
             name: 'chromium',
+            testIgnore: /mobile-smoke\.spec\.ts/,
             use: { ...devices['Desktop Chrome'] },
+        },
+        {
+            name: 'mobile-chromium-smoke',
+            testMatch: /mobile-smoke\.spec\.ts/,
+            use: { ...devices['Pixel 5'] },
         },
     ],
     webServer: {
