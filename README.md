@@ -19,7 +19,8 @@ React, TypeScript, Vite, React Router, TanStack Query, React Hook Form, Zod, sha
 
 ## Setup
 
-Use Node.js 24.x for local development and validation.
+Use Node.js 24.x for local development and validation. Start `dwmc-api` first
+and complete its local PostgreSQL and Supabase Auth setup.
 
 ```bash
 npm ci
@@ -27,7 +28,25 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Local Vite development proxies `/api/v1` to `http://localhost:3000`. Set the Supabase values and `VITE_APP_URL` in `.env.local`. All `VITE_*` values are bundled into browser code and are public; never put database credentials, service-role keys, or other backend secrets in them.
+Set these values in `.env.local`:
+
+```dotenv
+VITE_APP_URL=http://localhost:5182
+VITE_API_URL=/api/v1
+VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+VITE_SUPABASE_ANON_KEY=<publishable-anon-key>
+```
+
+`VITE_API_URL=/api/v1` uses the Vite proxy to reach `dwmc-api` at
+`http://localhost:3000`. Use the same Supabase project and browser-safe anon
+key configured for the API. All `VITE_*` values are bundled into browser code
+and are public; never put database credentials, service-role keys, or other
+backend secrets in them.
+
+Open `http://localhost:5182`, sign up with Email/password, and then create a
+section, category, account, and transaction. Supabase handles authentication;
+the resulting application data is persisted by the local API in local
+PostgreSQL.
 
 ## Commands
 
@@ -48,10 +67,8 @@ npm run build-storybook
 - [Engineering standards](docs/engineering-standards.md)
 - [API integration](docs/frontend-api.md)
 - [Authentication and routing](docs/frontend-routing.md)
-- [Frontend architecture](docs/frontend-architecture.md)
 - [Testing](docs/testing.md)
 - [Development playbook](docs/development-playbook.md)
-- [Engineering standards](docs/engineering-standards.md)
 - [Development and releases](docs/RELEASING.md)
 - [Engineering audit playbook](docs/engineering-audit-playbook.md)
 - [Roadmap](docs/roadmap.md)

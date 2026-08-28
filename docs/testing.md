@@ -64,6 +64,11 @@ Use the package scripts that exist in `package.json`.
 
 CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml`. Playwright runs separately in `.github/workflows/e2e.yml`; it starts the local Vite server and uses the configured local proxy, so authenticated backend smoke tests require suitable test environment setup.
 
+The normal Vitest and Playwright suites use mocks and do not require a running
+PostgreSQL database or live Supabase credentials. Playwright installs or uses
+its configured browser and starts Vite automatically; local E2E runs use the
+deterministic Auth and API route fixtures in `e2e/`.
+
 ## Testing Guidelines
 
 - Prefer user behavior over implementation details.
