@@ -8,10 +8,23 @@ import { AnonymousRoute } from '@/features/auth/routes/AnonymousRoute'
 import { ErrorBoundary } from '@/components/feedback/ErrorBoundary'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 
-const lazyNamed = <T extends ComponentType>(
-    loader: () => Promise<Record<string, T>>,
-    exportName: string,
-) => lazy(async () => ({ default: (await loader())[exportName] }))
+const lazyNamed = <
+    TModule extends Record<string, ComponentType>,
+    TExportName extends keyof TModule,
+>(
+    loader: () => Promise<TModule>,
+    exportName: TExportName,
+) =>
+    lazy(async () => {
+        const loadedModule = await loader()
+        const component = loadedModule[exportName]
+
+        if (component === undefined) {
+            throw new Error(`Lazy-loaded module is missing export "${String(exportName)}"`)
+        }
+
+        return { default: component }
+    })
 
 const LoginPage = lazyNamed(() => import('@/features/auth/pages/LoginPage'), 'LoginPage')
 const SignupPage = lazyNamed(() => import('@/features/auth/pages/SignupPage'), 'SignupPage')
