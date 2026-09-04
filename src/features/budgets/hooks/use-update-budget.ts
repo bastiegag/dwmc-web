@@ -11,13 +11,11 @@ export const useUpdateBudget = () => {
         mutationFn: ({ id, input }: { id: string; input: UpdateBudgetPayload }) =>
             updateBudget(id, input),
         onSuccess: async (_data, variables) => {
-            await queryClient.invalidateQueries({ queryKey: budgetQueryKeys.lists() })
-            if (variables && 'id' in variables && variables.id) {
-                await queryClient.invalidateQueries({
-                    queryKey: budgetQueryKeys.detail(variables.id),
-                })
-            }
-            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: budgetQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: budgetQueryKeys.detail(variables.id) }),
+                queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() }),
+            ])
         },
     })
 }

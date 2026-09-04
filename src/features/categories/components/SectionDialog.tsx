@@ -36,6 +36,7 @@ export const SectionDialog = ({
             <dialog
                 ref={dialogRef}
                 aria-labelledby="section-dialog-title"
+                aria-modal="true"
                 tabIndex={-1}
                 onKeyDown={handleKeyDown}
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"

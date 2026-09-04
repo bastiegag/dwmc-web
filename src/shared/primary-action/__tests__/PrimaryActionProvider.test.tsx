@@ -115,7 +115,9 @@ describe('PrimaryActionProvider', () => {
     })
 
     it('renders disabled actions and custom icons', () => {
-        const Icon = () => <span data-testid="custom-action-icon" />
+        const Icon = (props: React.HTMLAttributes<HTMLSpanElement>) => (
+            <span {...props} data-testid="custom-action-icon" />
+        )
 
         render(
             <>
@@ -132,6 +134,6 @@ describe('PrimaryActionProvider', () => {
         )
 
         expect(screen.getByRole('button', { name: 'Disabled action' })).toBeDisabled()
-        expect(screen.getByTestId('custom-action-icon')).toBeInTheDocument()
+        expect(screen.getByTestId('custom-action-icon')).toHaveAttribute('aria-hidden', 'true')
     })
 })

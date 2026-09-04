@@ -13,7 +13,7 @@ export const AuthSyncProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const {
             data: { subscription },
-        } = authService.onAuthStateChange((_event, session) => {
+        } = authService.onAuthStateChange(async (_event, session) => {
             const previousSession = qc.getQueryData<Session | null>(authSessionQueryKey)
             const previousUserId = previousSession?.user?.id
             const nextUserId = session?.user?.id

@@ -20,6 +20,13 @@ interface ProfileFormProps {
     profile: UserProfile
 }
 
+const getProfileFormValues = (profile: UserProfile): ProfileFormValues => ({
+    firstName: profile.firstName ?? '',
+    lastName: profile.lastName ?? '',
+    displayName: profile.displayName ?? '',
+    preferredCurrency: profile.preferredCurrency,
+})
+
 export const ProfileForm = ({ profile }: ProfileFormProps) => {
     const updateProfile = useUpdateProfile()
     const {
@@ -30,21 +37,11 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
         formState: { errors, isDirty, isSubmitSuccessful },
     } = useForm<ProfileFormValues>({
         resolver: zodResolver(profileFormSchema),
-        defaultValues: {
-            firstName: profile.firstName ?? '',
-            lastName: profile.lastName ?? '',
-            displayName: profile.displayName ?? '',
-            preferredCurrency: profile.preferredCurrency,
-        },
+        defaultValues: getProfileFormValues(profile),
     })
 
     useEffect(() => {
-        reset({
-            firstName: profile.firstName ?? '',
-            lastName: profile.lastName ?? '',
-            displayName: profile.displayName ?? '',
-            preferredCurrency: profile.preferredCurrency,
-        })
+        reset(getProfileFormValues(profile))
     }, [profile, reset])
 
     const onSubmit = async (values: ProfileFormValues) => {

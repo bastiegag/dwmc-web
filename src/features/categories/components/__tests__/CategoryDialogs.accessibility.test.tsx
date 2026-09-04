@@ -13,6 +13,7 @@ describe('category dialogs accessibility', () => {
 
         render(<SectionDialog open mode="create" onOpenChange={onOpenChange} onSubmit={vi.fn()} />)
 
+        expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true')
         expect(screen.getByRole('button', { name: /close section dialog/i })).toHaveFocus()
 
         await user.keyboard('{Escape}')
@@ -79,6 +80,7 @@ describe('category dialogs accessibility', () => {
 
         const closeButton = screen.getByRole('button', { name: /close category dialog/i })
         const submitButton = screen.getByRole('button', { name: /create category/i })
+        expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true')
         submitButton.focus()
         await user.tab()
         expect(closeButton).toHaveFocus()

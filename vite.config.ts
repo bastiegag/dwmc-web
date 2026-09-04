@@ -17,7 +17,21 @@ export default defineConfig({
         },
     },
     build: {
-        chunkSizeWarningLimit: 600,
+        chunkSizeWarningLimit: 500,
+        rolldownOptions: {
+            output: {
+                codeSplitting: {
+                    groups: [
+                        {
+                            name: 'vendor',
+                            test: /node_modules[\\/]/,
+                            entriesAware: true,
+                            maxSize: 450 * 1024,
+                        },
+                    ],
+                },
+            },
+        },
     },
     resolve: {
         alias: {

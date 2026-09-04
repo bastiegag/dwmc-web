@@ -35,4 +35,17 @@ describe('SettingsPage', () => {
         expect(screen.getByRole('radio', { name: /dark/i })).toBeChecked()
         expect(localStorage.getItem('dwmc-theme')).toBe('dark')
     })
+
+    it('renders each supported theme as a selectable option', () => {
+        render(
+            <ThemeProvider defaultTheme="system" storageKey="dwmc-theme">
+                <SettingsPage />
+            </ThemeProvider>,
+        )
+
+        expect(screen.getAllByRole('radio')).toHaveLength(3)
+        expect(screen.getByRole('radio', { name: /system/i })).toBeChecked()
+        expect(screen.getByRole('radio', { name: /light/i })).not.toBeChecked()
+        expect(screen.getByRole('radio', { name: /dark/i })).not.toBeChecked()
+    })
 })

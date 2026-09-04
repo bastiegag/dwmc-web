@@ -25,7 +25,7 @@ export const PrimaryActionButton = () => {
             onClick={action.onClick}
             className="size-14 rounded-full shadow-lg"
         >
-            <Icon className="size-6" />
+            <Icon className="size-6" aria-hidden="true" />
         </Button>
     )
 }
