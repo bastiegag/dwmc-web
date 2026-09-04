@@ -1,13 +1,10 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
-import { TextField } from '@/components/form/TextField'
-import { PasswordField } from '@/components/form/PasswordField'
-import { FormError } from '@/components/form/FormError'
-import { FormSubmitButton } from '@/components/form/FormSubmitButton'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { TextField, PasswordField, FormError, FormSubmitButton } from '@/components/form'
+import { Alert, AlertDescription } from '@/components/ui'
 import { useSignup } from '@/features/auth/hooks'
 import { signupSchema, type SignupInput } from '@/features/auth/schemas'
 
@@ -15,7 +12,6 @@ export const SignupForm = () => {
     const navigate = useNavigate()
     const { signup, isPending, isSuccess } = useSignup()
     const successRef = useRef<HTMLDivElement>(null)
-    const [confirmationRequired, setConfirmationRequired] = useState<boolean | null>(null)
 
     useEffect(() => {
         if (isSuccess) successRef.current?.focus()
@@ -26,7 +22,10 @@ export const SignupForm = () => {
         handleSubmit,
         formState: { errors },
         setError,
-    } = useForm<SignupInput>({ resolver: zodResolver(signupSchema) })
+    } = useForm<SignupInput>({
+        resolver: zodResolver(signupSchema),
+        shouldFocusError: true,
+    })
 
     const onSubmit = async (data: SignupInput) => {
         try {
@@ -35,13 +34,12 @@ export const SignupForm = () => {
                 navigate('/dashboard', { replace: true })
                 return
             }
-            setConfirmationRequired(true)
         } catch (err) {
             if (err instanceof Error) setError('root', { message: err.message })
         }
     }
 
-    if (isSuccess && confirmationRequired !== false) {
+    if (isSuccess) {
         return (
             <Alert ref={successRef} role="status" tabIndex={-1} variant="success">
                 <CheckCircle className="h-4 w-4" aria-hidden="true" />

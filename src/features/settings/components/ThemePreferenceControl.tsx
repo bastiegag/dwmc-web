@@ -1,8 +1,7 @@
 import { Monitor, Moon, Sun } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useTheme } from '@/components/layout/useTheme'
-import type { Theme } from '@/components/layout/theme-context'
+import { useTheme, type Theme } from '@/shared/theme'
 
 const themeOptions: Array<{ value: Theme; label: string; description: string; icon: typeof Sun }> =
     [

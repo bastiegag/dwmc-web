@@ -23,7 +23,7 @@ export const QueryState = ({
 }: QueryStateProps) => {
     if (isLoading) {
         return (
-            <div className="py-6" role="status" aria-live="polite">
+            <div className="py-6">
                 <LoadingSpinner aria-label={loadingLabel} />
             </div>
         )

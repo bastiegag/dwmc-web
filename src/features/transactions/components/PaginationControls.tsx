@@ -51,5 +51,3 @@ export const PaginationControls = ({
         </nav>
     )
 }
-
-export default PaginationControls

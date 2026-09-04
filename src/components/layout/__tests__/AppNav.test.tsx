@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
-import { ThemeProvider } from '@/components/layout/ThemeProvider'
+import { ThemeProvider } from '@/shared/theme'
 import { AppNav } from '@/components/layout/AppNav'
 
 // jsdom does not implement window.matchMedia; provide a minimal stub

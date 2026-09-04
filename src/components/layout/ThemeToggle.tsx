@@ -1,6 +1,6 @@
 import { Moon, Monitor, Sun } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useTheme } from './useTheme'
+import { Button } from '@/components/ui'
+import { useTheme } from '@/shared/theme'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -11,14 +11,16 @@ const NEXT_LABEL: Record<Theme, string> = {
     system: 'Switch to light mode',
 }
 
-const ICON: Record<Theme, React.ReactNode> = {
-    light: <Sun className="h-4 w-4" aria-hidden="true" />,
-    dark: <Moon className="h-4 w-4" aria-hidden="true" />,
-    system: <Monitor className="h-4 w-4" aria-hidden="true" />,
+const ICON: Record<Theme, typeof Sun> = {
+    light: Sun,
+    dark: Moon,
+    system: Monitor,
 }
 
 export const ThemeToggle = () => {
     const { theme, setTheme } = useTheme()
+    const Icon = ICON[theme]
+
     return (
         <Button
             variant="ghost"
@@ -26,7 +28,7 @@ export const ThemeToggle = () => {
             onClick={() => setTheme(NEXT_THEME[theme])}
             aria-label={NEXT_LABEL[theme]}
         >
-            {ICON[theme]}
+            <Icon className="h-4 w-4" aria-hidden="true" />
         </Button>
     )
 }

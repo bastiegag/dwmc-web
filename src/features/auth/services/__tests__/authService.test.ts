@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { authService } from '@/features/auth/services'
 import { supabase } from '@/lib/supabase'
+
+afterEach(() => {
+    vi.restoreAllMocks()
+})
 
 describe('authService', () => {
     describe('login', () => {
@@ -20,7 +24,7 @@ describe('authService', () => {
         })
 
         it('does not expose the provider error message', async () => {
-            const signIn = vi.spyOn(supabase.auth, 'signInWithPassword').mockResolvedValueOnce({
+            vi.spyOn(supabase.auth, 'signInWithPassword').mockResolvedValueOnce({
                 data: { user: null, session: null },
                 error: { message: 'provider internals: secret database detail' } as never,
             })
@@ -31,11 +35,10 @@ describe('authService', () => {
                 message: 'Something went wrong. Please try again.',
                 code: 'AUTH_FAILED',
             })
-            signIn.mockRestore()
         })
 
         it('maps invalid credentials to a stable message', async () => {
-            const signIn = vi.spyOn(supabase.auth, 'signInWithPassword').mockResolvedValueOnce({
+            vi.spyOn(supabase.auth, 'signInWithPassword').mockResolvedValueOnce({
                 data: { user: null, session: null },
                 error: Object.assign(new Error('Invalid login credentials'), {
                     code: 'invalid_credentials',
@@ -48,7 +51,6 @@ describe('authService', () => {
                 message: 'The email or password is incorrect.',
                 code: 'INVALID_CREDENTIALS',
             })
-            signIn.mockRestore()
         })
     })
 
@@ -68,7 +70,7 @@ describe('authService', () => {
         })
 
         it('maps duplicate emails to a stable message', async () => {
-            const signUp = vi.spyOn(supabase.auth, 'signUp').mockResolvedValueOnce({
+            vi.spyOn(supabase.auth, 'signUp').mockResolvedValueOnce({
                 data: { user: null, session: null },
                 error: { message: 'User already registered' } as never,
             })
@@ -79,7 +81,6 @@ describe('authService', () => {
                 message: 'An account with this email already exists.',
                 code: 'EMAIL_IN_USE',
             })
-            signUp.mockRestore()
         })
 
         it('redirects confirmed users to the protected dashboard', async () => {
@@ -91,7 +92,6 @@ describe('authService', () => {
                     options: { emailRedirectTo: expect.stringContaining('/dashboard') },
                 }),
             )
-            signUp.mockRestore()
         })
     })
 
@@ -101,7 +101,7 @@ describe('authService', () => {
         })
 
         it('maps provider failures to a stable recovery message', async () => {
-            const reset = vi.spyOn(supabase.auth, 'resetPasswordForEmail').mockResolvedValueOnce({
+            vi.spyOn(supabase.auth, 'resetPasswordForEmail').mockResolvedValueOnce({
                 data: {},
                 error: { message: 'provider reset failure' } as never,
             })
@@ -110,7 +110,6 @@ describe('authService', () => {
                 message: 'We could not send a password reset link. Please try again.',
                 code: 'RECOVERY_FAILED',
             })
-            reset.mockRestore()
         })
     })
 
@@ -122,7 +121,7 @@ describe('authService', () => {
         })
 
         it('maps provider failures to a stable reset message', async () => {
-            const update = vi.spyOn(supabase.auth, 'updateUser').mockResolvedValueOnce({
+            vi.spyOn(supabase.auth, 'updateUser').mockResolvedValueOnce({
                 data: { user: null },
                 error: { message: 'provider update failure' } as never,
             })
@@ -131,7 +130,6 @@ describe('authService', () => {
                 message: 'We could not update your password. Please request a new reset link.',
                 code: 'RESET_FAILED',
             })
-            update.mockRestore()
         })
     })
 

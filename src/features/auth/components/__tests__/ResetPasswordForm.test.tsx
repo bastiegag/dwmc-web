@@ -42,7 +42,7 @@ describe('ResetPasswordForm', () => {
         })
     })
 
-    it('shows a success alert when isSuccess is true', async () => {
+    it('shows a success alert when isSuccess is true', () => {
         vi.mocked(useResetPassword).mockReturnValue({
             resetPassword: vi.fn(),
             isPending: false,
@@ -50,6 +50,7 @@ describe('ResetPasswordForm', () => {
             error: null,
         })
         render(<ResetPasswordForm />)
+        expect(screen.getByRole('status')).toHaveFocus()
         expect(screen.getByText(/password updated successfully/i)).toBeInTheDocument()
     })
 
@@ -83,6 +84,7 @@ describe('ResetPasswordForm', () => {
             const passwordInput = screen.getByLabelText(/^new password/i)
             expect(passwordInput).toHaveAttribute('aria-invalid', 'true')
             expect(passwordInput).toHaveAttribute('aria-describedby', 'password-error')
+            expect(passwordInput).toHaveFocus()
         })
     })
 })

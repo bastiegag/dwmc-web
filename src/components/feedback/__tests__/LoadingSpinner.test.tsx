@@ -18,6 +18,11 @@ describe('LoadingSpinner', () => {
         expect(screen.getByRole('status')).toHaveAttribute('aria-label', 'Processing')
     })
 
+    it('forwards standard ARIA attributes', () => {
+        render(<LoadingSpinner aria-hidden="true" />)
+        expect(screen.getByRole('status', { hidden: true })).toHaveAttribute('aria-hidden', 'true')
+    })
+
     it('applies sm size classes', () => {
         render(<LoadingSpinner size="sm" />)
         expect(screen.getByRole('status')).toHaveClass('h-4', 'w-4')

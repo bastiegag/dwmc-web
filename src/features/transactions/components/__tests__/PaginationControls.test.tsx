@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen } from '@/test/utils/render'
-import PaginationControls from '@/components/ui/PaginationControls'
+import { PaginationControls } from '@/features/transactions/components/PaginationControls'
 
 describe('PaginationControls', () => {
     it('changes pages and disables controls at the boundaries', async () => {

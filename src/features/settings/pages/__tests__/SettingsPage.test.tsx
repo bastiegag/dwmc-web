@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ThemeProvider } from '@/components/layout/ThemeProvider'
+import { ThemeProvider } from '@/shared/theme'
 import { render } from '@/test/utils/render'
 import { SettingsPage } from '../SettingsPage'
 

@@ -49,7 +49,7 @@ describe('SignupForm', () => {
         })
     })
 
-    it('shows a success alert when isSuccess is true', async () => {
+    it('shows a success alert when isSuccess is true', () => {
         vi.mocked(useSignup).mockReturnValue({
             signup: vi.fn().mockResolvedValue(undefined),
             isPending: false,
@@ -106,6 +106,7 @@ describe('SignupForm', () => {
             const emailInput = screen.getByLabelText(/email/i)
             expect(emailInput).toHaveAttribute('aria-invalid', 'true')
             expect(emailInput).toHaveAttribute('aria-describedby', 'email-error')
+            expect(emailInput).toHaveFocus()
         })
     })
 

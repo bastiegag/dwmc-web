@@ -79,6 +79,7 @@ describe('LoginForm', () => {
             const emailInput = screen.getByLabelText(/email/i)
             expect(emailInput).toHaveAttribute('aria-invalid', 'true')
             expect(emailInput).toHaveAttribute('aria-describedby', 'email-error')
+            expect(emailInput).toHaveFocus()
         })
     })
 

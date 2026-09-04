@@ -1,3 +1,3 @@
-export * from './utils/month.utils'
-export * from './hooks/use-selected-month'
-export * from './components/MonthNavigator'
+export { addMonths, formatMonthLabel, getCurrentMonth, isValidMonth } from './utils/month.utils'
+export { useSelectedMonth } from './hooks/use-selected-month'
+export { MonthNavigator } from './components/MonthNavigator'

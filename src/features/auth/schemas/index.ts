@@ -13,8 +13,18 @@ const passwordSchema = z
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[0-9]/, 'Password must contain at least one number')
 
+const passwordConfirmationFields = {
+    password: passwordSchema,
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+}
+
 const confirmPasswordRefine = (data: { password: string; confirmPassword: string }) =>
     data.password === data.confirmPassword
+
+const confirmPasswordOptions = {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+}
 
 export { passwordSchema }
 
@@ -26,27 +36,17 @@ export const loginSchema = z.object({
 export const signupSchema = z
     .object({
         email: emailSchema,
-        password: passwordSchema,
-        confirmPassword: z.string().min(1, 'Please confirm your password'),
+        ...passwordConfirmationFields,
     })
-    .refine(confirmPasswordRefine, {
-        message: 'Passwords do not match',
-        path: ['confirmPassword'],
-    })
+    .refine(confirmPasswordRefine, confirmPasswordOptions)
 
 export const forgotPasswordSchema = z.object({
     email: emailSchema,
 })
 
 export const resetPasswordSchema = z
-    .object({
-        password: passwordSchema,
-        confirmPassword: z.string().min(1, 'Please confirm your password'),
-    })
-    .refine(confirmPasswordRefine, {
-        message: 'Passwords do not match',
-        path: ['confirmPassword'],
-    })
+    .object(passwordConfirmationFields)
+    .refine(confirmPasswordRefine, confirmPasswordOptions)
 
 export type LoginInput = z.infer<typeof loginSchema>
 export type SignupInput = z.infer<typeof signupSchema>

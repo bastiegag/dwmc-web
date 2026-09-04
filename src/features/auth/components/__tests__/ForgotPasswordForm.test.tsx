@@ -37,11 +37,13 @@ describe('ForgotPasswordForm', () => {
         await user.type(screen.getByLabelText(/email/i), 'not-an-email')
         await user.click(screen.getByRole('button', { name: /send reset link/i }))
         await waitFor(() => {
+            const emailInput = screen.getByLabelText(/email/i)
             expect(screen.getByText(/valid email/i)).toBeInTheDocument()
+            expect(emailInput).toHaveFocus()
         })
     })
 
-    it('shows a success alert when isSuccess is true', async () => {
+    it('shows a success alert when isSuccess is true', () => {
         vi.mocked(useForgotPassword).mockReturnValue({
             forgotPassword: vi.fn(),
             isPending: false,
@@ -49,6 +51,7 @@ describe('ForgotPasswordForm', () => {
             error: null,
         })
         render(<ForgotPasswordForm />)
+        expect(screen.getByRole('status')).toHaveFocus()
         expect(screen.getByText(/password reset link sent/i)).toBeInTheDocument()
     })
 

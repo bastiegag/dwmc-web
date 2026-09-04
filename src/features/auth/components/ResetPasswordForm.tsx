@@ -1,23 +1,30 @@
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
-import { PasswordField } from '@/components/form/PasswordField'
-import { FormError } from '@/components/form/FormError'
-import { FormSubmitButton } from '@/components/form/FormSubmitButton'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { PasswordField, FormError, FormSubmitButton } from '@/components/form'
+import { Alert, AlertDescription } from '@/components/ui'
 import { useResetPassword } from '@/features/auth/hooks'
 import { resetPasswordSchema, type ResetPasswordInput } from '@/features/auth/schemas'
 
 export const ResetPasswordForm = () => {
     const { resetPassword, isPending, isSuccess } = useResetPassword()
+    const successRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (isSuccess) successRef.current?.focus()
+    }, [isSuccess])
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         setError,
-    } = useForm<ResetPasswordInput>({ resolver: zodResolver(resetPasswordSchema) })
+    } = useForm<ResetPasswordInput>({
+        resolver: zodResolver(resetPasswordSchema),
+        shouldFocusError: true,
+    })
 
     const onSubmit = async (data: ResetPasswordInput) => {
         try {
@@ -30,7 +37,7 @@ export const ResetPasswordForm = () => {
     if (isSuccess) {
         return (
             <div className="space-y-4">
-                <Alert role="status" variant="success">
+                <Alert ref={successRef} role="status" tabIndex={-1} variant="success">
                     <CheckCircle className="h-4 w-4" aria-hidden="true" />
                     <AlertDescription>Password updated successfully!</AlertDescription>
                 </Alert>

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
+import { LoadingSpinner } from '@/components/feedback'
 import { ResetPasswordForm } from '@/features/auth/components'
 import { usePasswordRecovery } from '@/features/auth/hooks'
+import { AuthPageCard } from './AuthPageCard'
 
 export const ResetPasswordPage = () => {
     const { isLoading, isValid } = usePasswordRecovery()
@@ -17,40 +17,32 @@ export const ResetPasswordPage = () => {
 
     if (!isValid) {
         return (
-            <>
-                <h1 className="sr-only">Reset password</h1>
-                <Card>
-                    <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Link expired or invalid</CardTitle>
-                        <CardDescription>
-                            This password reset link is invalid or has already been used.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="text-center text-sm">
-                        <Link
-                            to="/forgot-password"
-                            className="text-primary underline-offset-4 hover:underline"
-                        >
-                            Request a new password reset
-                        </Link>
-                    </CardContent>
-                </Card>
-            </>
+            <AuthPageCard
+                headingId="reset-password-error-heading"
+                heading="Reset password"
+                title="Link expired or invalid"
+                description="This password reset link is invalid or has already been used."
+            >
+                <div className="text-center text-sm">
+                    <Link
+                        to="/forgot-password"
+                        className="text-primary underline-offset-4 hover:underline"
+                    >
+                        Request a new password reset
+                    </Link>
+                </div>
+            </AuthPageCard>
         )
     }
 
     return (
-        <>
-            <h1 className="sr-only">Reset your password</h1>
-            <Card>
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Reset your password</CardTitle>
-                    <CardDescription>Choose a strong new password for your account</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <ResetPasswordForm />
-                </CardContent>
-            </Card>
-        </>
+        <AuthPageCard
+            headingId="reset-password-heading"
+            heading="Reset your password"
+            title="Reset your password"
+            description="Choose a strong new password for your account"
+        >
+            <ResetPasswordForm />
+        </AuthPageCard>
     )
 }

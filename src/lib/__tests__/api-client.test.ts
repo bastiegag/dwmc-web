@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ApiError, apiClient } from './api-client'
+import { ApiError, apiClient } from '../api-client'
 
 const { getSessionMock, signOutMock } = vi.hoisted(() => ({
     getSessionMock: vi.fn(),

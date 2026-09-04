@@ -35,4 +35,13 @@ describe('AnonymousRoute', () => {
 
         expect(screen.getByText('dashboard')).toBeVisible()
     })
+
+    it('shows an accessible loading state while authentication is checked', () => {
+        useAuthMock.mockReturnValue({ isAuthenticated: false, isLoading: true })
+
+        renderRoute()
+
+        expect(screen.getByRole('status', { name: /checking authentication/i })).toBeInTheDocument()
+        expect(screen.queryByText('login')).not.toBeInTheDocument()
+    })
 })

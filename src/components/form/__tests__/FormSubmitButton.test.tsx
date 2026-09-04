@@ -23,6 +23,11 @@ describe('FormSubmitButton', () => {
         expect(screen.getByRole('button')).toBeDisabled()
     })
 
+    it('marks the button as busy when isLoading is true', () => {
+        render(<FormSubmitButton isLoading>Submit</FormSubmitButton>)
+        expect(screen.getByRole('button')).toHaveAttribute('aria-busy', 'true')
+    })
+
     it('shows loadingText and hides children when loading', () => {
         render(
             <FormSubmitButton isLoading loadingText="Saving...">

@@ -8,6 +8,10 @@ import { AppLayout } from '../AppLayout'
 const mockLogout = vi.fn()
 let mockIsLoggingOut = false
 
+const renderAppLayout = (initialEntry = '/') => {
+    return render(<AppLayout />, { initialEntries: [initialEntry] })
+}
+
 vi.mock('@/features/auth/hooks', () => ({
     useLogout: () => ({ logout: mockLogout, isPending: mockIsLoggingOut }),
 }))
@@ -27,7 +31,7 @@ describe('AppLayout', () => {
     })
 
     it('renders the month navigator on dashboard routes', () => {
-        render(<AppLayout />, { initialEntries: ['/dashboard?month=2026-06'] })
+        renderAppLayout('/dashboard?month=2026-06')
         expect(screen.getByRole('status')).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /previous month/i })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /next month/i })).toBeInTheDocument()
@@ -38,21 +42,21 @@ describe('AppLayout', () => {
     })
 
     it('hides the month navigator on routes that do not need it', () => {
-        render(<AppLayout />, { initialEntries: ['/accounts'] })
+        renderAppLayout('/accounts')
         expect(screen.queryByRole('status')).not.toBeInTheDocument()
     })
 
     it('calls logout when Sign out is clicked', async () => {
         mockLogout.mockResolvedValueOnce(undefined)
         const user = userEvent.setup()
-        render(<AppLayout />)
+        renderAppLayout()
         await user.click(screen.getByRole('button', { name: /sign out/i }))
         expect(mockLogout).toHaveBeenCalledOnce()
     })
 
     it('disables the Sign out button while logging out', async () => {
         mockIsLoggingOut = true
-        render(<AppLayout />)
+        renderAppLayout()
         expect(screen.getByRole('button', { name: /sign out/i })).toBeDisabled()
     })
 })

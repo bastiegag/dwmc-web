@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { queryClient } from './client'
+import { queryClient } from '../query/client'
 
 describe('queryClient retry policy', () => {
     const retry = queryClient.getDefaultOptions().queries?.retry

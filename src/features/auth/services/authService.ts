@@ -2,29 +2,20 @@ import { supabase } from '@/lib/supabase'
 import { AuthServiceError } from '@/features/auth/types'
 import type { LoginCredentials, SignupCredentials } from '@/features/auth/types'
 
-const hasCode = (value: unknown): value is { code: string } => {
-    return (
-        typeof value === 'object' &&
-        value !== null &&
-        'code' in value &&
-        typeof (value as Record<string, unknown>).code === 'string'
-    )
-}
-
 type AuthOperation = 'login' | 'signup' | 'recovery' | 'reset' | 'logout' | 'session'
 
-const getErrorText = (error: unknown): string => {
-    if (error instanceof Error) return error.message.toLowerCase()
-    if (typeof error === 'object' && error !== null && 'message' in error) {
-        const message = (error as { message?: unknown }).message
-        if (typeof message === 'string') return message.toLowerCase()
+const getErrorDetails = (error: unknown): { code?: string; text: string } => {
+    if (typeof error !== 'object' || error === null) return { text: '' }
+
+    const details = error as { code?: unknown; message?: unknown }
+    return {
+        code: typeof details.code === 'string' ? details.code : undefined,
+        text: typeof details.message === 'string' ? details.message.toLowerCase() : '',
     }
-    return ''
 }
 
 const toAuthServiceError = (error: unknown, operation: AuthOperation): AuthServiceError => {
-    const code = hasCode(error) ? error.code : undefined
-    const text = getErrorText(error)
+    const { code, text } = getErrorDetails(error)
 
     if (
         operation === 'login' &&
