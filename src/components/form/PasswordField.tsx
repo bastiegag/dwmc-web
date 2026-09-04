@@ -18,6 +18,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             <FormField id={id} label={label} error={error} required={required}>
                 <div className="relative">
                     <Input
+                        {...props}
                         id={id}
                         ref={ref}
                         type={showPassword ? 'text' : 'password'}
@@ -28,7 +29,6 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
                             error && 'border-destructive focus-visible:ring-destructive',
                             className,
                         )}
-                        {...props}
                     />
                     <Button
                         type="button"

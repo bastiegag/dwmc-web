@@ -1,7 +1,7 @@
 import type { CategoryFormValues } from '@/features/categories/schemas'
 import type { SectionWithCategories } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import { CategoryForm } from './CategoryForm'
 
 type CategoryDialogProps = {

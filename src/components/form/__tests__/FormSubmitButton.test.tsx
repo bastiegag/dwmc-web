@@ -50,6 +50,6 @@ describe('FormSubmitButton', () => {
 
     it('renders a LoadingSpinner when loading', () => {
         render(<FormSubmitButton isLoading>Submit</FormSubmitButton>)
-        expect(screen.getByRole('status')).toBeInTheDocument()
+        expect(screen.getByRole('status', { hidden: true })).toBeInTheDocument()
     })
 })

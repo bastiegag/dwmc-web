@@ -14,6 +14,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     ({ id, label, error, required, className, ...props }, ref) => (
         <FormField id={id} label={label} error={error} required={required}>
             <Input
+                {...props}
                 id={id}
                 ref={ref}
                 aria-invalid={!!error}
@@ -22,7 +23,6 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
                     error && 'border-destructive focus-visible:ring-destructive',
                     className,
                 )}
-                {...props}
             />
         </FormField>
     ),

@@ -1,6 +1,6 @@
 import type { SectionFormValues } from '@/features/categories/schemas'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import { SectionForm } from './SectionForm'
 
 type SectionDialogProps = {
