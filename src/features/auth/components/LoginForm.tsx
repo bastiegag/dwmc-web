@@ -65,7 +65,7 @@ export const LoginForm = () => {
             <div className="flex justify-end">
                 <Link
                     to="/forgot-password"
-                    className="text-sm text-primary underline-offset-4 hover:underline"
+                    className="text-sm text-link underline underline-offset-4 hover:underline"
                 >
                     Forgot your password?
                 </Link>
@@ -75,7 +75,10 @@ export const LoginForm = () => {
             </FormSubmitButton>
             <p className="text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{' '}
-                <Link to="/signup" className="text-primary underline-offset-4 hover:underline">
+                <Link
+                    to="/signup"
+                    className="text-link underline underline-offset-4 hover:underline"
+                >
                     Sign up
                 </Link>
             </p>

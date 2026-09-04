@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@/test/utils/render'
+import { render as renderWithoutProvider } from '@testing-library/react'
 import { PrimaryActionButton } from '@/shared/primary-action/components/PrimaryActionButton'
 import { usePrimaryAction } from '@/shared/primary-action/hooks/use-primary-action'
 import type { PrimaryAction } from '@/shared/primary-action/types/primary-action.types'
@@ -34,6 +35,12 @@ const SwitchingRegistrars = ({ showFirst }: { showFirst: boolean }) => (
 describe('PrimaryActionProvider', () => {
     beforeEach(() => {
         vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
+    })
+
+    it('does not render outside the primary action provider', () => {
+        const { container } = renderWithoutProvider(<PrimaryActionButton />)
+
+        expect(container).toBeEmptyDOMElement()
     })
 
     it('registers the current primary action', async () => {

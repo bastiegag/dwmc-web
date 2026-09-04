@@ -44,7 +44,10 @@ export const ForgotPasswordForm = () => {
                     </AlertDescription>
                 </Alert>
                 <p className="text-center text-sm text-muted-foreground">
-                    <Link to="/login" className="text-primary underline-offset-4 hover:underline">
+                    <Link
+                        to="/login"
+                        className="text-primary underline underline-offset-4 hover:underline"
+                    >
                         Back to sign in
                     </Link>
                 </p>
@@ -70,7 +73,10 @@ export const ForgotPasswordForm = () => {
             </FormSubmitButton>
             <p className="text-center text-sm text-muted-foreground">
                 Remember your password?{' '}
-                <Link to="/login" className="text-primary underline-offset-4 hover:underline">
+                <Link
+                    to="/login"
+                    className="text-primary underline underline-offset-4 hover:underline"
+                >
                     Sign in
                 </Link>
             </p>

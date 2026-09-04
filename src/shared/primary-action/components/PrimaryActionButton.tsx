@@ -23,7 +23,7 @@ export const PrimaryActionButton = () => {
             aria-label={action.label}
             disabled={action.disabled}
             onClick={action.onClick}
-            className="size-14 rounded-full shadow-lg"
+            className="min-h-14 min-w-14 rounded-full shadow-lg"
         >
             <Icon className="size-6" aria-hidden="true" />
         </Button>

@@ -42,7 +42,10 @@ export const ResetPasswordForm = () => {
                     <AlertDescription>Password updated successfully!</AlertDescription>
                 </Alert>
                 <p className="text-center text-sm">
-                    <Link to="/login" className="text-primary underline-offset-4 hover:underline">
+                    <Link
+                        to="/login"
+                        className="text-primary underline underline-offset-4 hover:underline"
+                    >
                         Sign in with your new password
                     </Link>
                 </p>
