@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render } from '@/test/utils/render'
-import { Toaster } from './sonner'
+import { Toaster } from '@/components/ui'
 
 const themeState = { current: undefined as string | undefined }
 
-vi.mock('@/components/layout/useTheme', () => ({
+vi.mock('@/shared/theme', () => ({
     useTheme: () => ({ theme: themeState.current }),
 }))
 

@@ -13,7 +13,7 @@ import TransactionFilters from '@/features/transactions/components/TransactionFi
 import TransactionList from '@/features/transactions/components/TransactionList'
 import TransactionDialog from '@/features/transactions/components/TransactionDialog'
 import EmptyTransactionsState from '@/features/transactions/components/EmptyTransactionsState'
-import PaginationControls from '@/components/ui/PaginationControls'
+import { PaginationControls } from '@/features/transactions/components/PaginationControls'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 import type { GetTransactionsParams } from '@/features/transactions/types/transaction.types'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
@@ -67,10 +67,7 @@ export const TransactionsPage = () => {
     const accounts = accountsQuery.data ?? []
     const sections = sectionsQuery.data ?? []
 
-    const transactions = useMemo<Transaction[]>(
-        () => transactionsQuery.data?.data ?? [],
-        [transactionsQuery.data],
-    )
+    const transactions = transactionsQuery.data?.data ?? []
     const pagination = transactionsQuery.data?.meta
 
     const handleFiltersChange = useCallback(
@@ -234,7 +231,7 @@ export const TransactionsPage = () => {
             !transactionsQuery.isError &&
             transactions.length > 0 ? (
                 <TransactionList
-                    transactions={transactions as Transaction[]}
+                    transactions={transactions}
                     onEdit={openEdit}
                     onArchive={handleArchive}
                 />

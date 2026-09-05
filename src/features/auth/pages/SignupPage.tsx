@@ -1,19 +1,15 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { SignupForm } from '@/features/auth/components'
+import { AuthPageCard } from './AuthPageCard'
 
 export const SignupPage = () => {
     return (
-        <>
-            <h1 className="sr-only">Create account</h1>
-            <Card>
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Create an account</CardTitle>
-                    <CardDescription>Start managing your finances today</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <SignupForm />
-                </CardContent>
-            </Card>
-        </>
+        <AuthPageCard
+            headingId="signup-heading"
+            heading="Create account"
+            title="Create an account"
+            description="Start managing your finances today"
+        >
+            <SignupForm />
+        </AuthPageCard>
     )
 }

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useEffect } from 'react'
 import {
     PrimaryActionButton,
     PrimaryActionProvider,
@@ -18,7 +17,6 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const StoryContent = () => {
-    useEffect(() => undefined, [])
     usePrimaryAction({
         label: 'Add item',
         onClick: () => undefined,

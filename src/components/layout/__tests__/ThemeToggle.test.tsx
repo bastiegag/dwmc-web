@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import { render } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
-import { ThemeProvider } from '@/components/layout/ThemeProvider'
-import { ThemeToggle } from '@/components/layout/ThemeToggle'
+import { ThemeProvider } from '@/shared/theme'
+import { ThemeToggle } from '@/components/layout'
 
 Object.defineProperty(window, 'matchMedia', {
     writable: true,

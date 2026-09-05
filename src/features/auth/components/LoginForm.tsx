@@ -1,33 +1,36 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { TextField } from '@/components/form/TextField'
-import { PasswordField } from '@/components/form/PasswordField'
-import { FormError } from '@/components/form/FormError'
-import { FormSubmitButton } from '@/components/form/FormSubmitButton'
+import { TextField, PasswordField, FormError, FormSubmitButton } from '@/components/form'
 import { useLogin } from '@/features/auth/hooks'
 import { loginSchema, type LoginInput } from '@/features/auth/schemas'
+
+type ReturnLocation = string | { pathname?: string; search?: string; hash?: string }
+
+const getDestination = (state: unknown): string => {
+    const from = (state as { from?: ReturnLocation } | null)?.from
+
+    if (typeof from === 'string') return from || '/dashboard'
+    if (!from) return '/dashboard'
+
+    return `${from.pathname ?? ''}${from.search ?? ''}${from.hash ?? ''}` || '/dashboard'
+}
 
 export const LoginForm = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { login, isPending } = useLogin()
-    const from = (
-        location.state as { from?: string | { pathname?: string; search?: string; hash?: string } }
-    )?.from
-    const destination =
-        typeof from === 'string'
-            ? from
-            : from
-              ? `${from.pathname ?? ''}${from.search ?? ''}${from.hash ?? ''}` || '/dashboard'
-              : '/dashboard'
+    const destination = getDestination(location.state)
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         setError,
-    } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) })
+    } = useForm<LoginInput>({
+        resolver: zodResolver(loginSchema),
+        shouldFocusError: true,
+    })
 
     const onSubmit = async (data: LoginInput) => {
         try {
@@ -62,7 +65,7 @@ export const LoginForm = () => {
             <div className="flex justify-end">
                 <Link
                     to="/forgot-password"
-                    className="text-sm text-primary underline-offset-4 hover:underline"
+                    className="text-sm text-link underline underline-offset-4 hover:underline"
                 >
                     Forgot your password?
                 </Link>
@@ -72,7 +75,10 @@ export const LoginForm = () => {
             </FormSubmitButton>
             <p className="text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{' '}
-                <Link to="/signup" className="text-primary underline-offset-4 hover:underline">
+                <Link
+                    to="/signup"
+                    className="text-link underline underline-offset-4 hover:underline"
+                >
                     Sign up
                 </Link>
             </p>

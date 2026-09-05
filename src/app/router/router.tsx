@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, type ComponentType } from 'react'
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 import { AuthLayout } from '@/app/layouts/AuthLayout'
@@ -8,55 +8,57 @@ import { AnonymousRoute } from '@/features/auth/routes/AnonymousRoute'
 import { ErrorBoundary } from '@/components/feedback/ErrorBoundary'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 
-const LoginPage = lazy(() =>
-    import('@/features/auth/pages/LoginPage').then((m) => ({ default: m.LoginPage })),
+const lazyNamed = <
+    TModule extends Record<string, ComponentType>,
+    TExportName extends keyof TModule,
+>(
+    loader: () => Promise<TModule>,
+    exportName: TExportName,
+) =>
+    lazy(async () => {
+        const loadedModule = await loader()
+        const component = loadedModule[exportName]
+
+        if (component === undefined) {
+            throw new Error(`Lazy-loaded module is missing export "${String(exportName)}"`)
+        }
+
+        return { default: component }
+    })
+
+const LoginPage = lazyNamed(() => import('@/features/auth/pages/LoginPage'), 'LoginPage')
+const SignupPage = lazyNamed(() => import('@/features/auth/pages/SignupPage'), 'SignupPage')
+const ForgotPasswordPage = lazyNamed(
+    () => import('@/features/auth/pages/ForgotPasswordPage'),
+    'ForgotPasswordPage',
 )
-const SignupPage = lazy(() =>
-    import('@/features/auth/pages/SignupPage').then((m) => ({ default: m.SignupPage })),
+const ResetPasswordPage = lazyNamed(
+    () => import('@/features/auth/pages/ResetPasswordPage'),
+    'ResetPasswordPage',
 )
-const ForgotPasswordPage = lazy(() =>
-    import('@/features/auth/pages/ForgotPasswordPage').then((m) => ({
-        default: m.ForgotPasswordPage,
-    })),
+const DashboardPage = lazyNamed(
+    () => import('@/features/dashboard/pages/DashboardPage'),
+    'DashboardPage',
 )
-const ResetPasswordPage = lazy(() =>
-    import('@/features/auth/pages/ResetPasswordPage').then((m) => ({
-        default: m.ResetPasswordPage,
-    })),
+const CategoriesPage = lazyNamed(
+    () => import('@/features/categories/pages/CategoriesPage'),
+    'CategoriesPage',
 )
-const DashboardPage = lazy(() =>
-    import('@/features/dashboard/pages/DashboardPage').then((m) => ({
-        default: m.DashboardPage,
-    })),
+const AccountsPage = lazyNamed(
+    () => import('@/features/accounts/pages/AccountsPage'),
+    'AccountsPage',
 )
-const CategoriesPage = lazy(() =>
-    import('@/features/categories/pages/CategoriesPage').then((m) => ({
-        default: m.CategoriesPage,
-    })),
+const TransactionsPage = lazyNamed(
+    () => import('@/features/transactions/pages/TransactionsPage'),
+    'TransactionsPage',
 )
-const AccountsPage = lazy(() =>
-    import('@/features/accounts/pages/AccountsPage').then((m) => ({ default: m.AccountsPage })),
-)
-const TransactionsPage = lazy(() =>
-    import('@/features/transactions/pages/TransactionsPage').then((m) => ({
-        default: m.TransactionsPage,
-    })),
-)
-const BudgetsPage = lazy(() =>
-    import('@/features/budgets/pages/BudgetsPage').then((m) => ({ default: m.BudgetsPage })),
-)
-const ToolsPage = lazy(() =>
-    import('@/app/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })),
-)
-const ProfilePage = lazy(() =>
-    import('@/features/profile/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
-)
-const SettingsPage = lazy(() =>
-    import('@/features/settings').then((m) => ({ default: m.SettingsPage })),
-)
+const BudgetsPage = lazyNamed(() => import('@/features/budgets/pages/BudgetsPage'), 'BudgetsPage')
+const ToolsPage = lazyNamed(() => import('@/app/pages/ToolsPage'), 'ToolsPage')
+const ProfilePage = lazyNamed(() => import('@/features/profile/pages/ProfilePage'), 'ProfilePage')
+const SettingsPage = lazyNamed(() => import('@/features/settings'), 'SettingsPage')
 const PageLoader = () => {
     return (
-        <div className="flex min-h-screen items-center justify-center">
+        <div className="flex min-h-dvh items-center justify-center">
             <LoadingSpinner size="lg" aria-label="Loading page" />
         </div>
     )

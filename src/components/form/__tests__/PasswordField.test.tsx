@@ -13,8 +13,14 @@ describe('PasswordField', () => {
     it('toggles password visibility', async () => {
         const user = userEvent.setup()
         render(<PasswordField id="password" label="Password" />)
-        await user.click(screen.getByRole('button', { name: /show password/i }))
+        const toggle = screen.getByRole('button', { name: /show password/i })
+        expect(toggle).toHaveAttribute('aria-pressed', 'false')
+        await user.click(toggle)
         expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'text')
+        expect(screen.getByRole('button', { name: /hide password/i })).toHaveAttribute(
+            'aria-pressed',
+            'true',
+        )
     })
 
     it('shows error message when error prop is provided', () => {

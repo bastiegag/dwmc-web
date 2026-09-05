@@ -1,12 +1,10 @@
-import { useRef, useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
-import { TextField } from '@/components/form/TextField'
-import { FormError } from '@/components/form/FormError'
-import { FormSubmitButton } from '@/components/form/FormSubmitButton'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { TextField, FormError, FormSubmitButton } from '@/components/form'
+import { Alert, AlertDescription } from '@/components/ui'
 import { useForgotPassword } from '@/features/auth/hooks'
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/schemas'
 
@@ -23,7 +21,10 @@ export const ForgotPasswordForm = () => {
         handleSubmit,
         formState: { errors },
         setError,
-    } = useForm<ForgotPasswordInput>({ resolver: zodResolver(forgotPasswordSchema) })
+    } = useForm<ForgotPasswordInput>({
+        resolver: zodResolver(forgotPasswordSchema),
+        shouldFocusError: true,
+    })
 
     const onSubmit = async (data: ForgotPasswordInput) => {
         try {
@@ -35,15 +36,18 @@ export const ForgotPasswordForm = () => {
 
     if (isSuccess) {
         return (
-            <div ref={successRef} tabIndex={-1} className="space-y-4">
-                <Alert role="status" variant="success">
+            <div className="space-y-4">
+                <Alert ref={successRef} tabIndex={-1} role="status" variant="success">
                     <CheckCircle className="h-4 w-4" aria-hidden="true" />
                     <AlertDescription>
                         Password reset link sent! Check your email inbox.
                     </AlertDescription>
                 </Alert>
                 <p className="text-center text-sm text-muted-foreground">
-                    <Link to="/login" className="text-primary underline-offset-4 hover:underline">
+                    <Link
+                        to="/login"
+                        className="text-primary underline underline-offset-4 hover:underline"
+                    >
                         Back to sign in
                     </Link>
                 </p>
@@ -69,7 +73,10 @@ export const ForgotPasswordForm = () => {
             </FormSubmitButton>
             <p className="text-center text-sm text-muted-foreground">
                 Remember your password?{' '}
-                <Link to="/login" className="text-primary underline-offset-4 hover:underline">
+                <Link
+                    to="/login"
+                    className="text-primary underline underline-offset-4 hover:underline"
+                >
                     Sign in
                 </Link>
             </p>

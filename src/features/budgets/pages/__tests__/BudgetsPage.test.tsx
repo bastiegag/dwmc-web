@@ -21,7 +21,7 @@ describe('BudgetsPage', () => {
     })
 
     it('shows budgets when data is present', async () => {
-        render(<BudgetsPage />)
+        render(<BudgetsPage />, { initialEntries: ['/budgets?month=2026-08'] })
 
         await waitForElementToBeRemoved(() => screen.queryByLabelText(/loading budgets/i))
 

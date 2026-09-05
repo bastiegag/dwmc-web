@@ -1,6 +1,6 @@
 import type { AccountFormValues } from '@/features/accounts/schemas/account.schema'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import { AccountForm } from './AccountForm'
 
 type AccountDialogProps = {

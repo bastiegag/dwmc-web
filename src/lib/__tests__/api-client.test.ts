@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ApiError, apiClient } from './api-client'
+import { ApiError, apiClient } from '../api-client'
 
 const { getSessionMock, signOutMock } = vi.hoisted(() => ({
     getSessionMock: vi.fn(),
@@ -17,7 +17,7 @@ vi.mock('@/lib/supabase', () => ({
 
 describe('apiClient', () => {
     beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787/')
+        vi.stubEnv('VITE_API_URL', 'http://localhost:8787///')
         getSessionMock.mockResolvedValue({ data: { session: null } })
         signOutMock.mockResolvedValue({ error: null })
         vi.restoreAllMocks()

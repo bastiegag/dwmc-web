@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@/test/utils/render'
-import { PageHeader } from './PageHeader'
+import { PageHeader } from '../PageHeader'
 
 describe('PageHeader', () => {
     it('renders without an optional description', () => {

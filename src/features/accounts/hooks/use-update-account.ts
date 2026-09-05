@@ -11,13 +11,13 @@ export const useUpdateAccount = () => {
         mutationFn: ({ id, input }: { id: string; input: UpdateAccountPayload }) =>
             updateAccount(id, input),
         onSuccess: async (_data, variables) => {
-            await queryClient.invalidateQueries({ queryKey: accountQueryKeys.lists() })
-            if (variables && 'id' in variables && variables.id) {
-                await queryClient.invalidateQueries({
-                    queryKey: accountQueryKeys.detail(variables.id),
-                })
-            }
-            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
+            const invalidations = [
+                queryClient.invalidateQueries({ queryKey: accountQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: accountQueryKeys.detail(variables.id) }),
+            ]
+
+            await Promise.all(invalidations)
         },
     })
 }

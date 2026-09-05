@@ -34,7 +34,7 @@ export const usePasswordRecovery = (): { isLoading: boolean; isValid: boolean } 
         }
         const {
             data: { subscription },
-        } = authService.onAuthStateChange(async (event, _session) => {
+        } = authService.onAuthStateChange(async (event) => {
             if (event === 'PASSWORD_RECOVERY') {
                 setStatus('valid')
             } else if (!recoveryCallbackPresent) {

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { CircleHelp, Cookie, ShoppingCart, Tags, Utensils } from 'lucide-react'
 import type { Category } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 
 type CategoryItemProps = {
     category: Category

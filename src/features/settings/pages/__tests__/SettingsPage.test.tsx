@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ThemeProvider } from '@/components/layout/ThemeProvider'
+import { ThemeProvider } from '@/shared/theme'
 import { render } from '@/test/utils/render'
 import { SettingsPage } from '../SettingsPage'
 
@@ -34,5 +34,18 @@ describe('SettingsPage', () => {
 
         expect(screen.getByRole('radio', { name: /dark/i })).toBeChecked()
         expect(localStorage.getItem('dwmc-theme')).toBe('dark')
+    })
+
+    it('renders each supported theme as a selectable option', () => {
+        render(
+            <ThemeProvider defaultTheme="system" storageKey="dwmc-theme">
+                <SettingsPage />
+            </ThemeProvider>,
+        )
+
+        expect(screen.getAllByRole('radio')).toHaveLength(3)
+        expect(screen.getByRole('radio', { name: /system/i })).toBeChecked()
+        expect(screen.getByRole('radio', { name: /light/i })).not.toBeChecked()
+        expect(screen.getByRole('radio', { name: /dark/i })).not.toBeChecked()
     })
 })

@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MemoryRouter } from 'react-router-dom'
 import { MonthNavigator } from '@/shared/month'
-import { withCenteredLayout, withQueryClient } from './decorators'
+import { withCenteredLayout } from './decorators'
 
 const meta: Meta<typeof MonthNavigator> = {
     title: 'Layout/MonthNavigator',
     component: MonthNavigator,
-    decorators: [withQueryClient, withCenteredLayout],
+    decorators: [withCenteredLayout],
     tags: ['autodocs'],
 }
 

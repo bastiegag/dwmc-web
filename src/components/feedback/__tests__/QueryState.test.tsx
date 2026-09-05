@@ -16,6 +16,7 @@ describe('QueryState', () => {
         )
 
         expect(screen.getByLabelText('Loading data')).toBeInTheDocument()
+        expect(screen.getAllByRole('status')).toHaveLength(1)
 
         rerender(
             <QueryState

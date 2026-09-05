@@ -1,4 +1,4 @@
-export * from './types/primary-action.types'
+export type { PrimaryAction } from './types/primary-action.types'
 export { PrimaryActionProvider } from './context/PrimaryActionProvider'
-export * from './hooks/use-primary-action'
-export * from './components/PrimaryActionButton'
+export { usePrimaryAction } from './hooks/use-primary-action'
+export { PrimaryActionButton } from './components/PrimaryActionButton'

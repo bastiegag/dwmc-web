@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { SectionWithCategories } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CategoryList } from './CategoryList'
 

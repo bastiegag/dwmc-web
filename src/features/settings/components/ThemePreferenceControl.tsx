@@ -1,8 +1,7 @@
 import { Monitor, Moon, Sun } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useTheme } from '@/components/layout/useTheme'
-import type { Theme } from '@/components/layout/theme-context'
+import { useTheme, type Theme } from '@/shared/theme'
 
 const themeOptions: Array<{ value: Theme; label: string; description: string; icon: typeof Sun }> =
     [
@@ -26,13 +25,18 @@ const themeOptions: Array<{ value: Theme; label: string; description: string; ic
         },
     ]
 
+const isTheme = (value: string): value is Theme =>
+    themeOptions.some((option) => option.value === value)
+
 export const ThemePreferenceControl = () => {
     const { theme, setTheme } = useTheme()
 
     return (
         <RadioGroup
             value={theme}
-            onValueChange={(value) => setTheme(value as Theme)}
+            onValueChange={(value) => {
+                if (isTheme(value)) setTheme(value)
+            }}
             aria-label="Theme"
             className="grid gap-3 sm:grid-cols-3"
         >

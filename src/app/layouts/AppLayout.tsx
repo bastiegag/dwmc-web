@@ -14,16 +14,18 @@ const monthNavRoutes = ['/dashboard', '/transactions', '/budgets']
 
 export const AppLayout = () => {
     const { logout, isPending: isLoggingOut } = useLogout()
-    const location = useLocation()
+    const { pathname } = useLocation()
 
-    const showMonthNav = monthNavRoutes.some((path) => location.pathname.startsWith(path))
+    const showMonthNav = monthNavRoutes.some((path) => pathname.startsWith(path))
+    const showDashboardSections =
+        pathname.startsWith('/dashboard') || pathname.startsWith('/transactions')
 
     return (
         <>
             <DesktopSidebar />
 
             <PrimaryActionProvider>
-                <div className="flex min-h-screen flex-col bg-background lg:pl-64">
+                <div className="flex min-h-dvh flex-col bg-background lg:pl-64">
                     <AppTopBar onLogout={logout} isLoggingOut={isLoggingOut} />
 
                     {showMonthNav && (
@@ -32,10 +34,7 @@ export const AppLayout = () => {
                         </div>
                     )}
 
-                    {(location.pathname.startsWith('/dashboard') ||
-                        location.pathname.startsWith('/transactions')) && (
-                        <DashboardSectionNavigation />
-                    )}
+                    {showDashboardSections && <DashboardSectionNavigation />}
 
                     <main
                         id="main-content"

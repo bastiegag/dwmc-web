@@ -10,8 +10,10 @@ export const useCreateBudget = () => {
     return useMutation({
         mutationFn: (input: CreateBudgetPayload) => createBudget(input),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: budgetQueryKeys.lists() })
-            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: budgetQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() }),
+            ])
         },
     })
 }

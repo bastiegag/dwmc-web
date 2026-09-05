@@ -4,8 +4,8 @@ import { useLocation } from 'react-router-dom'
 import { useSelectedMonth } from '@/shared/month'
 import { render } from '@/test/utils/render'
 
-const MonthProbe = () => {
-    const { month, goToPreviousMonth, goToNextMonth } = useSelectedMonth()
+const MonthProbe = ({ includeInvalidSetter = false }: { includeInvalidSetter?: boolean }) => {
+    const { month, setMonth, goToPreviousMonth, goToNextMonth } = useSelectedMonth()
     const location = useLocation()
 
     return (
@@ -17,6 +17,9 @@ const MonthProbe = () => {
             </output>
             <button onClick={goToPreviousMonth}>Previous</button>
             <button onClick={goToNextMonth}>Next</button>
+            {includeInvalidSetter ? (
+                <button onClick={() => setMonth('not-a-month')}>Invalid</button>
+            ) : null}
         </>
     )
 }
@@ -44,5 +47,15 @@ describe('useSelectedMonth', () => {
         expect(screen.getByTestId('location')).toHaveTextContent(
             '/dashboard?month=2025-12&view=summary',
         )
+    })
+
+    it('ignores invalid month updates', () => {
+        render(<MonthProbe includeInvalidSetter />, {
+            initialEntries: ['/dashboard?month=2026-08'],
+        })
+
+        fireEvent.click(screen.getByRole('button', { name: 'Invalid' }))
+
+        expect(screen.getByTestId('location')).toHaveTextContent('/dashboard?month=2026-08')
     })
 })

@@ -39,8 +39,8 @@ const getApiBaseUrl = (): string => {
             '[apiClient] VITE_API_URL is not defined. ' + 'Add it to your .env.local file.',
         )
     }
-    // Strip trailing slash so we can always prefix paths with /
-    return url.replace(/\/$/, '')
+    // Strip trailing slashes so we can always prefix paths with /
+    return url.replace(/\/+$/, '')
 }
 
 const buildApiUrl = (path: string): string => {

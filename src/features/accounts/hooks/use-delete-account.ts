@@ -8,9 +8,12 @@ export const useDeleteAccount = () => {
 
     return useMutation({
         mutationFn: (id: string) => deleteAccount(id),
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: accountQueryKeys.lists() })
-            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
+        onSuccess: async (_data, id) => {
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: accountQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: accountQueryKeys.detail(id) }),
+            ])
         },
     })
 }

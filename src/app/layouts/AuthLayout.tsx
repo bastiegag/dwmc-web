@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom'
-import { ThemeToggle } from '@/components/layout/ThemeToggle'
+import { ThemeToggle, Logo } from '@/components/layout'
 
 export const AuthLayout = () => {
     return (
-        <div className="flex min-h-screen flex-col bg-background">
+        <div className="flex min-h-dvh flex-col bg-background">
             <a
                 href="#main-content"
                 className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:left-4 focus:top-4 focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:ring-2 focus:ring-ring"
@@ -12,9 +12,8 @@ export const AuthLayout = () => {
             </a>
             <header className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-primary">
-                        <span aria-hidden="true">💰</span> DWMC
-                    </span>
+                    <Logo className="h-6 w-6 text-primary" aria-hidden="true" />
+                    Dude, where's my cash?
                 </div>
                 <ThemeToggle />
             </header>

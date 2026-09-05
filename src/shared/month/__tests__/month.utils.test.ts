@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { addMonths, getCurrentMonth, isValidMonth } from '@/shared/month'
+import { addMonths, formatMonthLabel, getCurrentMonth, isValidMonth } from '@/shared/month'
 
 describe('month utilities', () => {
     afterEach(() => {
@@ -24,6 +24,10 @@ describe('month utilities', () => {
         [undefined, false],
     ])('validates %s as %s', (value, expected) => {
         expect(isValidMonth(value)).toBe(expected)
+    })
+
+    it('formats the requested month without a timezone shift', () => {
+        expect(formatMonthLabel('2026-01', 'en-US')).toBe('January 2026')
     })
 
     it.each([

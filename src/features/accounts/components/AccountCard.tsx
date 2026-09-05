@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import { Progress } from '@/components/ui/progress'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Account } from '@/features/accounts/types/account.types'

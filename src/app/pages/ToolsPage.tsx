@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Settings, Tags, User } from 'lucide-react'
 import { useSelectedMonth } from '@/shared/month'
 
@@ -39,19 +39,17 @@ export const ToolsPage = () => {
                     <Link
                         key={tool.title}
                         to={`${tool.to}?month=${month}`}
-                        className="rounded-lg border bg-card text-card-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                        className="block h-full rounded-lg border bg-card text-card-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
-                        <Card className="h-full border-0 shadow-none">
-                            <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="rounded-lg bg-primary/10 p-3 text-primary">
-                                    <tool.icon className="size-6" />
-                                </div>
-                                <CardTitle className="text-lg">{tool.title}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">{tool.description}</p>
-                            </CardContent>
-                        </Card>
+                        <CardHeader className="flex flex-row items-center gap-4">
+                            <div className="rounded-lg bg-primary/10 p-3 text-primary">
+                                <tool.icon className="size-6" aria-hidden="true" />
+                            </div>
+                            <CardTitle className="text-lg">{tool.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground">{tool.description}</p>
+                        </CardContent>
                     </Link>
                 ))}
             </div>

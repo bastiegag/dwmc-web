@@ -290,7 +290,7 @@ const login = async (page: Parameters<typeof mockAuthenticatedSession>[0]) => {
 }
 
 const budgetCard = (page: Parameters<typeof mockAuthenticatedSession>[0]) =>
-    page.locator('div.rounded-lg.border').filter({ hasText: 'Groceries' }).last()
+    page.locator('div.rounded-xl').filter({ hasText: 'Groceries' }).last()
 
 const expectBudgetValues = async (
     page: Parameters<typeof mockAuthenticatedSession>[0],
