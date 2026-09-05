@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 
 const currencyFormatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' })

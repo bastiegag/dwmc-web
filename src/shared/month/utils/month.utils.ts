@@ -25,7 +25,7 @@ export const isValidMonth = (value: unknown): value is string => {
  */
 export const formatMonthLabel = (month: string, locale = 'fr-CA'): string => {
     const [year, monthIndex] = month.split('-').map(Number)
-    const date = new Date(year, monthIndex - 1)
+    const date = new Date(Date.UTC(year, monthIndex - 1, 1))
     return new Intl.DateTimeFormat(locale, {
         month: 'long',
         year: 'numeric',

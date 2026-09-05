@@ -26,7 +26,7 @@ export const ResetPasswordPage = () => {
                 <div className="text-center text-sm">
                     <Link
                         to="/forgot-password"
-                        className="text-primary underline-offset-4 hover:underline"
+                        className="text-primary underline underline-offset-4 hover:underline"
                     >
                         Request a new password reset
                     </Link>

@@ -25,7 +25,7 @@ export const AppLayout = () => {
             <DesktopSidebar />
 
             <PrimaryActionProvider>
-                <div className="flex min-h-screen flex-col bg-background lg:pl-64">
+                <div className="flex min-h-dvh flex-col bg-background lg:pl-64">
                     <AppTopBar onLogout={logout} isLoggingOut={isLoggingOut} />
 
                     {showMonthNav && (

@@ -29,6 +29,16 @@ const defaultValues: AccountFormValues = {
     icon: 'wallet',
 }
 
+const accountTypeOptions: { value: AccountType; label: string }[] = [
+    { value: 'CHECKING', label: 'Checking' },
+    { value: 'SAVINGS', label: 'Savings' },
+    { value: 'CREDIT_CARD', label: 'Credit Card' },
+    { value: 'CASH', label: 'Cash' },
+    { value: 'INVESTMENT', label: 'Investment' },
+    { value: 'LOAN', label: 'Loan' },
+    { value: 'OTHER', label: 'Other' },
+]
+
 export const AccountForm = ({
     initialValues,
     submitLabel,
@@ -54,16 +64,6 @@ export const AccountForm = ({
     useEffect(() => {
         reset(initialValues ?? defaultValues)
     }, [initialValues, reset])
-
-    const accountTypeOptions: { value: AccountType; label: string }[] = [
-        { value: 'CHECKING', label: 'Checking' },
-        { value: 'SAVINGS', label: 'Savings' },
-        { value: 'CREDIT_CARD', label: 'Credit Card' },
-        { value: 'CASH', label: 'Cash' },
-        { value: 'INVESTMENT', label: 'Investment' },
-        { value: 'LOAN', label: 'Loan' },
-        { value: 'OTHER', label: 'Other' },
-    ]
 
     useEffect(() => {
         if (accountType !== 'SAVINGS') setValue('goal', null)

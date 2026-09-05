@@ -3,7 +3,7 @@ import TransactionForm from './TransactionForm'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
 import type { Account } from '@/features/accounts/types/account.types'
 import type { SectionWithCategories } from '@/features/categories/types'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 
 type TransactionDialogProps = {
     open: boolean

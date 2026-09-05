@@ -8,9 +8,12 @@ export const useDeleteBudget = () => {
 
     return useMutation({
         mutationFn: (id: string) => deleteBudget(id),
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: budgetQueryKeys.lists() })
-            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
+        onSuccess: async (_data, id) => {
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: budgetQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: budgetQueryKeys.detail(id) }),
+                queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() }),
+            ])
         },
     })
 }

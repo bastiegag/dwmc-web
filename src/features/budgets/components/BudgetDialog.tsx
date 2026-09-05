@@ -1,6 +1,6 @@
 import type { BudgetFormValues } from '@/features/budgets/schemas/budget.schema'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import { BudgetForm } from './BudgetForm'
 import type { SectionWithCategories } from '@/features/categories/types'
 

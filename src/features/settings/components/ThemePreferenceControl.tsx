@@ -25,13 +25,18 @@ const themeOptions: Array<{ value: Theme; label: string; description: string; ic
         },
     ]
 
+const isTheme = (value: string): value is Theme =>
+    themeOptions.some((option) => option.value === value)
+
 export const ThemePreferenceControl = () => {
     const { theme, setTheme } = useTheme()
 
     return (
         <RadioGroup
             value={theme}
-            onValueChange={(value) => setTheme(value as Theme)}
+            onValueChange={(value) => {
+                if (isTheme(value)) setTheme(value)
+            }}
             aria-label="Theme"
             className="grid gap-3 sm:grid-cols-3"
         >

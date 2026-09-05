@@ -67,10 +67,7 @@ export const TransactionsPage = () => {
     const accounts = accountsQuery.data ?? []
     const sections = sectionsQuery.data ?? []
 
-    const transactions = useMemo<Transaction[]>(
-        () => transactionsQuery.data?.data ?? [],
-        [transactionsQuery.data],
-    )
+    const transactions = transactionsQuery.data?.data ?? []
     const pagination = transactionsQuery.data?.meta
 
     const handleFiltersChange = useCallback(
@@ -234,7 +231,7 @@ export const TransactionsPage = () => {
             !transactionsQuery.isError &&
             transactions.length > 0 ? (
                 <TransactionList
-                    transactions={transactions as Transaction[]}
+                    transactions={transactions}
                     onEdit={openEdit}
                     onArchive={handleArchive}
                 />

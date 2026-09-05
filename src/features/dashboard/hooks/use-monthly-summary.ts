@@ -8,8 +8,15 @@ import type {
 export const dashboardQueryKeys = {
     all: ['dashboard'] as const,
     lists: () => dashboardQueryKeys.all,
-    monthlySummary: (params?: GetMonthlySummaryParams) =>
-        [...dashboardQueryKeys.all, 'monthly-summary', params ?? {}] as const,
+    monthlySummary: (params: GetMonthlySummaryParams = {}) =>
+        [
+            ...dashboardQueryKeys.all,
+            'monthly-summary',
+            {
+                month: params.month ?? null,
+                recentLimit: params.recentLimit ?? null,
+            },
+        ] as const,
 }
 
 export const useMonthlySummary = (params?: GetMonthlySummaryParams) => {

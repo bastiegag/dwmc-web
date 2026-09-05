@@ -1,7 +1,7 @@
 import type { CategoryFormValues } from '@/features/categories/schemas'
 import type { SectionWithCategories } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import { CategoryForm } from './CategoryForm'
 
 type CategoryDialogProps = {
@@ -39,6 +39,7 @@ export const CategoryDialog = ({
             <dialog
                 ref={dialogRef}
                 aria-labelledby="category-dialog-title"
+                aria-modal="true"
                 tabIndex={-1}
                 onKeyDown={handleKeyDown}
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"

@@ -1,6 +1,6 @@
 import type { SectionFormValues } from '@/features/categories/schemas'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/components/dialog/use-dialog-focus'
+import { useDialogFocus } from '@/shared/dialog'
 import { SectionForm } from './SectionForm'
 
 type SectionDialogProps = {
@@ -36,6 +36,7 @@ export const SectionDialog = ({
             <dialog
                 ref={dialogRef}
                 aria-labelledby="section-dialog-title"
+                aria-modal="true"
                 tabIndex={-1}
                 onKeyDown={handleKeyDown}
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"

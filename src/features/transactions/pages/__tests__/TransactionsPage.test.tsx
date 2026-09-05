@@ -24,4 +24,22 @@ describe('TransactionsPage', () => {
 
         expect(screen.getByLabelText('Date')).toHaveValue('2026-05-01')
     })
+
+    it('defaults a new transaction to today for the current month', async () => {
+        const user = userEvent.setup()
+        const currentMonth = new Date().toISOString().slice(0, 7)
+        const today = new Date().toISOString().slice(0, 10)
+
+        render(
+            <>
+                <TransactionsPage />
+                <PrimaryActionButton />
+            </>,
+            { initialEntries: [`/transactions?month=${currentMonth}`] },
+        )
+
+        await user.click(await screen.findByRole('button', { name: /add transaction/i }))
+
+        expect(screen.getByLabelText('Date')).toHaveValue(today)
+    })
 })

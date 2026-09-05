@@ -10,8 +10,10 @@ export const useCreateAccount = () => {
     return useMutation({
         mutationFn: (input: CreateAccountPayload) => createAccount(input),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: accountQueryKeys.lists() })
-            await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() })
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: accountQueryKeys.lists() }),
+                queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.lists() }),
+            ])
         },
     })
 }

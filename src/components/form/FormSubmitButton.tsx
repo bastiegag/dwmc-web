@@ -17,11 +17,11 @@ export const FormSubmitButton = ({
 }: FormSubmitButtonProps) => {
     return (
         <Button
+            {...props}
             type="submit"
             disabled={disabled || isLoading}
             aria-busy={isLoading}
             className={cn('w-full', className)}
-            {...props}
         >
             {isLoading ? (
                 <>
