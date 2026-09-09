@@ -1,5 +1,14 @@
 # Dude, Where's My Cash? Web
 
+![React](https://img.shields.io/badge/React-19.2.7-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8.1.3-646CFF?logo=vite&logoColor=white)
+![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.62.2-FF4154?logo=reactquery&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.0-06B6D4?logo=tailwindcss&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-10.4.0-FF4785?logo=storybook&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-4.1.10-6E9F18?logo=vitest&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-1.61.1-2EAD33?logo=playwright&logoColor=white)
+
 Dude, Where's My Cash? is a local-first personal budgeting app for understanding monthly cash flow, organizing accounts and categories, tracking transactions, and working with budgets and summaries. This repository contains the user-facing web application.
 
 > **Visual preview:** `SCREENSHOTS MISSING` - no checked-in product screenshots are currently available. Capture the authenticated dashboard, accounts, transactions, and budget views at desktop and mobile widths, redact personal data, and add the selected images under `docs/assets/` before linking them here.
