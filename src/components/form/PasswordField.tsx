@@ -26,7 +26,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
                         aria-describedby={error ? `${id}-error` : undefined}
                         className={cn(
                             'pr-10',
-                            error && 'border-destructive focus-visible:ring-destructive',
+                            error && 'border-destructive focus-visible:ring-destructive/10',
                             className,
                         )}
                     />
