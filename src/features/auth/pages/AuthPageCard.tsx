@@ -23,7 +23,7 @@ export const AuthPageCard = ({
             </h1>
             <Card>
                 <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">{title}</CardTitle>
+                    <CardTitle className="text-xl">{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
                 </CardHeader>
                 <CardContent>{children}</CardContent>

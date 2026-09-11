@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSelectedMonth } from '@/shared/month'
-import { ThemeToggle } from './ThemeToggle'
+import { ThemeToggle, Logo } from '@/components/layout'
 
 interface AppTopBarProps {
     onLogout: () => void
@@ -13,15 +13,21 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
     const { month } = useSelectedMonth()
 
     return (
-        <header className="flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6 lg:px-8">
-            <Link to={`/dashboard?month=${month}`} className="text-xl font-bold tracking-tight">
-                DWMC
+        <header className="flex items-center justify-between bg-primary text-primary-foreground p-4">
+            <Link
+                to={`/dashboard?month=${month}`}
+                className="flex items-center"
+                aria-label="Go to dashboard"
+            >
+                <div className="flex items-center gap-2 text-sm">
+                    <Logo className="size-6 text-white" />
+                    Dude, where's my cash?
+                </div>
             </Link>
             <div className="flex items-center gap-2">
                 <ThemeToggle />
-                <Button variant="ghost" size="sm" onClick={onLogout} disabled={isLoggingOut}>
-                    <LogOut className="mr-2" />
-                    Sign out
+                <Button variant="ghost" size="icon" onClick={onLogout} disabled={isLoggingOut}>
+                    <LogOut />
                 </Button>
             </div>
         </header>

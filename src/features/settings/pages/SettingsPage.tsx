@@ -4,7 +4,7 @@ import { ThemePreferenceControl } from '../components/ThemePreferenceControl'
 export const SettingsPage = () => (
     <section className="space-y-6 px-4 sm:px-6 lg:px-8" aria-labelledby="settings-heading">
         <div>
-            <h1 id="settings-heading" className="text-2xl font-bold tracking-tight">
+            <h1 id="settings-heading" className="text-2xl font-bold">
                 Settings
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">

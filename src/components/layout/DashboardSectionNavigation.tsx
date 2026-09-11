@@ -11,19 +11,22 @@ export const DashboardSectionNavigation = () => {
     const { month } = useSelectedMonth()
 
     return (
-        <nav aria-label="Dashboard section" className="flex justify-center border-b px-4">
-            <div className="flex gap-1">
+        <nav
+            aria-label="Dashboard section"
+            className="flex justify-center pb-4 bg-primary text-primary-foreground"
+        >
+            <div className="flex gap-2">
                 {navigation.map((item) => (
                     <NavLink
                         key={item.name}
                         to={`${item.to}?month=${month}`}
                         className={({ isActive }) =>
                             cn(
-                                'inline-flex min-h-11 items-center justify-center border-b-2 px-4 text-sm font-medium text-muted-foreground transition-colors',
-                                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                                'inline-flex items-center justify-center py-2 px-4 text-sm transition-colors rounded-full',
+                                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white',
                                 isActive
-                                    ? 'border-primary text-primary'
-                                    : 'border-transparent hover:border-muted-foreground/50 hover:text-foreground',
+                                    ? 'bg-primary-foreground/20 text-primary-foreground'
+                                    : 'border-transparent hover:border-muted-foreground/50 hover:bg-primary-foreground/10',
                             )
                         }
                     >

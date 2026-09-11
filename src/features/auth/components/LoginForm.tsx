@@ -63,24 +63,15 @@ export const LoginForm = () => {
                 {...register('password')}
             />
             <div className="flex justify-end">
-                <Link
-                    to="/forgot-password"
-                    className="text-sm text-link underline underline-offset-4 hover:underline"
-                >
+                <Link to="/forgot-password" className="text-sm">
                     Forgot your password?
                 </Link>
             </div>
             <FormSubmitButton isLoading={isPending} loadingText="Signing in...">
                 Sign in
             </FormSubmitButton>
-            <p className="text-center text-sm text-muted-foreground">
-                Don&apos;t have an account?{' '}
-                <Link
-                    to="/signup"
-                    className="text-link underline underline-offset-4 hover:underline"
-                >
-                    Sign up
-                </Link>
+            <p className="text-center text-sm">
+                Don&apos;t have an account? <Link to="/signup">Sign up</Link>
             </p>
         </form>
     )

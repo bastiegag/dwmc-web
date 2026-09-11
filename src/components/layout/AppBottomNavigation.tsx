@@ -22,7 +22,7 @@ export const AppBottomNavigation = () => {
     return (
         <nav
             data-testid="mobile-bottom-nav"
-            className="fixed bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom))] w-full items-start border-t bg-background pt-2 lg:hidden"
+            className="fixed bottom-0 z-40 flex h-[calc(6rem+env(safe-area-inset-bottom))] w-full items-start bg-white px-4 pt-4 lg:hidden"
         >
             <div className="grid min-w-0 flex-1 grid-cols-2">
                 {navigation.slice(0, 2).map((item) => {
@@ -63,8 +63,6 @@ export const AppBottomNavigation = () => {
                     )
                 })}
             </div>
-
-            <div aria-hidden="true" className="size-14 shrink-0" />
 
             <div className="grid min-w-0 flex-1 grid-cols-2">
                 {navigation.slice(2).map((item) => {

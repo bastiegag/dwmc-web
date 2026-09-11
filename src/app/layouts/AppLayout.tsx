@@ -25,16 +25,16 @@ export const AppLayout = () => {
             <DesktopSidebar />
 
             <PrimaryActionProvider>
-                <div className="flex min-h-dvh flex-col bg-background lg:pl-64">
+                <div className="flex min-h-dvh flex-col lg:pl-64">
                     <AppTopBar onLogout={logout} isLoggingOut={isLoggingOut} />
 
+                    {showDashboardSections && <DashboardSectionNavigation />}
+
                     {showMonthNav && (
-                        <div className="flex h-16 items-center justify-center border-b">
+                        <div className="flex p-4 items-center justify-center">
                             <MonthNavigator />
                         </div>
                     )}
-
-                    {showDashboardSections && <DashboardSectionNavigation />}
 
                     <main
                         id="main-content"

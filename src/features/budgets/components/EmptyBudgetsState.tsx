@@ -1,4 +1,5 @@
 import { Target } from 'lucide-react'
+import { EmptyState } from '@/components/ui'
 
 type EmptyProps = {
     month: string
@@ -16,15 +17,11 @@ const toLabel = (month: string) => {
 
 export const EmptyBudgetsState = ({ month }: EmptyProps) => {
     return (
-        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-card p-12 text-center shadow-sm">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Target className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold tracking-tight">No budgets yet</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-                Get started by creating your first budget for {toLabel(month)}.
-            </p>
-        </div>
+        <EmptyState
+            icon={Target}
+            title="No budgets yet"
+            description={`Get started by creating your first budget for ${toLabel(month)}.`}
+        />
     )
 }
 

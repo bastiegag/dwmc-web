@@ -11,11 +11,11 @@ export const AuthLayout = () => {
                 Skip to main content
             </a>
             <header className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-2">
-                    <Logo className="h-6 w-6 text-primary" aria-hidden="true" />
+                <div className="flex items-center gap-2 text-sm">
+                    <Logo className="size-6 text-primary" />
                     Dude, where's my cash?
                 </div>
-                <ThemeToggle />
+                <ThemeToggle className="hover:bg-foreground/5" />
             </header>
             <main id="main-content" className="flex flex-1 items-center justify-center px-4 py-12">
                 <div className="w-full max-w-md">

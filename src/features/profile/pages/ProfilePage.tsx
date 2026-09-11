@@ -20,7 +20,7 @@ export const ProfilePage = () => {
     if (profile.isError || !profile.data) {
         return (
             <section className="space-y-4 px-4 sm:px-6 lg:px-8" aria-labelledby="profile-heading">
-                <h1 id="profile-heading" className="text-2xl font-bold tracking-tight">
+                <h1 id="profile-heading" className="text-2xl font-bold">
                     Profile
                 </h1>
                 <FormError message={profile.error?.message ?? 'Unable to load your profile.'} />
@@ -38,7 +38,7 @@ export const ProfilePage = () => {
     return (
         <section className="space-y-6 px-4 sm:px-6 lg:px-8" aria-labelledby="profile-heading">
             <div>
-                <h1 id="profile-heading" className="text-2xl font-bold tracking-tight">
+                <h1 id="profile-heading" className="text-2xl font-bold">
                     Profile
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">

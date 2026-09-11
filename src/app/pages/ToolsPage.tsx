@@ -30,7 +30,7 @@ export const ToolsPage = () => {
     return (
         <section className="space-y-6" aria-labelledby="tools-heading">
             <div className="px-4 sm:px-6 lg:px-8">
-                <h1 id="tools-heading" className="text-2xl font-bold tracking-tight">
+                <h1 id="tools-heading" className="text-2xl font-bold">
                     Tools
                 </h1>
             </div>
