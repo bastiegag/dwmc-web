@@ -67,35 +67,36 @@
         --primary-foreground: #ffffff;
         --secondary: #7cb2ac;
         --secondary-foreground: #ffffff;
-        --muted: oklch(0.97 0 0);
-        --muted-foreground: #6b6b6b;
-        --accent: oklch(38.233% 0.01314 -0.02243 / 0.05);
-        --accent-foreground: oklch(0.205 0 0);
+        --muted: #9d9ca1;
+        --muted-foreground: #9d9ca1;
+        --accent: #fff;
+        --accent-foreground: #45404f;
         --destructive: #d14551;
         --destructive-foreground: #ffffff;
         --success: #78a938;
         --success-foreground: #ffffff;
         --warning: #edaa5d;
         --warning-foreground: #ffffff;
-        --info: #2a8da1; /* 188FA7 */
+        --info: #2a8da1;
         --info-foreground: #ffffff;
-        --border: oklch(0.922 0 0);
-        --input: oklch(38.233% 0.01314 -0.02243 / 0.2);
-        --ring: oklch(0.708 0 0);
-        --chart-1: oklch(0.87 0 0);
-        --chart-2: oklch(0.556 0 0);
-        --chart-3: oklch(0.439 0 0);
-        --chart-4: oklch(0.371 0 0);
-        --chart-5: oklch(0.269 0 0);
+        --border: #000;
+        --input: #dfe1df;
+        --ring: #9d9ca1;
+        --chart-1: #dfe1df;
+        --chart-2: #c9caca;
+        --chart-3: #9d9ca1;
+        --chart-4: #817f88;
+        --chart-5: #65616e;
         --radius: 0.625rem;
-        --sidebar: oklch(0.985 0 0);
-        --sidebar-foreground: oklch(0.145 0 0);
-        --sidebar-primary: oklch(0.205 0 0);
-        --sidebar-primary-foreground: oklch(0.985 0 0);
-        --sidebar-accent: oklch(0.97 0 0);
-        --sidebar-accent-foreground: oklch(0.205 0 0);
-        --sidebar-border: oklch(0.922 0 0);
-        --sidebar-ring: oklch(0.708 0 0);
+        --header: #fff;
+        --sidebar: #f5f7f3;
+        --sidebar-foreground: #00ffff;
+        --sidebar-primary: #ff0000;
+        --sidebar-primary-foreground: #00ffff;
+        --sidebar-accent: #000;
+        --sidebar-accent-foreground: #00ffff;
+        --sidebar-border: #000;
+        --sidebar-ring: #000;
     }
     .dark {
         --background: oklch(0.145 0 0);
@@ -136,8 +137,8 @@
         --sidebar-border: oklch(1 0 0 / 10%);
         --sidebar-ring: oklch(0.556 0 0);
     }
-    * {
-        @apply border-border outline-ring/50;
+    *:focus-visible {
+        @apply outline-2 outline-offset-2;
     }
     body {
         @apply bg-background text-foreground;

@@ -1,5 +1,6 @@
 import { Moon, Monitor, Sun } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { cn } from '@/lib/utils'
 import { useTheme } from '@/shared/theme'
 
 type Theme = 'light' | 'dark' | 'system'
@@ -17,7 +18,11 @@ const ICON: Record<Theme, typeof Sun> = {
     system: Monitor,
 }
 
-export const ThemeToggle = () => {
+type ThemeToggleProps = {
+    className?: string
+}
+
+export const ThemeToggle = ({ className }: ThemeToggleProps) => {
     const { theme, setTheme } = useTheme()
     const Icon = ICON[theme]
 
@@ -25,6 +30,7 @@ export const ThemeToggle = () => {
         <Button
             variant="ghost"
             size="icon"
+            className={cn(className)}
             onClick={() => setTheme(NEXT_THEME[theme])}
             aria-label={NEXT_LABEL[theme]}
         >

@@ -4,7 +4,8 @@ import SummaryCards from '@/features/dashboard/components/SummaryCards'
 import CategoryBreakdownCard from '@/features/dashboard/components/CategoryBreakdownCard'
 import AccountBreakdownCard from '@/features/dashboard/components/AccountBreakdownCard'
 import RecentTransactionsCard from '@/features/dashboard/components/RecentTransactionsCard'
-import EmptyDashboardState from '@/features/dashboard/components/EmptyDashboardState'
+import { Activity } from 'lucide-react'
+import { EmptyState } from '@/components/ui'
 import { useMonthlySummary } from '@/features/dashboard/hooks/use-monthly-summary'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
@@ -12,7 +13,6 @@ import { useAccounts } from '@/features/accounts/hooks'
 import { useSections } from '@/features/categories/hooks'
 import { TransactionDialog, useCreateTransaction } from '@/features/transactions'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
-import { PageHeader } from '@/components/layout'
 import { useAuth } from '@/features/auth/hooks'
 import { rememberTransactionDate } from '@/features/transactions/utils/transaction-date-storage'
 
@@ -86,12 +86,6 @@ export const DashboardPage = () => {
     return (
         <>
             <section className="space-y-6" aria-labelledby="dashboard-heading">
-                <PageHeader
-                    id="dashboard-heading"
-                    title="Dashboard"
-                    description="Overview of your finances for the selected month."
-                />
-
                 <QueryState
                     isLoading={summaryQuery.isLoading}
                     isError={summaryQuery.isError}
@@ -103,7 +97,11 @@ export const DashboardPage = () => {
                 />
 
                 {!summaryQuery.isLoading && !summaryQuery.isError && data && isEmpty ? (
-                    <EmptyDashboardState />
+                    <EmptyState
+                        icon={Activity}
+                        title="No activity this month"
+                        description="Add a transaction to see your dashboard summary."
+                    />
                 ) : null}
 
                 {!summaryQuery.isLoading && !summaryQuery.isError && data && !isEmpty ? (
