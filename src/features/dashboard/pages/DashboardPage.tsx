@@ -6,6 +6,8 @@ import AccountBreakdownCard from '@/features/dashboard/components/AccountBreakdo
 import RecentTransactionsCard from '@/features/dashboard/components/RecentTransactionsCard'
 import { Activity } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
+import { Activity } from 'lucide-react'
+import { EmptyState } from '@/components/ui'
 import { useMonthlySummary } from '@/features/dashboard/hooks/use-monthly-summary'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
