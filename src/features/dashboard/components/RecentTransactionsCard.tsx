@@ -1,7 +1,6 @@
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent, AppLink } from '@/components/ui'
 import { formatCurrency } from '@/lib/format-currency'
 import type { SummaryRecentTransaction } from '@/features/dashboard/types/summary.types'
-import { Link } from 'react-router-dom'
 import { useSelectedMonth } from '@/shared/month'
 
 type Props = {
@@ -41,9 +40,9 @@ export const RecentTransactionsCard = ({ transactions }: Props) => {
                 )}
 
                 <div className="mt-4 text-right">
-                    <Link to={`/transactions?month=${month}`} className="text-sm text-primary">
+                    <AppLink to={`/transactions?month=${month}`} className="text-sm">
                         View all transactions
-                    </Link>
+                    </AppLink>
                 </div>
             </CardContent>
         </Card>

@@ -26,16 +26,16 @@ export const WithHeader: Story = {
     ),
 }
 
-export const WithFooter: Story = {
+export const Composed: Story = {
     render: () => (
         <Card className="max-w-sm">
             <CardHeader>
-                <CardTitle>Footer example</CardTitle>
-                <CardDescription>Useful for summary cards.</CardDescription>
+                <CardTitle>Monthly summary</CardTitle>
+                <CardDescription>September spending overview.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="text-sm text-muted-foreground">Main content</div>
-                <div className="mt-4 border-t pt-4 text-xs text-muted-foreground">Footer text</div>
+                <div className="text-3xl font-semibold">$1,240.00</div>
+                <div className="mt-2 text-sm text-muted-foreground">$320 below your budget</div>
             </CardContent>
         </Card>
     ),
