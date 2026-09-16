@@ -7,7 +7,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { withCompactLayout } from './decorators'
+import { withCompactLayout } from '../decorators'
 
 const meta = {
     title: 'UI/Select',

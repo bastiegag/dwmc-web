@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { withCenteredLayout } from './decorators'
+import { withCenteredLayout } from '../decorators'
 
 const meta: Meta<typeof Alert> = {
     title: 'UI/Alert',

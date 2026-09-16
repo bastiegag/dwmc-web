@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { withCompactLayout } from './decorators'
+import { withCompactLayout } from '../decorators'
 
 const meta = {
     title: 'UI/RadioGroup',

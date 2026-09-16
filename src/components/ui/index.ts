@@ -1,5 +1,4 @@
 export { Alert, AlertTitle, AlertDescription } from './alert'
-export { AppLink } from './link'
 export { Button } from './button'
 export { buttonVariants } from './button-variants'
 export type { ButtonProps } from './button'

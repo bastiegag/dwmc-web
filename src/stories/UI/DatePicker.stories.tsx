@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DatePicker } from '@/components/ui/date-picker'
-import { withCompactLayout } from './decorators'
+import { withCompactLayout } from '../decorators'
 
 const selectedDate = new Date(2026, 8, 15)
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { AppLink } from '@/components/ui/link'
-import { withRouter } from './decorators'
+import { withRouter } from '../decorators'
 
 const meta = {
     title: 'UI/AppLink',

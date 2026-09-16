@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { withCenteredLayout } from './decorators'
+import { withCenteredLayout } from '../decorators'
 
 const meta = {
     title: 'UI/Popover',
