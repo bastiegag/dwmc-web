@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
 import { TextField, FormError, FormSubmitButton } from '@/components/form'
-import { Alert, AlertDescription } from '@/components/ui'
+import { Alert, AlertDescription, AppLink } from '@/components/ui'
 import { useForgotPassword } from '@/features/auth/hooks'
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/schemas'
 
@@ -44,12 +43,7 @@ export const ForgotPasswordForm = () => {
                     </AlertDescription>
                 </Alert>
                 <p className="text-center text-sm text-muted-foreground">
-                    <Link
-                        to="/login"
-                        className="text-primary underline underline-offset-4 hover:underline"
-                    >
-                        Back to sign in
-                    </Link>
+                    <AppLink to="/login">Back to sign in</AppLink>
                 </p>
             </div>
         )
@@ -72,13 +66,7 @@ export const ForgotPasswordForm = () => {
                 Send reset link
             </FormSubmitButton>
             <p className="text-center text-sm text-muted-foreground">
-                Remember your password?{' '}
-                <Link
-                    to="/login"
-                    className="text-primary underline underline-offset-4 hover:underline"
-                >
-                    Sign in
-                </Link>
+                Remember your password? <AppLink to="/login">Sign in</AppLink>
             </p>
         </form>
     )
