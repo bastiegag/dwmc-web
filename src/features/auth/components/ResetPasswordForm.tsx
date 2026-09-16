@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
 import { PasswordField, FormError, FormSubmitButton } from '@/components/form'
-import { Alert, AlertDescription } from '@/components/ui'
+import { Alert, AlertDescription, AppLink } from '@/components/ui'
 import { useResetPassword } from '@/features/auth/hooks'
 import { resetPasswordSchema, type ResetPasswordInput } from '@/features/auth/schemas'
 
@@ -42,12 +41,7 @@ export const ResetPasswordForm = () => {
                     <AlertDescription>Password updated successfully!</AlertDescription>
                 </Alert>
                 <p className="text-center text-sm">
-                    <Link
-                        to="/login"
-                        className="text-primary underline underline-offset-4 hover:underline"
-                    >
-                        Sign in with your new password
-                    </Link>
+                    <AppLink to="/login">Sign in with your new password</AppLink>
                 </p>
             </div>
         )

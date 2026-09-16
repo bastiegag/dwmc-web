@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Activity } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
-import EmptyDashboardState from '@/features/dashboard/components/EmptyDashboardState'
+import { EmptyState } from '@/components/ui'
 import CategoryBreakdownCard from '@/features/dashboard/components/CategoryBreakdownCard'
 import RecentTransactionsCard from '@/features/dashboard/components/RecentTransactionsCard'
 import SummaryCards from '@/features/dashboard/components/SummaryCards'
@@ -24,7 +25,13 @@ export const Loading: Story = {
 }
 
 export const Empty: Story = {
-    render: () => <EmptyDashboardState />,
+    render: () => (
+        <EmptyState
+            icon={Activity}
+            title="No activity this month"
+            description="Add a transaction to see your dashboard summary."
+        />
+    ),
 }
 
 export const Error: Story = {

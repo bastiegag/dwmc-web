@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
 import { LoadingSpinner } from '@/components/feedback'
+import { AppLink } from '@/components/ui'
 import { ResetPasswordForm } from '@/features/auth/components'
 import { usePasswordRecovery } from '@/features/auth/hooks'
 import { AuthPageCard } from './AuthPageCard'
@@ -24,12 +24,7 @@ export const ResetPasswordPage = () => {
                 description="This password reset link is invalid or has already been used."
             >
                 <div className="text-center text-sm">
-                    <Link
-                        to="/forgot-password"
-                        className="text-primary underline underline-offset-4 hover:underline"
-                    >
-                        Request a new password reset
-                    </Link>
+                    <AppLink to="/forgot-password">Request a new password reset</AppLink>
                 </div>
             </AuthPageCard>
         )

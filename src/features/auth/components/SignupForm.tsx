@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
 import { TextField, PasswordField, FormError, FormSubmitButton } from '@/components/form'
-import { Alert, AlertDescription } from '@/components/ui'
+import { Alert, AlertDescription, AppLink } from '@/components/ui'
 import { useSignup } from '@/features/auth/hooks'
 import { signupSchema, type SignupInput } from '@/features/auth/schemas'
 
@@ -83,13 +83,7 @@ export const SignupForm = () => {
                 Create account
             </FormSubmitButton>
             <p className="text-center text-sm text-muted-foreground">
-                Already have an account?{' '}
-                <Link
-                    to="/login"
-                    className="text-primary underline underline-offset-4 hover:underline"
-                >
-                    Sign in
-                </Link>
+                Already have an account? <AppLink to="/login">Sign in</AppLink>
             </p>
         </form>
     )

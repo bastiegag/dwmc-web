@@ -14,11 +14,7 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
 
     return (
         <header className="flex items-center justify-between bg-primary text-primary-foreground p-4">
-            <Link
-                to={`/dashboard?month=${month}`}
-                className="flex items-center"
-                aria-label="Go to dashboard"
-            >
+            <Link to={`/dashboard?month=${month}`} className="flex items-center" aria-label="DWMC">
                 <div className="flex items-center gap-2 text-sm">
                     <Logo className="size-6 text-white" />
                     Dude, where's my cash?
@@ -26,7 +22,13 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
             </Link>
             <div className="flex items-center gap-2">
                 <ThemeToggle />
-                <Button variant="ghost" size="icon" onClick={onLogout} disabled={isLoggingOut}>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Sign out"
+                    onClick={onLogout}
+                    disabled={isLoggingOut}
+                >
                     <LogOut />
                 </Button>
             </div>
