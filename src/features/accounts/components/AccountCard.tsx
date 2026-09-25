@@ -84,7 +84,8 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                 <div className="flex gap-2">
                     <Button
                         size="sm"
-                        variant="ghost"
+                        variant="link"
+                        className="no-underline hover:bg-accent/10"
                         onClick={() => onEdit(account)}
                         aria-label={`Edit ${account.name}`}
                     >
@@ -92,7 +93,8 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                     </Button>
                     <Button
                         size="sm"
-                        variant="ghost"
+                        variant="link"
+                        className="no-underline hover:bg-accent/10"
                         onClick={() => setIsConfirmOpen(true)}
                         aria-label={`Archive ${account.name}`}
                     >
@@ -156,7 +158,8 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                             </Button>
                             <Button
                                 type="button"
-                                variant="destructive"
+                                color="destructive"
+                                variant="contained"
                                 onClick={async () => {
                                     await onArchive(account)
                                     setIsConfirmOpen(false)

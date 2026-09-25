@@ -37,7 +37,8 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
 
                 <div className="flex items-center gap-2">
                     <Button
-                        variant="ghost"
+                        variant="link"
+                        className="no-underline hover:bg-accent/10"
                         size="sm"
                         onClick={() => onEdit(budget)}
                         aria-label={`Edit ${category.name}`}
@@ -118,7 +119,8 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                             </Button>
                             <Button
                                 type="button"
-                                variant="destructive"
+                                color="destructive"
+                                variant="contained"
                                 onClick={async () => {
                                     await onArchive(budget)
                                     setIsConfirmOpen(false)

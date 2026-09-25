@@ -49,7 +49,8 @@ export const SectionCard = ({
                 <div className="flex gap-2">
                     <Button
                         type="button"
-                        variant="ghost"
+                        variant="link"
+                        className="no-underline hover:bg-accent/10"
                         size="sm"
                         onClick={() => onEditSection(section)}
                         aria-label={`Edit section ${section.name}`}
@@ -58,7 +59,8 @@ export const SectionCard = ({
                     </Button>
                     <Button
                         type="button"
-                        variant="ghost"
+                        variant="link"
+                        className="no-underline hover:bg-accent/10"
                         size="sm"
                         onClick={() => setIsConfirmOpen(true)}
                         aria-label={`Archive section ${section.name}`}
@@ -105,7 +107,8 @@ export const SectionCard = ({
                             </Button>
                             <Button
                                 type="button"
-                                variant="destructive"
+                                color="destructive"
+                                variant="contained"
                                 onClick={async () => {
                                     await onArchiveSection(section)
                                     setIsConfirmOpen(false)

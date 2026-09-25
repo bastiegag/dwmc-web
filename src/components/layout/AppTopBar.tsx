@@ -23,8 +23,9 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
             <div className="flex items-center gap-2">
                 <ThemeToggle />
                 <Button
-                    variant="ghost"
-                    size="icon"
+                    variant="link"
+                    className="no-underline hover:bg-accent/10"
+                    icon
                     aria-label="Sign out"
                     onClick={onLogout}
                     disabled={isLoggingOut}

@@ -38,7 +38,8 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
             <div className="flex gap-2">
                 <Button
                     type="button"
-                    variant="ghost"
+                    variant="link"
+                    className="no-underline hover:bg-accent/10"
                     size="sm"
                     onClick={() => onEdit(category)}
                     aria-label={`Edit category ${category.name}`}
@@ -47,7 +48,8 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
                 </Button>
                 <Button
                     type="button"
-                    variant="ghost"
+                    variant="link"
+                    className="no-underline hover:bg-accent/10"
                     size="sm"
                     onClick={() => setIsConfirmOpen(true)}
                     aria-label={`Archive category ${category.name}`}
@@ -86,7 +88,8 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
                             </Button>
                             <Button
                                 type="button"
-                                variant="destructive"
+                                color="destructive"
+                                variant="contained"
                                 onClick={async () => {
                                     await onArchive(category)
                                     setIsConfirmOpen(false)

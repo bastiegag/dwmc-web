@@ -53,7 +53,12 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                     </div>
 
                     <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => onEdit(transaction)}>
+                        <Button
+                            variant="link"
+                            className="no-underline hover:bg-accent/10"
+                            size="sm"
+                            onClick={() => onEdit(transaction)}
+                        >
                             Edit
                         </Button>
                         <Button
@@ -99,7 +104,8 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                             </Button>
                             <Button
                                 type="button"
-                                variant="destructive"
+                                color="destructive"
+                                variant="contained"
                                 onClick={async () => {
                                     await onArchive(transaction)
                                     setIsConfirmOpen(false)

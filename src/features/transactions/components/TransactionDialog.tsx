@@ -54,7 +54,8 @@ export const TransactionDialog = ({
                     </h2>
                     <Button
                         type="button"
-                        variant="ghost"
+                        variant="link"
+                        className="no-underline hover:bg-accent/10"
                         size="sm"
                         onClick={() => onOpenChange(false)}
                         aria-label="Close transaction dialog"

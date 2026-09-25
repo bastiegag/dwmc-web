@@ -3,13 +3,13 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const alertVariants = cva(
-    'relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground',
+    'relative w-full rounded-lg border-2 p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground',
     {
         variants: {
             variant: {
-                default: 'bg-background text-foreground',
+                default: 'bg-foreground/10 text-foreground border-foreground/10',
                 destructive:
-                    'border-destructive/50 bg-destructive/10 text-destructive dark:border-destructive [&>svg]:text-destructive',
+                    'border-destructive/50 bg-destructive/10 border-destructive/20 text-destructive dark:border-destructive [&>svg]:text-destructive',
                 success:
                     'border-success/50 bg-success/10 text-success dark:border-success [&>svg]:text-success',
                 warning:
@@ -31,7 +31,7 @@ Alert.displayName = 'Alert'
 
 const AlertTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
     ({ className, children, ...props }, ref) => (
-        <h5 ref={ref} className={cn('mb-1 font-medium leading-none', className)} {...props}>
+        <h5 ref={ref} className={cn('mb-1 font-semibold leading-none', className)} {...props}>
             {children}
         </h5>
     ),
@@ -40,7 +40,11 @@ AlertTitle.displayName = 'AlertTitle'
 
 const AlertDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => (
-        <div ref={ref} className={cn('text-sm [&_p]:leading-relaxed', className)} {...props} />
+        <div
+            ref={ref}
+            className={cn('text-sm font-light [&_p]:leading-relaxed', className)}
+            {...props}
+        />
     ),
 )
 AlertDescription.displayName = 'AlertDescription'
