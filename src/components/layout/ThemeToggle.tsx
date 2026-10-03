@@ -29,9 +29,8 @@ export const ThemeToggle = ({ className }: ThemeToggleProps) => {
     return (
         <Button
             variant="link"
-            className="no-underline hover:bg-accent/10"
+            className={cn('no-underline hover:bg-accent/10', className)}
             icon
-            className={cn(className)}
             onClick={() => setTheme(NEXT_THEME[theme])}
             aria-label={NEXT_LABEL[theme]}
         >

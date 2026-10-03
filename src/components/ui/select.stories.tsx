@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 const accounts = ['Everyday spending', 'Savings', 'Travel fund']
 
 const meta = {
-    title: 'UI/Forms/Select',
+    title: 'Design System/Components/Forms/Select',
     component: Select,
     tags: ['autodocs'],
 } satisfies Meta<typeof Select>

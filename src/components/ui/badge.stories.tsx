@@ -12,7 +12,7 @@ const variants = [
 ] as const
 
 const meta = {
-    title: 'UI/Display/Badge',
+    title: 'Design System/Components/Data Display/Badge',
     component: Badge,
     tags: ['autodocs'],
     argTypes: {

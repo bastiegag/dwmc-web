@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Input } from '@/components/ui/input'
 
 const meta = {
-    title: 'UI/Forms/Input',
+    title: 'Design System/Components/Forms/Input',
     component: Input,
     tags: ['autodocs'],
     parameters: {

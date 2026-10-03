@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { AppLink } from './link'
 
 const meta = {
-    title: 'UI/Navigation/Link',
+    title: 'Design System/Components/Navigation/Link',
     component: AppLink,
     tags: ['autodocs'],
     decorators: [

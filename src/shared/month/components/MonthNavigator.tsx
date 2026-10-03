@@ -9,8 +9,7 @@ export const MonthNavigator = () => {
         <div className="flex items-center justify-between gap-2 bg-white rounded-full shadow-md w-full p-1">
             <Button
                 variant="link"
-                className="no-underline hover:bg-accent/10"
-                className="hover:bg-foreground/5"
+                className="no-underline hover:bg-foreground/5"
                 icon
                 aria-label="Go to previous month"
                 onClick={goToPreviousMonth}
@@ -22,8 +21,7 @@ export const MonthNavigator = () => {
             </span>
             <Button
                 variant="link"
-                className="no-underline hover:bg-accent/10"
-                className="hover:bg-foreground/5"
+                className="no-underline hover:bg-foreground/5"
                 icon
                 aria-label="Go to next month"
                 onClick={goToNextMonth}

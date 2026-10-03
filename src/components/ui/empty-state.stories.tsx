@@ -3,7 +3,7 @@ import { Inbox } from 'lucide-react'
 import { EmptyState } from './empty-state'
 
 const meta = {
-    title: 'UI/Feedback/EmptyState',
+    title: 'Design System/Patterns/Empty States/Empty State',
     component: EmptyState,
     tags: ['autodocs'],
 } satisfies Meta<typeof EmptyState>

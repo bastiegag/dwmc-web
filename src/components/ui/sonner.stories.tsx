@@ -5,7 +5,7 @@ import { Toaster } from './sonner'
 import { ThemeProvider } from '@/shared/theme'
 
 const meta = {
-    title: 'UI/Feedback/Toaster',
+    title: 'Design System/Components/Feedback/Toaster',
     component: Toaster,
     tags: ['autodocs'],
     decorators: [
