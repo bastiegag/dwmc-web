@@ -5,7 +5,7 @@ import type { Resolver } from 'react-hook-form'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { FormError } from '@/components/form/FormError'
-import { FormSubmitButton } from '@/components/form/FormSubmitButton'
+import { Button } from '@/components/ui/button'
 import { budgetFormSchema, type BudgetFormValues } from '@/features/budgets/schemas/budget.schema'
 import type { SectionWithCategories } from '@/features/categories/types'
 
@@ -116,7 +116,9 @@ export const BudgetForm = ({
             <FormError message={errorMessage} />
 
             <div className="flex justify-end">
-                <FormSubmitButton isLoading={isPending}>{submitLabel}</FormSubmitButton>
+                <Button type="submit" className="w-full" isLoading={isPending}>
+                    {submitLabel}
+                </Button>
             </div>
         </form>
     )

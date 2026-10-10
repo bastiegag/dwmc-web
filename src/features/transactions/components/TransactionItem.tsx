@@ -30,7 +30,7 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
     })()
 
     return (
-        <Card className="mb-3 p-4">
+        <Card className="mb-3">
             <div className="flex items-center justify-between">
                 <div>
                     <div className="flex items-baseline gap-3">
@@ -62,7 +62,7 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                             Edit
                         </Button>
                         <Button
-                            variant="outline"
+                            variant="outlined"
                             size="sm"
                             onClick={() => setIsConfirmOpen(true)}
                             aria-label={`Archive transaction ${transaction.id}`}
@@ -97,7 +97,7 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                         <div className="mt-4 flex justify-end gap-2">
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant="outlined"
                                 onClick={() => setIsConfirmOpen(false)}
                             >
                                 Cancel

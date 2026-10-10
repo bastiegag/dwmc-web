@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
-import { FormSubmitButton } from '@/components/form/FormSubmitButton'
+import { Button } from '@/components/ui/button'
 import { TextField } from '@/components/form/TextField'
 import { categoryFormSchema, type CategoryFormValues } from '@/features/categories/schemas'
 import type { SectionWithCategories } from '@/features/categories/types'
@@ -99,9 +99,9 @@ export const CategoryForm = ({
 
             <FormError message={errorMessage} />
 
-            <FormSubmitButton isLoading={isPending} loadingText="Saving...">
+            <Button type="submit" className="w-full" isLoading={isPending} loadingText="Saving...">
                 {submitLabel}
-            </FormSubmitButton>
+            </Button>
         </form>
     )
 }

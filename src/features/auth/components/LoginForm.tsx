@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { TextField, PasswordField, FormError, FormSubmitButton } from '@/components/form'
-import { AppLink } from '@/components/ui'
+import { TextField, PasswordField, FormError } from '@/components/form'
+import { AppLink, Button } from '@/components/ui'
 import { useLogin } from '@/features/auth/hooks'
 import { loginSchema, type LoginInput } from '@/features/auth/schemas'
 
@@ -63,14 +63,17 @@ export const LoginForm = () => {
                 required
                 {...register('password')}
             />
-            <div className="flex justify-end">
-                <AppLink to="/forgot-password" className="text-sm">
-                    Forgot your password?
-                </AppLink>
-            </div>
-            <FormSubmitButton isLoading={isPending} loadingText="Signing in...">
+            <p className="text-center text-sm">
+                <AppLink to="/forgot-password">Forgot your password?</AppLink>
+            </p>
+            <Button
+                type="submit"
+                className="w-full"
+                isLoading={isPending}
+                loadingText="Signing in..."
+            >
                 Sign in
-            </FormSubmitButton>
+            </Button>
             <p className="text-center text-sm">
                 Don&apos;t have an account? <AppLink to="/signup">Sign up</AppLink>
             </p>

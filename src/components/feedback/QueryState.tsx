@@ -1,5 +1,4 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
+import { Alert } from '@/components/ui/alert'
 import { LoadingSpinner } from './LoadingSpinner'
 
 interface QueryStateProps {
@@ -32,18 +31,11 @@ export const QueryState = ({
     if (!isError) return null
 
     return (
-        <Alert variant="destructive">
-            <AlertTitle>{errorTitle}</AlertTitle>
-            <AlertDescription>
-                {errorMessage ?? fallbackErrorMessage}
-                {onRetry ? (
-                    <div className="mt-2">
-                        <Button type="button" variant="outline" size="sm" onClick={onRetry}>
-                            Retry
-                        </Button>
-                    </div>
-                ) : null}
-            </AlertDescription>
-        </Alert>
+        <Alert
+            variant="destructive"
+            title={errorTitle}
+            description={errorMessage ?? fallbackErrorMessage}
+            action={onRetry ? { label: 'Retry', onClick: onRetry } : undefined}
+        />
     )
 }

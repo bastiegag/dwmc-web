@@ -1,0 +1,88 @@
+@theme {
+    --font-sans: 'Montserrat', sans-serif;
+
+    /* Font sizes */
+    --text-xs: 0.75rem;
+    --text-xs--line-height: 1rem;
+
+    --text-sm: 0.875rem;
+    --text-sm--line-height: 1.25rem;
+
+    --text-base: 1rem;
+    --text-base--line-height: 1.5rem;
+
+    --text-lg: 1.125rem;
+    --text-lg--line-height: 1.75rem;
+
+    --text-xl: 1.25rem;
+    --text-xl--line-height: 1.75rem;
+
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: 2rem;
+
+    --text-3xl: 1.875rem;
+    --text-3xl--line-height: 2.25rem;
+
+    --text-4xl: 2.25rem;
+    --text-4xl--line-height: 2.5rem;
+}
+
+/* Headings */
+
+@utility text-heading-1 {
+    @apply text-3xl font-light;
+}
+
+@utility text-heading-2 {
+    @apply text-2xl font-semibold;
+}
+
+@utility text-heading-3 {
+    @apply text-xl font-semibold;
+}
+
+@utility text-heading-4 {
+    @apply text-lg font-semibold;
+}
+
+/* Body */
+
+@utility text-body-lg {
+    @apply text-lg font-normal;
+}
+
+@utility text-body {
+    @apply text-base font-normal;
+}
+
+@utility text-body-sm {
+    @apply text-sm font-normal;
+}
+
+/* Supporting text */
+
+@utility text-label {
+    @apply text-sm font-medium;
+}
+
+@utility text-caption {
+    @apply text-xs font-normal;
+}
+
+@utility text-overline {
+    @apply text-xs font-semibold uppercase tracking-wider;
+}
+
+/* Financial data */
+
+@utility text-amount-lg {
+    @apply text-3xl font-semibold tabular-nums tracking-tight;
+}
+
+@utility text-amount {
+    @apply text-2xl font-semibold tabular-nums;
+}
+
+@utility text-amount-sm {
+    @apply text-base font-semibold tabular-nums;
+}

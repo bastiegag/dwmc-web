@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen } from '@/test/utils/render'
-import { QueryState } from '../QueryState'
+import { QueryState } from './QueryState'
 
 describe('QueryState', () => {
     it('renders loading and remains empty for a successful query', () => {

@@ -11,7 +11,7 @@ const colors = [
     'success',
     'info',
 ] as const
-const variants = ['contained', 'outline', 'link'] as const
+const variants = ['contained', 'outlined', 'link'] as const
 const formatColor = (color: (typeof colors)[number]) => color[0].toUpperCase() + color.slice(1)
 
 const meta = {
@@ -22,14 +22,14 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Triggers an action or event. Supports semantic colors, multiple sizes, outline styling, icons, and disabled states.',
+                    'Triggers an action or event. Supports semantic colors, multiple sizes, outline styling, icons, disabled states, and loading feedback.',
             },
         },
     },
     argTypes: {
         variant: {
             control: 'select',
-            options: ['contained', 'outline', 'link'],
+            options: ['contained', 'outlined', 'link'],
         },
         color: {
             control: 'select',
@@ -37,10 +37,12 @@ const meta = {
         },
         size: {
             control: 'select',
-            options: ['default', 'sm', 'lg'],
+            options: ['sm', 'md', 'lg'],
         },
         icon: { control: false },
         disabled: { control: 'boolean' },
+        isLoading: { control: 'boolean' },
+        loadingText: { control: 'text' },
         children: { control: 'text' },
         asChild: { control: false },
     },
@@ -78,8 +80,12 @@ export const Disabled: Story = {
     args: { children: 'Button', disabled: true },
 }
 
+export const Loading: Story = {
+    args: { children: 'Save changes', isLoading: true, loadingText: 'Saving...' },
+}
+
 export const AllVariants: Story = {
-    args: { size: 'default' },
+    args: { size: 'md' },
     argTypes: {
         children: { control: false },
         variant: { control: false },
@@ -101,7 +107,7 @@ export const AllVariants: Story = {
                     {colors.map((color) => (
                         <Button
                             key={`${variant}-${color}`}
-                            color={color}
+                            color={color === 'default' ? undefined : color}
                             variant={variant}
                             size={size}
                         >

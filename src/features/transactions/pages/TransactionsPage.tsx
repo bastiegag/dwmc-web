@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import { Alert } from '@/components/ui/alert'
 import { QueryState } from '@/components/feedback'
 import {
     useTransactions,
@@ -215,10 +215,7 @@ export const TransactionsPage = () => {
             />
 
             {archiveError ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Archive failed</AlertTitle>
-                    <AlertDescription>{archiveError}</AlertDescription>
-                </Alert>
+                <Alert variant="destructive" title="Archive failed" description={archiveError} />
             ) : null}
 
             {!transactionsQuery.isLoading &&

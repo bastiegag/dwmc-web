@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import type { Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormError } from '@/components/form/FormError'
-import { FormSubmitButton } from '@/components/form/FormSubmitButton'
+import { Button } from '@/components/ui/button'
 import { TextField } from '@/components/form/TextField'
 import { Label } from '@/components/ui/label'
 import { FormField } from '@/components/form/FormField'
@@ -219,9 +219,9 @@ export const TransactionForm = ({
 
             <FormError message={errorMessage} />
 
-            <FormSubmitButton isLoading={isPending} loadingText="Saving...">
+            <Button type="submit" className="w-full" isLoading={isPending} loadingText="Saving...">
                 Save
-            </FormSubmitButton>
+            </Button>
         </form>
     )
 }

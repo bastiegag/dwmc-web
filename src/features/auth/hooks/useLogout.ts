@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { authService } from '@/features/auth/services'
-import { authSessionQueryKey } from './use-auth'
+import { authSessionQueryKey } from './useAuth'
 import { toast } from 'sonner'
 
 export const useLogout = () => {

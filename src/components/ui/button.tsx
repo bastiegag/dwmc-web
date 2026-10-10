@@ -1,8 +1,7 @@
-import { forwardRef } from 'react'
-import type { ButtonHTMLAttributes } from 'react'
+import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import { Slot } from '@radix-ui/react-slot'
-import { type VariantProps } from 'class-variance-authority'
-import { cva } from 'class-variance-authority'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { LoadingSpinner } from '@/components/feedback'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
@@ -12,13 +11,13 @@ const buttonVariants = cva(
             variant: {
                 contained:
                     'bg-(--button-color) text-(--button-foreground) hover:bg-(--button-hover)',
-                outline:
+                outlined:
                     'border border-(--button-color) text-(--button-color) hover:bg-(--button-tint)',
-                link: 'text-(--button-color) underline-offset-4 hover:underline',
+                link: 'text-(--button-color) hover:bg-(--button-tint)',
             },
             color: {
                 default:
-                    '[--button-color:var(--default)] [--button-foreground:var(--default-foreground)] [--button-hover:color-mix(in_srgb,var(--default)_90%,transparent)] [--button-tint:color-mix(in_srgb,var(--default)_10%,transparent)]',
+                    '[--button-color:var(--foreground)] [--button-foreground:var(--background)] [--button-hover:color-mix(in_srgb,var(--foreground)_90%,transparent)] [--button-tint:color-mix(in_srgb,var(--foreground)_10%,transparent)]',
                 primary:
                     '[--button-color:var(--primary)] [--button-foreground:var(--primary-foreground)] [--button-hover:color-mix(in_srgb,var(--primary)_90%,transparent)] [--button-tint:color-mix(in_srgb,var(--primary)_10%,transparent)]',
                 secondary:
@@ -32,15 +31,15 @@ const buttonVariants = cva(
                 info: '[--button-color:var(--info)] [--button-foreground:var(--info-foreground)] [--button-hover:color-mix(in_srgb,var(--info)_90%,transparent)] [--button-tint:color-mix(in_srgb,var(--info)_10%,transparent)]',
             },
             size: {
-                default: 'h-10 px-4 py-2',
-                sm: 'h-9 px-3',
-                lg: 'h-11 px-8',
+                sm: 'h-8 px-4',
+                md: 'h-10 px-6',
+                lg: 'h-12 px-8',
             },
             icon: {
                 true: 'aspect-square p-0',
             },
         },
-        defaultVariants: { variant: 'contained', color: 'default', size: 'default' },
+        defaultVariants: { variant: 'contained', color: 'default', size: 'md' },
     },
 )
 
@@ -50,17 +49,46 @@ export interface ButtonProps
         VariantProps<typeof buttonVariants> {
     asChild?: boolean
     icon?: boolean
+    isLoading?: boolean
+    loadingText?: string
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, color, size, icon, asChild = false, ...props }, ref) => {
+    (
+        {
+            className,
+            variant,
+            color,
+            size,
+            icon,
+            asChild = false,
+            isLoading = false,
+            loadingText = 'Loading...',
+            children,
+            disabled,
+            ...props
+        },
+        ref,
+    ) => {
         const Comp = asChild ? Slot : 'button'
+
         return (
             <Comp
                 className={cn(buttonVariants({ variant, color, size, icon }), className)}
                 ref={ref}
+                disabled={disabled || isLoading}
+                aria-busy={isLoading}
                 {...props}
-            />
+            >
+                {isLoading ? (
+                    <>
+                        <LoadingSpinner size="sm" aria-hidden="true" />
+                        <span>{loadingText}</span>
+                    </>
+                ) : (
+                    children
+                )}
+            </Comp>
         )
     },
 )

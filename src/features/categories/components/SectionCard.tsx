@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { SectionWithCategories } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
 import { useDialogFocus } from '@/shared/dialog'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { CategoryList } from './CategoryList'
 
 type SectionCardProps = {
@@ -30,16 +30,16 @@ export const SectionCard = ({
 
     return (
         <Card>
-            <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
+            <div className="flex flex-row items-start justify-between gap-3 space-y-0">
                 <div className="space-y-1">
-                    <CardTitle className="flex items-center gap-2 text-lg">
+                    <h2 className="flex items-center gap-2 text-lg">
                         <span
                             className="inline-block h-3 w-3 rounded-full border"
                             style={{ backgroundColor: section.color }}
                             aria-hidden="true"
                         />
                         <span>{section.name}</span>
-                    </CardTitle>
+                    </h2>
                     <p className="text-sm text-muted-foreground">
                         {section.categories.length}{' '}
                         {section.categories.length === 1 ? 'category' : 'categories'}
@@ -68,14 +68,14 @@ export const SectionCard = ({
                         Archive
                     </Button>
                 </div>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div className="mt-4">
                 <CategoryList
                     categories={section.categories}
                     onEditCategory={onEditCategory}
                     onArchiveCategory={onArchiveCategory}
                 />
-            </CardContent>
+            </div>
 
             {isConfirmOpen ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -100,7 +100,7 @@ export const SectionCard = ({
                         <div className="mt-4 flex justify-end gap-2">
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant="outlined"
                                 onClick={() => setIsConfirmOpen(false)}
                             >
                                 Cancel

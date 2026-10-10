@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
 import { FormField } from '@/components/form/FormField'
-import { FormSubmitButton } from '@/components/form/FormSubmitButton'
+import { Button } from '@/components/ui/button'
 import { TextField } from '@/components/form/TextField'
 import {
     Select,
@@ -142,9 +142,14 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
                     Profile saved.
                 </p>
             )}
-            <FormSubmitButton isLoading={updateProfile.isPending} loadingText="Saving...">
+            <Button
+                type="submit"
+                className="w-full"
+                isLoading={updateProfile.isPending}
+                loadingText="Saving..."
+            >
                 Save changes
-            </FormSubmitButton>
+            </Button>
         </form>
     )
 }

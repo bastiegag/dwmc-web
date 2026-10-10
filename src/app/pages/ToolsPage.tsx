@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Settings, Tags, User } from 'lucide-react'
 import { useSelectedMonth } from '@/shared/month'
 
@@ -41,15 +40,15 @@ export const ToolsPage = () => {
                         to={`${tool.to}?month=${month}`}
                         className="block h-full rounded-lg border bg-card text-card-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
-                        <CardHeader className="flex flex-row items-center gap-4">
+                        <div className="flex flex-row items-center gap-4 p-4">
                             <div className="rounded-lg bg-primary/10 p-3 text-primary">
                                 <tool.icon className="size-6" aria-hidden="true" />
                             </div>
-                            <CardTitle className="text-lg">{tool.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
+                            <h2 className="text-lg">{tool.title}</h2>
+                        </div>
+                        <div className="p-4 pt-0 pb-6">
                             <p className="text-sm text-muted-foreground">{tool.description}</p>
-                        </CardContent>
+                        </div>
                     </Link>
                 ))}
             </div>

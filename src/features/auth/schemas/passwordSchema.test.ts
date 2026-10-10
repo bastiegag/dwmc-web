@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { passwordSchema, signupSchema, resetPasswordSchema } from '../index'
+import { passwordSchema, signupSchema, resetPasswordSchema } from './index'
 
 // Helper: build a string of exact length
 const str = (len: number) => 'A'.repeat(Math.max(0, len - 3)) + 'a1!'

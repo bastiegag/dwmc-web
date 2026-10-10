@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react'
 import { render } from '@/test/utils/render'
 import { LoginPage } from '@/features/auth/pages/LoginPage'
 
-vi.mock('@/features/auth/hooks/use-login', () => ({
+vi.mock('@/features/auth/hooks/useLogin', () => ({
     useLogin: vi.fn(() => ({ login: vi.fn(), isPending: false, error: null })),
 }))
 

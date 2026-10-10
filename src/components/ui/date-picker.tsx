@@ -21,7 +21,7 @@ export const DatePicker = ({
         <Popover>
             <PopoverTrigger asChild>
                 <Button
-                    variant="outline"
+                    variant="outlined"
                     type="button"
                     disabled={disabled}
                     className="w-full justify-start text-left font-normal"

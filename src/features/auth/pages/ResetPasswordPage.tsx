@@ -1,8 +1,26 @@
+import type { ReactNode } from 'react'
 import { LoadingSpinner } from '@/components/feedback'
-import { AppLink } from '@/components/ui'
+import { AppLink, Card } from '@/components/ui'
 import { ResetPasswordForm } from '@/features/auth/components'
 import { usePasswordRecovery } from '@/features/auth/hooks'
-import { AuthPageCard } from './AuthPageCard'
+
+interface ResetPasswordCardProps {
+    heading: string
+    title: string
+    description: string
+    children: ReactNode
+}
+
+const ResetPasswordCard = ({ heading, title, description, children }: ResetPasswordCardProps) => (
+    <section aria-labelledby={heading}>
+        <h1 id={heading} className="sr-only">
+            {heading}
+        </h1>
+        <Card title={title} description={description}>
+            {children}
+        </Card>
+    </section>
+)
 
 export const ResetPasswordPage = () => {
     const { isLoading, isValid } = usePasswordRecovery()
@@ -17,27 +35,25 @@ export const ResetPasswordPage = () => {
 
     if (!isValid) {
         return (
-            <AuthPageCard
-                headingId="reset-password-error-heading"
-                heading="Reset password"
+            <ResetPasswordCard
+                heading="reset-password-error-heading"
                 title="Link expired or invalid"
                 description="This password reset link is invalid or has already been used."
             >
                 <div className="text-center text-sm">
                     <AppLink to="/forgot-password">Request a new password reset</AppLink>
                 </div>
-            </AuthPageCard>
+            </ResetPasswordCard>
         )
     }
 
     return (
-        <AuthPageCard
-            headingId="reset-password-heading"
-            heading="Reset your password"
+        <ResetPasswordCard
+            heading="reset-password-heading"
             title="Reset your password"
             description="Choose a strong new password for your account"
         >
             <ResetPasswordForm />
-        </AuthPageCard>
+        </ResetPasswordCard>
     )
 }

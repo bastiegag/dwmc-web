@@ -15,7 +15,7 @@ export const Default: Story = {
     render: () => (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant="outline">View budget details</Button>
+                <Button variant="outlined">View budget details</Button>
             </PopoverTrigger>
             <PopoverContent>
                 <p className="text-sm font-medium">Everyday spending</p>

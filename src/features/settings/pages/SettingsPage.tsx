@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { ThemePreferenceControl } from '../components/ThemePreferenceControl'
 
 export const SettingsPage = () => (
@@ -11,14 +11,12 @@ export const SettingsPage = () => (
                 Configure how the application looks and behaves on this device.
             </p>
         </div>
-        <Card className="max-w-3xl">
-            <CardHeader>
-                <CardTitle className="text-lg">Appearance</CardTitle>
-                <CardDescription>Choose the theme used by the application.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ThemePreferenceControl />
-            </CardContent>
+        <Card
+            className="max-w-3xl"
+            title={<span className="text-lg">Appearance</span>}
+            description="Choose the theme used by the application."
+        >
+            <ThemePreferenceControl />
         </Card>
     </section>
 )

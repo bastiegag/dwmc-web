@@ -1,6 +1,5 @@
 import { Moon, Monitor, Sun } from 'lucide-react'
 import { Button } from '@/components/ui'
-import { cn } from '@/lib/utils'
 import { useTheme } from '@/shared/theme'
 
 type Theme = 'light' | 'dark' | 'system'
@@ -18,18 +17,13 @@ const ICON: Record<Theme, typeof Sun> = {
     system: Monitor,
 }
 
-type ThemeToggleProps = {
-    className?: string
-}
-
-export const ThemeToggle = ({ className }: ThemeToggleProps) => {
+export const ThemeToggle = () => {
     const { theme, setTheme } = useTheme()
     const Icon = ICON[theme]
 
     return (
         <Button
             variant="link"
-            className={cn('no-underline hover:bg-accent/10', className)}
             icon
             onClick={() => setTheme(NEXT_THEME[theme])}
             aria-label={NEXT_LABEL[theme]}

@@ -46,7 +46,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                             An unexpected error occurred. Please try again.
                         </p>
                     </div>
-                    <Button onClick={this.handleReset} variant="outline">
+                    <Button onClick={this.handleReset} variant="outlined">
                         Try again
                     </Button>
                 </div>

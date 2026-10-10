@@ -1,5 +1,5 @@
 import { useState, type FC } from 'react'
-import { Card, CardHeader, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { formatCurrency } from '@/lib/format-currency'
@@ -18,7 +18,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
 
     return (
         <Card>
-            <CardHeader className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                     <div
                         style={{
@@ -46,7 +46,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                         Edit
                     </Button>
                     <Button
-                        variant="outline"
+                        variant="outlined"
                         size="sm"
                         onClick={() => setIsConfirmOpen(true)}
                         aria-label={`Archive ${category.name}`}
@@ -54,9 +54,9 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                         Archive
                     </Button>
                 </div>
-            </CardHeader>
+            </div>
 
-            <CardContent>
+            <div className="mt-4">
                 <div className="mb-3 flex items-end justify-between">
                     <div>
                         <div className="text-2xl font-semibold">
@@ -95,7 +95,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                 <div className="text-sm text-muted-foreground">
                     {budget.transactionCount} transaction{budget.transactionCount !== 1 ? 's' : ''}
                 </div>
-            </CardContent>
+            </div>
 
             {isConfirmOpen ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -112,7 +112,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                         <div className="mt-4 flex justify-end gap-2">
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant="outlined"
                                 onClick={() => setIsConfirmOpen(false)}
                             >
                                 Cancel

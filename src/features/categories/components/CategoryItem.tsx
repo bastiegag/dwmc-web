@@ -81,7 +81,7 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
                         <div className="mt-4 flex justify-end gap-2">
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant="outlined"
                                 onClick={() => setIsConfirmOpen(false)}
                             >
                                 Cancel

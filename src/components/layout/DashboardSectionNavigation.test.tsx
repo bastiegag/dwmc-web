@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { DashboardSectionNavigation } from '@/components/layout/DashboardSectionNavigation'
+import { DashboardSectionNavigation } from '@/components/layout'
 import { renderMonthAwareNavigation, screen } from '@/test/utils/render'
 
 describe('DashboardSectionNavigation', () => {

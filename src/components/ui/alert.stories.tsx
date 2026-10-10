@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { CircleCheck, Info as InfoIcon, TriangleAlert } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from './alert'
+import { Alert } from './alert'
 
 const meta = {
     title: 'Design System/Components/Feedback/Alert',
@@ -9,7 +8,7 @@ const meta = {
     argTypes: {
         variant: {
             control: 'select',
-            options: ['default', 'destructive', 'success', 'warning', 'info'],
+            options: ['info', 'success', 'warning', 'destructive'],
         },
     },
 } satisfies Meta<typeof Alert>
@@ -19,54 +18,73 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
     render: (args) => (
-        <Alert {...args}>
-            <AlertTitle>Monthly budget updated</AlertTitle>
-            <AlertDescription>Your Everyday spending budget is ready to review.</AlertDescription>
-        </Alert>
+        <Alert
+            {...args}
+            title="Monthly budget updated"
+            description="Your Everyday spending budget is ready to review."
+        />
     ),
 }
 
 export const Success: Story = {
     args: { variant: 'success' },
     render: (args) => (
-        <Alert {...args}>
-            <CircleCheck aria-hidden="true" />
-            <AlertTitle>Transaction saved</AlertTitle>
-            <AlertDescription>The grocery transaction was added successfully.</AlertDescription>
-        </Alert>
+        <Alert
+            {...args}
+            title="Transaction saved"
+            description="The grocery transaction was added successfully."
+        />
     ),
 }
 
 export const Warning: Story = {
     args: { variant: 'warning' },
     render: (args) => (
-        <Alert {...args}>
-            <TriangleAlert aria-hidden="true" />
-            <AlertTitle>Budget nearly reached</AlertTitle>
-            <AlertDescription>You have used 85% of this month&apos;s budget.</AlertDescription>
-        </Alert>
+        <Alert
+            {...args}
+            title="Budget nearly reached"
+            description="You have used 85% of this month's budget."
+        />
     ),
 }
 
 export const Info: Story = {
     args: { variant: 'info' },
     render: (args) => (
-        <Alert {...args}>
-            <InfoIcon aria-hidden="true" />
-            <AlertTitle>New month available</AlertTitle>
-            <AlertDescription>
-                Review your recurring categories before adding entries.
-            </AlertDescription>
-        </Alert>
+        <Alert
+            {...args}
+            title="New month available"
+            description="Review your recurring categories before adding entries."
+        />
     ),
 }
 
 export const Destructive: Story = {
     args: { variant: 'destructive' },
     render: (args) => (
-        <Alert {...args}>
-            <AlertTitle>Could not save changes</AlertTitle>
-            <AlertDescription>Check your connection and try again.</AlertDescription>
-        </Alert>
+        <Alert
+            {...args}
+            title="Could not save changes"
+            description="Check your connection and try again."
+        />
     ),
+}
+
+export const WithAction: Story = {
+    args: {
+        variant: 'warning',
+        title: 'Budget nearly reached',
+        description: 'Review your spending before the end of the month.',
+        action: { label: 'Review budget', onClick: () => undefined },
+    },
+}
+
+export const WithSecondaryAction: Story = {
+    args: {
+        variant: 'info',
+        title: 'New month available',
+        description: 'Review your recurring categories before adding entries.',
+        secondaryAction: { label: 'Later', onClick: () => undefined },
+        action: { label: 'Review now', onClick: () => undefined },
+    },
 }

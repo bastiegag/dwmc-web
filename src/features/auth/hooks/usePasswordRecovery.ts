@@ -22,7 +22,7 @@ const hasRecoveryCallback = (): boolean => {
  *   - 'invalid'  for any other event, including INITIAL_SESSION — a regular
  *                logged-in session must not grant access to the reset form
  */
-export const usePasswordRecovery = (): { isLoading: boolean; isValid: boolean } => {
+export const usePasswordRecovery = () => {
     const recoveryCallbackPresent = hasRecoveryCallback()
     const [status, setStatus] = useState<RecoveryStatus>(
         recoveryCallbackPresent ? 'valid' : 'loading',
