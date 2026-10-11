@@ -1,6 +1,7 @@
+import type { HTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
-type LoadingSpinnerProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'role'> & {
+type LoadingSpinnerProps = Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'role'> & {
     size?: 'sm' | 'md' | 'lg'
 }
 
@@ -11,17 +12,15 @@ export const LoadingSpinner = ({
     className,
     'aria-label': ariaLabel = 'Loading',
     ...props
-}: LoadingSpinnerProps) => {
-    return (
-        <div
-            {...props}
-            role="status"
-            aria-label={ariaLabel}
-            className={cn(
-                'animate-spin rounded-full border-2 border-current border-t-transparent',
-                sizeMap[size],
-                className,
-            )}
-        />
-    )
-}
+}: LoadingSpinnerProps) => (
+    <div
+        {...props}
+        role="status"
+        aria-label={ariaLabel}
+        className={cn(
+            'animate-spin rounded-full border-2 border-current border-t-transparent',
+            sizeMap[size],
+            className,
+        )}
+    />
+)

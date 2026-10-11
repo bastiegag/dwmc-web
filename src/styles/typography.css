@@ -34,15 +34,15 @@
 }
 
 @utility text-heading-2 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl font-light;
 }
 
 @utility text-heading-3 {
-    @apply text-xl font-semibold;
+    @apply text-xl font-light;
 }
 
 @utility text-heading-4 {
-    @apply text-lg font-semibold;
+    @apply text-lg font-light;
 }
 
 /* Body */
@@ -62,7 +62,7 @@
 /* Supporting text */
 
 @utility text-label {
-    @apply text-sm font-medium;
+    @apply text-sm font-medium leading-none;
 }
 
 @utility text-caption {

@@ -18,4 +18,10 @@ describe('Progress', () => {
             transform: 'translateX(-100%)',
         })
     })
+
+    it('applies the selected color to the indicator', () => {
+        render(<Progress value={50} color="success" />)
+
+        expect(screen.getByRole('progressbar').firstElementChild).toHaveClass('bg-success')
+    })
 })

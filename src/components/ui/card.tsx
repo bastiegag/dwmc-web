@@ -14,9 +14,9 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
             <div ref={ref} className={cn('rounded-xl bg-card shadow-lg', className)} {...props}>
                 {hasHeader ? (
                     <div className="flex flex-col px-4 py-6 text-center">
-                        {title != null ? <h2 className="text-heading-1">{title}</h2> : null}
+                        {title != null ? <h2 className="text-heading-2">{title}</h2> : null}
                         {description != null ? (
-                            <p className="text-sm text-muted">{description}</p>
+                            <p className="text-body-sm text-muted-foreground">{description}</p>
                         ) : null}
                     </div>
                 ) : null}
