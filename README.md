@@ -129,6 +129,8 @@ data or turn route-level screens into design-system components.
 - [Development and releases](docs/RELEASING.md)
 - [Engineering audit playbook](docs/engineering-audit-playbook.md)
 - [Roadmap](docs/roadmap.md)
+- [Next.js migration plan](docs/nextjs-migration-plan.md)
+- [ADR 0001: Adopt Next.js](docs/adr/0001-adopt-nextjs.md)
 - [Backend repository](https://github.com/bastiegag/dwmc-api)
 
-Domain behavior is documented alongside the relevant feature implementation. There is currently no ADR directory; meaningful architectural decisions should be added there when one is introduced.
+Domain behavior is documented alongside the relevant feature implementation.
