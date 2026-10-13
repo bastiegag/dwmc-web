@@ -1,9 +1,9 @@
 # Vite + React Router to Next.js App Router Migration Plan
 
-**Status:** Proposed; documentation and planning only  
-**Branch:** `feat/migrate-to-nextjs`  
-**Repository:** `bastiegag/dwmc-web`  
-**Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)  
+**Status:** Proposed; documentation and planning only
+**Branch:** `feat/migrate-to-nextjs`
+**Repository:** `bastiegag/dwmc-web`
+**Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)
 **Baseline checked:** `feat/migrate-to-nextjs` at `ee85c50`, aligned with `main` and
 `origin/main` at `2dd253a` on 2026-10-13
 
@@ -25,11 +25,12 @@ migration:
 6. Cut over only after route, auth, financial, accessibility, and responsive
    acceptance suites pass.
 
-The first implementation PR should be a **foundation/auth spike**: add the
-Next.js shell, `@supabase/ssr` client factories, middleware/session refresh,
-environment validation, and one protected proof-of-concept route without
-moving all features. It must demonstrate that a login, refresh, logout, and
-server redirect work while the existing API remains unchanged.
+The first implementation milestone should be a **Next.js shell only**:
+introduce the Next runtime and the new root/app structure without changing
+authentication behavior or migrating feature routes. Authentication and a
+protected proof-of-concept route follow as separate milestones. This keeps the
+first review limited to framework bootstrapping and makes its validation
+independent.
 
 ## 2. Current Architecture
 
@@ -126,8 +127,10 @@ environment variables.
    be lost.
 8. Storybook already has browser interaction tests, a11y, themes, docs, and MSW;
    this is a framework adapter change, not a design-system replacement.
-9. Node 24 is enforced locally and in GitHub Actions. Next.js and Storybook
-   versions must be selected against that constraint.
+9. Node 24 is enforced locally and in GitHub Actions. The current stable
+   Next.js documentation is version 16.4.0; its Node minimum is 20.9, so the
+   repository's Node 24 constraint is compatible. Next.js and Storybook
+   versions must still be selected against that constraint.
 10. Existing docs describe the Vite architecture and must not be edited to
     imply that Next.js is already adopted.
 
@@ -184,6 +187,67 @@ Use `loading.tsx` for route-segment pending UI, `error.tsx` for recoverable
 segment errors, and `not-found.tsx` for unmatched routes. Keep the existing
 accessible `LoadingSpinner`, error boundary visual language, and skip-link
 behavior instead of creating parallel primitives.
+
+### Controlled cutover and transitional structure
+
+The migration will use a **controlled cutover on `feat/migrate-to-nextjs`**, not
+two complete applications running in parallel. The existing Vite application
+already uses `src/app` as an application-architecture directory, which is also
+the conventional Next.js App Router directory. Maintaining a second live route
+tree under another name would duplicate layouts, routing, providers, and
+feature entrypoints while making parity and cache/auth testing less reliable.
+
+During the transition:
+
+```text
+src/
+  app/                 # Next App Router after the shell cutover
+  legacy-app/          # temporary Vite bootstrap/router/layout adapters only
+  features/            # shared feature code; migrate entrypoints incrementally
+  components/
+  lib/
+  shared/
+  test/
+```
+
+`legacy-app/` is a temporary compatibility location for the current Vite
+bootstrap/router files if the Vite rollback build needs them after `src/app`
+is claimed by Next. It must not become a second feature implementation. Feature
+pages, API modules, UI components, and domain utilities remain shared wherever
+their browser/runtime requirements allow. If a Vite rollback is no longer
+needed, `legacy-app/` is removed in the cutover cleanup PR.
+
+The repository will not run Vite and Next against the same checkout at the same
+time as two user-facing applications. Until the Next shell is ready, `dev`,
+`build`, and `preview` remain Vite commands. Once the shell cutover lands,
+`dev`, `build`, and `start` become Next commands; temporary `dev:legacy`,
+`build:legacy`, and `preview:legacy` commands may remain only to produce a
+rollback artifact from the legacy entrypoint. The existing Vite and React
+Router dependencies are removed only after the Next runtime, tests, and
+rollback artifact are accepted.
+
+Both application runtimes use port `5182` when run, but never concurrently.
+The independent `dwmc-api` remains on `localhost:3000`. Before cutover, Vite
+continues proxying `/api/v1` to that backend. After cutover, Next uses an
+explicit rewrite or server-only `DWMC_API_URL` for the same backend contract;
+the choice must not silently change auth headers or cache behavior. Storybook
+continues on `6006`.
+
+For the controlled cutover, keep both environment namespaces only while the
+legacy build exists: `VITE_*` for the rollback Vite build and `NEXT_PUBLIC_*`
+plus server-only `DWMC_*` values for Next. CI runs the active runtime's checks
+and a legacy build check until the rollback artifact is retired. TypeScript
+includes shared source plus the active runtime configs; separate Vite/Next
+config files must not weaken strictness. ESLint and Prettier run over both
+configurations, with framework-specific rules added only after compatibility is
+verified. Existing Vitest/RTL tests remain usable through a Vite-compatible
+test project until their Next aliases/env setup is migrated; Storybook and
+Playwright are switched after the runtime cutover, not duplicated indefinitely.
+
+This strategy is preferable to parallel runtimes because it keeps one source of
+truth for features, one active user-facing runtime, and one migration path.
+Rollback is achieved by reverting/redeploying the last Vite artifact or
+reverting the cutover PR, not by operating two production applications.
 
 ## 6. Proposed Directory Structure
 
@@ -246,29 +310,60 @@ Install and configure `@supabase/ssr` in a dedicated auth PR. Keep two clients:
 - `src/lib/supabase/browser.ts`: `createBrowserClient` with public Supabase
   URL/publishable key; used by interactive forms and auth listeners.
 - `src/lib/supabase/server.ts`: `createServerClient` backed by request cookies;
-  used by Server Components, Route Handlers, and middleware.
+  used by Server Components, Route Handlers, and `proxy.ts`.
 
-Use Next.js middleware (or the current framework-supported equivalent at the
-time of implementation) to refresh the session and write refreshed cookies to
-the response. The protected layout must call a server verification operation
-(`getUser`/`getClaims` according to the current Supabase guidance), not trust
-unverified client state. A missing/invalid user redirects before private data
-is fetched.
+Use the root-level `proxy.ts` convention required by Next.js 16+ (not the
+deprecated `middleware.ts`) to refresh the session and synchronize refreshed
+cookies on the response. Proxy is Node.js-only in current Next.js 16 and
+should be limited to request/session plumbing. Its matcher must exclude static
+assets and other paths that do not need auth handling. Proxy redirects or
+rewrites are not the application's authorization boundary.
+
+Protected Server Components and layouts must independently verify the
+authenticated identity with the current Supabase server guidance:
+`supabase.auth.getUser()` performs an Auth-server verification request, while
+`getSession()` reads cookie state and must not be treated as proof of identity.
+Use `getClaims()` only where the current Supabase guidance and token-validation
+requirements make that verification appropriate. A missing/invalid user
+redirects before private data is fetched. Server Functions, Route Handlers,
+and API adapters must repeat their own authorization checks rather than relying
+on Proxy having run.
+
+### Explicit responsibility boundaries
+
+| Layer                             | Responsibility                                                                                                                                  | Explicitly not responsible for                                                                      |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Next.js `proxy.ts`                | Refresh the Supabase SSR session and synchronize cookies; perform narrowly scoped request redirects/rewrites                                    | Primary authorization, resource ownership, financial rules, database access, or user-data decisions |
+| Next.js Server Components/layouts | Verify the authenticated identity before rendering or fetching private data; use request-scoped clients and non-shared cache behavior           | Reimplementing backend authorization or trusting unverified cookie/session payloads                 |
+| Client authentication             | Reflect session changes in UI, drive logout/navigation, submit auth forms, and clear TanStack Query data on identity changes                    | Final security decisions or access control                                                          |
+| `dwmc-api`                        | Validate Supabase JWTs, enforce resource ownership and authorization, apply financial rules, perform database operations, and own API contracts | Frontend route composition or presentation                                                          |
+
+The browser may optimistically know that a session exists for UX, but every
+private backend request is still authorized by `dwmc-api`. Authenticated
+financial responses must be request-scoped or explicitly non-shared; neither
+Proxy nor a Server Component may create a process-global user cache.
 
 ### Auth flows
 
-| Flow              | Target behavior                                                                                                  |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Login/signup      | Client form submits through browser Supabase client; success lands at validated `next` or dashboard              |
-| Anonymous pages   | Server layout redirects an existing user to dashboard                                                            |
-| Protected pages   | Server layout verifies cookie session and redirects unauthenticated users                                        |
-| Refresh           | Middleware refreshes cookies; API requests use the current access token                                          |
-| Logout            | Sign out browser session, clear user-scoped Query cache, redirect to login                                       |
-| Password recovery | Preserve callback semantics without relying on a Vite hash-only entrypoint; validate callback and recovery state |
-| Reset password    | Keep reset form client-side, with server-safe callback route and no token logging                                |
+| Flow              | Target behavior                                                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Login/signup      | Client form submits through browser Supabase client; success lands at validated `next` or dashboard                                       |
+| Anonymous pages   | Server layout redirects an existing user to dashboard                                                                                     |
+| Protected pages   | Server layout verifies cookie session and redirects unauthenticated users                                                                 |
+| Refresh           | `proxy.ts` refreshes/synchronizes cookies; Server Components verify identity; API requests use the current access token                   |
+| Logout            | Client signs out, clears the previous user's Query cache, navigates to login; subsequent server requests see no valid cookie              |
+| Password recovery | Auth callback exchanges the code for a cookie-backed session through a server route; validate same-origin return paths and recovery state |
+| Reset password    | Keep reset form client-side, with server-safe callback route and no token logging                                                         |
 
-The API remains the authorization boundary: Next.js forwards the Supabase
-access token to `dwmc-api`, which validates it and applies ownership rules.
+The authentication lifecycle is therefore: the browser submits login/signup;
+Supabase issues the session; `proxy.ts` refreshes cookies on later requests;
+the protected layout verifies the user before private rendering; the server or
+browser API adapter forwards the current bearer token; `dwmc-api` validates and
+authorizes every request; logout clears the client session and cache. Switching
+accounts must remove the prior user's queries before the next user's data is
+rendered. Recovery uses the Supabase code-exchange callback and then follows
+the same verified protected flow.
+
 Never add a Supabase service-role key to Next.js browser or server runtime
 unless a separately approved backend integration requires it; it is not needed
 for the normal user flow.
@@ -451,18 +546,22 @@ Required regression scenarios:
 
 ## 15. Environment and Build Configuration
 
-Replace Vite scripts/configuration with Next scripts (`next dev`, `next build`,
-`next start`) and remove Vite only after all consumers are migrated. Keep the
-existing port contract where possible so E2E and local workflows remain stable.
+Replace the active Vite scripts/configuration with Next scripts
+(`next dev`, `next build`, `next start`) at the controlled cutover. Before that
+cutover, retain the existing Vite scripts as the active commands and expose
+only explicitly named legacy commands if a rollback artifact must be rebuilt.
+Do not make developers or CI choose between two live applications for normal
+development. Keep port `5182` for the active frontend and `3000` for
+`dwmc-api`; run only one frontend server at a time.
 
 Classify variables:
 
-| Current                  | Target role                                                                                |
-| ------------------------ | ------------------------------------------------------------------------------------------ |
-| `VITE_SUPABASE_URL`      | `NEXT_PUBLIC_SUPABASE_URL` (public)                                                        |
-| `VITE_SUPABASE_ANON_KEY` | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (public; follow current Supabase naming)            |
-| `VITE_API_URL`           | `NEXT_PUBLIC_API_URL` only if browser access is required; server-only API origin otherwise |
-| `VITE_APP_URL`           | `NEXT_PUBLIC_APP_URL` for browser redirect construction, or server URL where possible      |
+| Current                  | Target role                                                                                         |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `VITE_SUPABASE_URL`      | `NEXT_PUBLIC_SUPABASE_URL` (public)                                                                 |
+| `VITE_SUPABASE_ANON_KEY` | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (public; follow current Supabase naming)                     |
+| `VITE_API_URL`           | `NEXT_PUBLIC_API_URL` only if browser access is required; `DWMC_API_URL` for server-only API origin |
+| `VITE_APP_URL`           | `NEXT_PUBLIC_APP_URL` for browser redirect construction, or server URL where possible               |
 
 Use server-only names for private values and validate them at the boundary.
 Never expose database credentials, backend secrets, service-role keys, or
@@ -474,13 +573,17 @@ Port the Tailwind v4 integration, alias configuration, global CSS, public
 assets, fonts, bundle-size reporting, and static `mockServiceWorker.js`.
 Review `next.config` for API rewrites, image/font policy, headers, and bundle
 analysis. Prefer a documented rewrite over an opaque proxy, and do not rely on
-Next caching for authenticated API data.
+Next caching for authenticated API data. `proxy.ts` is a request boundary for
+cookie/session work; it is not a replacement for an API proxy or authorization
+layer.
 
 ## 16. Dependency Compatibility
 
-Do not upgrade unrelated packages. Before implementation, verify the supported
-stable Next.js version against Node 24, React 19, TypeScript 6, Tailwind v4,
-Storybook 10, Vitest 4, Playwright, ESLint 9, and the current Supabase package.
+Do not upgrade unrelated packages. The current stable Next.js documentation
+identifies version 16.4.0, whose Node minimum is `>=20.9.0`; Node 24 satisfies
+that requirement. Before implementation, verify the exact installable stable
+version against React 19, TypeScript 6, Tailwind v4, Storybook 10, Vitest 4,
+Playwright, ESLint 9, and the current Supabase package.
 Add only the minimum packages required:
 
 - `next`
@@ -497,91 +600,137 @@ and review bundle/build output in the same PR that changes manifests.
 ### Phase 0 — Baseline and migration guardrails
 
 **Prerequisites:** Clean worktree; current branch rebased/verified against
-approved `main`.  
-**Files:** `package.json`, lockfile, `README.md`, `docs/*`, CI only as needed.  
+approved `main`.
+**Files:** `package.json`, lockfile, `README.md`, `docs/*`, CI only as needed.
 **Steps:** Capture current validation outputs, record route/API/env contracts,
-add migration documentation, and define a route-by-route acceptance matrix.  
-**Risks:** Baseline drift or undocumented env assumptions.  
-**Tests:** Existing `npm run validate`, Storybook build, Playwright smoke.  
-**Done:** Baseline is reproducible and this plan/ADR is reviewed.  
+add migration documentation, and define a route-by-route acceptance matrix.
+**Risks:** Baseline drift or undocumented env assumptions.
+**Tests:** Existing `npm run validate`, Storybook build, Playwright smoke.
+**Done:** Baseline is reproducible and this plan/ADR is reviewed.
 **Rollback:** Revert documentation-only changes.
 
-### Phase 1 — Next shell and auth proof of concept
+### Phase 1 — Next shell and controlled runtime cutover
 
-**Prerequisites:** Phase 0 approved.  
-**Files:** `package.json`, `next.config.*`, `tsconfig*.json`, `src/app/layout.tsx`,
-`src/app/providers.tsx`, `src/lib/supabase/{browser,server}.ts`,
-`middleware.ts`, env examples, focused auth tests.  
-**Steps:** Add Next scripts/config, global CSS, provider boundary, SSR clients,
-cookie refresh, server verification, and one protected proof-of-concept route.  
-**Risks:** Cookie refresh, Node/runtime mismatch, accidental server imports.  
-**Tests:** Auth unit tests, middleware tests, login/logout/refresh Playwright.  
-**Done:** A protected route redirects server-side; login and logout work; no
-backend endpoint changes; Vite path remains available as rollback if practical.  
-**Rollback:** Revert shell/auth PR and retain Vite entrypoint.
+**Objective:** Make Next the active runtime without changing auth or migrating
+feature behavior yet.
+**Prerequisites:** Phase 0 approved; a captured Vite validation result and a
+known-good Vite rollback artifact.
+**Files:** `package.json`, `next.config.*`, `tsconfig*.json`, `src/app/**`,
+`src/legacy-app/**` only if needed for rollback, `src/main.tsx` or its retained
+legacy entrypoint, `src/app/layout.tsx`, `src/app/providers.tsx`, env examples,
+CI scripts.
+**Steps:** Add the compatible Next package/config, establish the Next root
+layout and provider boundary, move only the conflicting Vite bootstrap/router
+files to the temporary legacy location if required, and make `next dev/build/
+start` the active commands. Keep a separately named legacy build command; do
+not run both servers concurrently.
+**Dependencies:** No Supabase SSR dependency or route migration is required
+for this milestone beyond compile-safe placeholders and existing public UI.
+**Acceptance criteria:** Next starts on `5182`, the API remains on `3000`, the
+root route renders a stable shell, global CSS and public assets load, shared
+feature imports still typecheck, the Vite rollback artifact can be rebuilt,
+and no `dwmc-api` endpoint changes are needed.
+**Testing:** Next development and production build/start smoke test; existing
+Vite validation; TypeScript, ESLint, formatting, and a minimal browser smoke
+test for the shell.
+**Rollback:** Restore the previous Vite deployment or revert this PR. Do not
+keep two production runtimes active.
 
-### Phase 2 — Route composition and navigation
+### Phase 2 — SSR authentication and protected proof-of-concept
 
-**Prerequisites:** Phase 1 auth contract passes.  
-**Files:** `src/app/**`, layout/navigation components, feature page entrypoints,
-navigation tests.  
+**Objective:** Add cookie-backed Supabase SSR and prove the security boundary
+on one route without migrating every feature.
+**Prerequisites:** Phase 1 active runtime and rollback artifact accepted.
+**Files:** `proxy.ts`, `src/lib/supabase/{browser,server}.ts`,
+`src/app/(auth)/**`, `src/app/(protected)/layout.tsx`, one small protected
+route, auth callback route, env examples, focused auth tests.
+**Steps:** Add `@supabase/ssr`, implement `proxy.ts` for refresh/cookie
+sync only, verify identity in the protected layout with the current Supabase
+server API, and implement one callback/login/logout proof. Keep
+`dwmc-api` authorization unchanged.
+**Dependencies:** Phase 1; Supabase redirect URLs and local cookie behavior
+must be available.
+**Acceptance criteria:** Anonymous access redirects before private fetching;
+authenticated access renders the proof route; refresh updates cookies; logout
+removes the session; recovery callback exchanges the code safely; no client
+session payload is used as the final authorization decision; user-specific
+responses are not shared.
+**Testing:** Proxy cookie tests, server identity verification tests, login,
+refresh, logout, recovery, invalid-session, and cross-user cache-isolation
+Playwright scenarios.
+**Rollback:** Revert the auth PR and redeploy the Phase 1 shell/Vite artifact;
+do not weaken the backend or leave an unverified protected route enabled.
+
+### Phase 3 — Route composition and navigation
+
+**Objective:** Replace React Router route composition with App Router routes
+while preserving feature internals and the month URL contract.
+**Prerequisites:** Phase 2 auth contract passes.
+**Files:** `src/app/**`, navigation/layout components, feature page entrypoints,
+month navigation helper, navigation tests; remove temporary legacy route files
+only when no rollback build needs them.
 **Steps:** Add auth/protected route groups, route layouts, loading/error/not-found
-files, and replace React Router navigation while preserving month params.  
-**Risks:** Lost search params, focus regressions, route redirect loops.  
-**Tests:** Direct route/refresh/back-forward/deep-link and responsive E2E.  
-**Done:** Every current route resolves with correct auth behavior and no route
-imports React Router.  
-**Rollback:** Route-by-route revert; keep feature internals unchanged.
+files, and replace React Router navigation while preserving month params.
+**Dependencies:** Phase 2 protected layout and callback behavior.
+**Acceptance criteria:** Every current route resolves with correct auth behavior,
+direct refresh/deep links work, dashboard/transactions/budgets preserve
+`?month=YYYY-MM`, and no active route imports React Router.
+**Testing:** Direct route, refresh, browser back/forward, redirect, keyboard
+focus, and responsive E2E coverage.
+**Rollback:** Revert route PR and redeploy the previous runtime; keep feature
+internals unchanged.
 
-### Phase 3 — API adapters and Query integration
+### Phase 4 — API adapters and Query integration
 
-**Prerequisites:** Protected layout and navigation are stable.  
+**Prerequisites:** Protected layout and navigation are stable.
 **Files:** `src/lib/api-client*`, `src/lib/query/*`, feature API/hooks,
-`src/test/mocks/*`, cache/auth tests.  
+`src/test/mocks/*`, cache/auth tests.
 **Steps:** Split browser/server adapters, preserve `ApiError`, define origin and
-cache policy, then migrate initial data only where justified.  
-**Risks:** Token forwarding, stale cross-user cache, duplicate API logic.  
+cache policy, then migrate initial data only where justified.
+**Risks:** Token forwarding, stale cross-user cache, duplicate API logic.
 **Tests:** API envelope/status tests, auth isolation tests, mutation invalidation,
-MSW contract tests, server request tests.  
+MSW contract tests, server request tests.
 **Done:** All features use one documented contract and user data never crosses
-identity boundaries.  
-**Rollback:** Keep browser adapter and disable server prefetch per feature.
+identity boundaries.
+**Rollback:** Keep the browser adapter and disable server prefetch per feature;
+redeploy the previous runtime if the active API path is affected.
 
-### Phase 4 — Feature and UX parity
+### Phase 5 — Feature and UX parity
 
-**Prerequisites:** Route and API foundations pass.  
+**Prerequisites:** Route and API foundations pass.
 **Files:** Feature route pages/components only where needed, month/navigation
-helpers, forms, metadata, loading/error states.  
+helpers, forms, metadata, loading/error states.
 **Steps:** Migrate dashboard, transactions, budgets, accounts, categories,
-profile, settings, and auth pages in small feature PRs.  
-**Risks:** Business behavior changes hidden in page rewrites.  
-**Tests:** Existing feature tests plus route-level acceptance matrix.  
-**Done:** All feature preservation requirements pass at desktop/mobile sizes.  
+profile, settings, and auth pages in small feature PRs.
+**Risks:** Business behavior changes hidden in page rewrites.
+**Tests:** Existing feature tests plus route-level acceptance matrix.
+**Done:** All feature preservation requirements pass at desktop/mobile sizes.
 **Rollback:** Revert only the affected feature PR.
 
-### Phase 5 — Storybook and test tooling
+### Phase 6 — Storybook and test tooling
 
-**Prerequisites:** Runtime imports and client/server boundaries are stable.  
+**Prerequisites:** Runtime imports and client/server boundaries are stable.
 **Files:** `.storybook/*`, `vitest.config.ts`, `src/test/*`, Playwright config,
-test scripts.  
+test scripts.
 **Steps:** Switch Storybook framework, update decorators/mocks, preserve browser
-project, and move test server commands to Next.  
-**Risks:** Storybook-only imports and router mocks hide runtime problems.  
-**Tests:** Storybook build, Vitest projects, a11y, MSW, Playwright.  
+project, and move test server commands to Next.
+**Risks:** Storybook-only imports and router mocks hide runtime problems.
+**Tests:** Storybook build, Vitest projects, a11y, MSW, Playwright.
 **Done:** Existing design-system acceptance criteria pass with no test-suite
-replacement.  
+replacement.
 **Rollback:** Pin/revert framework adapter while runtime remains Next.
 
-### Phase 6 — CI, production build, and cutover
+### Phase 7 — CI cleanup and Vite/React Router removal
 
-**Prerequisites:** Phases 1–5 accepted.  
-**Files:** workflows, env docs, scripts, `next.config`, README links.  
+**Prerequisites:** Phases 1–5 accepted.
+**Files:** workflows, env docs, scripts, `next.config`, README links.
 **Steps:** Add Next build/start validation, production-like E2E, deployment
-headers/rewrites, bundle reporting, then remove Vite/React Router dependencies.  
-**Risks:** Deployment runtime, API origin, cache headers, missing env values.  
-**Tests:** Full validation matrix on CI and production-like deployment.  
+headers/rewrites, bundle reporting, retire the legacy Vite artifact, then
+remove Vite/React Router dependencies and temporary legacy files.
+**Risks:** Deployment runtime, API origin, cache headers, missing env values.
+**Tests:** Full validation matrix on CI and production-like deployment.
 **Done:** CI is green, all acceptance criteria pass, rollback artifact/runbook
-exists, and the migration is approved for main.  
+exists, and the migration is approved for main.
 **Rollback:** Redeploy last Vite artifact and revert cutover PR; backend remains
 unchanged.
 
@@ -591,7 +740,7 @@ unchanged.
 - [ ] `next.config.*`, `tsconfig` references, aliases, global CSS, public assets.
 - [ ] `src/app/layout.tsx`, route groups, pages, loading/error/not-found files.
 - [ ] `src/app/providers.tsx` and client-only provider boundaries.
-- [ ] `middleware.ts` and `src/lib/supabase/browser.ts`/`server.ts`.
+- [ ] Root-level `proxy.ts` and `src/lib/supabase/browser.ts`/`server.ts`.
 - [ ] `src/lib/api-client.ts` shared error parsing and server adapter.
 - [ ] `src/lib/query/*` QueryClient lifecycle and hydration policy.
 - [ ] Auth forms/services/hooks, callback and recovery storage behavior.
@@ -624,7 +773,10 @@ The migration is complete only when:
 
 - all current URLs, redirects, query params, features, layouts, and responsive
   behavior work in a production Next build;
-- protected routes verify sessions server-side and anonymous routes redirect;
+- `proxy.ts` refreshes/synchronizes cookies only, while protected layouts and
+  Server Components verify sessions server-side before private work;
+- `dwmc-api` remains the sole authority for JWT validation, ownership,
+  authorization, financial rules, database operations, and API contracts;
 - auth refresh, recovery, logout, and cross-user cache isolation are tested;
 - `dwmc-api` remains independent and receives the same authorized contract;
 - no server secret is browser-visible;
@@ -637,13 +789,13 @@ The migration is complete only when:
 
 ## 21. Rollback Strategy
 
-Keep the last known-good Vite deployment available until the Next.js cutover
-has passed a full observation window. Each phase must be independently
-revertible and must not require backend schema or endpoint changes. Preserve
-the previous environment variable mapping and deployment command. If auth,
-API, or cache isolation fails, redeploy the Vite artifact, revert only the
-affected frontend PR, invalidate affected sessions/caches if needed, and
-investigate without changing `dwmc-api`.
+Keep the last known-good Vite deployment available until the Next.js runtime
+and authentication cutover have passed a full observation window. Each phase
+must be independently revertible and must not require backend schema or
+endpoint changes. Preserve both environment mappings and the previous
+deployment command while the legacy artifact exists. If auth, API, or cache
+isolation fails, redeploy the Vite artifact or revert the affected frontend PR;
+do not operate both runtimes in production and do not change `dwmc-api`.
 
 ## 22. Future React Native Considerations
 
@@ -660,7 +812,7 @@ These must be answered in implementation PRs, not guessed in route code:
 1. Which deployment platform and API origin will production use, and is direct
    browser API access permitted by CORS?
 2. Does the chosen Next.js deployment support the required Node 24 runtime and
-   middleware runtime behavior?
+   `proxy.ts` runtime behavior?
 3. Does the installed Storybook 10 release recommend `@storybook/nextjs` or
    `@storybook/nextjs-vite` for this exact setup?
 4. Which auth callback URL should Supabase use for local, preview, and
@@ -674,30 +826,27 @@ The default answers are: preserve direct API contracts, use request-scoped
 server calls, keep authenticated data dynamic, and defer BFF/server actions
 until a measured need exists.
 
-## 24. Recommended First Implementation PR
+## 24. Recommended First Implementation Milestones
 
-Create a focused PR titled **“Add Next.js shell and SSR auth foundation”**.
-It should:
+The original “shell + SSR auth + protected route” proposal is too broad for
+one reviewable PR. Use these sequential milestones instead:
 
-1. Add the compatible Next.js and `@supabase/ssr` dependencies only.
-2. Add `next.config`, scripts, strict TypeScript integration, and env
-   validation without deleting Vite yet.
-3. Add browser/server Supabase factories and middleware cookie refresh.
-4. Add root/providers/auth/protected layout scaffolding.
-5. Convert one small protected proof-of-concept route, ideally `/tools`, while
-   leaving feature internals intact.
-6. Add tests for server redirect, login, refresh, logout, and invalid session.
-7. Document local commands and keep the existing API and Storybook workflows
-   green where they are not yet migrated.
+1. **Next shell and controlled runtime cutover** — the Phase 1 milestone above.
+   It can be built and validated independently with no auth behavior change.
+2. **SSR authentication foundation** — the Phase 2 milestone above. It adds
+   `@supabase/ssr`, `proxy.ts`, server verification, and one proof route only.
+3. **Route migration** — the Phase 3 milestone above. It moves route composition
+   and navigation after the auth boundary is proven.
 
-Definition of done: the Next dev/build path renders the proof-of-concept,
-protected access is server-verified, auth cookies refresh safely, no user data
-is shared across sessions, existing Vite validation remains a rollback signal,
-and the PR does not migrate all features or remove React Router.
+The first implementation PR should therefore be titled **“Add Next.js shell and
+controlled runtime cutover”**, not an auth migration. Its definition of done
+is a working Next shell on port `5182`, a rebuildable Vite rollback artifact,
+strict checks passing, unchanged backend behavior, and no new security claim.
 
 ### Official documentation to re-check during implementation
 
 - [Next.js App Router](https://nextjs.org/docs/app)
+- [Next.js 16.4.0 Proxy documentation](https://nextjs.org/docs/app/api-reference/file-conventions/proxy)
 - [Next.js authentication](https://nextjs.org/docs/app/building-your-application/authentication)
 - [Next.js route handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
 - [Next.js environment variables](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
