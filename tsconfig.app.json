@@ -17,11 +17,12 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
+        "plugins": [{ "name": "next" }],
         "paths": {
             "@/*": ["./src/*"]
         }
     },
-    "include": ["src"],
+    "include": ["next-env.d.ts", ".next/types/**/*.ts", "src"],
     "exclude": [
         "src/**/*.spec.ts",
         "src/**/*.spec.tsx",

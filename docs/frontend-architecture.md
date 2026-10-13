@@ -7,16 +7,24 @@ The codebase keeps application setup, reusable UI, domain features, shared cross
 
 ## Runtime Boundaries
 
-The frontend runs on the local Vite development server. The local `dwmc-api` owns domain operations, JWT validation, authorization, Prisma, and PostgreSQL access. Supabase is used for Auth only; the browser never connects to application data storage.
+The active frontend runtime is the Next.js App Router shell on port `5182`.
+The complete application remains available through the explicitly named Vite
+rollback runtime (`dev:legacy`, `build:legacy`, and `preview:legacy`) until
+route and authentication migration phases are complete. The local `dwmc-api`
+owns domain operations, JWT validation, authorization, Prisma, and PostgreSQL
+access. Supabase is used for Auth only; the browser never connects to
+application data storage.
 
 ```text
 Browser -> local dwmc-web -> local dwmc-api -> Prisma -> local PostgreSQL
                        \-> Supabase Auth -> access token -> dwmc-api
 ```
 
-`VITE_API_URL` selects the local API origin. Financial and domain requests go
-through the shared API client. The frontend must never connect directly to
-PostgreSQL or contain service-role, database, or other backend credentials.
+`DWMC_API_URL` configures the Next.js `/api/v1` rewrite, while `VITE_API_URL`
+continues to select the API path for the Vite rollback runtime. Financial and
+domain requests go through the shared API client once the application routes
+are migrated. The frontend must never connect directly to PostgreSQL or
+contain service-role, database, or other backend credentials.
 
 ## Application Structure
 
@@ -25,6 +33,7 @@ The current `src/` tree is organized like this:
 ```text
 src/
   app/
+  legacy-app/
   components/
   features/
   lib/
@@ -36,7 +45,9 @@ src/
 
 ### Folder Roles
 
-- `app`: application bootstrap, router, layouts, and top-level providers.
+- `app`: the active Next.js App Router shell and top-level providers.
+- `legacy-app`: temporary Vite bootstrap, router, layouts, and providers used
+  only for rollback until route migration is complete.
 - `components`: shared UI and layout components used across features.
 - `features`: domain code for auth, dashboard, accounts, transactions, budgets, and categories.
 - `shared`: cross-feature utilities and state such as month navigation and contextual primary actions.

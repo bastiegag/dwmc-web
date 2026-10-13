@@ -1,8 +1,8 @@
 import { lazy, Suspense, type ComponentType } from 'react'
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
-import { NotFoundPage } from '@/app/pages/NotFoundPage'
-import { AuthLayout } from '@/app/layouts/AuthLayout'
-import { AppLayout } from '@/app/layouts/AppLayout'
+import { NotFoundPage } from '@/legacy-app/pages/NotFoundPage'
+import { AuthLayout } from '@/legacy-app/layouts/AuthLayout'
+import { AppLayout } from '@/legacy-app/layouts/AppLayout'
 import { ProtectedRoute } from '@/features/auth/routes/ProtectedRoute'
 import { AnonymousRoute } from '@/features/auth/routes/AnonymousRoute'
 import { ErrorBoundary } from '@/components/feedback/ErrorBoundary'
@@ -53,7 +53,7 @@ const TransactionsPage = lazyNamed(
     'TransactionsPage',
 )
 const BudgetsPage = lazyNamed(() => import('@/features/budgets/pages/BudgetsPage'), 'BudgetsPage')
-const ToolsPage = lazyNamed(() => import('@/app/pages/ToolsPage'), 'ToolsPage')
+const ToolsPage = lazyNamed(() => import('@/legacy-app/pages/ToolsPage'), 'ToolsPage')
 const ProfilePage = lazyNamed(() => import('@/features/profile/pages/ProfilePage'), 'ProfilePage')
 const SettingsPage = lazyNamed(() => import('@/features/settings'), 'SettingsPage')
 const PageLoader = () => {

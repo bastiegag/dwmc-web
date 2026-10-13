@@ -65,6 +65,12 @@ not duplicated. Vite and Next use port 5182 at different times, while
 SSR authentication and the first protected route are a subsequent milestone,
 followed by route composition migration.
 
+Phase 1 now implements only the public Next.js shell and runtime cutover.
+Authentication, protected routes, domain features, and server-side data
+fetching remain intentionally unavailable in the Next runtime. The Vite
+rollback runtime remains the only runtime for those features until later
+milestones are completed and accepted.
+
 ## Alternatives considered
 
 ### Keep Vite and React Router

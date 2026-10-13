@@ -32,6 +32,30 @@ protected proof-of-concept route follow as separate milestones. This keeps the
 first review limited to framework bootstrapping and makes its validation
 independent.
 
+### Phase 1 implementation status
+
+Phase 1 is implemented on `feat/migrate-to-nextjs`:
+
+- Next.js `16.4.0` is the active `dev`, `build`, and `start` runtime on port
+  `5182`.
+- The App Router shell is in `src/app` with metadata, global styles, Tailwind
+  v4 PostCSS integration, theme/toast providers, and a deliberately public
+  root page.
+- The former Vite bootstrap/router is retained under `src/legacy-app`.
+- `dev:legacy`, `build:legacy`, and `preview:legacy` rebuild or run the Vite
+  rollback runtime. They are not run concurrently with Next.
+- Next rewrites `/api/v1/*` to `DWMC_API_URL` (defaulting to the independent
+  backend at `http://localhost:3000/api/v1`). No API client or auth flow uses
+  this rewrite yet.
+- Next does not expose the existing login, protected, financial, tools, or
+  settings routes yet. Those routes remain available through the Vite rollback
+  runtime and are intentionally deferred to later phases.
+- Playwright continues to launch `dev:legacy` so existing feature E2E tests
+  remain meaningful until App Router route migration.
+
+The next milestone is Phase 2: SSR authentication and a protected
+proof-of-concept route. This phase must not be inferred from the public shell.
+
 ## 2. Current Architecture
 
 ### Confirmed runtime and dependencies
@@ -633,8 +657,11 @@ and no `dwmc-api` endpoint changes are needed.
 **Testing:** Next development and production build/start smoke test; existing
 Vite validation; TypeScript, ESLint, formatting, and a minimal browser smoke
 test for the shell.
-**Rollback:** Restore the previous Vite deployment or revert this PR. Do not
-keep two production runtimes active.
+**Done:** Next renders the public shell on port `5182`; global styles, aliases,
+and metadata compile; the Vite rollback artifact rebuilds; the API remains
+unchanged; and no authentication or private route is exposed by Next.
+**Rollback:** Run `npm run dev:legacy`, rebuild with `npm run build:legacy`, or
+redeploy the last Vite artifact. Do not run both frontend runtimes concurrently.
 
 ### Phase 2 — SSR authentication and protected proof-of-concept
 
@@ -736,10 +763,10 @@ unchanged.
 
 ## 18. File-Level Migration Checklist
 
-- [ ] `package.json` scripts, dependencies, engines, and lockfile.
-- [ ] `next.config.*`, `tsconfig` references, aliases, global CSS, public assets.
-- [ ] `src/app/layout.tsx`, route groups, pages, loading/error/not-found files.
-- [ ] `src/app/providers.tsx` and client-only provider boundaries.
+- [x] `package.json` scripts, dependencies, engines, and lockfile for the shell.
+- [x] `next.config.*`, `tsconfig` references, aliases, global CSS, public assets.
+- [x] `src/app/layout.tsx`, the public shell page, and provider boundary.
+- [x] `src/app/providers.tsx` and client-only provider boundary.
 - [ ] Root-level `proxy.ts` and `src/lib/supabase/browser.ts`/`server.ts`.
 - [ ] `src/lib/api-client.ts` shared error parsing and server adapter.
 - [ ] `src/lib/query/*` QueryClient lifecycle and hydration policy.
@@ -749,7 +776,8 @@ unchanged.
 - [ ] `.storybook/main.ts`, `.storybook/preview.ts`, router/theme/MSW decorators.
 - [ ] `vitest.config.ts`, `src/test/setup.ts`, render helpers, MSW handlers.
 - [ ] `playwright.config.ts`, auth fixtures, base URL, dev/build server.
-- [ ] `.env.example`, CI workflow env, release/deployment documentation.
+- [x] `.env.example` and CI rollback-build configuration; deployment docs remain
+      pending the target platform decision.
 - [ ] ESLint, Prettier, Husky, lint-staged, bundle-size script.
 - [ ] README links and this plan/ADR status after approval.
 

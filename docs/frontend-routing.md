@@ -2,7 +2,10 @@
 
 ## Overview
 
-The app uses React Router with a protected application area and a separate auth area.
+The complete application route map currently remains in the Vite rollback
+runtime under `src/legacy-app` and uses React Router. The active Next.js shell
+currently exposes only the public root route; App Router authentication and
+feature route migration are planned for later migration phases.
 
 The protected shell is rendered by the app layout, while auth screens use a dedicated auth layout.
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { screen } from '@testing-library/react'
 import { render } from '@/test/utils/render'
-import { ToolsPage } from '@/app/pages/ToolsPage'
+import { ToolsPage } from '@/legacy-app/pages/ToolsPage'
 
 describe('ToolsPage', () => {
     it('links to categories', () => {
