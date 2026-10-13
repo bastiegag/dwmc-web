@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Alert } from '@/components/ui/alert'
 import { QueryState } from '@/components/feedback'
 import { ApiError } from '@/lib/api-client'
 import type { Account } from '@/features/accounts/types/account.types'
@@ -102,10 +102,7 @@ export const AccountsPage = () => {
             />
 
             {archiveError ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Archive failed</AlertTitle>
-                    <AlertDescription>{archiveError}</AlertDescription>
-                </Alert>
+                <Alert variant="destructive" title="Archive failed" description={archiveError} />
             ) : null}
 
             {!accountsQuery.isLoading && !accountsQuery.isError && accounts.length === 0 ? (

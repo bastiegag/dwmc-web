@@ -27,7 +27,7 @@ export const PaginationControls = ({
             <div className="flex gap-2">
                 <Button
                     type="button"
-                    variant="outline"
+                    variant="outlined"
                     size="sm"
                     onClick={() => onPageChange(page - 1)}
                     disabled={page <= 1}
@@ -38,7 +38,7 @@ export const PaginationControls = ({
                 </Button>
                 <Button
                     type="button"
-                    variant="outline"
+                    variant="outlined"
                     size="sm"
                     onClick={() => onPageChange(page + 1)}
                     disabled={page >= totalPages}

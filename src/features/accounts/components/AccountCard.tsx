@@ -11,7 +11,7 @@ import {
     Shield,
     Wallet,
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useDialogFocus } from '@/shared/dialog'
 import { Progress } from '@/components/ui/progress'
@@ -60,7 +60,7 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
 
     return (
         <Card>
-            <CardHeader className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                     <span
                         className="inline-block h-3 w-3 rounded-full border"
@@ -68,13 +68,13 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                         aria-hidden="true"
                     />
                     <div>
-                        <CardTitle className="flex items-center gap-2 text-lg">
+                        <h2 className="flex items-center gap-2 text-lg">
                             {createElement(iconComp, {
                                 className: 'h-5 w-5 text-muted-foreground',
                                 'aria-hidden': true,
                             })}
                             <span>{account.name}</span>
-                        </CardTitle>
+                        </h2>
                         <p className="text-sm text-muted-foreground">
                             {String(account.type).replace(/_/g, ' ')}
                         </p>
@@ -84,7 +84,8 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                 <div className="flex gap-2">
                     <Button
                         size="sm"
-                        variant="ghost"
+                        variant="link"
+                        className="no-underline hover:bg-accent/10"
                         onClick={() => onEdit(account)}
                         aria-label={`Edit ${account.name}`}
                     >
@@ -92,16 +93,17 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                     </Button>
                     <Button
                         size="sm"
-                        variant="ghost"
+                        variant="link"
+                        className="no-underline hover:bg-accent/10"
                         onClick={() => setIsConfirmOpen(true)}
                         aria-label={`Archive ${account.name}`}
                     >
                         Archive
                     </Button>
                 </div>
-            </CardHeader>
+            </div>
 
-            <CardContent>
+            <div className="mt-4">
                 <div className="flex items-end justify-between">
                     <div>
                         <div className="text-2xl font-semibold">
@@ -123,7 +125,7 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                         ) : null}
                     </div>
                 </div>
-            </CardContent>
+            </div>
 
             {isConfirmOpen ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -149,14 +151,15 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                         <div className="mt-4 flex justify-end gap-2">
                             <Button
                                 type="button"
-                                variant="outline"
+                                variant="outlined"
                                 onClick={() => setIsConfirmOpen(false)}
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type="button"
-                                variant="destructive"
+                                color="destructive"
+                                variant="contained"
                                 onClick={async () => {
                                     await onArchive(account)
                                     setIsConfirmOpen(false)

@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle } from 'lucide-react'
-import { PasswordField, FormError, FormSubmitButton } from '@/components/form'
-import { Alert, AlertDescription, AppLink } from '@/components/ui'
+import { PasswordField, FormError } from '@/components/form'
+import { Alert, AppLink, Button } from '@/components/ui'
 import { useResetPassword } from '@/features/auth/hooks'
 import { resetPasswordSchema, type ResetPasswordInput } from '@/features/auth/schemas'
 
@@ -12,7 +11,7 @@ export const ResetPasswordForm = () => {
     const successRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        if (isSuccess) successRef.current?.focus()
+        successRef.current?.focus()
     }, [isSuccess])
 
     const {
@@ -36,10 +35,13 @@ export const ResetPasswordForm = () => {
     if (isSuccess) {
         return (
             <div className="space-y-4">
-                <Alert ref={successRef} role="status" tabIndex={-1} variant="success">
-                    <CheckCircle className="h-4 w-4" aria-hidden="true" />
-                    <AlertDescription>Password updated successfully!</AlertDescription>
-                </Alert>
+                <Alert
+                    ref={successRef}
+                    role="status"
+                    tabIndex={-1}
+                    variant="success"
+                    description="Password updated successfully!"
+                />
                 <p className="text-center text-sm">
                     <AppLink to="/login">Sign in with your new password</AppLink>
                 </p>
@@ -66,9 +68,14 @@ export const ResetPasswordForm = () => {
                 required
                 {...register('confirmPassword')}
             />
-            <FormSubmitButton isLoading={isPending} loadingText="Updating password...">
+            <Button
+                type="submit"
+                className="w-full"
+                isLoading={isPending}
+                loadingText="Updating password..."
+            >
                 Update password
-            </FormSubmitButton>
+            </Button>
         </form>
     )
 }

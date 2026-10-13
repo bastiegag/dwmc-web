@@ -2,9 +2,8 @@ import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
-import { CheckCircle } from 'lucide-react'
-import { TextField, PasswordField, FormError, FormSubmitButton } from '@/components/form'
-import { Alert, AlertDescription, AppLink } from '@/components/ui'
+import { TextField, PasswordField, FormError } from '@/components/form'
+import { Alert, AppLink, Button } from '@/components/ui'
 import { useSignup } from '@/features/auth/hooks'
 import { signupSchema, type SignupInput } from '@/features/auth/schemas'
 
@@ -14,7 +13,7 @@ export const SignupForm = () => {
     const successRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        if (isSuccess) successRef.current?.focus()
+        successRef.current?.focus()
     }, [isSuccess])
 
     const {
@@ -41,12 +40,13 @@ export const SignupForm = () => {
 
     if (isSuccess) {
         return (
-            <Alert ref={successRef} role="status" tabIndex={-1} variant="success">
-                <CheckCircle className="h-4 w-4" aria-hidden="true" />
-                <AlertDescription>
-                    Account created! Please check your email to verify your account.
-                </AlertDescription>
-            </Alert>
+            <Alert
+                ref={successRef}
+                role="status"
+                tabIndex={-1}
+                variant="success"
+                description="Account created! Please check your email to verify your account."
+            />
         )
     }
 
@@ -79,10 +79,15 @@ export const SignupForm = () => {
                 required
                 {...register('confirmPassword')}
             />
-            <FormSubmitButton isLoading={isPending} loadingText="Creating account...">
+            <Button
+                type="submit"
+                className="w-full"
+                isLoading={isPending}
+                loadingText="Creating account..."
+            >
                 Create account
-            </FormSubmitButton>
-            <p className="text-center text-sm text-muted-foreground">
+            </Button>
+            <p className="text-center text-sm">
                 Already have an account? <AppLink to="/login">Sign in</AppLink>
             </p>
         </form>

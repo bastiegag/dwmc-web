@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { ThemeProviderContext, type Theme } from './theme-context'
+import { ThemeProviderContext, type Theme } from './themeContext'
 
 const isTheme = (value: string | null): value is Theme =>
     value === 'dark' || value === 'light' || value === 'system'

@@ -86,6 +86,9 @@ export const DashboardPage = () => {
     return (
         <>
             <section className="space-y-6" aria-labelledby="dashboard-heading">
+                <h1 id="dashboard-heading" className="sr-only">
+                    Dashboard
+                </h1>
                 <QueryState
                     isLoading={summaryQuery.isLoading}
                     isError={summaryQuery.isError}

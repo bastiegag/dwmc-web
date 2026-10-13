@@ -8,6 +8,7 @@ import {
     DesktopSidebar,
     ContextualFloatingActionButton,
     DashboardSectionNavigation,
+    SkipLink,
 } from '@/components/layout'
 
 const monthNavRoutes = ['/dashboard', '/transactions', '/budgets']
@@ -22,6 +23,7 @@ export const AppLayout = () => {
 
     return (
         <>
+            <SkipLink />
             <DesktopSidebar />
 
             <PrimaryActionProvider>

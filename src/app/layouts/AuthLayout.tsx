@@ -1,28 +1,27 @@
 import { Outlet } from 'react-router-dom'
-import { ThemeToggle, Logo } from '@/components/layout'
+import { Container, Logo, SkipLink, ThemeToggle } from '@/components/layout'
 
 export const AuthLayout = () => {
     return (
-        <div className="flex min-h-dvh flex-col bg-background">
-            <a
-                href="#main-content"
-                className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:left-4 focus:top-4 focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:ring-2 focus:ring-ring"
-            >
-                Skip to main content
-            </a>
+        <div className="flex min-h-dvh flex-col bg-gradient">
+            <SkipLink />
             <header className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-2 text-sm">
-                    <Logo className="size-6 text-primary" />
+                    <Logo className="size-6" />
                     Dude, where's my cash?
                 </div>
-                <ThemeToggle className="hover:bg-foreground/5" />
+                <ThemeToggle />
             </header>
-            <main id="main-content" className="flex flex-1 items-center justify-center px-4 py-12">
-                <div className="w-full max-w-md">
+            <main
+                id="main-content"
+                tabIndex={-1}
+                className="flex flex-1 items-center justify-center px-4 py-12"
+            >
+                <Container className="light">
                     <Outlet />
-                </div>
+                </Container>
             </main>
-            <footer className="py-4 text-center text-sm text-muted-foreground">
+            <footer className="py-4 text-center text-sm">
                 <p>© {new Date().getFullYear()} DWMC. All rights reserved.</p>
             </footer>
         </div>

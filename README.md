@@ -96,6 +96,27 @@ production build. `npm run test:e2e` requires the local API and the configured
 Supabase Auth test environment. Storybook is available for isolated component
 development.
 
+### Storybook design system
+
+Storybook is the visual reference for the reusable UI already used by the
+application; it is not a separate design-system package. Start it with
+`npm run storybook` and use the `Design System` tree to browse:
+
+- `Foundations` for semantic tokens, typography, spacing, surfaces, and icons.
+- `Components` for shared actions, forms, feedback, navigation, overlays, data
+  display, and surfaces.
+- `Patterns` for repeated compositions such as empty states and form layouts.
+- `Product` for deterministic, reusable feature components from accounts,
+  budgets, categories, dashboard, and transactions.
+
+Stories should live beside their component as `*.stories.tsx` whenever
+practical. Use human-readable titles under `Design System`, strong CSF
+TypeScript typing, realistic deterministic example data, and stories that
+demonstrate meaningful behavior rather than every prop combination. Include
+accessible labels, focus and disabled states, validation feedback, and small
+`play` interactions when they clarify component behavior. Do not use live API
+data or turn route-level screens into design-system components.
+
 ## Documentation
 
 - [Frontend architecture](docs/frontend-architecture.md)
