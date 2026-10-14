@@ -85,6 +85,17 @@ export function AuthForm({
     }, [success])
 
     const onSubmit = async (values: AuthFormValues) => {
+        const parsed = schema.safeParse(values)
+        if (!parsed.success) {
+            parsed.error.issues.forEach((issue) => {
+                const field = issue.path[0]
+                if (field === 'email' || field === 'password' || field === 'confirmPassword') {
+                    setFieldError(field, { message: issue.message })
+                }
+            })
+            return
+        }
+
         setPending(true)
         setError(null)
         try {

@@ -96,14 +96,19 @@ npm run preview
 npm run validate
 npm run test
 npm run test:e2e
+npm run test:e2e:next
+npm run test:e2e:live
 npm run storybook
 npm run build-storybook
 ```
 
 `npm run validate` runs the formatting check, lint, typecheck, tests, and
-production build. `npm run test:e2e` requires the local API and the configured
-Supabase Auth test environment. Storybook is available for isolated component
-development.
+production build. `npm run test:e2e` runs the Vite rollback E2E suite.
+`npm run test:e2e:next` runs deterministic Next.js SSR authentication tests
+with a local mock boundary. `npm run test:e2e:live` requires dedicated
+non-production Supabase and `dwmc-api` services plus test credentials; it fails
+closed when those values are unavailable. Storybook is available for isolated
+component development.
 
 ### Storybook design system
 

@@ -59,10 +59,22 @@ Use the package scripts that exist in `package.json`.
 - `npm run test:coverage`
 - `npm run test:e2e`
 - `npm run test:e2e:ui`
+- `npm run test:e2e:next`
+- `npm run test:e2e:live`
 - `npm run storybook`
 - `npm run build-storybook`
 
-CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml`. Playwright runs separately in `.github/workflows/e2e.yml`; it starts the local Vite server and uses the configured local proxy, so authenticated backend smoke tests require suitable test environment setup.
+CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml`. `npm run test:e2e` runs the legacy suite against Vite. The dedicated
+`npm run test:e2e:next` suite starts Next.js plus a local deterministic mock
+Supabase/API boundary and validates SSR cookies, protected rendering, bearer
+forwarding, refresh, logout, callback errors, and user isolation.
+
+`npm run test:e2e:live` is opt-in and requires a production-like Next build,
+running Supabase Auth and `dwmc-api`, and dedicated non-production
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `DWMC_API_URL`,
+`E2E_TEST_EMAIL`, and `E2E_TEST_PASSWORD` values. Never use production
+credentials or financial data. The live config fails clearly when variables
+are missing; it must not be reported as passed in that case.
 
 The normal Vitest and Playwright suites use mocks and do not require a running
 PostgreSQL database or live Supabase credentials. Playwright installs or uses
@@ -74,6 +86,10 @@ running Next.js server, Supabase Auth, and `dwmc-api`. Unit tests can validate
 redirect allowlists, schemas, cache cleanup, and API error parsing, but they
 cannot prove cookie refresh, code exchange, or backend JWT verification.
 Those flows must be reported separately from mocked tests.
+
+The deterministic Next suite does not prove Supabase JWT validation or the
+real backend database contract. The live suite is the required validation for
+that boundary.
 
 The Next.js reset flow requires both a successful callback code exchange and
 the short-lived, HttpOnly `dwmc-recovery` cookie set by that callback. An

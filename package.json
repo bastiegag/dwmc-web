@@ -25,6 +25,8 @@
         "test:coverage": "vitest run --coverage",
         "test:e2e": "playwright test",
         "test:e2e:ui": "playwright test --ui",
+        "test:e2e:next": "playwright test --config playwright.next.config.ts",
+        "test:e2e:live": "playwright test --config playwright.next.live.config.ts",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "prepare": "husky",

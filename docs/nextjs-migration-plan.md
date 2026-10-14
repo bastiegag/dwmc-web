@@ -737,19 +737,23 @@ ownership. No backend change is required for this SSR proof.
 - [x] Logout clears the browser session and user-specific TanStack Query data.
 - [x] Server API requests use `getUser()`, matching token identity, and
       `cache: 'no-store'`.
-- [x] Unit, type, lint, format, Next, legacy, and Storybook checks pass.
+- [x] Unit, type, lint, format, Next build, legacy build, and Storybook checks
+      pass. The deterministic Next authentication E2E suite passes 7/7.
 - [ ] Live Supabase + `dwmc-api` browser integration is not proven in this
-      local run; it requires configured credentials, redirect URLs, both
-      services, and a Next-targeted Playwright project.
-- [ ] The existing Playwright command still launches the Vite rollback app.
-      Its selected auth subset completed 16/20 tests; four existing
+      local run; `npm run test:e2e:live` now fails closed unless configured
+      credentials, redirect URLs, and both services are available.
+- [x] A separate `playwright.next.config.ts` launches Next on port `5182`
+      with a deterministic mock boundary; the existing Playwright command
+      still launches the Vite rollback app.
+- [ ] The selected legacy auth subset completed 16/20 tests; four existing
       accessibility/data assertions failed there and do not exercise the new
       Next SSR routes.
 
-Phase 2 implementation and local validation are complete, with live
-external-service browser integration remaining an explicit prerequisite before
-production cutover. Phase 3 route composition and financial feature migration
-must not begin until that integration coverage is added and passes.
+Phase 2 implementation and deterministic local validation are complete, with
+live external-service browser integration remaining an explicit prerequisite
+before production cutover. Phase 3 route composition and financial feature
+migration must not begin until that integration coverage is executed and
+passes.
 
 An independent security review of the Phase 2 authentication boundary found no
 exploitable vulnerabilities in the reviewed web or backend integration code.
