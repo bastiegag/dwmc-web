@@ -129,12 +129,28 @@ DashboardPage
 
 ## Authentication Flow
 
-Authentication is handled by Supabase Auth.
+Authentication is handled by Supabase Auth, with separate browser and server
+clients from `@supabase/ssr`.
 
-- Supabase owns sign in, sign up, password recovery, session lookup, and sign out.
-- The frontend reads the current session through the auth service.
-- The shared `apiClient` sends the Supabase access token to the backend in an Authorization header.
-- App domain data comes from the backend API, not directly from Supabase tables.
+1. The user authenticates through Supabase.
+2. Next.js maintains the authenticated session using Supabase cookies. `proxy.ts`
+   refreshes and synchronizes cookies; it does not make authorization decisions.
+3. Protected Server Component layouts call `supabase.auth.getUser()` before
+   rendering private pages. Cookie `getSession()` data is not sufficient proof
+   of identity.
+4. Authenticated API requests forward the current Supabase access token as
+   `Authorization: Bearer <access-token>`. Browser requests use the browser
+   client; server-rendered requests use `serverApiClient` and `cache: 'no-store'`.
+5. `dwmc-api` independently verifies the token with
+   `supabase.auth.getUser(token)`.
+6. `dwmc-api` resolves its local `UserProfile` and enforces ownership and
+   domain authorization. A valid Supabase session does not grant access to
+   another user's records.
+
+The browser-side session is useful for UX and auth event synchronization, but
+neither client route protection nor Next.js proxy is the backend authorization
+boundary. The backend contract remains bearer-token based and does not accept
+Next.js cookies directly.
 
 The auth session is also mirrored into TanStack Query so auth-aware hooks can react to session changes.
 

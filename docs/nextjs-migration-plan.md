@@ -688,6 +688,31 @@ Playwright scenarios.
 **Rollback:** Revert the auth PR and redeploy the Phase 1 shell/Vite artifact;
 do not weaken the backend or leave an unverified protected route enabled.
 
+**Implementation summary:** The proof implementation uses
+`src/lib/supabase/browser.ts` for interactive auth and
+`src/lib/supabase/server.ts` for request-scoped cookie access. Root-level
+`proxy.ts` refreshes cookies only. The protected layout verifies identity with
+`getUser()`, and `/protected-proof` calls the existing
+`GET /api/v1/auth/me` contract through a server adapter that forwards
+`Authorization: Bearer <access-token>` with `cache: 'no-store'`. The callback
+exchanges a Supabase code for a cookie-backed session and accepts only
+same-origin relative `next` paths. Logout clears the Supabase session through a
+server route.
+
+**Backend integration risks and recommendations:** `dwmc-api` currently allows
+one exact `APP_ORIGIN` for CORS and its checked-in CORS test uses
+`http://localhost:5173`, while the web examples use `http://localhost:5182`.
+Set `APP_ORIGIN` to the actual browser origin for each environment (or
+explicitly broaden the backend allowlist in a separate backend change) before
+direct browser API requests. This phase does not modify `dwmc-api`.
+The backend only validates bearer tokens and does not read Next.js cookies, so
+future SSR adapters must continue forwarding the access token. A valid token
+only authenticates the Supabase identity; local profile existence, ownership,
+and domain authorization remain backend responsibilities. Existing backend
+401 responses cover absent/malformed/invalid/expired bearer tokens; resource
+lookups may intentionally return not-found rather than exposing cross-user
+ownership. No backend change is required for this SSR proof.
+
 ### Phase 3 — Route composition and navigation
 
 **Objective:** Replace React Router route composition with App Router routes
