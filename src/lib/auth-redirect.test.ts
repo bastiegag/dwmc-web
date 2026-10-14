@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fallbackPath, getSafeAuthRedirect } from './auth-redirect'
+import { fallbackPath, getSafeAuthCallbackDestination, getSafeAuthRedirect } from './auth-redirect'
 
 describe('getSafeAuthRedirect', () => {
     it.each([
@@ -18,6 +18,14 @@ describe('getSafeAuthRedirect', () => {
     it('preserves a safe internal destination with query and hash', () => {
         expect(getSafeAuthRedirect('/protected-proof?source=recovery#recent')).toBe(
             '/protected-proof?source=recovery#recent',
+        )
+    })
+
+    it('requires the recovery flow marker before allowing reset-password', () => {
+        expect(getSafeAuthCallbackDestination('/reset-password', null)).toBe(fallbackPath)
+        expect(getSafeAuthCallbackDestination('/reset-password', 'login')).toBe(fallbackPath)
+        expect(getSafeAuthCallbackDestination('/reset-password', 'recovery')).toBe(
+            '/reset-password',
         )
     })
 })

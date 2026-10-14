@@ -1,25 +1,10 @@
-'use client'
+import { cookies } from 'next/headers'
+import { ResetPasswordForm } from './reset-password-form'
 
-import { useEffect, useState } from 'react'
-import { AuthForm } from '../auth-form'
-import { getSupabaseBrowserClient } from '@/lib/supabase/browser'
+export default async function ResetPasswordPage() {
+    const recoveryCookie = (await cookies()).get('dwmc-recovery')?.value
 
-export default function ResetPasswordPage() {
-    const [valid, setValid] = useState<boolean | null>(null)
-
-    useEffect(() => {
-        const supabase = getSupabaseBrowserClient()
-        supabase.auth.getUser().then(({ data }) => setValid(!!data.user))
-    }, [])
-
-    if (valid === null) {
-        return (
-            <main className="mx-auto flex min-h-dvh max-w-md items-center px-6">
-                Verifying reset link...
-            </main>
-        )
-    }
-    if (!valid) {
+    if (recoveryCookie !== '1') {
         return (
             <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-6">
                 <h1>Link expired or invalid</h1>
@@ -27,9 +12,6 @@ export default function ResetPasswordPage() {
             </main>
         )
     }
-    return (
-        <main className="mx-auto flex min-h-dvh max-w-md items-center px-6">
-            <AuthForm mode="reset" />
-        </main>
-    )
+
+    return <ResetPasswordForm />
 }

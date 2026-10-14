@@ -17,4 +17,9 @@ export const getSafeAuthRedirect = (value: string | null): string => {
     }
 }
 
+export const getSafeAuthCallbackDestination = (value: string | null, flow: string | null) => {
+    const destination = getSafeAuthRedirect(value)
+    return destination === '/reset-password' && flow !== 'recovery' ? fallbackPath : destination
+}
+
 export { fallbackPath }

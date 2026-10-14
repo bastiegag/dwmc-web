@@ -75,6 +75,11 @@ redirect allowlists, schemas, cache cleanup, and API error parsing, but they
 cannot prove cookie refresh, code exchange, or backend JWT verification.
 Those flows must be reported separately from mocked tests.
 
+The Next.js reset flow requires both a successful callback code exchange and
+the short-lived, HttpOnly `dwmc-recovery` cookie set by that callback. An
+ordinary authenticated session without that marker must remain on the invalid
+link state. The marker is cleared after a successful password update.
+
 ## Testing Guidelines
 
 - Prefer user behavior over implementation details.

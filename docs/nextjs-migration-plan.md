@@ -697,7 +697,12 @@ do not weaken the backend or leave an unverified protected route enabled.
 `Authorization: Bearer <access-token>` with `cache: 'no-store'`. The callback
 exchanges a Supabase code for a cookie-backed session and accepts only
 same-origin relative `next` paths. Logout clears the Supabase session through a
-server route.
+server route. Password recovery redirects include an explicit recovery flow
+value; after a successful code exchange, the callback sets a short-lived
+HttpOnly `dwmc-recovery` marker. The reset page requires that marker and a
+currently verified Supabase user, then clears the marker after a successful
+password update. A normal authenticated session cannot open the reset form
+without completing the recovery callback.
 
 **Backend integration risks and recommendations:** `dwmc-api` currently allows
 one exact `APP_ORIGIN` for CORS and its checked-in CORS test uses
@@ -726,6 +731,9 @@ ownership. No backend change is required for this SSR proof.
 - [x] Callback redirects allow only `/protected-proof` and `/reset-password`;
       external, protocol-relative, backslash, malformed, and auth-loop
       destinations fall back safely.
+- [x] Reset-password access requires a successful recovery callback marker in
+      addition to a verified current Supabase user; ordinary sessions cannot
+      silently enter the form.
 - [x] Logout clears the browser session and user-specific TanStack Query data.
 - [x] Server API requests use `getUser()`, matching token identity, and
       `cache: 'no-store'`.
@@ -738,10 +746,15 @@ ownership. No backend change is required for this SSR proof.
       accessibility/data assertions failed there and do not exercise the new
       Next SSR routes.
 
-Phase 2 is complete for the implemented and locally verifiable scope, with
-live external-service browser integration remaining an explicit prerequisite
-before production cutover. Phase 3 route composition and financial feature
-migration must not begin until that integration coverage is added and passes.
+Phase 2 implementation and local validation are complete, with live
+external-service browser integration remaining an explicit prerequisite before
+production cutover. Phase 3 route composition and financial feature migration
+must not begin until that integration coverage is added and passes.
+
+An independent security review of the Phase 2 authentication boundary found no
+exploitable vulnerabilities in the reviewed web or backend integration code.
+The remaining limitation is runtime verification with real Supabase and API
+services, not an identified security defect.
 
 ### Phase 3 — Route composition and navigation
 

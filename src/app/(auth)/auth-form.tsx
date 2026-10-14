@@ -112,7 +112,7 @@ export function AuthForm({
             } else if (mode === 'forgot') {
                 const value = values as ForgotPasswordInput
                 const result = await supabase.auth.resetPasswordForEmail(value.email, {
-                    redirectTo: `${appUrl()}/auth/callback?next=/reset-password`,
+                    redirectTo: `${appUrl()}/auth/callback?flow=recovery&next=/reset-password`,
                 })
                 if (result.error) throw result.error
                 setSuccess(true)
@@ -125,6 +125,7 @@ export function AuthForm({
                 const result = await supabase.auth.updateUser({ password: value.password })
                 if (result.error) throw result.error
                 await supabase.auth.signOut()
+                await fetch('/auth/recovery/clear', { method: 'POST' })
                 setSuccess(true)
             }
         } catch (caught) {
