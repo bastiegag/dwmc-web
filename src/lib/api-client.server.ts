@@ -10,11 +10,22 @@ const getApiBaseUrl = () => {
 export async function serverApiClient<T>(path: string): Promise<T> {
     const supabase = await createSupabaseServerClient()
     const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser()
+    if (userError || !user) {
+        throw new ApiError({
+            status: 401,
+            code: 'UNAUTHORIZED',
+            message: 'The authenticated user could not be verified.',
+        })
+    }
+    const {
         data: { session },
     } = await supabase.auth.getSession()
     const token = session?.access_token
 
-    if (!token) {
+    if (!token || session.user.id !== user.id) {
         throw new ApiError({
             status: 401,
             code: 'UNAUTHORIZED',

@@ -69,6 +69,12 @@ PostgreSQL database or live Supabase credentials. Playwright installs or uses
 its configured browser and starts Vite automatically; local E2E runs use the
 deterministic Auth and API route fixtures in `e2e/`.
 
+Phase 2 SSR authentication also requires integration coverage against a
+running Next.js server, Supabase Auth, and `dwmc-api`. Unit tests can validate
+redirect allowlists, schemas, cache cleanup, and API error parsing, but they
+cannot prove cookie refresh, code exchange, or backend JWT verification.
+Those flows must be reported separately from mocked tests.
+
 ## Testing Guidelines
 
 - Prefer user behavior over implementation details.

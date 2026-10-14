@@ -1,4 +1,5 @@
 import { serverApiClient } from '@/lib/api-client.server'
+import { LogoutButton } from '../logout-button'
 
 type AuthMeResponse = {
     data: { user: { id: string; email?: string }; profile: { authUserId: string } }
@@ -15,9 +16,7 @@ export default async function ProtectedProofPage() {
             <p>
                 Supabase user: <strong>{response.data.user.email ?? response.data.user.id}</strong>
             </p>
-            <form action="/auth/logout" method="post">
-                <button type="submit">Sign out</button>
-            </form>
+            <LogoutButton />
         </main>
     )
 }

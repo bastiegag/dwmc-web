@@ -25,7 +25,9 @@ The companion backend is [`dwmc-api`](https://github.com/bastiegag/dwmc-api). Th
 
 ## Architecture
 
-The frontend runs on the local Vite development server and communicates with the local `dwmc-api` service. Supabase provides browser-side Auth only; Prisma and domain data access belong to `dwmc-api` and local PostgreSQL.
+The frontend currently has a Next.js SSR authentication proof runtime and a
+Vite rollback runtime. Supabase provides authentication only; Prisma and
+domain data access belong to `dwmc-api` and local PostgreSQL.
 
 ```text
 Browser -> local dwmc-web -> local dwmc-api -> Prisma -> local PostgreSQL
@@ -65,13 +67,20 @@ VITE_APP_URL=http://localhost:5182
 VITE_API_URL=/api/v1
 VITE_SUPABASE_URL=https://<project-ref>.supabase.co
 VITE_SUPABASE_ANON_KEY=<publishable-anon-key>
+NEXT_PUBLIC_APP_URL=http://localhost:5182
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable-anon-key>
+DWMC_API_URL=http://localhost:3000/api/v1
 ```
 
 `VITE_API_URL=/api/v1` uses the Vite proxy to reach `dwmc-api` at
 `http://localhost:3000`. Use the same Supabase project and browser-safe anon
 key configured for the API. All `VITE_*` values are bundled into browser code
 and are public; never put database credentials, service-role keys, or other
-backend secrets in them.
+backend secrets in them. Add `http://localhost:5182/auth/callback` to the
+Supabase Auth redirect URLs. Phase 2 exposes the auth routes and
+`/protected-proof` in Next.js; the complete financial route set remains on the
+Vite rollback runtime until Phase 3.
 
 Open `http://localhost:5182`, sign up with Email/password, and then create a
 section, category, account, and transaction. Supabase handles authentication;

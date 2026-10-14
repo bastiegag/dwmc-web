@@ -1,18 +1,16 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
-
-const getSafeNext = (value: string | null) =>
-    value?.startsWith('/') && !value.startsWith('//') ? value : '/protected-proof'
+import { getSafeAuthRedirect } from '@/lib/auth-redirect'
 
 export async function GET(request: Request) {
     const url = new URL(request.url)
     const code = url.searchParams.get('code')
 
-    if (code) {
-        const supabase = await createSupabaseServerClient()
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (error) return NextResponse.redirect(new URL('/login?error=callback', url))
-    }
+    if (!code) return NextResponse.redirect(new URL('/login?error=missing_callback', url))
 
-    return NextResponse.redirect(new URL(getSafeNext(url.searchParams.get('next')), url))
+    const supabase = await createSupabaseServerClient()
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    if (error) return NextResponse.redirect(new URL('/login?error=invalid_callback', url))
+
+    return NextResponse.redirect(new URL(getSafeAuthRedirect(url.searchParams.get('next')), url))
 }

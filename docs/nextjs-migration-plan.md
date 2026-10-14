@@ -1,6 +1,6 @@
 # Vite + React Router to Next.js App Router Migration Plan
 
-**Status:** Proposed; documentation and planning only
+**Status:** Phase 2 implementation complete; Phase 3 not started
 **Branch:** `feat/migrate-to-nextjs`
 **Repository:** `bastiegag/dwmc-web`
 **Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)
@@ -712,6 +712,36 @@ and domain authorization remain backend responsibilities. Existing backend
 401 responses cover absent/malformed/invalid/expired bearer tokens; resource
 lookups may intentionally return not-found rather than exposing cross-user
 ownership. No backend change is required for this SSR proof.
+
+**Phase 2 acceptance evaluation:**
+
+- [x] Anonymous access to `/protected-proof` redirects before private API
+      fetching.
+- [x] Authenticated access renders a server-verified proof route and forwards
+      a matching bearer token to `dwmc-api`.
+- [x] `proxy.ts` refreshes and synchronizes Supabase cookies without adding
+      authorization rules.
+- [x] Login, signup, forgot-password, reset-password, callback, and logout
+      routes exist in Next.js.
+- [x] Callback redirects allow only `/protected-proof` and `/reset-password`;
+      external, protocol-relative, backslash, malformed, and auth-loop
+      destinations fall back safely.
+- [x] Logout clears the browser session and user-specific TanStack Query data.
+- [x] Server API requests use `getUser()`, matching token identity, and
+      `cache: 'no-store'`.
+- [x] Unit, type, lint, format, Next, legacy, and Storybook checks pass.
+- [ ] Live Supabase + `dwmc-api` browser integration is not proven in this
+      local run; it requires configured credentials, redirect URLs, both
+      services, and a Next-targeted Playwright project.
+- [ ] The existing Playwright command still launches the Vite rollback app.
+      Its selected auth subset completed 16/20 tests; four existing
+      accessibility/data assertions failed there and do not exercise the new
+      Next SSR routes.
+
+Phase 2 is complete for the implemented and locally verifiable scope, with
+live external-service browser integration remaining an explicit prerequisite
+before production cutover. Phase 3 route composition and financial feature
+migration must not begin until that integration coverage is added and passes.
 
 ### Phase 3 — Route composition and navigation
 

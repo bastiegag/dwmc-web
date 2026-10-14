@@ -24,8 +24,10 @@ The current route map includes:
 - `/forgot-password`
 - `/reset-password`
 
-The root route redirects to `/login`.
-The protected app index route redirects to `/dashboard`.
+The Next.js Phase 2 proof routes are `/login`, `/signup`, `/forgot-password`,
+`/reset-password`, `/auth/callback`, `/auth/logout`, and `/protected-proof`.
+The protected proof route redirects anonymous requests to `/login`. The full
+application route map remains in the Vite rollback runtime until Phase 3.
 The `/tools/categories` path redirects to `/categories`.
 
 ## Month-Based Navigation
