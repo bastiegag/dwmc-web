@@ -64,6 +64,11 @@ Use the package scripts that exist in `package.json`.
 - `npm run storybook`
 - `npm run build-storybook`
 
+Phase 3 route coverage should include Next deep links, anonymous redirects,
+active desktop/mobile navigation, query-string month preservation, invalid
+month fallback, and loading/error/not-found boundaries. The legacy Vite
+Playwright suite remains part of the rollback compatibility check.
+
 CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml`. `npm run test:e2e` runs the legacy suite against Vite. The dedicated
 `npm run test:e2e:next` suite starts Next.js plus a local deterministic mock
 Supabase/API boundary and validates SSR cookies, protected rendering, bearer

@@ -1,7 +1,7 @@
 import { serverApiClient } from '@/lib/api-client.server'
 import { ApiError } from '@/lib/api-error'
 import { redirect } from 'next/navigation'
-import { LogoutButton } from '../logout-button'
+import { LogoutButton } from '../(protected)/logout-button'
 
 type AuthMeResponse = {
     data: { user: { id: string; email?: string }; profile: { authUserId: string } }

@@ -8,9 +8,9 @@ The codebase keeps application setup, reusable UI, domain features, shared cross
 ## Runtime Boundaries
 
 The active frontend runtime is the Next.js App Router shell on port `5182`.
-The complete application remains available through the explicitly named Vite
-rollback runtime (`dev:legacy`, `build:legacy`, and `preview:legacy`) until
-route and authentication migration phases are complete. The local `dwmc-api`
+The complete application is available through the migrated App Router, while
+the explicitly named Vite rollback runtime (`dev:legacy`, `build:legacy`, and
+`preview:legacy`) remains available during the migration. The local `dwmc-api`
 owns domain operations, JWT validation, authorization, Prisma, and PostgreSQL
 access. Supabase is used for Auth only; the browser never connects to
 application data storage.
@@ -45,7 +45,7 @@ src/
 
 ### Folder Roles
 
-- `app`: the active Next.js App Router shell and top-level providers.
+- `app`: the active Next.js App Router route groups, layouts, boundaries, and top-level providers.
 - `legacy-app`: temporary Vite bootstrap, router, layouts, and providers used
   only for rollback until route migration is complete.
 - `components`: shared UI and layout components used across features.
@@ -55,6 +55,10 @@ src/
 - `stories`: Storybook stories for reusable UI states.
 - `styles`: global styling.
 - `test`: shared test setup, fixtures, and helpers.
+
+Route entrypoints are intentionally thin. Existing feature pages remain client
+components where they use hooks, forms, browser APIs, or TanStack Query; server
+layouts own authentication and route composition.
 
 ## Feature-Based Architecture
 

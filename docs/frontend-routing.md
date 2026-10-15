@@ -2,10 +2,9 @@
 
 ## Overview
 
-The complete application route map currently remains in the Vite rollback
-runtime under `src/legacy-app` and uses React Router. The active Next.js shell
-currently exposes only the public root route; App Router authentication and
-feature route migration are planned for later migration phases.
+The active runtime uses Next.js App Router route groups under `src/app`.
+The Vite application remains available under `src/legacy-app` as a rollback
+runtime and continues to use React Router.
 
 The protected shell is rendered by the app layout, while auth screens use a dedicated auth layout.
 
@@ -24,11 +23,32 @@ The current route map includes:
 - `/forgot-password`
 - `/reset-password`
 
-The Next.js Phase 2 proof routes are `/login`, `/signup`, `/forgot-password`,
-`/reset-password`, `/auth/callback`, `/auth/logout`, and `/protected-proof`.
-The protected proof route redirects anonymous requests to `/login`. The full
-application route map remains in the Vite rollback runtime until Phase 3.
+The Next.js routes use `(auth)` and `(protected)` groups. The protected layout
+performs the server-side Supabase user check once, while client feature pages
+retain TanStack Query and browser interaction behavior.
 The `/tools/categories` path redirects to `/categories`.
+
+The legacy route map remains functional for rollback and is intentionally not
+removed during Phase 3.
+
+## Phase 3 Route Migration Matrix
+
+| Legacy path         | Next path          | Layout        | Auth            | Entry component    | Client boundary | Query state       | Coverage      |
+| ------------------- | ------------------ | ------------- | --------------- | ------------------ | --------------- | ----------------- | ------------- |
+| `/`                 | `/`                | root          | redirect        | root redirect      | server          | none              | auth E2E      |
+| `/login`            | `/login`           | `(auth)`      | anonymous       | `AuthForm`         | client form     | `error`           | auth E2E      |
+| `/signup`           | `/signup`          | `(auth)`      | anonymous       | `AuthForm`         | client form     | none              | auth E2E      |
+| `/forgot-password`  | `/forgot-password` | `(auth)`      | anonymous       | `AuthForm`         | client form     | none              | auth E2E      |
+| `/reset-password`   | `/reset-password`  | `(auth)`      | public recovery | reset form         | client form     | recovery hash     | auth E2E      |
+| `/dashboard`        | `/dashboard`       | `(protected)` | required        | `DashboardPage`    | client page     | `month`           | unit + E2E    |
+| `/transactions`     | `/transactions`    | `(protected)` | required        | `TransactionsPage` | client page     | `month`           | unit + E2E    |
+| `/budgets`          | `/budgets`         | `(protected)` | required        | `BudgetsPage`      | client page     | `month`           | unit + E2E    |
+| `/accounts`         | `/accounts`        | `(protected)` | required        | `AccountsPage`     | client page     | `month` preserved | unit          |
+| `/categories`       | `/categories`      | `(protected)` | required        | `CategoriesPage`   | client page     | `month` preserved | unit          |
+| `/tools`            | `/tools`           | `(protected)` | required        | `ToolsPage`        | client page     | `month`           | unit          |
+| `/tools/profile`    | `/tools/profile`   | `(protected)` | required        | `ProfilePage`      | client page     | `month` preserved | unit          |
+| `/tools/settings`   | `/tools/settings`  | `(protected)` | required        | `SettingsPage`     | client page     | `month` preserved | unit          |
+| `/tools/categories` | `/categories`      | `(protected)` | required        | redirect           | server/client   | `month`           | legacy router |
 
 ## Month-Based Navigation
 
@@ -54,6 +74,8 @@ The shared month navigator appears in the app layout on the dashboard, transacti
 
 It uses the selected month from the URL and moves one month backward or forward at a time.
 Navigation updates the query string with `replace: true` so month changes do not create extra history entries.
+The Next runtime uses the same URL contract and browser history replacement
+adapter, including back/forward and direct URL access.
 
 ## Bottom Navigation
 

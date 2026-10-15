@@ -1,6 +1,6 @@
 # Vite + React Router to Next.js App Router Migration Plan
 
-**Status:** Phase 2 implementation complete; Phase 3 not started
+**Status:** Phase 3 implementation complete; Phase 4 pending
 **Branch:** `feat/migrate-to-nextjs`
 **Repository:** `bastiegag/dwmc-web`
 **Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)
@@ -55,6 +55,29 @@ Phase 1 is implemented on `feat/migrate-to-nextjs`:
 
 The next milestone is Phase 2: SSR authentication and a protected
 proof-of-concept route. This phase must not be inferred from the public shell.
+
+### Phase 3 implementation status
+
+Phase 3 is implemented:
+
+- Auth and protected route groups are available through `src/app/(auth)` and
+  `src/app/(protected)`.
+- Dashboard, transactions, budgets, accounts, categories, tools, profile, and
+  settings entrypoints reuse existing feature pages.
+- The protected layout keeps server-side Supabase verification and renders
+  month-aware desktop, section, and mobile navigation.
+- Shared `?month=YYYY-MM` behavior, invalid-value fallback, history replacement,
+  and direct navigation are preserved without localStorage.
+- Loading, error, and not-found boundaries were added. The legacy Vite runtime
+  and React Router implementation remain available through the rollback
+  scripts.
+
+The maintainer's successful Phase 2 local integration validation is
+maintainer-reported and was not rerun by this implementation.
+
+Phase 4 remains responsible for API adapter and data-fetching architecture
+improvements. No server-side financial fetching or Server Actions were added
+in Phase 3.
 
 ## 2. Current Architecture
 
