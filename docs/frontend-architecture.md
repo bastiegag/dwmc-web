@@ -60,6 +60,11 @@ Route entrypoints are intentionally thin. Existing feature pages remain client
 components where they use hooks, forms, browser APIs, or TanStack Query; server
 layouts own authentication and route composition.
 
+URL-backed month state follows the same boundary: shared feature code consumes
+the month context contract, while the Next and legacy shells provide separate
+router-specific implementations. This keeps React Router out of the active
+Next runtime and Next navigation APIs out of the rollback runtime.
+
 ## Feature-Based Architecture
 
 Feature folders follow the same general pattern:

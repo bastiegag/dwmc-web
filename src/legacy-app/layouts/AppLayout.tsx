@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { useLogout } from '@/features/auth/hooks'
 import { PrimaryActionProvider } from '@/shared/primary-action'
-import { MonthNavigator } from '@/shared/month'
+import { LegacyMonthProvider, MonthNavigator } from '@/shared/month'
 import {
     AppTopBar,
     AppBottomNavigation,
@@ -22,7 +22,7 @@ export const AppLayout = () => {
         pathname.startsWith('/dashboard') || pathname.startsWith('/transactions')
 
     return (
-        <>
+        <LegacyMonthProvider>
             <SkipLink />
             <DesktopSidebar />
 
@@ -49,6 +49,6 @@ export const AppLayout = () => {
                 <AppBottomNavigation />
                 <ContextualFloatingActionButton />
             </PrimaryActionProvider>
-        </>
+        </LegacyMonthProvider>
     )
 }

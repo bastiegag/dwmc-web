@@ -3,6 +3,7 @@ import { render, renderHook, type RenderOptions } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PrimaryActionProvider } from '@/shared/primary-action'
+import { LegacyMonthProvider } from '@/shared/month'
 
 const createTestQueryClient = () => {
     return new QueryClient({
@@ -24,7 +25,9 @@ const TestWrapper = ({
     return (
         <QueryClientProvider client={testQueryClient}>
             <PrimaryActionProvider>
-                <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+                <MemoryRouter initialEntries={initialEntries}>
+                    <LegacyMonthProvider>{children}</LegacyMonthProvider>
+                </MemoryRouter>
             </PrimaryActionProvider>
         </QueryClientProvider>
     )

@@ -79,6 +79,14 @@ Phase 4 remains responsible for API adapter and data-fetching architecture
 improvements. No server-side financial fetching or Server Actions were added
 in Phase 3.
 
+#### Phase 3 month-navigation correction
+
+Month navigation now uses explicit runtime providers rather than conditional
+router hooks. `NextMonthProvider` owns App Router query updates, while
+`LegacyMonthProvider` owns React Router query updates. Shared feature consumers
+continue to use the same `useSelectedMonth` interface and shared month
+validation/calculation utilities.
+
 ## 2. Current Architecture
 
 ### Confirmed runtime and dependencies

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { LayoutDashboard, Target, WalletCards, Wrench, ReceiptText, LogOut } from 'lucide-react'
 import { ThemeToggle, Logo, SkipLink, ContextualFloatingActionButton } from '@/components/layout'
@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/react-query'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser'
 import { authSessionQueryKey } from '@/lib/auth-session'
+import { NextMonthProvider } from './NextMonthProvider'
 
 const navigation = [
     { name: 'Overview', to: '/dashboard', icon: LayoutDashboard },
@@ -24,8 +25,15 @@ const navigation = [
 const withMonth = (path: string, month: string) => `${path}?month=${month}`
 
 export function ProtectedShell({ children }: Readonly<{ children: React.ReactNode }>) {
+    return (
+        <NextMonthProvider>
+            <ProtectedShellContent>{children}</ProtectedShellContent>
+        </NextMonthProvider>
+    )
+}
+
+function ProtectedShellContent({ children }: Readonly<{ children: React.ReactNode }>) {
     const pathname = usePathname()
-    const searchParams = useSearchParams()
     const { month } = useSelectedMonth()
     const queryClient = useQueryClient()
     const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -34,7 +42,6 @@ export function ProtectedShell({ children }: Readonly<{ children: React.ReactNod
     )
     const showDashboardSections =
         pathname.startsWith('/dashboard') || pathname.startsWith('/transactions')
-    const currentQuery = searchParams.toString()
     const logout = async () => {
         setIsLoggingOut(true)
         try {
@@ -142,7 +149,7 @@ export function ProtectedShell({ children }: Readonly<{ children: React.ReactNod
                         </nav>
                     )}
 
-                    {showMonthNav && <MonthControls month={month} currentQuery={currentQuery} />}
+                    {showMonthNav && <MonthControls month={month} />}
                     <main
                         id="main-content"
                         className="flex-1 px-4 py-6 pb-[calc(4rem+1.5rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-8 lg:py-8"
@@ -157,9 +164,8 @@ export function ProtectedShell({ children }: Readonly<{ children: React.ReactNod
     )
 }
 
-function MonthControls({ month, currentQuery }: { month: string; currentQuery: string }) {
+function MonthControls({ month }: { month: string }) {
     const { label, goToPreviousMonth, goToNextMonth } = useSelectedMonth()
-    void currentQuery
     return (
         <div className="flex items-center justify-center p-4">
             <div className="flex w-full items-center justify-between gap-2 rounded-full bg-white p-1 shadow-md">

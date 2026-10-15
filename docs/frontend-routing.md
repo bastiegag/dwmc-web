@@ -54,6 +54,19 @@ removed during Phase 3.
 
 The selected month is stored in the URL query string as `month=YYYY-MM`.
 
+Month URL state has explicit runtime providers:
+
+- `NextMonthProvider` uses `useSearchParams`, `usePathname`, and
+  `router.replace()` in the active App Router shell.
+- `LegacyMonthProvider` uses React Router's `useSearchParams` and replacement
+  navigation in the Vite rollback runtime.
+- Feature components consume the framework-independent `useSelectedMonth`
+  context interface and do not import either router.
+
+Both providers preserve unrelated query parameters and keep the URL as the
+single source of truth. No direct History API mutation or runtime router
+detection is used.
+
 Rules:
 
 - If `month` is missing, the app falls back to the current month.
