@@ -82,6 +82,10 @@ Supabase Auth redirect URLs. Phase 2 exposes the auth routes and
 `/protected-proof` in Next.js; the complete financial route set remains on the
 Vite rollback runtime until Phase 3.
 
+The opt-in live Next.js E2E suite also requires `E2E_TEST_EMAIL` and
+`E2E_TEST_PASSWORD` in `.env.local`. Use a dedicated non-production Supabase
+user and API environment; never use production credentials or financial data.
+
 Open `http://localhost:5182`, sign up with Email/password, and then create a
 section, category, account, and transaction. Supabase handles authentication;
 the resulting application data is persisted by the local API in local

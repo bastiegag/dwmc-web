@@ -1,4 +1,8 @@
+import { config as loadEnv } from 'dotenv'
 import { defineConfig, devices } from '@playwright/test'
+
+loadEnv({ path: '.env.local' })
+loadEnv({ path: '.env' })
 
 const required = [
     'NEXT_PUBLIC_SUPABASE_URL',
@@ -34,12 +38,15 @@ export default defineConfig({
         },
     ],
     webServer: {
-        command: 'npm run start',
+        command: 'npm run build && npm run start',
         url: 'http://127.0.0.1:5182',
         reuseExistingServer: false,
         timeout: 120_000,
         env: {
             NEXT_PUBLIC_APP_URL: 'http://127.0.0.1:5182',
+            NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+            NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+            DWMC_API_URL: process.env.DWMC_API_URL,
         },
     },
 })
