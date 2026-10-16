@@ -15,15 +15,22 @@ The backend API documentation is the contract authority. See the sibling reposit
 
 `apiClient`:
 
-- Reads `VITE_API_URL` and joins it with the requested path.
+- Uses the runtime-configured browser adapter: same-origin `/api/v1` for Next.js
+  and `VITE_API_URL` for the Vite rollback.
 - Reads the current Supabase session and sends `Authorization: Bearer <access token>` when available.
 - Serializes non-GET bodies as JSON.
-- Parses JSON responses when the response content type is JSON.
+- Parses JSON responses safely, including empty and malformed responses.
 - Returns the parsed successful response to the caller.
 - Converts failed responses into `ApiError` with `status`, optional `code`, and optional `issues`.
 - Converts network failures into `ApiError` with code `NETWORK_ERROR` and status `0`.
 
 Feature code should not attach auth headers manually, call Supabase tables, or call `fetch` directly.
+
+Server Components use `src/lib/api-client.server.ts` instead. It verifies the
+request-scoped Supabase identity with `getUser()`, checks the token subject,
+forwards the token to `dwmc-api`, supports the same request options, and uses
+`cache: 'no-store'` for every authenticated request. Shared parsing and error
+construction are implemented in `src/lib/api-client.shared.ts`.
 
 ## Backend Contract
 

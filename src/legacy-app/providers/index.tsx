@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/shared/theme'
 import { Toaster } from '@/components/ui/sonner'
 import { authService } from '@/features/auth/services'
 import { authSessionQueryKey } from '@/features/auth/hooks'
+import { configureBrowserApiAdapter } from '@/lib/browser-api-adapter'
 
 export const AuthSyncProvider = ({ children }: { children: ReactNode }) => {
     const qc = useQueryClient()
@@ -19,6 +20,7 @@ export const AuthSyncProvider = ({ children }: { children: ReactNode }) => {
             const nextUserId = session?.user?.id
 
             if (!session || (previousUserId && previousUserId !== nextUserId)) {
+                await qc.cancelQueries()
                 qc.removeQueries({
                     predicate: (query) => query.queryKey[0] !== authSessionQueryKey[0],
                 })
@@ -36,13 +38,26 @@ interface AppProvidersProps {
     children: ReactNode
 }
 
-export const AppProviders = ({ children }: AppProvidersProps) => (
-    <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="system" storageKey="dwmc-theme">
-            <AuthSyncProvider>
-                {children}
-                <Toaster />
-            </AuthSyncProvider>
-        </ThemeProvider>
-    </QueryClientProvider>
-)
+export const AppProviders = ({ children }: AppProvidersProps) => {
+    configureBrowserApiAdapter({
+        baseUrl: import.meta.env.VITE_API_URL,
+        getAccessToken: async () => {
+            const session = await authService.getSession()
+            return session?.access_token
+        },
+        onUnauthorized: async () => {
+            await authService.logout()
+        },
+    })
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <ThemeProvider defaultTheme="system" storageKey="dwmc-theme">
+                <AuthSyncProvider>
+                    {children}
+                    <Toaster />
+                </AuthSyncProvider>
+            </ThemeProvider>
+        </QueryClientProvider>
+    )
+}

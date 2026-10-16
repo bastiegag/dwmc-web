@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ApiError, apiClient } from '../api-client'
+import { configureBrowserApiAdapter } from '../browser-api-adapter'
 
 const { getSessionMock, signOutMock } = vi.hoisted(() => ({
     getSessionMock: vi.fn(),
@@ -17,11 +18,22 @@ vi.mock('@/lib/supabase', () => ({
 
 describe('apiClient', () => {
     beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787///')
         getSessionMock.mockResolvedValue({ data: { session: null } })
         signOutMock.mockResolvedValue({ error: null })
         vi.restoreAllMocks()
         vi.stubGlobal('fetch', vi.fn())
+        configureBrowserApiAdapter({
+            baseUrl: 'http://localhost:8787///',
+            getAccessToken: async () => {
+                const {
+                    data: { session },
+                } = await getSessionMock()
+                return session?.access_token
+            },
+            onUnauthorized: async () => {
+                await signOutMock()
+            },
+        })
     })
 
     it('normalizes the base URL and includes an access token', async () => {
@@ -64,12 +76,6 @@ describe('apiClient', () => {
             code: 'NETWORK_ERROR',
             message: 'Unable to connect to the API.',
         })
-    })
-
-    it('throws when the API base URL is missing', async () => {
-        vi.stubEnv('VITE_API_URL', '')
-
-        await expect(apiClient('/accounts')).rejects.toThrow('VITE_API_URL is not defined')
     })
 
     it('maps unauthorized responses and signs out', async () => {

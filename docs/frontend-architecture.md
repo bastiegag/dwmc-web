@@ -65,6 +65,11 @@ the month context contract, while the Next and legacy shells provide separate
 router-specific implementations. This keeps React Router out of the active
 Next runtime and Next navigation APIs out of the rollback runtime.
 
+API access follows an equivalent boundary. Feature API modules keep their
+existing contracts and use the configured browser adapter, while Server
+Components use the request-scoped server adapter only. Authenticated server
+requests are explicitly uncached.
+
 ## Feature-Based Architecture
 
 Feature folders follow the same general pattern:

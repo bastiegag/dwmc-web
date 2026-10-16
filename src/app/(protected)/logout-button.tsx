@@ -11,6 +11,7 @@ export function LogoutButton() {
 
     const logout = async () => {
         await getSupabaseBrowserClient().auth.signOut()
+        await queryClient.cancelQueries()
         queryClient.removeQueries({
             predicate: (query) => query.queryKey[0] !== authSessionQueryKey[0],
         })

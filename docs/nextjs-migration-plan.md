@@ -1,6 +1,6 @@
 # Vite + React Router to Next.js App Router Migration Plan
 
-**Status:** Phase 3 implementation complete; Phase 4 pending
+**Status:** Phase 4 implementation complete; Phase 5 pending
 **Branch:** `feat/migrate-to-nextjs`
 **Repository:** `bastiegag/dwmc-web`
 **Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)
@@ -86,6 +86,25 @@ router hooks. `NextMonthProvider` owns App Router query updates, while
 `LegacyMonthProvider` owns React Router query updates. Shared feature consumers
 continue to use the same `useSelectedMonth` interface and shared month
 validation/calculation utilities.
+
+### Phase 4 implementation status
+
+Phase 4 is implemented:
+
+- Browser API access is configured explicitly by the Next and legacy runtime
+  providers without importing server-only modules into Client Components.
+- Server API access verifies the request-scoped Supabase user and matching
+  access-token subject before forwarding requests to `dwmc-api`.
+- Browser and server adapters share response parsing and `ApiError`
+  construction, including network, empty, malformed, and structured error
+  responses.
+- Authenticated requests use explicit cache behavior, and QueryClient requests
+  are cancelled before user-sensitive cache cleanup on identity changes and
+  logout.
+- Existing feature API contracts, query keys, mutation invalidation, and the
+  Vite rollback runtime remain intact.
+
+Phase 5 is responsible for feature or UX work beyond API infrastructure.
 
 ## 2. Current Architecture
 

@@ -1,4 +1,10 @@
-import { ApiError } from './api-error'
+import {
+    ApiError,
+    createApiError,
+    getRequestHeaders,
+    parseApiResponse,
+    type ApiClientOptions,
+} from './api-client.shared'
 import { createSupabaseServerClient } from './supabase/server'
 
 const getApiBaseUrl = () => {
@@ -7,12 +13,13 @@ const getApiBaseUrl = () => {
     return url.replace(/\/+$/, '')
 }
 
-export async function serverApiClient<T>(path: string): Promise<T> {
+export async function serverApiClient<T>(path: string, options: ApiClientOptions = {}): Promise<T> {
     const supabase = await createSupabaseServerClient()
     const {
         data: { user },
         error: userError,
     } = await supabase.auth.getUser()
+
     if (userError || !user) {
         throw new ApiError({
             status: 401,
@@ -20,6 +27,7 @@ export async function serverApiClient<T>(path: string): Promise<T> {
             message: 'The authenticated user could not be verified.',
         })
     }
+
     const {
         data: { session },
     } = await supabase.auth.getSession()
@@ -33,20 +41,30 @@ export async function serverApiClient<T>(path: string): Promise<T> {
         })
     }
 
-    const response = await fetch(`${getApiBaseUrl()}/${path.replace(/^\/+/, '')}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: 'no-store',
-    })
-    const contentType = response.headers.get('content-type') ?? ''
-    const json = contentType.includes('application/json') ? await response.json() : undefined
+    const method = options.method ?? 'GET'
+    let response: Response
+    try {
+        response = await fetch(`${getApiBaseUrl()}/${path.replace(/^\/+/, '')}`, {
+            method,
+            headers: getRequestHeaders({ ...options, method }, token),
+            ...(options.body !== undefined && method !== 'GET'
+                ? { body: JSON.stringify(options.body) }
+                : {}),
+            ...(options.signal ? { signal: options.signal } : {}),
+            cache: 'no-store',
+        })
+    } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') throw error
+        throw new ApiError({
+            status: 0,
+            code: 'NETWORK_ERROR',
+            message: 'Unable to connect to the API.',
+        })
+    }
 
-    if (response.ok) return json as T
-
-    const error = (json as { error?: { code?: string; message?: string; issues?: unknown } })?.error
-    throw new ApiError({
-        status: response.status,
-        code: error?.code,
-        message: error?.message ?? `Request failed with status ${response.status}`,
-        issues: error?.issues,
-    })
+    const payload = await parseApiResponse(response)
+    if (response.ok) return payload as T
+    throw createApiError(response, payload)
 }
+
+export { ApiError, type ApiClientOptions } from './api-client.shared'

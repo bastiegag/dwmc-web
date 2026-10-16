@@ -7,7 +7,8 @@ export const useLogout = () => {
     const queryClient = useQueryClient()
     const { mutateAsync, isPending } = useMutation({
         mutationFn: () => authService.logout(),
-        onSuccess: () => {
+        onSuccess: async () => {
+            await queryClient.cancelQueries()
             queryClient.removeQueries({
                 predicate: (query) => query.queryKey[0] !== authSessionQueryKey[0],
             })

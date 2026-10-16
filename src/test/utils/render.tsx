@@ -4,6 +4,7 @@ import { MemoryRouter, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PrimaryActionProvider } from '@/shared/primary-action'
 import { LegacyMonthProvider } from '@/shared/month'
+import { configureBrowserApiAdapter } from '@/lib/browser-api-adapter'
 
 const createTestQueryClient = () => {
     return new QueryClient({
@@ -22,6 +23,11 @@ const TestWrapper = ({
     initialEntries?: string[]
 }) => {
     const [testQueryClient] = useState(createTestQueryClient)
+    configureBrowserApiAdapter({
+        baseUrl: 'http://localhost:8787',
+        getAccessToken: async () => undefined,
+        onUnauthorized: async () => undefined,
+    })
     return (
         <QueryClientProvider client={testQueryClient}>
             <PrimaryActionProvider>
@@ -78,6 +84,11 @@ export const renderHookWithQuery = <Result,>(
     hook: () => Result,
     options?: { setupClient?: (qc: QueryClient) => void },
 ) => {
+    configureBrowserApiAdapter({
+        baseUrl: 'http://localhost:8787',
+        getAccessToken: async () => undefined,
+        onUnauthorized: async () => undefined,
+    })
     const testQueryClient = createTestQueryClient()
     options?.setupClient?.(testQueryClient)
 

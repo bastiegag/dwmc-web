@@ -49,6 +49,9 @@ When changing these areas, preserve or extend the relevant behavior:
 - Mutation hooks invalidate every known affected query family, including cross-feature dependencies.
 - The contextual primary action registers and clears page actions.
 - Auth flows expose accessible validation and error states.
+- Browser and server API adapter tests cover token forwarding, request origins,
+  authenticated cache policy, malformed/empty responses, network failures, and
+  mismatched session identities.
 
 ## Commands
 

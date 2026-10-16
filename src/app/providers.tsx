@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/shared/theme'
 import { authSessionQueryKey } from '@/lib/auth-session'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser'
 import { queryClient } from '@/lib/query'
+import { configureBrowserApiAdapter } from '@/lib/browser-api-adapter'
 
 function AuthSessionSync({ children }: Readonly<{ children: ReactNode }>) {
     const client = useQueryClient()
@@ -16,9 +17,10 @@ function AuthSessionSync({ children }: Readonly<{ children: ReactNode }>) {
     useEffect(() => {
         const {
             data: { subscription },
-        } = getSupabaseBrowserClient().auth.onAuthStateChange((_event, session) => {
+        } = getSupabaseBrowserClient().auth.onAuthStateChange(async (_event, session) => {
             const previous = client.getQueryData<Session | null>(authSessionQueryKey)
             if (!session || previous?.user?.id !== session.user?.id) {
+                await client.cancelQueries()
                 client.removeQueries({
                     predicate: (query) => query.queryKey[0] !== authSessionQueryKey[0],
                 })
@@ -32,6 +34,19 @@ function AuthSessionSync({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 export function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
+    configureBrowserApiAdapter({
+        baseUrl: '/api/v1',
+        getAccessToken: async () => {
+            const {
+                data: { session },
+            } = await getSupabaseBrowserClient().auth.getSession()
+            return session?.access_token
+        },
+        onUnauthorized: async () => {
+            await getSupabaseBrowserClient().auth.signOut()
+        },
+    })
+
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider defaultTheme="system" storageKey="dwmc-theme">

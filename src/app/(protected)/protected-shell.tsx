@@ -46,6 +46,7 @@ function ProtectedShellContent({ children }: Readonly<{ children: React.ReactNod
         setIsLoggingOut(true)
         try {
             await getSupabaseBrowserClient().auth.signOut()
+            await queryClient.cancelQueries()
             queryClient.removeQueries({
                 predicate: (query) => query.queryKey[0] !== authSessionQueryKey[0],
             })
