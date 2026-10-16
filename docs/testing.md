@@ -99,6 +99,13 @@ The deterministic Next suite does not prove Supabase JWT validation or the
 real backend database contract. The live suite is the required validation for
 that boundary.
 
+The Next deterministic suite also covers the Phase 5 parity boundary:
+dashboard month navigation and query preservation, protected navigation,
+account/category/transaction/budget workflows, tools/profile/settings routes,
+mobile navigation, and Escape-key dialog dismissal. Its mock boundary serves
+the same REST resource shapes used by feature API modules; it is not a
+replacement for live backend integration.
+
 The Next.js reset flow requires both a successful callback code exchange and
 the short-lived, HttpOnly `dwmc-recovery` cookie set by that callback. An
 ordinary authenticated session without that marker must remain on the invalid

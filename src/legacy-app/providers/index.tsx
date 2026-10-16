@@ -7,6 +7,8 @@ import { Toaster } from '@/components/ui/sonner'
 import { authService } from '@/features/auth/services'
 import { authSessionQueryKey } from '@/features/auth/hooks'
 import { configureBrowserApiAdapter } from '@/lib/browser-api-adapter'
+import { configureAuthClient } from '@/lib/auth-client'
+import { supabase } from '@/lib/supabase'
 
 export const AuthSyncProvider = ({ children }: { children: ReactNode }) => {
     const qc = useQueryClient()
@@ -39,6 +41,7 @@ interface AppProvidersProps {
 }
 
 export const AppProviders = ({ children }: AppProvidersProps) => {
+    configureAuthClient(supabase, import.meta.env.VITE_APP_URL)
     configureBrowserApiAdapter({
         baseUrl: import.meta.env.VITE_API_URL,
         getAccessToken: async () => {

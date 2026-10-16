@@ -10,6 +10,7 @@ import { authSessionQueryKey } from '@/lib/auth-session'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser'
 import { queryClient } from '@/lib/query'
 import { configureBrowserApiAdapter } from '@/lib/browser-api-adapter'
+import { configureAuthClient } from '@/lib/auth-client'
 
 function AuthSessionSync({ children }: Readonly<{ children: ReactNode }>) {
     const client = useQueryClient()
@@ -34,6 +35,12 @@ function AuthSessionSync({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 export function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
+    const supabaseClient = getSupabaseBrowserClient()
+    configureAuthClient(
+        supabaseClient,
+        process.env.NEXT_PUBLIC_APP_URL ??
+            (typeof window === 'undefined' ? '' : window.location.origin),
+    )
     configureBrowserApiAdapter({
         baseUrl: '/api/v1',
         getAccessToken: async () => {

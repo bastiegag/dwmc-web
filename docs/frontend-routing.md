@@ -156,3 +156,12 @@ Settings currently owns the device-local theme preference.
 - Avoid duplicating navigation config when a shared nav source already exists.
 
 The local Vite server serves the SPA during development. Direct navigation and refreshes of nested routes should be covered by local browser tests.
+
+## Phase 5 route verification
+
+The Next deterministic browser suite verifies protected deep links and
+month-preserving navigation between Dashboard, Transactions, and Budgets. It
+also exercises the migrated Accounts, Categories, Tools/Profile, and Settings
+routes through the shared feature pages. The legacy Playwright suite remains
+the compatibility reference for broader CRUD, validation, responsive, and
+accessibility coverage.

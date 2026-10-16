@@ -1,6 +1,6 @@
 # Vite + React Router to Next.js App Router Migration Plan
 
-**Status:** Phase 4 implementation complete; Phase 5 pending
+**Status:** Phase 5 implementation complete; Phase 6 pending
 **Branch:** `feat/migrate-to-nextjs`
 **Repository:** `bastiegag/dwmc-web`
 **Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)
@@ -105,6 +105,54 @@ Phase 4 is implemented:
   Vite rollback runtime remain intact.
 
 Phase 5 is responsible for feature or UX work beyond API infrastructure.
+
+### Phase 5 implementation status
+
+Phase 5 is implemented for the migrated feature surface:
+
+- Next.js feature pages continue to reuse the established feature hooks,
+  forms, API contracts, and backend-owned calculations rather than duplicating
+  domain logic in route files.
+- The Next runtime now configures the shared authentication service with the
+  Next SSR-compatible browser client. The legacy runtime continues to configure
+  the same service with the Vite Supabase client; feature code no longer
+  imports the Vite client during Next route evaluation.
+- Transaction date persistence is safe during server rendering and remains
+  browser-only at runtime.
+- The deterministic Next E2E mock boundary covers accounts, sections,
+  categories, transactions, budgets, summaries, and profiles. New regression
+  workflows cover dashboard month navigation, month-preserving navigation,
+  feature CRUD flows, tools routes, mobile navigation, and dialog Escape
+  behavior.
+
+Feature parity matrix (the legacy Vite runtime remains the reference and its
+existing Playwright coverage is preserved):
+
+| Feature                           | Route/auth                      | Reads and states                                | Mutations                        | Month/query behavior                                | Responsive/accessibility                                      | Next coverage         | Status                |
+| --------------------------------- | ------------------------------- | ----------------------------------------------- | -------------------------------- | --------------------------------------------------- | ------------------------------------------------------------- | --------------------- | --------------------- |
+| Dashboard                         | `/dashboard`, protected         | Summary, empty, loading, error, charts/cards    | Create transaction action        | Summary key includes month; navigation preserves it | Shared shell and primary action                               | Unit + Next E2E       | Fully functional      |
+| Transactions                      | `/transactions`, protected      | Filters, pagination, empty/loading/error        | Create, edit, archive            | Query key and default date include month            | Forms and archive dialog covered by legacy tests              | Unit + Next E2E smoke | Fully functional      |
+| Budgets                           | `/budgets`, protected           | Monthly totals, progress, over-budget rendering | Create, edit, archive            | Budget key includes month                           | Dialog and progress states covered by legacy tests            | Unit + Next E2E smoke | Fully functional      |
+| Accounts                          | `/accounts`, protected          | Empty/loading/error, balances                   | Create, edit, archive            | Non-month-scoped list preserves current URL         | Mobile dialog workflow covered by Next E2E                    | Unit + Next E2E smoke | Fully functional      |
+| Categories and sections           | `/categories`, protected        | Cursor aggregation, empty/loading/error         | Create, edit, archive            | Historical archived relations preserved by hooks    | Dialog focus and archive confirmation covered by legacy tests | Unit + Next E2E smoke | Fully functional      |
+| Tools/profile/settings            | `/tools/*`, protected           | Profile/settings states                         | Profile update, theme preference | Navigation preserves month                          | Mobile navigation and settings covered by Next/legacy E2E     | Next + legacy E2E     | Fully functional      |
+| Authentication/protected routes   | auth and protected route groups | SSR redirects, session refresh, errors          | Login, logout, recovery          | Callback destinations remain constrained            | Keyboard-accessible forms and logout                          | Next auth E2E         | Fully functional      |
+| Live backend/Supabase integration | all protected routes            | Not run in normal CI                            | Requires external services       | Contract inspected, not live-verified               | Requires non-production credentials                           | Live suite opt-in     | Requires verification |
+
+Phase 5 does not claim live Supabase or `dwmc-api` verification. That remains
+an environment-dependent prerequisite before a production cutover and before
+starting Phase 6.
+
+Phase 5 validation on the migration branch:
+
+- Formatting, ESLint, and TypeScript checks pass.
+- Vitest passes: 122 files and 437 tests.
+- Next production build, legacy Vite build, and Storybook build pass.
+- Next E2E passes: 10 tests, including the new feature parity workflows.
+- Legacy Playwright passes 48 of 54 tests. Six pre-existing layout and
+  accessibility assertions remain failing; they are not caused by the runtime
+  auth boundary changes and remain a cutover blocker until resolved or
+  explicitly accepted.
 
 ## 2. Current Architecture
 

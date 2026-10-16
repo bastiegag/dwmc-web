@@ -4,10 +4,13 @@ import { cleanup } from '@testing-library/react'
 import { afterEach, beforeAll, afterAll, expect, vi } from 'vitest'
 import * as axeMatchers from 'vitest-axe/matchers'
 import { server } from './mocks/server'
+import { supabase } from '@/lib/supabase'
+import { configureAuthClient } from '@/lib/auth-client'
 
 expect.extend(axeMatchers)
 
 beforeAll(() => {
+    configureAuthClient(supabase, import.meta.env.VITE_APP_URL)
     const originalGetComputedStyle = window.getComputedStyle
 
     vi.spyOn(window, 'getComputedStyle').mockImplementation((element, pseudoElement) => {

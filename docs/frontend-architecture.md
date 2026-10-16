@@ -70,6 +70,14 @@ existing contracts and use the configured browser adapter, while Server
 Components use the request-scoped server adapter only. Authenticated server
 requests are explicitly uncached.
 
+Authentication follows the same runtime boundary. The shared auth service is
+configured by the active provider: Next uses the `@supabase/ssr` browser
+client and the legacy Vite runtime uses its existing Supabase client. Feature
+pages therefore do not import Vite-only environment access while being
+evaluated by Next. Browser-only transaction-date persistence also guards
+server evaluation and is used only as a convenience for new transaction
+defaults.
+
 ## Feature-Based Architecture
 
 Feature folders follow the same general pattern:
