@@ -2,11 +2,8 @@
 
 import type { Preview } from '@storybook/react'
 import { withThemeByClassName } from '@storybook/addon-themes'
-import { initialize, mswLoader } from 'msw-storybook-addon'
+import { mswLoader } from 'msw-storybook-addon/csf3'
 import '../src/styles/globals.css'
-
-// Bypass requests with no handler so real API calls still work in dev
-initialize({ onUnhandledRequest: 'bypass' })
 
 const preview: Preview = {
     initialGlobals: {
@@ -22,7 +19,7 @@ const preview: Preview = {
             parentSelector: 'html',
         }),
     ],
-    loaders: [mswLoader],
+    loaders: [mswLoader()],
     parameters: {
         backgrounds: { disable: true },
         layout: 'centered',

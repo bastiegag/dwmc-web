@@ -34,7 +34,7 @@ beforeAll(() => {
             }),
         } as unknown as CanvasRenderingContext2D
     })
-    server.listen({ onUnhandledRequest: 'error' })
+    server.listen({ onUnhandledFrame: 'error' })
 })
 afterEach(() => {
     cleanup()

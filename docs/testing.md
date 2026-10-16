@@ -55,6 +55,27 @@ When changing these areas, preserve or extend the relevant behavior:
 
 ## Commands
 
+### Dependency compatibility
+
+The current validated tooling baseline uses Next.js 16.4.2, React 19.3.1,
+Storybook 10.6.2, Vitest 5.0.5, Vite 8.3.4, Playwright 1.64.1, MSW 3.0.3,
+and TypeScript 6.0.3. The Vite rollback runtime uses the same dependency
+install and remains covered by `npm run test:e2e:legacy`.
+
+The following latest majors are intentionally retained at their current
+compatible lines: ESLint 9 because the installed JSX accessibility plugin does
+not declare ESLint 10 support; TypeScript 6 because `typescript-eslint` requires
+TypeScript below 6.1; React Day Picker 9 because version 10 changes its
+component API; and Chromatic 17 because the project does not use the separate
+Chromatic browser integration packages required by its current major line.
+
+`npm audit` currently reports seven high-severity development-chain findings
+through `shadcn` 4.22.0 (`@shadcn/registry`/`ts-morph` → `fast-glob` →
+`micromatch` → `braces`). No non-forced remediation is available from the
+current `shadcn` dependency graph; the package is retained for the existing
+component-generation workflow and is not part of the application production
+bundle.
+
 Use the package scripts that exist in `package.json`.
 
 - `npm run test`
