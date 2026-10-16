@@ -53,6 +53,7 @@ export default defineConfig({
                 ],
                 test: {
                     name: 'storybook',
+                    exclude: ['node_modules/**', 'e2e/**', 'e2e-next/**', 'e2e-next-live/**'],
                     browser: {
                         enabled: true,
                         headless: true,

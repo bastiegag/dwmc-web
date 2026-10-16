@@ -1,4 +1,4 @@
-import type { StorybookConfig } from '@storybook/react-vite'
+import type { StorybookConfig } from '@storybook/nextjs-vite'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -12,7 +12,12 @@ const config: StorybookConfig = {
         '@storybook/addon-docs',
         '@storybook/addon-vitest',
     ],
-    framework: { name: '@storybook/react-vite', options: {} },
+    framework: {
+        name: '@storybook/nextjs-vite',
+        options: {
+            nextConfigPath: path.resolve(__dirname, '../next.config.ts'),
+        },
+    },
     viteFinal: async (config) => {
         if (config.resolve) {
             config.resolve.alias = {

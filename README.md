@@ -5,7 +5,7 @@
 ![Vite](https://img.shields.io/badge/Vite-8.1.3-646CFF?logo=vite&logoColor=white)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.62.2-FF4154?logo=reactquery&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.0-06B6D4?logo=tailwindcss&logoColor=white)
-![Storybook](https://img.shields.io/badge/Storybook-10.4.0-FF4785?logo=storybook&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-10.6.0-FF4785?logo=storybook&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-4.1.10-6E9F18?logo=vitest&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-1.61.1-2EAD33?logo=playwright&logoColor=white)
 
@@ -107,12 +107,14 @@ npm run build-storybook
 ```
 
 `npm run validate` runs the formatting check, lint, typecheck, tests, and
-production build. `npm run test:e2e` runs the Vite rollback E2E suite.
-`npm run test:e2e:next` runs deterministic Next.js SSR authentication tests
-with a local mock boundary. `npm run test:e2e:live` requires dedicated
+production build. `npm run test:e2e` runs the active deterministic Next.js E2E suite with a local
+mock boundary. `npm run test:e2e:legacy` runs the retained Vite rollback suite;
+`npm run test:e2e:next` remains an explicit alias for the Next.js configuration.
+`npm run test:e2e:live` requires dedicated
 non-production Supabase and `dwmc-api` services plus test credentials; it fails
 closed when those values are unavailable. Storybook is available for isolated
-component development.
+component development through the Next.js-compatible `@storybook/nextjs-vite`
+framework.
 
 ### Storybook design system
 

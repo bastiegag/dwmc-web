@@ -62,18 +62,27 @@ Use the package scripts that exist in `package.json`.
 - `npm run test:coverage`
 - `npm run test:e2e`
 - `npm run test:e2e:ui`
+- `npm run test:e2e:legacy`
+- `npm run test:e2e:legacy:ui`
 - `npm run test:e2e:next`
 - `npm run test:e2e:live`
 - `npm run storybook`
 - `npm run build-storybook`
+
+`npm run test:e2e` is the active Next.js deterministic suite. The Vite
+rollback suite is explicitly named `npm run test:e2e:legacy`; it remains
+available for compatibility validation and is not the active application
+target. `npm run test:e2e:next` is retained as an explicit equivalent command.
 
 Phase 3 route coverage should include Next deep links, anonymous redirects,
 active desktop/mobile navigation, query-string month preservation, invalid
 month fallback, and loading/error/not-found boundaries. The legacy Vite
 Playwright suite remains part of the rollback compatibility check.
 
-CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml`. `npm run test:e2e` runs the legacy suite against Vite. The dedicated
-`npm run test:e2e:next` suite starts Next.js plus a local deterministic mock
+CI runs formatting, linting, typechecking, unit tests, and both production
+builds in `.github/workflows/ci.yml`. The E2E workflow runs the active Next.js
+suite first and then the retained legacy suite. The dedicated
+Next.js suite starts Next.js plus a local deterministic mock
 Supabase/API boundary and validates SSR cookies, protected rendering, bearer
 forwarding, refresh, logout, callback errors, and user isolation.
 

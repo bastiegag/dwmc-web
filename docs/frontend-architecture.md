@@ -56,6 +56,11 @@ src/
 - `styles`: global styling.
 - `test`: shared test setup, fixtures, and helpers.
 
+Storybook uses the official `@storybook/nextjs-vite` framework adapter so
+stories resolve the same Next.js-compatible aliases and runtime conventions as
+the active application. The Vite rollback runtime remains covered by its
+explicit legacy Playwright project rather than by Storybook configuration.
+
 Route entrypoints are intentionally thin. Existing feature pages remain client
 components where they use hooks, forms, browser APIs, or TanStack Query; server
 layouts own authentication and route composition.

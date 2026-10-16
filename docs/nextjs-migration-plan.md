@@ -1,6 +1,6 @@
 # Vite + React Router to Next.js App Router Migration Plan
 
-**Status:** Phase 5 implementation complete; Phase 6 pending
+**Status:** Phase 6 implementation complete; Phase 7 pending
 **Branch:** `feat/migrate-to-nextjs`
 **Repository:** `bastiegag/dwmc-web`
 **Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)
@@ -143,9 +143,10 @@ Phase 5 does not claim live Supabase or `dwmc-api` verification. The opt-in
 live suite remains an environment-dependent prerequisite before a production
 cutover and before starting Phase 6.
 
-Phase 5.1 implementation acceptance is complete. Phase 6 is not ready to
-begin until the maintainer runs the live suite with dedicated non-production
-credentials and accepts its results.
+Phase 5.1 implementation acceptance is complete. The maintainer reported that
+the live integration suite succeeded locally with configured non-production
+Supabase and `dwmc-api` services; this result was not rerun by this
+implementation.
 
 Phase 5 validation on the migration branch:
 
@@ -154,6 +155,21 @@ Phase 5 validation on the migration branch:
 - Next production build, legacy Vite build, and Storybook build pass.
 - Next E2E passes: 10 tests, including the new feature parity workflows.
 - Legacy Playwright passes: 54 tests.
+
+### Phase 6 implementation status
+
+Phase 6 establishes Next.js as the active testing target without removing the
+Vite rollback path:
+
+- Storybook uses the official `@storybook/nextjs-vite` 10.5.10 adapter, which
+  supports Next 16, React 19, and Vite 8.
+- Existing story globs, design-system taxonomy, themes, docs, MSW loader, and
+  Storybook Vitest browser project remain in place.
+- `npm run test:e2e` targets the deterministic Next.js suite; the retained
+  Vite suite is `npm run test:e2e:legacy`, and `test:e2e:live` remains opt-in.
+- CI runs the active Next.js suite and the legacy rollback suite separately.
+- Phase 7 cleanup remains out of scope: Vite, React Router, and legacy files
+  are intentionally retained.
 
 #### Phase 5.1 legacy failure resolution
 
