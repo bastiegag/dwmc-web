@@ -139,9 +139,13 @@ existing Playwright coverage is preserved):
 | Authentication/protected routes   | auth and protected route groups | SSR redirects, session refresh, errors          | Login, logout, recovery          | Callback destinations remain constrained            | Keyboard-accessible forms and logout                          | Next auth E2E         | Fully functional      |
 | Live backend/Supabase integration | all protected routes            | Not run in normal CI                            | Requires external services       | Contract inspected, not live-verified               | Requires non-production credentials                           | Live suite opt-in     | Requires verification |
 
-Phase 5 does not claim live Supabase or `dwmc-api` verification. That remains
-an environment-dependent prerequisite before a production cutover and before
-starting Phase 6.
+Phase 5 does not claim live Supabase or `dwmc-api` verification. The opt-in
+live suite remains an environment-dependent prerequisite before a production
+cutover and before starting Phase 6.
+
+Phase 5.1 implementation acceptance is complete. Phase 6 is not ready to
+begin until the maintainer runs the live suite with dedicated non-production
+credentials and accepts its results.
 
 Phase 5 validation on the migration branch:
 
@@ -149,10 +153,23 @@ Phase 5 validation on the migration branch:
 - Vitest passes: 122 files and 437 tests.
 - Next production build, legacy Vite build, and Storybook build pass.
 - Next E2E passes: 10 tests, including the new feature parity workflows.
-- Legacy Playwright passes 48 of 54 tests. Six pre-existing layout and
-  accessibility assertions remain failing; they are not caused by the runtime
-  auth boundary changes and remain a cutover blocker until resolved or
-  explicitly accepted.
+- Legacy Playwright passes: 54 tests.
+
+#### Phase 5.1 legacy failure resolution
+
+The six failures from the initial Phase 5.1 run were reproduced and classified:
+
+| Failure                                                 | Classification               | Resolution                                                                                                                |
+| ------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `e2e/app-layout.spec.ts` centered mobile primary action | Genuine responsive defect    | Centered the floating action and reserved a center gap in mobile navigation for both runtimes.                            |
+| `e2e/forgot-password.spec.ts` accessibility             | Genuine accessibility defect | Corrected muted and primary color tokens and made auth links visibly underlined.                                          |
+| `e2e/login.spec.ts` accessibility                       | Genuine accessibility defect | Same contrast and link-distinguishability correction.                                                                     |
+| `e2e/reset-password.spec.ts` accessibility              | Genuine accessibility defect | Same contrast and link-distinguishability correction.                                                                     |
+| `e2e/signup.spec.ts` accessibility                      | Genuine accessibility defect | Same contrast and link-distinguishability correction.                                                                     |
+| `e2e/logout.spec.ts` previous-user summary              | Outdated test assumption     | Scoped the assertion to the Income card instead of the entire summary grid; the cache-isolation behavior remained intact. |
+
+The focused six-file regression run passed 35/35 tests, followed by the full
+legacy suite passing 54/54. No failures were skipped or weakened.
 
 ## 2. Current Architecture
 

@@ -25,7 +25,9 @@ export function ResetPasswordForm() {
         return (
             <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-4 px-6">
                 <h1>Link expired or invalid</h1>
-                <a href="/forgot-password">Request a new password reset</a>
+                <a className="underline underline-offset-4" href="/forgot-password">
+                    Request a new password reset
+                </a>
             </main>
         )
     }

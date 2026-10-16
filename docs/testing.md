@@ -106,6 +106,13 @@ mobile navigation, and Escape-key dialog dismissal. Its mock boundary serves
 the same REST resource shapes used by feature API modules; it is not a
 replacement for live backend integration.
 
+During Phase 5.1, the six initial legacy Playwright failures were reproduced
+and resolved rather than skipped: mobile floating-action positioning, four
+auth-page contrast/link accessibility violations, and an overly broad logout
+test locator. The final legacy suite passed all 54 tests. Live Supabase and
+`dwmc-api` coverage remains opt-in and was not reported as passing without
+dedicated non-production services and credentials.
+
 The Next.js reset flow requires both a successful callback code exchange and
 the short-lived, HttpOnly `dwmc-recovery` cookie set by that callback. An
 ordinary authenticated session without that marker must remain on the invalid

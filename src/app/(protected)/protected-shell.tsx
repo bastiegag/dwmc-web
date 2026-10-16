@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { LayoutDashboard, Target, WalletCards, Wrench, ReceiptText, LogOut } from 'lucide-react'
 import { ThemeToggle, Logo, SkipLink, ContextualFloatingActionButton } from '@/components/layout'
 import { Button } from '@/components/ui/button'
@@ -201,29 +201,37 @@ function MobileNavigation({ pathname, month }: { pathname: string; month: string
             aria-label="Mobile navigation"
             className="fixed bottom-0 z-40 flex h-[calc(6rem+env(safe-area-inset-bottom))] w-full items-start bg-white px-4 pt-4 lg:hidden"
         >
-            <div className="grid min-w-0 flex-1 grid-cols-4">
-                {items.map(([path, label, Icon]) => {
-                    const active =
-                        path === '/tools'
-                            ? pathname.startsWith(path)
-                            : pathname === path ||
-                              (path === '/dashboard' && pathname === '/transactions')
-                    return (
-                        <Link
-                            key={path}
-                            href={withMonth(path, month)}
-                            className={cn(
-                                'flex min-h-11 min-w-0 flex-col items-center gap-1 text-muted-foreground',
-                                active && 'text-primary',
-                            )}
-                            aria-current={active ? 'page' : undefined}
-                        >
-                            <Icon className="size-6" fill={active ? 'currentColor' : 'none'} />
-                            <span className="text-xs font-medium">{label}</span>
-                        </Link>
-                    )
-                })}
-            </div>
+            {[items.slice(0, 2), items.slice(2)].map((group, index) => (
+                <Fragment key={index}>
+                    {index === 1 ? <div className="w-16 shrink-0" aria-hidden="true" /> : null}
+                    <div className="grid min-w-0 flex-1 grid-cols-2">
+                        {group.map(([path, label, Icon]) => {
+                            const active =
+                                path === '/tools'
+                                    ? pathname.startsWith(path)
+                                    : pathname === path ||
+                                      (path === '/dashboard' && pathname === '/transactions')
+                            return (
+                                <Link
+                                    key={path}
+                                    href={withMonth(path, month)}
+                                    className={cn(
+                                        'flex min-h-11 min-w-0 flex-col items-center gap-1 text-muted-foreground',
+                                        active && 'text-primary',
+                                    )}
+                                    aria-current={active ? 'page' : undefined}
+                                >
+                                    <Icon
+                                        className="size-6"
+                                        fill={active ? 'currentColor' : 'none'}
+                                    />
+                                    <span className="text-xs font-medium">{label}</span>
+                                </Link>
+                            )
+                        })}
+                    </div>
+                </Fragment>
+            ))}
         </nav>
     )
 }

@@ -231,9 +231,21 @@ export function AuthForm({
                             : 'Update password'}
                 </Button>
                 <nav className="flex justify-center gap-3 text-center text-sm">
-                    {mode !== 'login' ? <a href="/login">Sign in</a> : null}
-                    {mode === 'login' ? <a href="/signup">Sign up</a> : null}
-                    {mode === 'login' ? <a href="/forgot-password">Forgot password?</a> : null}
+                    {mode !== 'login' ? (
+                        <a className="underline underline-offset-4" href="/login">
+                            Sign in
+                        </a>
+                    ) : null}
+                    {mode === 'login' ? (
+                        <a className="underline underline-offset-4" href="/signup">
+                            Sign up
+                        </a>
+                    ) : null}
+                    {mode === 'login' ? (
+                        <a className="underline underline-offset-4" href="/forgot-password">
+                            Forgot password?
+                        </a>
+                    ) : null}
                 </nav>
             </form>
         </Card>

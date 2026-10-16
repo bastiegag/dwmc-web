@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 
 export const AppLink = ({ className, to, children, ...props }: LinkProps) => {
     const linkClassName = cn(
-        'text-primary underline-offset-4 transition-colors hover:text-primary/80 hover:underline',
+        'text-primary underline underline-offset-4 transition-colors hover:text-primary/80',
         className,
     )
 

@@ -64,6 +64,8 @@ export const AppBottomNavigation = () => {
                 })}
             </div>
 
+            <div className="w-16 shrink-0" aria-hidden="true" />
+
             <div className="grid min-w-0 flex-1 grid-cols-2">
                 {navigation.slice(2).map((item) => {
                     const isCurrent = item.matchPrefix
