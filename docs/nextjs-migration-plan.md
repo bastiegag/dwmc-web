@@ -1,11 +1,18 @@
 # Vite + React Router to Next.js App Router Migration Plan
 
-**Status:** Phase 6 implementation complete; Phase 7 pending
+**Status:** Phase 7 implemented; final live integration verification pending
 **Branch:** `feat/migrate-to-nextjs`
 **Repository:** `bastiegag/dwmc-web`
 **Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)
 **Baseline checked:** `feat/migrate-to-nextjs` at `ee85c50`, aligned with `main` and
 `origin/main` at `2dd253a` on 2026-10-13
+
+The historical phase sections below describe the migration as it progressed.
+The final cutover is implemented in commit `0310d05`: Next.js is the sole
+application runtime, the legacy Vite/React Router runtime is removed, and Vite
+remains only as a Vitest and Storybook build dependency. Deterministic tests and
+production builds pass; live Supabase/API validation after the final cleanup
+remains a maintainer verification step.
 
 ## 1. Executive Summary
 
@@ -952,6 +959,9 @@ replacement.
 
 ### Phase 7 — CI cleanup and Vite/React Router removal
 
+**Status:** Implemented in `0310d05`; live integration verification remains
+pending after the final cleanup.
+
 **Prerequisites:** Phases 1–5 accepted.
 **Files:** workflows, env docs, scripts, `next.config`, README links.
 **Steps:** Add Next build/start validation, production-like E2E, deployment
@@ -970,19 +980,18 @@ unchanged.
 - [x] `next.config.*`, `tsconfig` references, aliases, global CSS, public assets.
 - [x] `src/app/layout.tsx`, the public shell page, and provider boundary.
 - [x] `src/app/providers.tsx` and client-only provider boundary.
-- [ ] Root-level `proxy.ts` and `src/lib/supabase/browser.ts`/`server.ts`.
-- [ ] `src/lib/api-client.ts` shared error parsing and server adapter.
-- [ ] `src/lib/query/*` QueryClient lifecycle and hydration policy.
-- [ ] Auth forms/services/hooks, callback and recovery storage behavior.
-- [ ] Navigation components and month-preserving link helper.
-- [ ] Feature route entrypoints; feature internals only when required.
-- [ ] `.storybook/main.ts`, `.storybook/preview.ts`, router/theme/MSW decorators.
-- [ ] `vitest.config.ts`, `src/test/setup.ts`, render helpers, MSW handlers.
-- [ ] `playwright.config.ts`, auth fixtures, base URL, dev/build server.
-- [x] `.env.example` and CI rollback-build configuration; deployment docs remain
-      pending the target platform decision.
-- [ ] ESLint, Prettier, Husky, lint-staged, bundle-size script.
-- [ ] README links and this plan/ADR status after approval.
+- [x] Root-level `proxy.ts` and `src/lib/supabase/browser.ts`/`server.ts`.
+- [x] `src/lib/api-client.ts` shared error parsing and server adapter.
+- [x] `src/lib/query/*` QueryClient lifecycle and hydration policy.
+- [x] Auth forms/services/hooks, callback and recovery storage behavior.
+- [x] Navigation components and month-preserving link helper.
+- [x] Feature route entrypoints; feature internals only when required.
+- [x] `.storybook/main.ts`, `.storybook/preview.ts`, theme/MSW decorators.
+- [x] `vitest.config.ts`, `src/test/setup.ts`, render helpers, MSW handlers.
+- [x] Next Playwright config, auth fixtures, base URL, dev/build server.
+- [x] `.env.example` and CI Next build configuration.
+- [x] ESLint, Prettier, Husky, lint-staged, bundle-size script.
+- [x] README links and this plan/ADR status after approval.
 
 ## 19. Risks and Mitigations
 

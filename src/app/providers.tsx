@@ -36,11 +36,10 @@ function AuthSessionSync({ children }: Readonly<{ children: ReactNode }>) {
 
 export function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
     const supabaseClient = getSupabaseBrowserClient()
-    configureAuthClient(
-        supabaseClient,
-        process.env.NEXT_PUBLIC_APP_URL ??
-            (typeof window === 'undefined' ? '' : window.location.origin),
-    )
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
+    if (!appUrl) throw new Error('NEXT_PUBLIC_APP_URL must be configured.')
+
+    configureAuthClient(supabaseClient, appUrl)
     configureBrowserApiAdapter({
         baseUrl: '/api/v1',
         getAccessToken: async () => {

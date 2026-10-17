@@ -6,7 +6,7 @@
 - Use Supabase only for browser authentication and session management.
 - Send authenticated domain requests through the shared `apiClient`.
 - Keep the local API and Supabase Auth URLs configuration-driven.
-- Treat every `VITE_*` variable as public browser configuration.
+- Treat every `NEXT_PUBLIC_*` variable as public browser configuration.
 - Never add database credentials, `SUPABASE_SERVICE_ROLE_KEY`, or other backend secrets to frontend configuration.
 
 ## Code Organization

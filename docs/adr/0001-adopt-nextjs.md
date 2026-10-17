@@ -1,17 +1,17 @@
 # ADR 0001: Adopt Next.js App Router
 
-- **Status:** Proposed
+- **Status:** Accepted and implemented
 - **Date:** 2026-10-13
 - **Decision owners:** Frontend maintainers
 - **Related:** [Next.js migration plan](../nextjs-migration-plan.md)
 
 ## Context
 
-`dwmc-web` is currently a React 19 and TypeScript application built with Vite and
-React Router. It has a feature-oriented source tree, TanStack Query, browser
-Supabase authentication, React Hook Form/Zod, Tailwind CSS v4, Radix/shadcn
-components, Storybook 10, Vitest, MSW, and Playwright. The local Vite server
-proxies `/api/v1` to the independently maintained `dwmc-api` Node.js service.
+`dwmc-web` is a React 19 and TypeScript application built with Next.js App
+Router. It has a feature-oriented source tree, TanStack Query, Supabase SSR
+authentication, React Hook Form/Zod, Tailwind CSS v4, Radix/shadcn components,
+Storybook 10, Vitest, MSW, and Playwright. The Next.js rewrite proxies
+`/api/v1` to the independently maintained `dwmc-api` Node.js service.
 
 The application is a portfolio project and would benefit from demonstrating
 Next.js App Router, server-rendered route composition, and server-side
@@ -56,20 +56,10 @@ The target application will:
    application runtime is stable; retain the existing Design System /
    Foundations, Components, Patterns, and Product organization.
 
-The transition is a controlled cutover on `feat/migrate-to-nextjs`, not two
-parallel applications. Next claims the existing `src/app` directory when the
-shell milestone lands. The current Vite bootstrap/router may temporarily live
-under `src/legacy-app` only to rebuild a rollback artifact; feature modules are
-not duplicated. Vite and Next use port 5182 at different times, while
-`dwmc-api` remains on port 3000. The first implementation PR is shell-only.
-SSR authentication and the first protected route are a subsequent milestone,
-followed by route composition migration.
-
-Phase 1 now implements only the public Next.js shell and runtime cutover.
-Authentication, protected routes, domain features, and server-side data
-fetching remain intentionally unavailable in the Next runtime. The Vite
-rollback runtime remains the only runtime for those features until later
-milestones are completed and accepted.
+The transition is complete on `feat/migrate-to-nextjs`: Next.js is the sole
+application runtime, React Router and the Vite bootstrap have been removed,
+and Vite remains only as internal tooling for Vitest and Storybook. `dwmc-api`
+remains on port 3000 and continues to own authorization and domain behavior.
 
 ## Alternatives considered
 

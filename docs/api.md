@@ -15,8 +15,7 @@ The backend API documentation is the contract authority. See the sibling reposit
 
 `apiClient`:
 
-- Uses the runtime-configured browser adapter: same-origin `/api/v1` for Next.js
-  and `VITE_API_URL` for the Vite rollback.
+- Uses the runtime-configured browser adapter and same-origin `/api/v1` path.
 - Reads the current Supabase session and sends `Authorization: Bearer <access token>` when available.
 - Serializes non-GET bodies as JSON.
 - Parses JSON responses safely, including empty and malformed responses.

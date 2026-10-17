@@ -61,7 +61,7 @@ npm run dev
 Set these values in `.env.local`:
 
 ```dotenv
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:5182
 NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable-anon-key>
 DWMC_API_URL=http://localhost:3000/api/v1
@@ -84,11 +84,10 @@ PostgreSQL.
 ```bash
 npm run dev
 npm run build
-npm run preview
+npm run start
 npm run validate
 npm run test
 npm run test:e2e
-npm run test:e2e:next
 npm run test:e2e:live
 npm run storybook
 npm run build-storybook

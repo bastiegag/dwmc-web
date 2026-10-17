@@ -41,6 +41,11 @@ jobs:
               run: npm run test
 
             - name: Build
+              env:
+                  NEXT_PUBLIC_APP_URL: http://127.0.0.1:5182
+                  NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+                  NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-public-key
+                  DWMC_API_URL: http://127.0.0.1:3000/api/v1
               run: npm run build
 
             - name: Build Storybook
