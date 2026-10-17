@@ -1,6 +1,6 @@
 # Vite + React Router to Next.js App Router Migration Plan
 
-**Status:** Phase 7 implemented; final live integration verification pending
+**Status:** Phase 7 implemented; deterministic and live validation complete
 **Branch:** `feat/migrate-to-nextjs`
 **Repository:** `bastiegag/dwmc-web`
 **Backend:** [`bastiegag/dwmc-api`](https://github.com/bastiegag/dwmc-api)
@@ -8,11 +8,11 @@
 `origin/main` at `2dd253a` on 2026-10-13
 
 The historical phase sections below describe the migration as it progressed.
-The final cutover is implemented in commit `0310d05`: Next.js is the sole
+The final cutover is implemented in commits `0310d05` and `9a44d4d`: Next.js is the sole
 application runtime, the legacy Vite/React Router runtime is removed, and Vite
 remains only as a Vitest and Storybook build dependency. Deterministic tests and
-production builds pass; live Supabase/API validation after the final cleanup
-remains a maintainer verification step.
+production builds pass. Post-Phase-7 live validation passed against a confirmed
+dedicated non-production Supabase/API environment.
 
 ## 1. Executive Summary
 
@@ -959,8 +959,9 @@ replacement.
 
 ### Phase 7 — CI cleanup and Vite/React Router removal
 
-**Status:** Implemented in `0310d05`; live integration verification remains
-pending after the final cleanup.
+**Status:** Implemented in `0310d05` and `9a44d4d`; deterministic and live
+validation passed after the final cleanup. The development-only npm audit
+exception still requires explicit maintainer approval.
 
 **Prerequisites:** Phases 1–5 accepted.
 **Files:** workflows, env docs, scripts, `next.config`, README links.

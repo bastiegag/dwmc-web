@@ -73,7 +73,9 @@ through `shadcn` 4.22.0 (`@shadcn/registry`/`ts-morph` → `fast-glob` →
 `micromatch` → `braces`). No non-forced remediation is available from the
 current `shadcn` dependency graph; the package is retained for the existing
 component-generation workflow and is not part of the application production
-bundle.
+bundle. `npm audit --omit=dev` reports zero vulnerabilities. This exception is
+not accepted automatically and requires explicit maintainer approval before
+merge.
 
 Use the package scripts that exist in `package.json`.
 
@@ -105,6 +107,10 @@ running Supabase Auth and `dwmc-api`, and dedicated non-production
 `E2E_TEST_EMAIL`, and `E2E_TEST_PASSWORD` values. Never use production
 credentials or financial data. The live config fails clearly when variables
 are missing; it must not be reported as passed in that case.
+
+The post-Phase-7 live validation was run against a confirmed dedicated
+non-production environment. The authentication, session refresh, and logout
+workflow passed.
 
 The normal Vitest and Playwright suites use mocks and do not require a running
 PostgreSQL database or live Supabase credentials. Playwright installs or uses
