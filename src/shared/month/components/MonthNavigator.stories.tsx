@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { MemoryRouter } from 'react-router-dom'
 import { MonthNavigator } from './MonthNavigator'
-import { LegacyMonthProvider } from '../providers/LegacyMonthProvider'
+import { TestMonthProvider } from '../providers/TestMonthProvider'
 
 const meta = {
     title: 'Design System/Patterns/Month Navigation/Month Navigator',
@@ -9,13 +8,11 @@ const meta = {
     tags: ['autodocs'],
     decorators: [
         (Story) => (
-            <MemoryRouter initialEntries={['/?month=2026-10']}>
-                <LegacyMonthProvider>
-                    <div className="w-80">
-                        <Story />
-                    </div>
-                </LegacyMonthProvider>
-            </MemoryRouter>
+            <TestMonthProvider initialMonth="2026-10">
+                <div className="w-80">
+                    <Story />
+                </div>
+            </TestMonthProvider>
         ),
     ],
     parameters: {

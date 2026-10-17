@@ -10,7 +10,7 @@ import { configureAuthClient } from '@/lib/auth-client'
 expect.extend(axeMatchers)
 
 beforeAll(() => {
-    configureAuthClient(supabase, import.meta.env.VITE_APP_URL)
+    configureAuthClient(supabase, 'http://localhost:3000')
     const originalGetComputedStyle = window.getComputedStyle
 
     vi.spyOn(window, 'getComputedStyle').mockImplementation((element, pseudoElement) => {

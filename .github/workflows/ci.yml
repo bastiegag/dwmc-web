@@ -43,5 +43,5 @@ jobs:
             - name: Build
               run: npm run build
 
-            - name: Build Vite rollback artifact
-              run: npm run build:legacy
+            - name: Build Storybook
+              run: npm run build-storybook

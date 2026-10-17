@@ -22,8 +22,8 @@ credentials.
 
 ## Environment
 
-The frontend requires `VITE_APP_URL`, `VITE_API_URL`, `VITE_SUPABASE_URL`, and
-`VITE_SUPABASE_ANON_KEY`. All `VITE_*` values are browser-visible.
+The frontend requires `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`,
+`NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `DWMC_API_URL`.
 
 See [frontend API integration](frontend-api.md), [testing](testing.md), and the
 repository README for setup details. Future production deployment is deliberate

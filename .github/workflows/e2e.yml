@@ -46,19 +46,3 @@ jobs:
                   name: playwright-next-report
                   path: playwright-report/
                   retention-days: 7
-
-            - name: Run legacy Vite rollback tests
-              env:
-                  VITE_APP_URL: http://localhost:5182
-                  VITE_API_URL: /api/v1
-                  VITE_SUPABASE_URL: https://example.supabase.co
-                  VITE_SUPABASE_ANON_KEY: test-anon-key
-              run: npm run test:e2e:legacy
-
-            - name: Upload legacy Playwright report
-              if: always()
-              uses: actions/upload-artifact@v7
-              with:
-                  name: playwright-legacy-report
-                  path: playwright-report/
-                  retention-days: 7

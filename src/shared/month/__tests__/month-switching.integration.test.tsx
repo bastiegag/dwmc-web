@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { http, HttpResponse } from 'msw'
 import { useMonthlySummary } from '@/features/dashboard/hooks/use-monthly-summary'
 import { useTransactions } from '@/features/transactions/hooks/use-transactions'
@@ -43,9 +43,7 @@ const MonthQueriesProbe = () => {
 }
 
 describe('month query race conditions', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', API_URL)
-    })
+    beforeEach(() => {})
 
     it('keeps the current month authoritative when older responses arrive late', async () => {
         const deferredByMonth = new Map<string, Deferred<Response>>()

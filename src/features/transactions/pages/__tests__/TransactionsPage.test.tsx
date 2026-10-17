@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { render, screen } from '@/test/utils/render'
 import { TransactionsPage } from '@/features/transactions/pages/TransactionsPage'
@@ -6,7 +6,6 @@ import { PrimaryActionButton } from '@/shared/primary-action'
 
 describe('TransactionsPage', () => {
     beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
         localStorage.clear()
     })
 

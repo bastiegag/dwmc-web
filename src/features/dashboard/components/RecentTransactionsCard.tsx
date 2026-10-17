@@ -36,7 +36,7 @@ export const RecentTransactionsCard = ({ transactions }: Props) => {
             )}
 
             <div className="mt-4 text-right">
-                <AppLink to={`/transactions?month=${month}`} className="text-sm">
+                <AppLink href={`/transactions?month=${month}`} className="text-sm">
                     View all transactions
                 </AppLink>
             </div>

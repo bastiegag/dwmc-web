@@ -3,7 +3,7 @@ import { authService } from '@/features/auth/services'
 import { supabase } from '@/lib/supabase'
 import { configureAuthClient } from '@/lib/auth-client'
 
-configureAuthClient(supabase, import.meta.env.VITE_APP_URL)
+configureAuthClient(supabase, 'http://localhost:3000')
 
 afterEach(() => {
     vi.restoreAllMocks()

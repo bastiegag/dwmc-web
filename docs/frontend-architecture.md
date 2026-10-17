@@ -7,10 +7,7 @@ The codebase keeps application setup, reusable UI, domain features, shared cross
 
 ## Runtime Boundaries
 
-The active frontend runtime is the Next.js App Router shell on port `5182`.
-The complete application is available through the migrated App Router, while
-the explicitly named Vite rollback runtime (`dev:legacy`, `build:legacy`, and
-`preview:legacy`) remains available during the migration. The local `dwmc-api`
+The active frontend runtime is the Next.js App Router shell on port `5182`. The local `dwmc-api`
 owns domain operations, JWT validation, authorization, Prisma, and PostgreSQL
 access. Supabase is used for Auth only; the browser never connects to
 application data storage.
@@ -20,10 +17,8 @@ Browser -> local dwmc-web -> local dwmc-api -> Prisma -> local PostgreSQL
                        \-> Supabase Auth -> access token -> dwmc-api
 ```
 
-`DWMC_API_URL` configures the Next.js `/api/v1` rewrite, while `VITE_API_URL`
-continues to select the API path for the Vite rollback runtime. Financial and
-domain requests go through the shared API client once the application routes
-are migrated. The frontend must never connect directly to PostgreSQL or
+`DWMC_API_URL` configures the Next.js `/api/v1` rewrite. Financial and domain
+requests go through the shared API client. The frontend must never connect directly to PostgreSQL or
 contain service-role, database, or other backend credentials.
 
 ## Application Structure
@@ -33,7 +28,6 @@ The current `src/` tree is organized like this:
 ```text
 src/
   app/
-  legacy-app/
   components/
   features/
   lib/
@@ -46,8 +40,6 @@ src/
 ### Folder Roles
 
 - `app`: the active Next.js App Router route groups, layouts, boundaries, and top-level providers.
-- `legacy-app`: temporary Vite bootstrap, router, layouts, and providers used
-  only for rollback until route migration is complete.
 - `components`: shared UI and layout components used across features.
 - `features`: domain code for auth, dashboard, accounts, transactions, budgets, and categories.
 - `shared`: cross-feature utilities and state such as month navigation and contextual primary actions.
@@ -58,17 +50,15 @@ src/
 
 Storybook uses the official `@storybook/nextjs-vite` framework adapter so
 stories resolve the same Next.js-compatible aliases and runtime conventions as
-the active application. The Vite rollback runtime remains covered by its
-explicit legacy Playwright project rather than by Storybook configuration.
+the active application. Storybook is not a route-level application test suite.
 
 Route entrypoints are intentionally thin. Existing feature pages remain client
 components where they use hooks, forms, browser APIs, or TanStack Query; server
 layouts own authentication and route composition.
 
 URL-backed month state follows the same boundary: shared feature code consumes
-the month context contract, while the Next and legacy shells provide separate
-router-specific implementations. This keeps React Router out of the active
-Next runtime and Next navigation APIs out of the rollback runtime.
+the month context contract, while the Next shell provides the router-specific
+implementation.
 
 API access follows an equivalent boundary. Feature API modules keep their
 existing contracts and use the configured browser adapter, while Server
@@ -77,7 +67,7 @@ requests are explicitly uncached.
 
 Authentication follows the same runtime boundary. The shared auth service is
 configured by the active provider: Next uses the `@supabase/ssr` browser
-client and the legacy Vite runtime uses its existing Supabase client. Feature
+client. Feature
 pages therefore do not import Vite-only environment access while being
 evaluated by Next. Browser-only transaction-date persistence also guards
 server evaluation and is used only as a convenience for new transaction

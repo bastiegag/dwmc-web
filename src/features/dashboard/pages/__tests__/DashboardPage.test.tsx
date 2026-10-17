@@ -10,7 +10,6 @@ import { server } from '@/test/mocks/server'
 describe('DashboardPage', () => {
     beforeEach(() => {
         // Ensure apiClient uses the test API URL that MSW uses
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
     })
 
     it('renders heading and loading state', () => {

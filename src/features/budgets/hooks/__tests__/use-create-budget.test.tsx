@@ -5,9 +5,7 @@ import { budgetQueryKeys } from '@/features/budgets/hooks/use-budgets'
 import { dashboardQueryKeys } from '@/features/dashboard'
 
 describe('useCreateBudget', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
-    })
+    beforeEach(() => {})
 
     it('invalidates budgets and dashboard after a successful create', async () => {
         const { result, qc } = renderHookWithQuery(() => useCreateBudget())

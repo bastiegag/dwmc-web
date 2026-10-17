@@ -3,8 +3,6 @@
 ## Overview
 
 The active runtime uses Next.js App Router route groups under `src/app`.
-The Vite application remains available under `src/legacy-app` as a rollback
-runtime and continues to use React Router.
 
 The protected shell is rendered by the app layout, while auth screens use a dedicated auth layout.
 
@@ -27,9 +25,6 @@ The Next.js routes use `(auth)` and `(protected)` groups. The protected layout
 performs the server-side Supabase user check once, while client feature pages
 retain TanStack Query and browser interaction behavior.
 The `/tools/categories` path redirects to `/categories`.
-
-The legacy route map remains functional for rollback and is intentionally not
-removed during Phase 3.
 
 ## Phase 3 Route Migration Matrix
 
@@ -58,8 +53,6 @@ Month URL state has explicit runtime providers:
 
 - `NextMonthProvider` uses `useSearchParams`, `usePathname`, and
   `router.replace()` in the active App Router shell.
-- `LegacyMonthProvider` uses React Router's `useSearchParams` and replacement
-  navigation in the Vite rollback runtime.
 - Feature components consume the framework-independent `useSelectedMonth`
   context interface and do not import either router.
 
@@ -87,8 +80,8 @@ The shared month navigator appears in the app layout on the dashboard, transacti
 
 It uses the selected month from the URL and moves one month backward or forward at a time.
 Navigation updates the query string with `replace: true` so month changes do not create extra history entries.
-The Next runtime uses the same URL contract and browser history replacement
-adapter, including back/forward and direct URL access.
+The Next runtime uses the App Router replacement API, including back/forward and
+direct URL access.
 
 ## Bottom Navigation
 
@@ -155,13 +148,14 @@ Settings currently owns the device-local theme preference.
 - Keep route-level logic in pages or layouts, not low-level components.
 - Avoid duplicating navigation config when a shared nav source already exists.
 
-The local Vite server serves the SPA during development. Direct navigation and refreshes of nested routes should be covered by local browser tests.
+The local Next.js server serves the App Router during development. Direct
+navigation and refreshes of nested routes should be covered by local browser
+tests.
 
 ## Phase 5 route verification
 
 The Next deterministic browser suite verifies protected deep links and
 month-preserving navigation between Dashboard, Transactions, and Budgets. It
 also exercises the migrated Accounts, Categories, Tools/Profile, and Settings
-routes through the shared feature pages. The legacy Playwright suite remains
-the compatibility reference for broader CRUD, validation, responsive, and
-accessibility coverage.
+routes through the shared feature pages. Broader CRUD, validation, responsive,
+and accessibility coverage is maintained in component and feature tests.

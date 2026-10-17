@@ -18,9 +18,7 @@ const profile = {
 }
 
 describe('ProfileForm', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
-    })
+    beforeEach(() => {})
 
     it('renders profile values and the read-only currency choices', () => {
         render(<ProfileForm profile={profile} />)

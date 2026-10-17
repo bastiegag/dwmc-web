@@ -1,9 +1,9 @@
 import { useState, type ReactNode } from 'react'
 import { render, renderHook, type RenderOptions } from '@testing-library/react'
-import { MemoryRouter, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PrimaryActionProvider } from '@/shared/primary-action'
-import { LegacyMonthProvider } from '@/shared/month'
+import { useSelectedMonth } from '@/shared/month'
+import { TestMonthProvider } from '@/shared/month/providers/TestMonthProvider'
 import { configureBrowserApiAdapter } from '@/lib/browser-api-adapter'
 
 const createTestQueryClient = () => {
@@ -23,6 +23,8 @@ const TestWrapper = ({
     initialEntries?: string[]
 }) => {
     const [testQueryClient] = useState(createTestQueryClient)
+    const initialMonth =
+        new URLSearchParams(initialEntries[0]?.split('?')[1]).get('month') ?? undefined
     configureBrowserApiAdapter({
         baseUrl: 'http://localhost:8787',
         getAccessToken: async () => undefined,
@@ -31,9 +33,7 @@ const TestWrapper = ({
     return (
         <QueryClientProvider client={testQueryClient}>
             <PrimaryActionProvider>
-                <MemoryRouter initialEntries={initialEntries}>
-                    <LegacyMonthProvider>{children}</LegacyMonthProvider>
-                </MemoryRouter>
+                <TestMonthProvider initialMonth={initialMonth}>{children}</TestMonthProvider>
             </PrimaryActionProvider>
         </QueryClientProvider>
     )
@@ -55,13 +55,12 @@ const customRender = (
 export * from '@testing-library/react'
 export { customRender as render }
 
-export const MonthLocationProbe = () => {
-    const location = useLocation()
+export const MonthLocationProbe = ({ initialPath }: { initialPath: string }) => {
+    const { month } = useSelectedMonth()
 
     return (
         <output data-testid="location-probe">
-            {location.pathname}
-            {location.search}
+            {initialPath}?month={month}
         </output>
     )
 }
@@ -74,7 +73,7 @@ export const renderMonthAwareNavigation = (
     return customRender(
         <>
             {ui}
-            <MonthLocationProbe />
+            <MonthLocationProbe initialPath={initialPath} />
         </>,
         { initialEntries: [`${initialPath}?month=${month}`] },
     )

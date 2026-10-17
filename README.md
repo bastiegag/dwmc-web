@@ -1,8 +1,7 @@
 # Dude, Where's My Cash? Web
 
-![React](https://img.shields.io/badge/React-19.2.7-61DAFB?logo=react&logoColor=white)
+![React](https://img.shields.io/badge/React-19.3.1-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8.1.3-646CFF?logo=vite&logoColor=white)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.62.2-FF4154?logo=reactquery&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.0-06B6D4?logo=tailwindcss&logoColor=white)
 ![Storybook](https://img.shields.io/badge/Storybook-10.6.0-FF4785?logo=storybook&logoColor=white)
@@ -25,8 +24,7 @@ The companion backend is [`dwmc-api`](https://github.com/bastiegag/dwmc-api). Th
 
 ## Architecture
 
-The frontend currently has a Next.js SSR authentication proof runtime and a
-Vite rollback runtime. Supabase provides authentication only; Prisma and
+The frontend uses the Next.js App Router. Supabase provides authentication only; Prisma and
 domain data access belong to `dwmc-api` and local PostgreSQL.
 
 ```text
@@ -47,7 +45,7 @@ The frontend sends Supabase access tokens to `dwmc-api` as `Authorization: Beare
 
 ## Stack
 
-React, TypeScript, Vite, React Router, TanStack Query, React Hook Form, Zod, shadcn/ui, Tailwind CSS, Supabase Auth, Vitest, Testing Library, Playwright, Storybook, ESLint, and Prettier.
+Next.js, React, TypeScript, TanStack Query, React Hook Form, Zod, shadcn/ui, Tailwind CSS, Supabase Auth, Vitest, Testing Library, Playwright, Storybook, ESLint, and Prettier.
 
 ## Setup
 
@@ -63,24 +61,14 @@ npm run dev
 Set these values in `.env.local`:
 
 ```dotenv
-VITE_APP_URL=http://localhost:5182
-VITE_API_URL=/api/v1
-VITE_SUPABASE_URL=https://<project-ref>.supabase.co
-VITE_SUPABASE_ANON_KEY=<publishable-anon-key>
-NEXT_PUBLIC_APP_URL=http://localhost:5182
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable-anon-key>
 DWMC_API_URL=http://localhost:3000/api/v1
 ```
 
-`VITE_API_URL=/api/v1` uses the Vite proxy to reach `dwmc-api` at
-`http://localhost:3000`. Use the same Supabase project and browser-safe anon
-key configured for the API. All `VITE_*` values are bundled into browser code
-and are public; never put database credentials, service-role keys, or other
-backend secrets in them. Add `http://localhost:5182/auth/callback` to the
-Supabase Auth redirect URLs. Phase 2 exposes the auth routes and
-`/protected-proof` in Next.js; the complete financial route set remains on the
-Vite rollback runtime until Phase 3.
+Use the same Supabase project and browser-safe anon key configured for the API.
+Add `http://localhost:3000/auth/callback` to the Supabase Auth redirect URLs.
 
 The opt-in live Next.js E2E suite also requires `E2E_TEST_EMAIL` and
 `E2E_TEST_PASSWORD` in `.env.local`. Use a dedicated non-production Supabase
@@ -106,11 +94,9 @@ npm run storybook
 npm run build-storybook
 ```
 
-`npm run validate` runs the formatting check, lint, typecheck, tests, and
-production build. `npm run test:e2e` runs the active deterministic Next.js E2E suite with a local
-mock boundary. `npm run test:e2e:legacy` runs the retained Vite rollback suite;
-`npm run test:e2e:next` remains an explicit alias for the Next.js configuration.
-`npm run test:e2e:live` requires dedicated
+`npm run validate` runs the formatting check, lint, typecheck, tests, production
+build, and Storybook build. `npm run test:e2e` runs the deterministic Next.js
+E2E suite with a local mock boundary. `npm run test:e2e:live` requires dedicated
 non-production Supabase and `dwmc-api` services plus test credentials; it fails
 closed when those values are unavailable. Storybook is available for isolated
 component development through the Next.js-compatible `@storybook/nextjs-vite`

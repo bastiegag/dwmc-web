@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import { fileURLToPath } from 'node:url'
@@ -10,16 +9,15 @@ const dirname =
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-    plugins: [react(), tailwindcss()],
+    plugins: [tailwindcss()],
     resolve: {
         alias: {
             '@': path.resolve(import.meta.dirname, './src'),
         },
     },
     define: {
-        'import.meta.env.VITE_SUPABASE_URL': '"https://test.supabase.co"',
-        'import.meta.env.VITE_SUPABASE_ANON_KEY': '"test-anon-key"',
-        'import.meta.env.VITE_APP_URL': '"http://localhost:5182"',
+        'process.env.NEXT_PUBLIC_SUPABASE_URL': '"https://test.supabase.co"',
+        'process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY': '"test-anon-key"',
     },
     test: {
         coverage: {

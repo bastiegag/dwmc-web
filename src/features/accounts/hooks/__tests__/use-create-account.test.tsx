@@ -4,9 +4,7 @@ import { useCreateAccount } from '@/features/accounts/hooks/use-create-account'
 import { accountQueryKeys } from '@/features/accounts/hooks/use-accounts'
 
 describe('useCreateAccount', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
-    })
+    beforeEach(() => {})
 
     it('invalidates the accounts list after a successful create', async () => {
         const { result, qc } = renderHookWithQuery(() => useCreateAccount())

@@ -9,11 +9,8 @@
     },
     "scripts": {
         "dev": "next dev -p 5182",
-        "dev:legacy": "vite",
         "build": "next build",
-        "build:legacy": "tsc -b && vite build",
-        "profile:build": "npm run build:legacy && node scripts/report-bundle-size.mjs",
-        "preview:legacy": "vite preview",
+        "profile:build": "npm run build && node scripts/report-bundle-size.mjs",
         "start": "next start -p 5182",
         "lint": "eslint . --max-warnings 0",
         "lint:fix": "eslint . --fix",
@@ -25,13 +22,11 @@
         "test:coverage": "vitest run --coverage",
         "test:e2e": "playwright test --config playwright.next.config.ts",
         "test:e2e:ui": "playwright test --config playwright.next.config.ts --ui",
-        "test:e2e:legacy": "playwright test --config playwright.config.ts",
-        "test:e2e:legacy:ui": "playwright test --config playwright.config.ts --ui",
         "test:e2e:live": "playwright test --config playwright.next.live.config.ts",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "prepare": "husky",
-        "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build:legacy && npm run build"
+        "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run build-storybook"
     },
     "dependencies": {
         "@hookform/resolvers": "^5.9.1",
@@ -56,7 +51,6 @@
         "react-day-picker": "^9.14.0",
         "react-dom": "^19.3.1",
         "react-hook-form": "^7.90.0",
-        "react-router-dom": "^7.18.4",
         "recharts": "^3.10.1",
         "sonner": "^2.0.8",
         "tailwind-merge": "^3.7.0",
@@ -80,7 +74,6 @@
         "@testing-library/user-event": "^14.6.8",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
-        "@vitejs/plugin-react": "^6.1.2",
         "@vitest/browser-playwright": "5.0.5",
         "@vitest/coverage-v8": "^5.0.5",
         "chromatic": "^17.8.0",

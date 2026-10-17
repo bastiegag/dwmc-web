@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, expect, vi } from 'vitest'
+import { describe, it, beforeEach, expect } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { PrimaryActionButton } from '@/shared/primary-action'
 import { screen, waitForElementToBeRemoved } from '@testing-library/react'
@@ -10,9 +10,7 @@ import { createBudget } from '@/test/fixtures/domain'
 import { formatCurrency } from '@/lib/format-currency'
 
 describe('BudgetsPage', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
-    })
+    beforeEach(() => {})
 
     it('renders heading and loading state', () => {
         render(<BudgetsPage />)

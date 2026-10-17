@@ -7,15 +7,6 @@ const { getSessionMock, signOutMock } = vi.hoisted(() => ({
     signOutMock: vi.fn(),
 }))
 
-vi.mock('@/lib/supabase', () => ({
-    supabase: {
-        auth: {
-            getSession: getSessionMock,
-            signOut: signOutMock,
-        },
-    },
-}))
-
 describe('apiClient', () => {
     beforeEach(() => {
         getSessionMock.mockResolvedValue({ data: { session: null } })
