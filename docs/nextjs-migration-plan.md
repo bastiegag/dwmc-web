@@ -14,6 +14,12 @@ remains only as a Vitest and Storybook build dependency. Deterministic tests and
 production builds pass. Post-Phase-7 live validation passed against a confirmed
 dedicated non-production Supabase/API environment.
 
+The final authentication cleanup removes the temporary `/protected-proof` route.
+Login, signup, and email confirmation now default to `/dashboard`, while safe
+protected deep links retain their path and query string through the `next`
+parameter. Password recovery remains restricted to `/reset-password` through
+the recovery callback and marker flow.
+
 ## 1. Executive Summary
 
 `dwmc-web` is a mature Vite SPA with a useful feature boundary, a tested
@@ -474,8 +480,8 @@ Install and configure `@supabase/ssr` in a dedicated auth PR. Keep two clients:
 - `src/lib/supabase/server.ts`: `createServerClient` backed by request cookies;
   used by Server Components, Route Handlers, and `proxy.ts`.
 
-Use the root-level `proxy.ts` convention required by Next.js 16+ (not the
-deprecated `middleware.ts`) to refresh the session and synchronize refreshed
+Use the `src/proxy.ts` convention required by this `src/app` Next.js 16+
+project (not the deprecated `middleware.ts`) to refresh the session and synchronize refreshed
 cookies on the response. Proxy is Node.js-only in current Next.js 16 and
 should be limited to request/session plumbing. Its matcher must exclude static
 assets and other paths that do not need auth handling. Proxy redirects or
@@ -806,7 +812,7 @@ redeploy the last Vite artifact. Do not run both frontend runtimes concurrently.
 **Objective:** Add cookie-backed Supabase SSR and prove the security boundary
 on one route without migrating every feature.
 **Prerequisites:** Phase 1 active runtime and rollback artifact accepted.
-**Files:** `proxy.ts`, `src/lib/supabase/{browser,server}.ts`,
+**Files:** `src/proxy.ts`, `src/lib/supabase/{browser,server}.ts`,
 `src/app/(auth)/**`, `src/app/(protected)/layout.tsx`, one small protected
 route, auth callback route, env examples, focused auth tests.
 **Steps:** Add `@supabase/ssr`, implement `proxy.ts` for refresh/cookie
@@ -830,8 +836,8 @@ do not weaken the backend or leave an unverified protected route enabled.
 `src/lib/supabase/browser.ts` for interactive auth and
 `src/lib/supabase/server.ts` for request-scoped cookie access. Root-level
 `proxy.ts` refreshes cookies only. The protected layout verifies identity with
-`getUser()`, and `/protected-proof` calls the existing
-`GET /api/v1/auth/me` contract through a server adapter that forwards
+`getUser()`, and the protected feature routes use the existing server adapter
+that forwards
 `Authorization: Bearer <access-token>` with `cache: 'no-store'`. The callback
 exchanges a Supabase code for a cookie-backed session and accepts only
 same-origin relative `next` paths. Logout clears the Supabase session through a
@@ -858,40 +864,37 @@ ownership. No backend change is required for this SSR proof.
 
 **Phase 2 acceptance evaluation:**
 
-- [x] Anonymous access to `/protected-proof` redirects before private API
-      fetching.
-- [x] Authenticated access renders a server-verified proof route and forwards
-      a matching bearer token to `dwmc-api`.
+- [x] Anonymous access to protected feature routes preserves a safe `next`
+      destination before private API fetching.
+- [x] Authenticated feature routes use server-verified layouts and forward
+      matching bearer tokens to `dwmc-api`.
 - [x] `proxy.ts` refreshes and synchronizes Supabase cookies without adding
       authorization rules.
 - [x] Login, signup, forgot-password, reset-password, callback, and logout
       routes exist in Next.js.
-- [x] Callback redirects allow only `/protected-proof` and `/reset-password`;
-      external, protocol-relative, backslash, malformed, and auth-loop
-      destinations fall back safely.
+- [x] Callback redirects allow only actual application destinations and
+      `/reset-password` for the recovery flow; external, protocol-relative,
+      backslash, malformed, and auth-loop destinations fall back safely.
 - [x] Reset-password access requires a successful recovery callback marker in
       addition to a verified current Supabase user; ordinary sessions cannot
       silently enter the form.
 - [x] Logout clears the browser session and user-specific TanStack Query data.
 - [x] Server API requests use `getUser()`, matching token identity, and
       `cache: 'no-store'`.
-- [x] Unit, type, lint, format, Next build, legacy build, and Storybook checks
-      pass. The deterministic Next authentication E2E suite passes 7/7.
-- [ ] Live Supabase + `dwmc-api` browser integration is not proven in this
-      local run; `npm run test:e2e:live` now fails closed unless configured
-      credentials, redirect URLs, and both services are available.
+- [x] Unit, type, lint, format, Next build, and Storybook checks pass. The
+      deterministic Next authentication E2E suite passes 7/7 and the complete
+      deterministic suite passes 10/10.
+- [x] Live Supabase + `dwmc-api` browser integration passes 1/1 against a
+      confirmed dedicated non-production environment after the final auth
+      cleanup.
 - [x] A separate `playwright.next.config.ts` launches Next on port `5182`
-      with a deterministic mock boundary; the existing Playwright command
-      still launches the Vite rollback app.
-- [ ] The selected legacy auth subset completed 16/20 tests; four existing
-      accessibility/data assertions failed there and do not exercise the new
-      Next SSR routes.
+      with a deterministic mock boundary; `npm run test:e2e` is the active
+      Next.js Playwright command.
 
-Phase 2 implementation and deterministic local validation are complete, with
-live external-service browser integration remaining an explicit prerequisite
-before production cutover. Phase 3 route composition and financial feature
-migration must not begin until that integration coverage is executed and
-passes.
+Phase 2 implementation and validation are complete. The temporary
+`/protected-proof` route has been removed; its meaningful authenticated
+backend coverage is retained by the protected dashboard, live integration,
+and user-isolation tests.
 
 An independent security review of the Phase 2 authentication boundary found no
 exploitable vulnerabilities in the reviewed web or backend integration code.
@@ -981,7 +984,7 @@ unchanged.
 - [x] `next.config.*`, `tsconfig` references, aliases, global CSS, public assets.
 - [x] `src/app/layout.tsx`, the public shell page, and provider boundary.
 - [x] `src/app/providers.tsx` and client-only provider boundary.
-- [x] Root-level `proxy.ts` and `src/lib/supabase/browser.ts`/`server.ts`.
+- [x] `src/proxy.ts` and `src/lib/supabase/browser.ts`/`server.ts`.
 - [x] `src/lib/api-client.ts` shared error parsing and server adapter.
 - [x] `src/lib/query/*` QueryClient lifecycle and hydration policy.
 - [x] Auth forms/services/hooks, callback and recovery storage behavior.

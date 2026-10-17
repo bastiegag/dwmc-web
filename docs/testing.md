@@ -25,6 +25,9 @@ redirects, logout protection and cache isolation, invalid and valid password
 recovery links, and authenticated API page rendering. Password recovery tests use
 a JWT-shaped fixture token and the same token in the mocked session and callback
 hash so the browser lifecycle remains deterministic.
+The current default authenticated landing page is `/dashboard`; deterministic
+deep-link coverage verifies `/transactions?month=2026-06` survives login as a
+safe `next` destination.
 
 ## What to Test
 
@@ -84,7 +87,6 @@ Use the package scripts that exist in `package.json`.
 - `npm run test:coverage`
 - `npm run test:e2e`
 - `npm run test:e2e:ui`
-- `npm run test:e2e:next`
 - `npm run test:e2e:live`
 - `npm run storybook`
 - `npm run build-storybook`
@@ -108,14 +110,13 @@ running Supabase Auth and `dwmc-api`, and dedicated non-production
 credentials or financial data. The live config fails clearly when variables
 are missing; it must not be reported as passed in that case.
 
-The post-Phase-7 live validation was run against a confirmed dedicated
-non-production environment. The authentication, session refresh, and logout
-workflow passed.
+The post-Phase-7 live validation was rerun after the authentication cleanup
+against a confirmed dedicated non-production environment. The authentication,
+dashboard rendering, session refresh, and logout workflow passed (1/1).
 
 The normal Vitest and Playwright suites use mocks and do not require a running
-PostgreSQL database or live Supabase credentials. Playwright installs or uses
-its configured browser and starts Vite automatically; local E2E runs use the
-deterministic Auth and API route fixtures in `e2e/`.
+PostgreSQL database or live Supabase credentials. Local deterministic E2E runs
+use the Next.js mock boundary and the Auth/API route fixtures in `e2e-next/`.
 
 Phase 2 SSR authentication also requires integration coverage against a
 running Next.js server, Supabase Auth, and `dwmc-api`. Unit tests can validate

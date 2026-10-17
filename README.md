@@ -68,7 +68,7 @@ DWMC_API_URL=http://localhost:3000/api/v1
 ```
 
 Use the same Supabase project and browser-safe anon key configured for the API.
-Add `http://localhost:3000/auth/callback` to the Supabase Auth redirect URLs.
+Add `http://localhost:5182/auth/callback` to the Supabase Auth redirect URLs.
 
 The opt-in live Next.js E2E suite also requires `E2E_TEST_EMAIL` and
 `E2E_TEST_PASSWORD` in `.env.local`. Use a dedicated non-production Supabase

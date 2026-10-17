@@ -17,6 +17,7 @@ import {
     type SignupInput,
 } from '@/features/auth/schemas'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser'
+import { getSafeAuthRedirect } from '@/lib/auth-redirect'
 
 type AuthFormMode = 'login' | 'signup' | 'forgot' | 'reset'
 type AuthFormValues = LoginInput | SignupInput | ForgotPasswordInput | ResetPasswordInput
@@ -51,9 +52,11 @@ const appUrl = () => {
 export function AuthForm({
     mode,
     initialError = false,
+    nextPath = null,
 }: {
     mode: AuthFormMode
     initialError?: boolean
+    nextPath?: string | null
 }) {
     const router = useRouter()
     const [error, setError] = useState<string | null>(
@@ -79,6 +82,7 @@ export function AuthForm({
     const fieldErrors = errors as Partial<
         Record<'email' | 'password' | 'confirmPassword', { message?: string }>
     >
+    const nextQuery = nextPath ? `?next=${encodeURIComponent(getSafeAuthRedirect(nextPath))}` : ''
 
     useEffect(() => {
         if (success) successRef.current?.focus()
@@ -104,18 +108,21 @@ export function AuthForm({
                 const value = values as LoginInput
                 const result = await supabase.auth.signInWithPassword(value)
                 if (result.error) throw result.error
-                router.replace('/protected-proof')
+                router.replace(getSafeAuthRedirect(nextPath))
                 router.refresh()
             } else if (mode === 'signup') {
                 const value = values as SignupInput
+                const destination = getSafeAuthRedirect(nextPath)
                 const result = await supabase.auth.signUp({
                     email: value.email,
                     password: value.password,
-                    options: { emailRedirectTo: `${appUrl()}/auth/callback?next=/protected-proof` },
+                    options: {
+                        emailRedirectTo: `${appUrl()}/auth/callback?next=${encodeURIComponent(destination)}`,
+                    },
                 })
                 if (result.error) throw result.error
                 if (result.data.session) {
-                    router.replace('/protected-proof')
+                    router.replace(destination)
                     router.refresh()
                 } else {
                     setSuccess(true)
@@ -232,12 +239,12 @@ export function AuthForm({
                 </Button>
                 <nav className="flex justify-center gap-3 text-center text-sm">
                     {mode !== 'login' ? (
-                        <a className="underline underline-offset-4" href="/login">
+                        <a className="underline underline-offset-4" href={`/login${nextQuery}`}>
                             Sign in
                         </a>
                     ) : null}
                     {mode === 'login' ? (
-                        <a className="underline underline-offset-4" href="/signup">
+                        <a className="underline underline-offset-4" href={`/signup${nextQuery}`}>
                             Sign up
                         </a>
                     ) : null}

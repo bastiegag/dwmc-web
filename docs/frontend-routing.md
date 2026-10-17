@@ -26,6 +26,19 @@ performs the server-side Supabase user check once, while client feature pages
 retain TanStack Query and browser interaction behavior.
 The `/tools/categories` path redirects to `/categories`.
 
+Authentication behavior is explicit:
+
+- Successful login or signup defaults to `/dashboard`.
+- A protected deep link may be carried through the `next` query parameter and
+  is restored after authentication only when it is a known same-origin
+  protected route. Query strings such as `?month=YYYY-MM` are preserved.
+- Email confirmation uses the same safe authenticated destination policy.
+- Password recovery remains separate: its callback may lead to
+  `/reset-password` only for the recovery flow, with the recovery marker and
+  verified user still required by the reset page.
+- External, protocol-relative, malformed, auth, unknown, and recovery-only
+  destinations fall back to `/dashboard`.
+
 ## Phase 3 Route Migration Matrix
 
 | Legacy path         | Next path          | Layout        | Auth            | Entry component    | Client boundary | Query state       | Coverage      |

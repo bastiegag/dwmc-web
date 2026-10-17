@@ -10,15 +10,21 @@ describe('getSafeAuthRedirect', () => {
         '/\\evil',
         '/login',
         '/signup',
-        '/accounts',
+        '/tools/unknown',
     ])('rejects unsafe destination %s', (destination) => {
         expect(getSafeAuthRedirect(destination)).toBe(fallbackPath)
     })
 
     it('preserves a safe internal destination with query and hash', () => {
-        expect(getSafeAuthRedirect('/protected-proof?source=recovery#recent')).toBe(
-            '/protected-proof?source=recovery#recent',
+        expect(getSafeAuthRedirect('/transactions?month=2026-06#recent')).toBe(
+            '/transactions?month=2026-06#recent',
         )
+    })
+
+    it('falls back to the dashboard for missing or unsupported destinations', () => {
+        expect(getSafeAuthRedirect(null)).toBe('/dashboard')
+        expect(getSafeAuthRedirect('/accounts')).toBe('/accounts')
+        expect(getSafeAuthRedirect('/reset-password')).toBe(fallbackPath)
     })
 
     it('requires the recovery flow marker before allowing reset-password', () => {

@@ -7,7 +7,7 @@ const login = async (page: Page) => {
     await page.getByLabel('Email').fill('alice@example.com')
     await page.getByRole('textbox', { name: 'Password' }).fill('Password1')
     await page.getByRole('button', { name: 'Sign in' }).click()
-    await expect(page).toHaveURL(/\/protected-proof$/)
+    await expect(page).toHaveURL(/\/dashboard$/)
 }
 
 test.describe('Next.js feature parity', () => {

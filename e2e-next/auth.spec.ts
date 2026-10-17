@@ -31,8 +31,8 @@ test.describe('Next.js authentication boundary', () => {
     })
 
     test('redirects anonymous users before protected rendering', async ({ page }) => {
-        await page.goto('/protected-proof')
-        await expect(page).toHaveURL(/\/login$/)
+        await page.goto('/transactions?month=2026-06')
+        await expect(page).toHaveURL('/login?next=%2Ftransactions%3Fmonth%3D2026-06')
         await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible()
     })
 
@@ -44,15 +44,15 @@ test.describe('Next.js authentication boundary', () => {
         await page.getByRole('textbox', { name: 'Password' }).fill('Password1')
         await page.getByRole('button', { name: 'Sign in' }).click()
 
-        await expect(page).toHaveURL(/\/protected-proof$/)
-        await expect(page.getByText('alice@example.com')).toBeVisible()
+        await expect(page).toHaveURL(/\/dashboard$/)
+        await expect(page.getByRole('heading', { name: /No activity this month/i })).toBeVisible()
         await page.reload()
-        await expect(page.getByText('alice@example.com')).toBeVisible()
+        await expect(page.getByRole('heading', { name: /No activity this month/i })).toBeVisible()
 
         await page.getByRole('button', { name: 'Sign out' }).click()
         await expect(page).toHaveURL(/\/login$/)
-        await page.goto('/protected-proof')
-        await expect(page).toHaveURL(/\/login$/)
+        await page.goto('/dashboard')
+        await expect(page).toHaveURL(/\/login\?next=%2Fdashboard$/)
     })
 
     test('does not reuse user A session or rendered data for user B', async ({ page }) => {
@@ -60,23 +60,24 @@ test.describe('Next.js authentication boundary', () => {
         await page.getByLabel('Email').fill('alice@example.com')
         await page.getByRole('textbox', { name: 'Password' }).fill('Password1')
         await page.getByRole('button', { name: 'Sign in' }).click()
-        await expect(page.getByText('alice@example.com')).toBeVisible()
+        await expect(page).toHaveURL(/\/dashboard$/)
 
         await page.getByRole('button', { name: 'Sign out' }).click()
+        await expect(page).toHaveURL(/\/login$/)
         await page.goto('/login')
         await page.getByLabel('Email').fill('bob@example.com')
         await page.getByRole('textbox', { name: 'Password' }).fill('Password1')
         await page.getByRole('button', { name: 'Sign in' }).click()
 
-        await expect(page.getByText('bob@example.com')).toBeVisible()
-        await expect(page.getByText('alice@example.com')).not.toBeVisible()
+        await expect(page).toHaveURL(/\/dashboard$/)
+        await expect(page.getByRole('heading', { name: /No activity this month/i })).toBeVisible()
     })
 
     test('handles callback errors and rejects unsafe redirect destinations', async ({ page }) => {
         await page.goto('/auth/callback?next=https%3A%2F%2Fevil.example')
         await expect(page).toHaveURL(/\/login\?error=missing_callback$/)
 
-        await page.goto('/auth/callback?code=invalid&next=%2Fprotected-proof')
+        await page.goto('/auth/callback?code=invalid&next=%2Ftransactions%3Fmonth%3D2026-06')
         await expect(page).toHaveURL(/\/login\?error=invalid_callback$/)
     })
 })
