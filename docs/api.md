@@ -15,15 +15,21 @@ The backend API documentation is the contract authority. See the sibling reposit
 
 `apiClient`:
 
-- Reads `VITE_API_URL` and joins it with the requested path.
+- Uses the runtime-configured browser adapter and same-origin `/api/v1` path.
 - Reads the current Supabase session and sends `Authorization: Bearer <access token>` when available.
 - Serializes non-GET bodies as JSON.
-- Parses JSON responses when the response content type is JSON.
+- Parses JSON responses safely, including empty and malformed responses.
 - Returns the parsed successful response to the caller.
 - Converts failed responses into `ApiError` with `status`, optional `code`, and optional `issues`.
 - Converts network failures into `ApiError` with code `NETWORK_ERROR` and status `0`.
 
 Feature code should not attach auth headers manually, call Supabase tables, or call `fetch` directly.
+
+Server Components use `src/lib/api-client.server.ts` instead. It verifies the
+request-scoped Supabase identity with `getUser()`, checks the token subject,
+forwards the token to `dwmc-api`, supports the same request options, and uses
+`cache: 'no-store'` for every authenticated request. Shared parsing and error
+construction are implemented in `src/lib/api-client.shared.ts`.
 
 ## Backend Contract
 
@@ -67,7 +73,28 @@ Current invalidation behavior is documented in [frontend architecture](architect
 
 Supabase owns browser authentication. The backend validates the access token and scopes domain data to the authenticated user's `UserProfile`. Frontend route protection improves UX but is not authorization; the backend remains authoritative.
 
-The backend auth contract includes bearer-token validation on protected routes and `GET /api/v1/auth/me` profile synchronization. See `../dwmc-api/docs/domains/auth.md` for the canonical behavior.
+The backend auth contract includes bearer-token validation on protected routes
+and `GET /api/v1/auth/me` profile synchronization. Browser and server requests
+must both send `Authorization: Bearer <Supabase access token>`; the backend does
+not consume the Next.js session cookie. See `../dwmc-api/docs/domains/auth.md`
+for the canonical behavior.
+
+The SSR proof route uses this flow:
+
+```text
+Supabase cookie -> protected layout getUser()
+                -> serverApiClient reads the request token
+                -> Authorization: Bearer <token>
+                -> dwmc-api authMiddleware
+                -> Supabase getUser(token)
+                -> UserProfile/domain ownership checks
+```
+
+Server API responses use `cache: 'no-store'` because they are user-specific.
+The server adapter preserves the API's structured error envelope and status
+codes, including 401 for missing/invalid tokens. A 403 or resource denial
+remains a backend authorization decision; the frontend must not infer ownership
+from successful Supabase authentication.
 
 The authenticated profile contract is `GET/PATCH /api/v1/profile`. The client sends only editable application fields; identity comes from the bearer token and email remains Supabase Auth data.
 

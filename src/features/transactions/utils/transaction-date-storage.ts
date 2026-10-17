@@ -1,6 +1,8 @@
 const transactionDateKey = (userId: string, month: string) => `last-tx-date:${userId}:${month}`
 
 type TransactionDateStorage = Pick<Storage, 'getItem' | 'setItem'>
+const browserStorage = (): TransactionDateStorage | null =>
+    typeof window === 'undefined' ? null : window.localStorage
 
 export const isValidTransactionDate = (value: string | null | undefined): value is string => {
     if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
@@ -18,9 +20,9 @@ export const isValidTransactionDate = (value: string | null | undefined): value 
 export const getRememberedTransactionDate = (
     userId: string | null | undefined,
     month: string,
-    storage: TransactionDateStorage = localStorage,
+    storage: TransactionDateStorage | null = browserStorage(),
 ) => {
-    if (!userId) return null
+    if (!userId || !storage) return null
 
     const value = storage.getItem(transactionDateKey(userId, month))
     return isValidTransactionDate(value) && value.startsWith(`${month}-`) ? value : null
@@ -30,9 +32,10 @@ export const rememberTransactionDate = (
     userId: string | null | undefined,
     month: string,
     date: string,
-    storage: TransactionDateStorage = localStorage,
+    storage: TransactionDateStorage | null = browserStorage(),
 ) => {
-    if (!userId || !isValidTransactionDate(date) || !date.startsWith(`${month}-`)) return
+    if (!storage || !userId || !isValidTransactionDate(date) || !date.startsWith(`${month}-`))
+        return
 
     storage.setItem(transactionDateKey(userId, month), date)
 }

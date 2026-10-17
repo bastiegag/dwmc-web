@@ -1,4 +1,4 @@
-import type { StorybookConfig } from '@storybook/react-vite'
+import type { StorybookConfig } from '@storybook/nextjs-vite'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -12,7 +12,12 @@ const config: StorybookConfig = {
         '@storybook/addon-docs',
         '@storybook/addon-vitest',
     ],
-    framework: { name: '@storybook/react-vite', options: {} },
+    framework: {
+        name: '@storybook/nextjs-vite',
+        options: {
+            nextConfigPath: path.resolve(__dirname, '../next.config.ts'),
+        },
+    },
     viteFinal: async (config) => {
         if (config.resolve) {
             config.resolve.alias = {
@@ -22,9 +27,9 @@ const config: StorybookConfig = {
         }
         config.define = {
             ...config.define,
-            'import.meta.env.VITE_SUPABASE_URL': '"https://test.supabase.co"',
-            'import.meta.env.VITE_SUPABASE_ANON_KEY': '"test-anon-key"',
-            'import.meta.env.VITE_APP_URL': '"http://localhost:6006"',
+            'process.env.NEXT_PUBLIC_SUPABASE_URL': '"https://test.supabase.co"',
+            'process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY': '"test-anon-key"',
+            'process.env.NEXT_PUBLIC_APP_URL': '"http://localhost:6006"',
         }
         return config
     },

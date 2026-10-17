@@ -62,11 +62,7 @@ test.describe('Logout', () => {
         summary = { ...summary, totals: { ...summary.totals, incomeTotal: 25 } }
         await loginPage.login('test@example.com', 'Password123')
         await expect(page).toHaveURL('/dashboard')
-        const incomeCard = page
-            .getByRole('heading', { name: 'Income' })
-            .locator('..')
-            .locator('..')
-            .locator('..')
+        const incomeCard = page.getByRole('heading', { name: 'Income' }).locator('..').locator('..')
         await expect(incomeCard.locator('.text-2xl')).toHaveText(/25/)
         await expect(incomeCard.locator('.text-2xl')).not.toHaveText(/1.?000/)
     })

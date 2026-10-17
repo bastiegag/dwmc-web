@@ -4,9 +4,7 @@ import { useDeleteAccount } from '@/features/accounts/hooks/use-delete-account'
 import { accountQueryKeys } from '@/features/accounts/hooks/use-accounts'
 
 describe('useDeleteAccount', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
-    })
+    beforeEach(() => {})
 
     it('invalidates the accounts list after a successful delete', async () => {
         const { result, qc } = renderHookWithQuery(() => useDeleteAccount())

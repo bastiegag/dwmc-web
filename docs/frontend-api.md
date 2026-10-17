@@ -13,7 +13,8 @@ page or hook
 → backend endpoint
 ```
 
-The configured API origin is selected by `VITE_API_URL`. Local development uses the Vite proxy path `/api/v1`, which forwards requests to the local API on port `3000`. URLs are environment configuration, not hardcoded frontend source values.
+The configured API origin is selected by the Next.js server rewrite from
+`DWMC_API_URL`. Browser requests use the same-origin `/api/v1` path.
 
 ## API Client
 
@@ -21,7 +22,7 @@ The shared API client lives in `src/lib/api-client.ts`.
 
 It:
 
-- reads the backend base URL from `VITE_API_URL`
+- uses the same-origin `/api/v1` path in the browser
 - attaches the Supabase access token when a session exists
 - serializes JSON request bodies for non-GET requests
 - parses JSON responses when the response is JSON
@@ -41,16 +42,19 @@ Supabase Auth handles sign in and session management, while the backend validate
 
 ## Supabase Client
 
-The Supabase client is configured in `src/lib/supabase/client.ts`.
+Browser Supabase access is configured in `src/lib/supabase/browser.ts`; server
+access is configured in `src/lib/supabase/server.ts`.
 
 It requires:
 
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-Auth flows also use `VITE_APP_URL` for redirect targets.
+Auth flows use `NEXT_PUBLIC_APP_URL` for redirect targets.
 
-All `VITE_*` variables are browser-visible. The frontend may contain the Supabase URL and anon key, but must never receive `DATABASE_URL`, PostgreSQL credentials, `SUPABASE_SERVICE_ROLE_KEY`, or other backend secrets.
+The public Supabase URL and anon key are browser-visible, but the frontend must
+never receive `DATABASE_URL`, PostgreSQL credentials, `SUPABASE_SERVICE_ROLE_KEY`,
+or other backend secrets.
 
 The frontend sends requests and Bearer tokens; `dwmc-api` owns CORS policy, preflight handling, allowed origins, methods, and headers. The frontend does not configure CORS.
 

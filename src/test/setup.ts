@@ -4,10 +4,13 @@ import { cleanup } from '@testing-library/react'
 import { afterEach, beforeAll, afterAll, expect, vi } from 'vitest'
 import * as axeMatchers from 'vitest-axe/matchers'
 import { server } from './mocks/server'
+import { supabase } from '@/lib/supabase'
+import { configureAuthClient } from '@/lib/auth-client'
 
 expect.extend(axeMatchers)
 
 beforeAll(() => {
+    configureAuthClient(supabase, 'http://localhost:3000')
     const originalGetComputedStyle = window.getComputedStyle
 
     vi.spyOn(window, 'getComputedStyle').mockImplementation((element, pseudoElement) => {
@@ -31,7 +34,7 @@ beforeAll(() => {
             }),
         } as unknown as CanvasRenderingContext2D
     })
-    server.listen({ onUnhandledRequest: 'error' })
+    server.listen({ onUnhandledFrame: 'error' })
 })
 afterEach(() => {
     cleanup()

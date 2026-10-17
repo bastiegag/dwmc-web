@@ -1,11 +1,10 @@
 # Dude, Where's My Cash? Web
 
-![React](https://img.shields.io/badge/React-19.2.7-61DAFB?logo=react&logoColor=white)
+![React](https://img.shields.io/badge/React-19.3.1-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8.1.3-646CFF?logo=vite&logoColor=white)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.62.2-FF4154?logo=reactquery&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.0-06B6D4?logo=tailwindcss&logoColor=white)
-![Storybook](https://img.shields.io/badge/Storybook-10.4.0-FF4785?logo=storybook&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-10.6.0-FF4785?logo=storybook&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-4.1.10-6E9F18?logo=vitest&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-1.61.1-2EAD33?logo=playwright&logoColor=white)
 
@@ -25,7 +24,8 @@ The companion backend is [`dwmc-api`](https://github.com/bastiegag/dwmc-api). Th
 
 ## Architecture
 
-The frontend runs on the local Vite development server and communicates with the local `dwmc-api` service. Supabase provides browser-side Auth only; Prisma and domain data access belong to `dwmc-api` and local PostgreSQL.
+The frontend uses the Next.js App Router. Supabase provides authentication only; Prisma and
+domain data access belong to `dwmc-api` and local PostgreSQL.
 
 ```text
 Browser -> local dwmc-web -> local dwmc-api -> Prisma -> local PostgreSQL
@@ -45,7 +45,7 @@ The frontend sends Supabase access tokens to `dwmc-api` as `Authorization: Beare
 
 ## Stack
 
-React, TypeScript, Vite, React Router, TanStack Query, React Hook Form, Zod, shadcn/ui, Tailwind CSS, Supabase Auth, Vitest, Testing Library, Playwright, Storybook, ESLint, and Prettier.
+Next.js, React, TypeScript, TanStack Query, React Hook Form, Zod, shadcn/ui, Tailwind CSS, Supabase Auth, Vitest, Testing Library, Playwright, Storybook, ESLint, and Prettier.
 
 ## Setup
 
@@ -61,17 +61,18 @@ npm run dev
 Set these values in `.env.local`:
 
 ```dotenv
-VITE_APP_URL=http://localhost:5182
-VITE_API_URL=/api/v1
-VITE_SUPABASE_URL=https://<project-ref>.supabase.co
-VITE_SUPABASE_ANON_KEY=<publishable-anon-key>
+NEXT_PUBLIC_APP_URL=http://localhost:5182
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable-anon-key>
+DWMC_API_URL=http://localhost:3000/api/v1
 ```
 
-`VITE_API_URL=/api/v1` uses the Vite proxy to reach `dwmc-api` at
-`http://localhost:3000`. Use the same Supabase project and browser-safe anon
-key configured for the API. All `VITE_*` values are bundled into browser code
-and are public; never put database credentials, service-role keys, or other
-backend secrets in them.
+Use the same Supabase project and browser-safe anon key configured for the API.
+Add `http://localhost:5182/auth/callback` to the Supabase Auth redirect URLs.
+
+The opt-in live Next.js E2E suite also requires `E2E_TEST_EMAIL` and
+`E2E_TEST_PASSWORD` in `.env.local`. Use a dedicated non-production Supabase
+user and API environment; never use production credentials or financial data.
 
 Open `http://localhost:5182`, sign up with Email/password, and then create a
 section, category, account, and transaction. Supabase handles authentication;
@@ -83,18 +84,22 @@ PostgreSQL.
 ```bash
 npm run dev
 npm run build
-npm run preview
+npm run start
 npm run validate
 npm run test
 npm run test:e2e
+npm run test:e2e:live
 npm run storybook
 npm run build-storybook
 ```
 
-`npm run validate` runs the formatting check, lint, typecheck, tests, and
-production build. `npm run test:e2e` requires the local API and the configured
-Supabase Auth test environment. Storybook is available for isolated component
-development.
+`npm run validate` runs the formatting check, lint, typecheck, tests, production
+build, and Storybook build. `npm run test:e2e` runs the deterministic Next.js
+E2E suite with a local mock boundary. `npm run test:e2e:live` requires dedicated
+non-production Supabase and `dwmc-api` services plus test credentials; it fails
+closed when those values are unavailable. Storybook is available for isolated
+component development through the Next.js-compatible `@storybook/nextjs-vite`
+framework.
 
 ### Storybook design system
 
@@ -129,6 +134,8 @@ data or turn route-level screens into design-system components.
 - [Development and releases](docs/RELEASING.md)
 - [Engineering audit playbook](docs/engineering-audit-playbook.md)
 - [Roadmap](docs/roadmap.md)
+- [Next.js migration plan](docs/nextjs-migration-plan.md)
+- [ADR 0001: Adopt Next.js](docs/adr/0001-adopt-nextjs.md)
 - [Backend repository](https://github.com/bastiegag/dwmc-api)
 
-Domain behavior is documented alongside the relevant feature implementation. There is currently no ADR directory; meaningful architectural decisions should be added there when one is introduced.
+Domain behavior is documented alongside the relevant feature implementation.

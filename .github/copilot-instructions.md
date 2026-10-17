@@ -170,6 +170,6 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Document new environment variables and scripts when they affect setup or development.
 - Keep `docs/frontend-architecture.md`, `docs/frontend-routing.md`, `docs/frontend-api.md`, `docs/testing.md`, `docs/development-playbook.md`, `docs/engineering-standards.md`, and `docs/roadmap.md` aligned with the actual code.
 - `dwmc-web` and `dwmc-api` run locally for V1. Application data uses local PostgreSQL through Prisma; Supabase is used only for Auth.
-- Treat every `VITE_*` value as browser-visible. Backend secrets never belong in this repository's frontend runtime configuration.
+- Treat every `NEXT_PUBLIC_*` value as browser-visible. Backend secrets never belong in this repository's frontend runtime configuration.
 - Keep local API and Supabase Auth URLs configuration-driven. Do not introduce deployment infrastructure unless explicitly requested.
 - Move planned but unfinished features to `docs/roadmap.md` instead of presenting them as shipped.

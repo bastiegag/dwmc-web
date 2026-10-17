@@ -29,7 +29,6 @@ vi.mock('@/features/categories/api', () => ({
 
 describe('category and section mutations', () => {
     beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
         vi.clearAllMocks()
     })
 

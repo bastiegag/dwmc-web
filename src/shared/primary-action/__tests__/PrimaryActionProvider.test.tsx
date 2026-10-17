@@ -33,9 +33,7 @@ const SwitchingRegistrars = ({ showFirst }: { showFirst: boolean }) => (
 )
 
 describe('PrimaryActionProvider', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
-    })
+    beforeEach(() => {})
 
     it('does not render outside the primary action provider', () => {
         const { container } = renderWithoutProvider(<PrimaryActionButton />)

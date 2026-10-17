@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { authService } from '@/features/auth/services'
-import { recoveryCallbackStorageKey } from '@/lib/supabase'
+import { recoveryCallbackStorageKey } from '@/lib/auth-client'
 
 type RecoveryStatus = 'loading' | 'valid' | 'invalid'
 

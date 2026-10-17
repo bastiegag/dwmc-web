@@ -164,7 +164,7 @@
     --default-subtle: var(--color-neutral-100);
     --default-border: var(--color-neutral-300);
 
-    --primary: var(--color-lavender-500);
+    --primary: var(--color-lavender-700);
     --primary-foreground: var(--color-white);
     --primary-subtle: var(--color-lavender-50);
     --primary-border: var(--color-lavender-200);
@@ -195,7 +195,7 @@
     --info-border: var(--color-blue-200);
 
     --muted: var(--color-neutral-100);
-    --muted-foreground: var(--color-neutral-400);
+    --muted-foreground: var(--color-neutral-600);
     --accent: var(--color-neutral-100);
     --accent-foreground: var(--color-neutral-900);
 

@@ -7,16 +7,19 @@ The codebase keeps application setup, reusable UI, domain features, shared cross
 
 ## Runtime Boundaries
 
-The frontend runs on the local Vite development server. The local `dwmc-api` owns domain operations, JWT validation, authorization, Prisma, and PostgreSQL access. Supabase is used for Auth only; the browser never connects to application data storage.
+The active frontend runtime is the Next.js App Router shell on port `5182`. The local `dwmc-api`
+owns domain operations, JWT validation, authorization, Prisma, and PostgreSQL
+access. Supabase is used for Auth only; the browser never connects to
+application data storage.
 
 ```text
 Browser -> local dwmc-web -> local dwmc-api -> Prisma -> local PostgreSQL
                        \-> Supabase Auth -> access token -> dwmc-api
 ```
 
-`VITE_API_URL` selects the local API origin. Financial and domain requests go
-through the shared API client. The frontend must never connect directly to
-PostgreSQL or contain service-role, database, or other backend credentials.
+`DWMC_API_URL` configures the Next.js `/api/v1` rewrite. Financial and domain
+requests go through the shared API client. The frontend must never connect directly to PostgreSQL or
+contain service-role, database, or other backend credentials.
 
 ## Application Structure
 
@@ -36,7 +39,7 @@ src/
 
 ### Folder Roles
 
-- `app`: application bootstrap, router, layouts, and top-level providers.
+- `app`: the active Next.js App Router route groups, layouts, boundaries, and top-level providers.
 - `components`: shared UI and layout components used across features.
 - `features`: domain code for auth, dashboard, accounts, transactions, budgets, and categories.
 - `shared`: cross-feature utilities and state such as month navigation and contextual primary actions.
@@ -44,6 +47,31 @@ src/
 - `stories`: Storybook stories for reusable UI states.
 - `styles`: global styling.
 - `test`: shared test setup, fixtures, and helpers.
+
+Storybook uses the official `@storybook/nextjs-vite` framework adapter so
+stories resolve the same Next.js-compatible aliases and runtime conventions as
+the active application. Storybook is not a route-level application test suite.
+
+Route entrypoints are intentionally thin. Existing feature pages remain client
+components where they use hooks, forms, browser APIs, or TanStack Query; server
+layouts own authentication and route composition.
+
+URL-backed month state follows the same boundary: shared feature code consumes
+the month context contract, while the Next shell provides the router-specific
+implementation.
+
+API access follows an equivalent boundary. Feature API modules keep their
+existing contracts and use the configured browser adapter, while Server
+Components use the request-scoped server adapter only. Authenticated server
+requests are explicitly uncached.
+
+Authentication follows the same runtime boundary. The shared auth service is
+configured by the active provider: Next uses the `@supabase/ssr` browser
+client. Feature
+pages therefore do not import Vite-only environment access while being
+evaluated by Next. Browser-only transaction-date persistence also guards
+server evaluation and is used only as a convenience for new transaction
+defaults.
 
 ## Feature-Based Architecture
 
@@ -118,12 +146,28 @@ DashboardPage
 
 ## Authentication Flow
 
-Authentication is handled by Supabase Auth.
+Authentication is handled by Supabase Auth, with separate browser and server
+clients from `@supabase/ssr`.
 
-- Supabase owns sign in, sign up, password recovery, session lookup, and sign out.
-- The frontend reads the current session through the auth service.
-- The shared `apiClient` sends the Supabase access token to the backend in an Authorization header.
-- App domain data comes from the backend API, not directly from Supabase tables.
+1. The user authenticates through Supabase.
+2. Next.js maintains the authenticated session using Supabase cookies. `proxy.ts`
+   refreshes and synchronizes cookies; it does not make authorization decisions.
+3. Protected Server Component layouts call `supabase.auth.getUser()` before
+   rendering private pages. Cookie `getSession()` data is not sufficient proof
+   of identity.
+4. Authenticated API requests forward the current Supabase access token as
+   `Authorization: Bearer <access-token>`. Browser requests use the browser
+   client; server-rendered requests use `serverApiClient` and `cache: 'no-store'`.
+5. `dwmc-api` independently verifies the token with
+   `supabase.auth.getUser(token)`.
+6. `dwmc-api` resolves its local `UserProfile` and enforces ownership and
+   domain authorization. A valid Supabase session does not grant access to
+   another user's records.
+
+The browser-side session is useful for UX and auth event synchronization, but
+neither client route protection nor Next.js proxy is the backend authorization
+boundary. The backend contract remains bearer-token based and does not accept
+Next.js cookies directly.
 
 The auth session is also mirrored into TanStack Query so auth-aware hooks can react to session changes.
 

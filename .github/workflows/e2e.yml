@@ -36,18 +36,13 @@ jobs:
             - name: Install Playwright browsers
               run: npx playwright install --with-deps
 
-            - name: Run Playwright tests
-              env:
-                  VITE_APP_URL: http://localhost:5182
-                  VITE_API_URL: /api/v1
-                  VITE_SUPABASE_URL: https://example.supabase.co
-                  VITE_SUPABASE_ANON_KEY: test-anon-key
+            - name: Run active Next.js Playwright tests
               run: npm run test:e2e
 
-            - name: Upload Playwright report
+            - name: Upload Next.js Playwright report
               if: always()
               uses: actions/upload-artifact@v7
               with:
-                  name: playwright-report
+                  name: playwright-next-report
                   path: playwright-report/
                   retention-days: 7

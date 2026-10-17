@@ -1,12 +1,15 @@
-import { Link, type LinkProps } from 'react-router-dom'
+import Link, { type LinkProps } from 'next/link'
 import { cn } from '@/lib/utils'
 
-export const AppLink = ({ className, ...props }: LinkProps) => (
-    <Link
-        className={cn(
-            'text-primary underline-offset-4 transition-colors hover:text-primary/80 hover:underline',
-            className,
-        )}
-        {...props}
-    />
-)
+export const AppLink = ({ className, href, children, ...props }: LinkProps) => {
+    const linkClassName = cn(
+        'text-primary underline underline-offset-4 transition-colors hover:text-primary/80',
+        className,
+    )
+
+    return (
+        <Link className={linkClassName} href={href} {...props}>
+            {children}
+        </Link>
+    )
+}

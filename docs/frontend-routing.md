@@ -2,7 +2,7 @@
 
 ## Overview
 
-The app uses React Router with a protected application area and a separate auth area.
+The active runtime uses Next.js App Router route groups under `src/app`.
 
 The protected shell is rendered by the app layout, while auth screens use a dedicated auth layout.
 
@@ -21,13 +21,57 @@ The current route map includes:
 - `/forgot-password`
 - `/reset-password`
 
-The root route redirects to `/login`.
-The protected app index route redirects to `/dashboard`.
+The Next.js routes use `(auth)` and `(protected)` groups. The protected layout
+performs the server-side Supabase user check once, while client feature pages
+retain TanStack Query and browser interaction behavior.
 The `/tools/categories` path redirects to `/categories`.
+
+Authentication behavior is explicit:
+
+- Successful login or signup defaults to `/dashboard`.
+- A protected deep link may be carried through the `next` query parameter and
+  is restored after authentication only when it is a known same-origin
+  protected route. Query strings such as `?month=YYYY-MM` are preserved.
+- Email confirmation uses the same safe authenticated destination policy.
+- Password recovery remains separate: its callback may lead to
+  `/reset-password` only for the recovery flow, with the recovery marker and
+  verified user still required by the reset page.
+- External, protocol-relative, malformed, auth, unknown, and recovery-only
+  destinations fall back to `/dashboard`.
+
+## Phase 3 Route Migration Matrix
+
+| Legacy path         | Next path          | Layout        | Auth            | Entry component    | Client boundary | Query state       | Coverage      |
+| ------------------- | ------------------ | ------------- | --------------- | ------------------ | --------------- | ----------------- | ------------- |
+| `/`                 | `/`                | root          | redirect        | root redirect      | server          | none              | auth E2E      |
+| `/login`            | `/login`           | `(auth)`      | anonymous       | `AuthForm`         | client form     | `error`           | auth E2E      |
+| `/signup`           | `/signup`          | `(auth)`      | anonymous       | `AuthForm`         | client form     | none              | auth E2E      |
+| `/forgot-password`  | `/forgot-password` | `(auth)`      | anonymous       | `AuthForm`         | client form     | none              | auth E2E      |
+| `/reset-password`   | `/reset-password`  | `(auth)`      | public recovery | reset form         | client form     | recovery hash     | auth E2E      |
+| `/dashboard`        | `/dashboard`       | `(protected)` | required        | `DashboardPage`    | client page     | `month`           | unit + E2E    |
+| `/transactions`     | `/transactions`    | `(protected)` | required        | `TransactionsPage` | client page     | `month`           | unit + E2E    |
+| `/budgets`          | `/budgets`         | `(protected)` | required        | `BudgetsPage`      | client page     | `month`           | unit + E2E    |
+| `/accounts`         | `/accounts`        | `(protected)` | required        | `AccountsPage`     | client page     | `month` preserved | unit          |
+| `/categories`       | `/categories`      | `(protected)` | required        | `CategoriesPage`   | client page     | `month` preserved | unit          |
+| `/tools`            | `/tools`           | `(protected)` | required        | `ToolsPage`        | client page     | `month`           | unit          |
+| `/tools/profile`    | `/tools/profile`   | `(protected)` | required        | `ProfilePage`      | client page     | `month` preserved | unit          |
+| `/tools/settings`   | `/tools/settings`  | `(protected)` | required        | `SettingsPage`     | client page     | `month` preserved | unit          |
+| `/tools/categories` | `/categories`      | `(protected)` | required        | redirect           | server/client   | `month`           | legacy router |
 
 ## Month-Based Navigation
 
 The selected month is stored in the URL query string as `month=YYYY-MM`.
+
+Month URL state has explicit runtime providers:
+
+- `NextMonthProvider` uses `useSearchParams`, `usePathname`, and
+  `router.replace()` in the active App Router shell.
+- Feature components consume the framework-independent `useSelectedMonth`
+  context interface and do not import either router.
+
+Both providers preserve unrelated query parameters and keep the URL as the
+single source of truth. No direct History API mutation or runtime router
+detection is used.
 
 Rules:
 
@@ -49,6 +93,8 @@ The shared month navigator appears in the app layout on the dashboard, transacti
 
 It uses the selected month from the URL and moves one month backward or forward at a time.
 Navigation updates the query string with `replace: true` so month changes do not create extra history entries.
+The Next runtime uses the App Router replacement API, including back/forward and
+direct URL access.
 
 ## Bottom Navigation
 
@@ -115,4 +161,14 @@ Settings currently owns the device-local theme preference.
 - Keep route-level logic in pages or layouts, not low-level components.
 - Avoid duplicating navigation config when a shared nav source already exists.
 
-The local Vite server serves the SPA during development. Direct navigation and refreshes of nested routes should be covered by local browser tests.
+The local Next.js server serves the App Router during development. Direct
+navigation and refreshes of nested routes should be covered by local browser
+tests.
+
+## Phase 5 route verification
+
+The Next deterministic browser suite verifies protected deep links and
+month-preserving navigation between Dashboard, Transactions, and Budgets. It
+also exercises the migrated Accounts, Categories, Tools/Profile, and Settings
+routes through the shared feature pages. Broader CRUD, validation, responsive,
+and accessibility coverage is maintained in component and feature tests.

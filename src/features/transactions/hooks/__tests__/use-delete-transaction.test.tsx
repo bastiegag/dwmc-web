@@ -7,9 +7,7 @@ import { budgetQueryKeys } from '@/features/budgets/hooks/use-budgets'
 import { dashboardQueryKeys } from '@/features/dashboard'
 
 describe('useDeleteTransaction', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
-    })
+    beforeEach(() => {})
 
     it('invalidates affected queries after a successful delete', async () => {
         const { result, qc } = renderHookWithQuery(() => useDeleteTransaction())

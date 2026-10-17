@@ -9,7 +9,7 @@ the definition of done live in the [shared Developer Playbook](dev-playbook.md).
 1. Start the local `dwmc-api` service.
 2. Copy `.env.example` to `.env.local` and configure the local Supabase Auth values.
 3. Run `npm run dev` in `dwmc-web`.
-4. Use the local Vite proxy at `/api/v1`; do not hardcode an API service URL in frontend source.
+4. Use the Next.js rewrite at `/api/v1`; do not hardcode an API service URL in frontend source.
 5. Run focused tests while developing, then `npm run validate` before opening a pull request.
 
 The local flow is:
@@ -24,7 +24,8 @@ Keep changes focused and use Conventional Commit messages. Update the canonical 
 
 ## Environment Boundaries
 
-`VITE_*` values are browser-visible. Backend secrets, database credentials, service-role keys, and deployment credentials belong outside this repository.
+`NEXT_PUBLIC_*` values are browser-visible. Backend secrets, database credentials,
+service-role keys, and deployment credentials belong outside this repository.
 
 ## Backend Changes
 

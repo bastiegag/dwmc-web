@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { authService } from '@/features/auth/services'
+import { authSessionQueryKey } from '@/lib/auth-session'
 
-export const authSessionQueryKey = ['auth', 'session'] as const
+export { authSessionQueryKey }
 
 export const useAuth = () => {
     const { data: session = null, isLoading } = useQuery({

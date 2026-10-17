@@ -7,9 +7,7 @@ import { budgetQueryKeys } from '@/features/budgets/hooks/use-budgets'
 import { dashboardQueryKeys } from '@/features/dashboard'
 
 describe('useUpdateTransaction', () => {
-    beforeEach(() => {
-        vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
-    })
+    beforeEach(() => {})
 
     it('invalidates affected queries after a successful update', async () => {
         const { result, qc } = renderHookWithQuery(() => useUpdateTransaction())
