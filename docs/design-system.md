@@ -30,8 +30,9 @@ Tailwind CSS v4 is configured through CSS imports in
 Primitive tokens describe the palette, while semantic tokens describe usage:
 background, foreground, card, border, input, ring, primary, secondary,
 destructive, success, warning, info, muted, accent, and their foreground or
-subtle variants. Components should consume semantic tokens instead of
-hardcoded colors.
+subtle variants, plus dedicated `link` and `link-hover` tokens. Components
+should consume semantic tokens instead of hardcoded colors. Link text remains
+underlined by default so links are distinguishable without relying on color.
 
 Both `:root`/`.light` and `.dark` define the semantic surface and status
 tokens. The existing identity uses lavender primary colors, teal secondary
@@ -47,7 +48,9 @@ All interactive controls need visible keyboard focus. Icon-only controls need
 accessible labels. Dialogs need an accessible title and description, trap focus,
 restore focus on close, and expose validation or API errors. Do not rely on
 color alone to communicate state. Check text contrast, interactive states,
-disabled states, and both light and dark themes in stories and tests.
+disabled states, and both light and dark themes in stories and tests. Muted
+foreground and link tokens are selected to preserve readable text contrast
+against their respective surfaces.
 
 ## Storybook
 

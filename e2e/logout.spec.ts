@@ -54,7 +54,8 @@ test.describe('Logout', () => {
         await loginPage.goto()
         await loginPage.login('test@example.com', 'Password123')
         await expect(page).toHaveURL('/dashboard')
-        await expect(page.getByRole('heading', { name: 'Income' })).toBeVisible()
+        const incomeCard = page.getByRole('heading', { name: 'Income' }).locator('..').locator('..')
+        await expect(incomeCard).toContainText(/1.?000/)
 
         await page.getByRole('button', { name: /sign out/i }).click()
         await expect(page).toHaveURL('/login')
@@ -62,12 +63,7 @@ test.describe('Logout', () => {
         summary = { ...summary, totals: { ...summary.totals, incomeTotal: 25 } }
         await loginPage.login('test@example.com', 'Password123')
         await expect(page).toHaveURL('/dashboard')
-        const incomeCard = page
-            .getByRole('heading', { name: 'Income' })
-            .locator('..')
-            .locator('..')
-            .locator('..')
-        await expect(incomeCard.locator('.text-2xl')).toHaveText(/25/)
-        await expect(incomeCard.locator('.text-2xl')).not.toHaveText(/1.?000/)
+        await expect(incomeCard).toContainText(/25/)
+        await expect(incomeCard).not.toContainText(/1.?000/)
     })
 })

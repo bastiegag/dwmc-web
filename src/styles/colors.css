@@ -133,6 +133,8 @@
     --color-muted-foreground: var(--muted-foreground);
     --color-accent: var(--accent);
     --color-accent-foreground: var(--accent-foreground);
+    --color-link: var(--link);
+    --color-link-hover: var(--link-hover);
 
     --color-border: var(--border);
     --color-input: var(--input);
@@ -195,9 +197,11 @@
     --info-border: var(--color-blue-200);
 
     --muted: var(--color-neutral-100);
-    --muted-foreground: var(--color-neutral-400);
+    --muted-foreground: var(--color-neutral-600);
     --accent: var(--color-neutral-100);
     --accent-foreground: var(--color-neutral-900);
+    --link: var(--color-lavender-800);
+    --link-hover: var(--color-lavender-900);
 
     --card: var(--color-white);
     --popover: var(--color-white);
@@ -251,6 +255,8 @@
     --muted-foreground: var(--color-neutral-300);
     --accent: var(--color-neutral-800);
     --accent-foreground: var(--color-neutral-50);
+    --link: var(--color-lavender-300);
+    --link-hover: var(--color-lavender-200);
 
     --card: var(--color-neutral-950);
     --card-foreground: var(--color-neutral-50);

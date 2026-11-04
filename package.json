@@ -25,7 +25,7 @@
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "prepare": "husky",
-        "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build"
+        "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run build-storybook"
     },
     "dependencies": {
         "@hookform/resolvers": "^5.2.2",
