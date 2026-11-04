@@ -16,7 +16,7 @@
 
 This is the product-wide playbook for both `dwmc-web` and `dwmc-api`. The
 frontend-only local workflow is documented separately in
-[`development-playbook.md`](development-playbook.md).
+[`development.md`](development.md).
 
 ---
 

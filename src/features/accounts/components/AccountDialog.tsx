@@ -1,6 +1,12 @@
 import type { AccountFormValues } from '@/features/accounts/schemas/account.schema'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/shared/dialog'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 import { AccountForm } from './AccountForm'
 
 type AccountDialogProps = {
@@ -22,30 +28,13 @@ export const AccountDialog = ({
     onOpenChange,
     onSubmit,
 }: AccountDialogProps) => {
-    const { dialogRef, handleKeyDown } = useDialogFocus({
-        open,
-        onClose: () => onOpenChange(false),
-    })
-
-    if (!open) return null
-
     const title = mode === 'create' ? 'Create account' : 'Edit account'
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <dialog
-                ref={dialogRef}
-                onKeyDown={handleKeyDown}
-                tabIndex={-1}
-                aria-modal="true"
-                aria-labelledby="account-dialog-title"
-                className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
-                open
-            >
-                <div className="mb-4 flex items-center justify-between gap-3">
-                    <h2 id="account-dialog-title" className="text-lg font-semibold">
-                        {title}
-                    </h2>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="max-w-md">
+                <DialogHeader className="mb-4 flex-row items-center justify-between gap-3">
+                    <DialogTitle>{title}</DialogTitle>
                     <Button
                         type="button"
                         variant="link"
@@ -56,7 +45,10 @@ export const AccountDialog = ({
                     >
                         Close
                     </Button>
-                </div>
+                </DialogHeader>
+                <DialogDescription className="sr-only">
+                    Enter the account details and submit the form.
+                </DialogDescription>
 
                 <AccountForm
                     initialValues={initialValues}
@@ -65,8 +57,8 @@ export const AccountDialog = ({
                     errorMessage={errorMessage}
                     onSubmit={onSubmit}
                 />
-            </dialog>
-        </div>
+            </DialogContent>
+        </Dialog>
     )
 }
 

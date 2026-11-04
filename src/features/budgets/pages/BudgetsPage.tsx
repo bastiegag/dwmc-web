@@ -7,7 +7,7 @@ import {
     useUpdateBudget,
     useDeleteBudget,
 } from '@/features/budgets/hooks'
-import { useSections } from '@/features/categories/hooks/use-sections'
+import { useSections } from '@/features/categories'
 import BudgetList from '@/features/budgets/components/BudgetList'
 import BudgetDialog from '@/features/budgets/components/BudgetDialog'
 import EmptyBudgetsState from '@/features/budgets/components/EmptyBudgetsState'
@@ -20,15 +20,7 @@ import type {
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 import { PageHeader } from '@/components/layout'
-
-const toErrorMessage = (error: unknown, fallback: string) => {
-    if (error && typeof error === 'object' && 'message' in error) {
-        const e = error as { message?: string }
-        return e.message ?? fallback
-    }
-    if (error instanceof Error) return error.message
-    return fallback
-}
+import { getErrorMessage } from '@/shared/errors'
 
 export const BudgetsPage = () => {
     const { month } = useSelectedMonth()
@@ -80,7 +72,7 @@ export const BudgetsPage = () => {
             }
             setDialogOpen(false)
         } catch (err) {
-            setFormError(toErrorMessage(err, 'Unable to save budget. Please try again.'))
+            setFormError(getErrorMessage(err, 'Unable to save budget. Please try again.'))
         }
     }
 
@@ -89,7 +81,7 @@ export const BudgetsPage = () => {
             setArchiveError(null)
             await deleteMutation.mutateAsync(b.id)
         } catch (err) {
-            setArchiveError(toErrorMessage(err, 'Unable to archive budget. Please try again.'))
+            setArchiveError(getErrorMessage(err, 'Unable to archive budget. Please try again.'))
         }
     }
 
@@ -144,7 +136,7 @@ export const BudgetsPage = () => {
                 isError={budgetsQuery.isError}
                 loadingLabel="Loading budgets"
                 errorTitle="Could not load budgets"
-                errorMessage={toErrorMessage(budgetsQuery.error, '')}
+                errorMessage={getErrorMessage(budgetsQuery.error, '')}
                 fallbackErrorMessage="Please refresh and try again."
             />
 

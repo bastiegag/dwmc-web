@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react'
 import { render } from '@/test/utils/render'
 import { ForgotPasswordPage } from '@/features/auth/pages/ForgotPasswordPage'
 
-vi.mock('@/features/auth/hooks/useForgotPassword', () => ({
+vi.mock('@/features/auth/hooks/use-forgot-password', () => ({
     useForgotPassword: vi.fn(() => ({
         forgotPassword: vi.fn(),
         isPending: false,

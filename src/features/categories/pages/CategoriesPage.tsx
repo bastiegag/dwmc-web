@@ -1,7 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Alert } from '@/components/ui/alert'
 import { QueryState } from '@/components/feedback'
-import { ApiError } from '@/lib/api-client'
 import { type CategoryFormValues, type SectionFormValues } from '@/features/categories/schemas'
 import type { Category, SectionWithCategories } from '@/features/categories/types'
 import {
@@ -21,18 +20,7 @@ import {
 } from '@/features/categories/components'
 import { PageHeader } from '@/components/layout'
 import { usePrimaryAction } from '@/shared/primary-action'
-
-const toErrorMessage = (error: unknown, fallback: string): string => {
-    if (error instanceof ApiError) {
-        return error.message
-    }
-
-    if (error instanceof Error) {
-        return error.message
-    }
-
-    return fallback
-}
+import { getErrorMessage } from '@/shared/errors'
 
 export const CategoriesPage = () => {
     const sectionsQuery = useSections()
@@ -126,7 +114,7 @@ export const CategoriesPage = () => {
 
             closeSectionDialog()
         } catch (error) {
-            setSectionFormError(toErrorMessage(error, 'Unable to save section. Please try again.'))
+            setSectionFormError(getErrorMessage(error, 'Unable to save section. Please try again.'))
         }
     }
 
@@ -144,7 +132,7 @@ export const CategoriesPage = () => {
             closeCategoryDialog()
         } catch (error) {
             setCategoryFormError(
-                toErrorMessage(error, 'Unable to save category. Please try again.'),
+                getErrorMessage(error, 'Unable to save category. Please try again.'),
             )
         }
     }
@@ -154,7 +142,7 @@ export const CategoriesPage = () => {
             setArchiveError(null)
             await deleteSectionMutation.mutateAsync(section.id)
         } catch (error) {
-            setArchiveError(toErrorMessage(error, 'Unable to archive section. Please try again.'))
+            setArchiveError(getErrorMessage(error, 'Unable to archive section. Please try again.'))
         }
     }
 
@@ -163,7 +151,7 @@ export const CategoriesPage = () => {
             setArchiveError(null)
             await deleteCategoryMutation.mutateAsync(category.id)
         } catch (error) {
-            setArchiveError(toErrorMessage(error, 'Unable to archive category. Please try again.'))
+            setArchiveError(getErrorMessage(error, 'Unable to archive category. Please try again.'))
         }
     }
 
@@ -180,7 +168,7 @@ export const CategoriesPage = () => {
                 isError={sectionsQuery.isError}
                 loadingLabel="Loading categories"
                 errorTitle="Could not load categories"
-                errorMessage={toErrorMessage(sectionsQuery.error, '')}
+                errorMessage={getErrorMessage(sectionsQuery.error, '')}
                 fallbackErrorMessage="Please refresh and try again in a moment."
             />
 

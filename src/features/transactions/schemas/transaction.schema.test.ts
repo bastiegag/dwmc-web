@@ -88,4 +88,26 @@ describe('transactionFormSchema', () => {
             ]),
         )
     })
+
+    it('rejects non-finite amounts', () => {
+        expect(
+            transactionFormSchema.safeParse({ ...validExpense, amount: Number.NaN }).success,
+        ).toBe(false)
+        expect(
+            transactionFormSchema.safeParse({
+                ...validExpense,
+                amount: Number.POSITIVE_INFINITY,
+            }).success,
+        ).toBe(false)
+    })
+
+    it('accepts negative adjustment amounts', () => {
+        expect(
+            transactionFormSchema.safeParse({
+                ...validExpense,
+                type: 'ADJUSTMENT',
+                amount: -10,
+            }).success,
+        ).toBe(true)
+    })
 })

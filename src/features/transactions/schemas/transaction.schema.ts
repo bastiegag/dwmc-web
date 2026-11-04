@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { TransactionType } from '@/features/transactions/types/transaction.types'
+import { formatLocalDate, isValidDateOnly } from '@/shared/date'
 
 const baseSchema = z.object({
     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER', 'ADJUSTMENT'] as const),
@@ -7,8 +8,8 @@ const baseSchema = z.object({
         if (v === '' || v === null || v === undefined) return 0
         if (typeof v === 'string') return Number(v)
         return v
-    }, z.number()),
-    date: z.string().min(1, 'Date is required'),
+    }, z.number().finite('Amount must be a finite number')),
+    date: z.string().refine(isValidDateOnly, 'Date must be a valid calendar date'),
     accountId: z.string().nullable().optional(),
     fromAccountId: z.string().nullable().optional(),
     toAccountId: z.string().nullable().optional(),
@@ -101,7 +102,7 @@ export type TransactionFormValues = z.infer<typeof transactionFormSchema>
 export const defaultTransactionFormValues: TransactionFormValues = {
     type: 'EXPENSE',
     amount: 0,
-    date: new Date().toISOString().slice(0, 10),
+    date: formatLocalDate(),
     accountId: null,
     fromAccountId: null,
     toAccountId: null,

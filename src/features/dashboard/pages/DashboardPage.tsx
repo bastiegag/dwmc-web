@@ -9,20 +9,17 @@ import { EmptyState } from '@/components/ui'
 import { useMonthlySummary } from '@/features/dashboard/hooks/use-monthly-summary'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
-import { useAccounts } from '@/features/accounts/hooks'
-import { useSections } from '@/features/categories/hooks'
-import { TransactionDialog, useCreateTransaction } from '@/features/transactions'
-import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
-import { useAuth } from '@/features/auth/hooks'
-import { rememberTransactionDate } from '@/features/transactions/utils/transaction-date-storage'
-
-const toErrorMessage = (error: unknown, fallback: string) => {
-    if (error && typeof error === 'object' && 'message' in error) {
-        return (error as { message?: string }).message ?? fallback
-    }
-    if (error instanceof Error) return error.message
-    return fallback
-}
+import { useAccounts } from '@/features/accounts'
+import { useSections } from '@/features/categories'
+import {
+    TransactionDialog,
+    toCreateTransactionPayload,
+    useCreateTransaction,
+    type TransactionFormValues,
+    rememberTransactionDate,
+} from '@/features/transactions'
+import { useAuth } from '@/features/auth'
+import { getErrorMessage } from '@/shared/errors'
 
 export const DashboardPage = () => {
     const { month } = useSelectedMonth()
@@ -48,38 +45,11 @@ export const DashboardPage = () => {
 
     const handleCreateTransaction = async (values: TransactionFormValues) => {
         try {
-            const payload =
-                values.type === 'TRANSFER'
-                    ? {
-                          type: 'TRANSFER' as const,
-                          amount: values.amount,
-                          date: values.date,
-                          fromAccountId: values.fromAccountId!,
-                          toAccountId: values.toAccountId!,
-                          note: values.note ?? undefined,
-                      }
-                    : values.type === 'ADJUSTMENT'
-                      ? {
-                            type: 'ADJUSTMENT' as const,
-                            amount: values.amount,
-                            date: values.date,
-                            accountId: values.accountId!,
-                            note: values.note ?? undefined,
-                        }
-                      : {
-                            type: values.type as 'INCOME' | 'EXPENSE',
-                            amount: values.amount,
-                            date: values.date,
-                            accountId: values.accountId!,
-                            categoryId: values.categoryId ?? undefined,
-                            merchant: values.merchant ?? undefined,
-                            note: values.note ?? undefined,
-                        }
-            await createTransaction.mutateAsync(payload)
+            await createTransaction.mutateAsync(toCreateTransactionPayload(values))
             rememberTransactionDate(user?.id, month, values.date)
             setCreateOpen(false)
         } catch (err) {
-            setFormError(toErrorMessage(err, 'Unable to create transaction.'))
+            setFormError(getErrorMessage(err, 'Unable to create transaction.'))
         }
     }
 
@@ -94,7 +64,7 @@ export const DashboardPage = () => {
                     isError={summaryQuery.isError}
                     loadingLabel="Loading summary"
                     errorTitle="Could not load summary"
-                    errorMessage={toErrorMessage(summaryQuery.error, '')}
+                    errorMessage={getErrorMessage(summaryQuery.error, '')}
                     fallbackErrorMessage="Please refresh and try again."
                     onRetry={() => void summaryQuery.refetch()}
                 />

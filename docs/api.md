@@ -61,7 +61,7 @@ Month-scoped query keys include the selected month. The dashboard summary reques
 
 Section and category list clients consume the backend cursor contract internally and fetch all pages for selector-facing data. The UI keeps active Sections and Categories as the default; historical Transaction and Budget edit flows may request archived relations so an existing archived Category remains identifiable and selectable for that record.
 
-Current invalidation behavior is documented in [frontend architecture](architecture.md). Mutation hooks invalidate the known dependent query families, including cross-feature views such as budgets and the dashboard when transactions change.
+Current invalidation behavior is documented in [architecture](architecture.md). Mutation hooks invalidate the known dependent query families, including cross-feature views such as budgets and the dashboard when transactions change.
 
 ## Authentication Boundary
 

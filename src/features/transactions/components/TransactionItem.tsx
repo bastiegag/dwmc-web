@@ -1,8 +1,19 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/shared/dialog'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
+import { isValidDateOnly } from '@/shared/date'
+import { getErrorMessage } from '@/shared/errors'
 
 const currencyFormatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' })
 
@@ -14,20 +25,12 @@ type TransactionItemProps = {
 
 export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionItemProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-    const { dialogRef, handleKeyDown } = useDialogFocus({
-        open: isConfirmOpen,
-        onClose: () => setIsConfirmOpen(false),
-    })
+    const [archiveError, setArchiveError] = useState<string | null>(null)
+    const [isArchiving, setIsArchiving] = useState(false)
     const { type, amount, date } = transaction
 
     const displayAmount = currencyFormatter.format(amount)
-    const dateLabel = (() => {
-        try {
-            return new Date(date).toISOString().slice(0, 10)
-        } catch {
-            return date
-        }
-    })()
+    const dateLabel = isValidDateOnly(date.slice(0, 10)) ? date.slice(0, 10) : date
 
     return (
         <Card className="mb-3">
@@ -64,7 +67,10 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                         <Button
                             variant="outlined"
                             size="sm"
-                            onClick={() => setIsConfirmOpen(true)}
+                            onClick={() => {
+                                setArchiveError(null)
+                                setIsConfirmOpen(true)
+                            }}
                             aria-label={`Archive transaction ${transaction.id}`}
                         >
                             Archive
@@ -73,50 +79,50 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                 </div>
             </div>
 
-            {isConfirmOpen ? (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <dialog
-                        ref={dialogRef}
-                        role="alertdialog"
-                        aria-modal="true"
-                        aria-labelledby={`archive-transaction-${transaction.id}`}
-                        tabIndex={-1}
-                        onKeyDown={handleKeyDown}
-                        className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
-                        open
-                    >
-                        <h3
-                            id={`archive-transaction-${transaction.id}`}
-                            className="text-base font-semibold"
-                        >
-                            Archive transaction?
-                        </h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
+            <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Archive transaction?</AlertDialogTitle>
+                        <AlertDialogDescription>
                             This will archive this transaction.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    {archiveError ? (
+                        <p role="alert" className="text-sm text-destructive">
+                            {archiveError}
                         </p>
-                        <div className="mt-4 flex justify-end gap-2">
-                            <Button
-                                type="button"
-                                variant="outlined"
-                                onClick={() => setIsConfirmOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="button"
-                                color="destructive"
-                                variant="contained"
-                                onClick={async () => {
+                    ) : null}
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isArchiving}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            asChild
+                            disabled={isArchiving}
+                            onClick={async (event) => {
+                                event.preventDefault()
+                                setIsArchiving(true)
+                                setArchiveError(null)
+                                try {
                                     await onArchive(transaction)
                                     setIsConfirmOpen(false)
-                                }}
-                            >
-                                Archive
+                                } catch (error) {
+                                    setArchiveError(
+                                        getErrorMessage(
+                                            error,
+                                            'Unable to archive transaction. Please try again.',
+                                        ),
+                                    )
+                                } finally {
+                                    setIsArchiving(false)
+                                }
+                            }}
+                        >
+                            <Button type="button" color="destructive" variant="contained">
+                                {isArchiving ? 'Archiving...' : 'Archive'}
                             </Button>
-                        </div>
-                    </dialog>
-                </div>
-            ) : null}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </Card>
     )
 }

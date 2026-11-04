@@ -1,7 +1,7 @@
 import { AlertCircle } from 'lucide-react'
 import { LoadingSpinner } from '@/components/feedback/LoadingSpinner'
 import { FormError } from '@/components/form/FormError'
-import { useAuth } from '@/features/auth/hooks'
+import { useAuth } from '@/features/auth'
 import { useProfile } from '../hooks'
 import { ProfileForm } from '../components/ProfileForm'
 

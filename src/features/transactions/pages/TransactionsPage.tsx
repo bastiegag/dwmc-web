@@ -7,8 +7,8 @@ import {
     useUpdateTransaction,
     useDeleteTransaction,
 } from '@/features/transactions/hooks'
-import { useAccounts } from '@/features/accounts/hooks/use-accounts'
-import { useSections } from '@/features/categories/hooks/use-sections'
+import { useAccounts } from '@/features/accounts'
+import { useSections } from '@/features/categories'
 import TransactionFilters from '@/features/transactions/components/TransactionFilters'
 import TransactionList from '@/features/transactions/components/TransactionList'
 import TransactionDialog from '@/features/transactions/components/TransactionDialog'
@@ -20,18 +20,14 @@ import type { TransactionFormValues } from '@/features/transactions/schemas/tran
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 import { PageHeader } from '@/components/layout'
-import { useAuth } from '@/features/auth/hooks'
+import { useAuth } from '@/features/auth'
 import {
     getRememberedTransactionDate,
     rememberTransactionDate,
 } from '@/features/transactions/utils/transaction-date-storage'
-
-const toErrorMessage = (error: unknown, fallback: string) => {
-    if (error && typeof error === 'object' && 'message' in error)
-        return (error as { message?: string }).message ?? fallback
-    if (error instanceof Error) return error.message
-    return fallback
-}
+import { toCreateTransactionPayload } from '@/features/transactions'
+import { formatLocalDate } from '@/shared/date'
+import { getErrorMessage } from '@/shared/errors'
 
 export const TransactionsPage = () => {
     const { month } = useSelectedMonth()
@@ -93,41 +89,13 @@ export const TransactionsPage = () => {
             if (activeTransaction) {
                 await updateMutation.mutateAsync({ id: activeTransaction.id, input: values })
             } else {
-                const payload =
-                    values.type === 'TRANSFER'
-                        ? {
-                              type: 'TRANSFER' as const,
-                              amount: values.amount,
-                              date: values.date,
-                              fromAccountId: values.fromAccountId!,
-                              toAccountId: values.toAccountId!,
-                              note: values.note ?? undefined,
-                          }
-                        : values.type === 'ADJUSTMENT'
-                          ? {
-                                type: 'ADJUSTMENT' as const,
-                                amount: values.amount,
-                                date: values.date,
-                                accountId: values.accountId!,
-                                note: values.note ?? undefined,
-                            }
-                          : {
-                                type: values.type as 'INCOME' | 'EXPENSE',
-                                amount: values.amount,
-                                date: values.date,
-                                accountId: values.accountId!,
-                                categoryId: values.categoryId ?? undefined,
-                                merchant: values.merchant ?? undefined,
-                                note: values.note ?? undefined,
-                            }
-
-                await createMutation.mutateAsync(payload)
+                await createMutation.mutateAsync(toCreateTransactionPayload(values))
                 rememberTransactionDate(user?.id, month, values.date)
             }
 
             setDialogOpen(false)
         } catch (err) {
-            setFormError(toErrorMessage(err, 'Unable to save transaction. Please try again.'))
+            setFormError(getErrorMessage(err, 'Unable to save transaction. Please try again.'))
         }
     }
 
@@ -136,7 +104,9 @@ export const TransactionsPage = () => {
             setArchiveError(null)
             await deleteMutation.mutateAsync(t.id)
         } catch (err) {
-            setArchiveError(toErrorMessage(err, 'Unable to archive transaction. Please try again.'))
+            setArchiveError(
+                getErrorMessage(err, 'Unable to archive transaction. Please try again.'),
+            )
         }
     }
 
@@ -156,7 +126,7 @@ export const TransactionsPage = () => {
         }
         // Default date logic for new transactions
         const lastDate = getRememberedTransactionDate(user?.id, month)
-        const today = new Date().toISOString().slice(0, 10)
+        const today = formatLocalDate()
         const firstDayOfMonth = `${month}-01`
         const isCurrentMonth = month === today.slice(0, 7)
 
@@ -210,7 +180,7 @@ export const TransactionsPage = () => {
                 isError={transactionsQuery.isError}
                 loadingLabel="Loading transactions"
                 errorTitle="Could not load transactions"
-                errorMessage={toErrorMessage(transactionsQuery.error, '')}
+                errorMessage={getErrorMessage(transactionsQuery.error, '')}
                 fallbackErrorMessage="Please refresh and try again in a moment."
             />
 

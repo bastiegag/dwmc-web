@@ -1,7 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Alert } from '@/components/ui/alert'
 import { QueryState } from '@/components/feedback'
-import { ApiError } from '@/lib/api-client'
 import type { Account } from '@/features/accounts/types/account.types'
 import type { AccountFormValues } from '@/features/accounts/schemas/account.schema'
 import {
@@ -13,12 +12,7 @@ import {
 import { AccountDialog, EmptyAccountsState, AccountList } from '@/features/accounts/components'
 import { PageHeader } from '@/components/layout'
 import { usePrimaryAction } from '@/shared/primary-action'
-
-const toErrorMessage = (error: unknown, fallback: string): string => {
-    if (error instanceof ApiError) return error.message
-    if (error instanceof Error) return error.message
-    return fallback
-}
+import { getErrorMessage } from '@/shared/errors'
 
 export const AccountsPage = () => {
     const accountsQuery = useAccounts()
@@ -71,7 +65,7 @@ export const AccountsPage = () => {
             }
             closeDialog()
         } catch (error) {
-            setFormError(toErrorMessage(error, 'Unable to save account. Please try again.'))
+            setFormError(getErrorMessage(error, 'Unable to save account. Please try again.'))
         }
     }
 
@@ -80,7 +74,7 @@ export const AccountsPage = () => {
             setArchiveError(null)
             await deleteMutation.mutateAsync(account.id)
         } catch (error) {
-            setArchiveError(toErrorMessage(error, 'Unable to archive account. Please try again.'))
+            setArchiveError(getErrorMessage(error, 'Unable to archive account. Please try again.'))
         }
     }
 
@@ -97,7 +91,7 @@ export const AccountsPage = () => {
                 isError={accountsQuery.isError}
                 loadingLabel="Loading accounts"
                 errorTitle="Could not load accounts"
-                errorMessage={toErrorMessage(accountsQuery.error, '')}
+                errorMessage={getErrorMessage(accountsQuery.error, '')}
                 fallbackErrorMessage="Please refresh and try again in a moment."
             />
 

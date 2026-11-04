@@ -12,7 +12,7 @@ import {
     type TransactionFormValues,
     defaultTransactionFormValues,
 } from '@/features/transactions/schemas/transaction.schema'
-import type { Account } from '@/features/accounts/types/account.types'
+import type { Account } from '@/features/accounts'
 import type { SectionWithCategories } from '@/features/categories/types'
 
 type TransactionFormProps = {

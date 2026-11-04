@@ -21,6 +21,8 @@
 
 - Use a feature-based architecture
 - Keep feature code inside `src/features/<feature-name>`
+- Import another feature only through its public `index.ts`; internal imports
+  are for code within the same feature.
 - Keep cross-feature logic inside `src/shared`
 - Keep reusable layout components outside feature folders
 - Keep API calls in `.api.ts` files
@@ -151,10 +153,22 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Use proper dialog titles
 - Do not rely only on color for state
 - Keep keyboard focus visible
+- Modal dialogs and archive confirmations must expose an accessible title and
+  description, use `aria-modal="true"` with the appropriate dialog role, and
+  trap focus, close on Escape, and restore focus through the shared dialog
+  focus helper.
 
 ## Testing
 
 - Add or update tests for meaningful behavior
+- Colocate unit, hook, component, and integration tests beside the source files
+  they cover. Use `ComponentName.test.tsx` for component tests and the source
+  filename with `.test.ts` or `.test.tsx` for hooks and utilities.
+- Keep shared fixtures, MSW handlers, and test utilities under `src/test/`.
+- Keep Playwright workflow tests under `e2e/` and Storybook stories beside their
+  components.
+- Standard mocked unit, Storybook browser, and Playwright tests do not require a
+  live API or database.
 - Test month navigation
 - Test contextual primary actions
 - Test form validation
@@ -168,7 +182,7 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Update the frontend README when adding major features.
 - Keep README content concise and link to the deeper docs instead of duplicating them.
 - Document new environment variables and scripts when they affect setup or development.
-- Keep `docs/frontend-architecture.md`, `docs/frontend-routing.md`, `docs/frontend-api.md`, `docs/testing.md`, `docs/development-playbook.md`, `docs/engineering-standards.md`, and `docs/roadmap.md` aligned with the actual code.
+- Keep `docs/architecture.md`, `docs/frontend-routing.md`, `docs/api.md`, `docs/design-system.md`, `docs/testing.md`, `docs/development.md`, and `docs/roadmap.md` aligned with the actual code.
 - `dwmc-web` and `dwmc-api` run locally for V1. Application data uses local PostgreSQL through Prisma; Supabase is used only for Auth.
 - Treat every `VITE_*` value as browser-visible. Backend secrets never belong in this repository's frontend runtime configuration.
 - Keep local API and Supabase Auth URLs configuration-driven. Do not introduce deployment infrastructure unless explicitly requested.

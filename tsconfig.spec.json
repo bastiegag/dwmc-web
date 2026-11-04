@@ -9,8 +9,6 @@
         "src/**/*.spec.tsx",
         "src/**/*.test.ts",
         "src/**/*.test.tsx",
-        "src/**/__tests__/*.ts",
-        "src/**/__tests__/*.tsx",
         "src/test/**/*.ts",
         "src/test/**/*.tsx"
     ],

@@ -1,8 +1,14 @@
 import type { BudgetFormValues } from '@/features/budgets/schemas/budget.schema'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/shared/dialog'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 import { BudgetForm } from './BudgetForm'
-import type { SectionWithCategories } from '@/features/categories/types'
+import type { SectionWithCategories } from '@/features/categories'
 
 type Props = {
     open: boolean
@@ -27,13 +33,6 @@ export const BudgetDialog = ({
     onOpenChange,
     onSubmit,
 }: Props) => {
-    const { dialogRef, handleKeyDown } = useDialogFocus({
-        open,
-        onClose: () => onOpenChange(false),
-    })
-
-    if (!open) return null
-
     const title = mode === 'create' ? 'New Budget' : 'Edit budget'
 
     const values =
@@ -41,20 +40,10 @@ export const BudgetDialog = ({
         (defaultMonth ? { categoryId: '', month: defaultMonth, amount: 0 } : undefined)
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <dialog
-                ref={dialogRef}
-                onKeyDown={handleKeyDown}
-                tabIndex={-1}
-                aria-modal="true"
-                aria-labelledby="budget-dialog-title"
-                className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
-                open
-            >
-                <div className="mb-4 flex items-center justify-between gap-3">
-                    <h2 id="budget-dialog-title" className="text-lg font-semibold">
-                        {title}
-                    </h2>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="max-w-md">
+                <DialogHeader className="mb-4 flex-row items-center justify-between gap-3">
+                    <DialogTitle>{title}</DialogTitle>
                     <Button
                         type="button"
                         variant="link"
@@ -65,7 +54,10 @@ export const BudgetDialog = ({
                     >
                         Close
                     </Button>
-                </div>
+                </DialogHeader>
+                <DialogDescription className="sr-only">
+                    Enter the budget details and submit the form.
+                </DialogDescription>
 
                 <BudgetForm
                     sections={sections}
@@ -75,8 +67,8 @@ export const BudgetDialog = ({
                     errorMessage={errorMessage}
                     onSubmit={onSubmit}
                 />
-            </dialog>
-        </div>
+            </DialogContent>
+        </Dialog>
     )
 }
 

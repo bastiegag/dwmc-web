@@ -1,13 +1,13 @@
 # Dude, Where's My Cash? Web
 
-![React](https://img.shields.io/badge/React-19.2.7-61DAFB?logo=react&logoColor=white)
+![React](https://img.shields.io/badge/React-19.3.1-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8.1.3-646CFF?logo=vite&logoColor=white)
-![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.62.2-FF4154?logo=reactquery&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.0-06B6D4?logo=tailwindcss&logoColor=white)
-![Storybook](https://img.shields.io/badge/Storybook-10.4.0-FF4785?logo=storybook&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-4.1.10-6E9F18?logo=vitest&logoColor=white)
-![Playwright](https://img.shields.io/badge/Playwright-1.61.1-2EAD33?logo=playwright&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8.3.5-646CFF?logo=vite&logoColor=white)
+![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.105.3-FF4154?logo=reactquery&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.4-06B6D4?logo=tailwindcss&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-10.6.5-FF4785?logo=storybook&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-4.1.12-6E9F18?logo=vitest&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-1.64.1-2EAD33?logo=playwright&logoColor=white)
 
 Dude, Where's My Cash? is a local-first personal budgeting app for understanding monthly cash flow, organizing accounts and categories, tracking transactions, and working with budgets and summaries. This repository contains the user-facing web application.
 
@@ -110,7 +110,10 @@ application; it is not a separate design-system package. Start it with
   budgets, categories, dashboard, and transactions.
 
 Stories should live beside their component as `*.stories.tsx` whenever
-practical. Use human-readable titles under `Design System`, strong CSF
+practical. Unit, hook, component, and integration tests should likewise live
+beside the source files they cover. Shared fixtures, MSW handlers, and test
+utilities remain under `src/test/`; Playwright workflow tests remain under
+`e2e/`. Use human-readable titles under `Design System`, strong CSF
 TypeScript typing, realistic deterministic example data, and stories that
 demonstrate meaningful behavior rather than every prop combination. Include
 accessible labels, focus and disabled states, validation feedback, and small
@@ -119,13 +122,13 @@ data or turn route-level screens into design-system components.
 
 ## Documentation
 
-- [Frontend architecture](docs/frontend-architecture.md)
-- [Engineering standards](docs/engineering-standards.md)
-- [API integration](docs/frontend-api.md)
+- [Architecture](docs/architecture.md)
+- [Development conventions](docs/development.md)
+- [API integration](docs/api.md)
 - [Authentication and routing](docs/frontend-routing.md)
+- [Design system](docs/design-system.md)
 - [Testing](docs/testing.md)
 - [Shared developer playbook](docs/dev-playbook.md)
-- [Development playbook](docs/development-playbook.md)
 - [Development and releases](docs/RELEASING.md)
 - [Engineering audit playbook](docs/engineering-audit-playbook.md)
 - [Roadmap](docs/roadmap.md)

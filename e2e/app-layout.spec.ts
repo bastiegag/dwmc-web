@@ -35,51 +35,50 @@ test.describe('App Layout', () => {
             await expect(page.getByRole('heading', { name: 'New Budget' })).toBeVisible()
         })
 
-        test('keeps navigation targets clear of the centered primary action', async ({ page }) => {
+        test('keeps the floating action accessible on the right', async ({ page }) => {
             for (const width of [375, 390, 430, 768]) {
                 await page.setViewportSize({ width, height: 844 })
-                await expect(page.getByTestId('mobile-bottom-nav')).toBeVisible()
+                const navigation = page.getByTestId('mobile-bottom-nav')
+                const action = page.getByTestId('primary-action-button')
 
-                const layout = await page.evaluate(() => {
-                    const navigation = document.querySelector('[data-testid="mobile-bottom-nav"]')
-                    const links = [...(navigation?.querySelectorAll('a') ?? [])]
-                    const action = document.querySelector('[data-testid="primary-action-button"]')
+                await expect(navigation).toBeVisible()
+                await expect(action).toBeVisible()
+                await expect(action).toBeEnabled()
 
-                    const toRect = (element: Element) => {
-                        const rect = element.getBoundingClientRect()
-                        return {
-                            left: rect.left,
-                            right: rect.right,
-                            top: rect.top,
-                            bottom: rect.bottom,
-                            width: rect.width,
-                            height: rect.height,
-                        }
-                    }
-
-                    return {
-                        linkRects: links.map(toRect),
-                        actionRect: action ? toRect(action) : null,
-                        viewportWidth: window.innerWidth,
-                    }
-                })
-
-                expect(layout.linkRects).toHaveLength(4)
-                expect(layout.actionRect).not.toBeNull()
-                expect(layout.actionRect?.width).toBeGreaterThanOrEqual(44)
-                expect(layout.actionRect?.height).toBeGreaterThanOrEqual(44)
-                expect(layout.actionRect?.left).toBeCloseTo(
-                    (layout.viewportWidth - layout.actionRect!.width) / 2,
-                    0,
+                const navigationBox = await navigation.boundingBox()
+                const actionBox = await action.boundingBox()
+                const linkBoxes = await Promise.all(
+                    (await navigation.getByRole('link').all()).map((link) => link.boundingBox()),
                 )
 
-                for (const linkRect of layout.linkRects) {
-                    expect(linkRect.width).toBeGreaterThanOrEqual(44)
-                    expect(linkRect.height).toBeGreaterThanOrEqual(44)
-                    expect(
-                        linkRect.right <= layout.actionRect!.left ||
-                            linkRect.left >= layout.actionRect!.right,
-                    ).toBe(true)
+                expect(navigationBox).not.toBeNull()
+                expect(actionBox).not.toBeNull()
+                expect(linkBoxes).toHaveLength(4)
+                expect(linkBoxes.every((box) => box !== null)).toBe(true)
+
+                if (!navigationBox || !actionBox || linkBoxes.some((box) => box === null)) {
+                    continue
+                }
+
+                const viewport = page.viewportSize()
+                const actionRight = actionBox.x + actionBox.width
+                const actionBottom = actionBox.y + actionBox.height
+                const navigationBottom = navigationBox.y + navigationBox.height
+
+                expect(actionBox.width).toBeGreaterThanOrEqual(44)
+                expect(actionBox.height).toBeGreaterThanOrEqual(44)
+                expect(actionBox.x + actionBox.width / 2).toBeGreaterThan(width / 2)
+                expect(actionBox.x).toBeGreaterThanOrEqual(0)
+                expect(actionRight).toBeLessThanOrEqual(viewport?.width ?? width)
+                expect(actionBox.y).toBeGreaterThanOrEqual(0)
+                expect(actionBottom).toBeLessThanOrEqual(viewport?.height ?? 844)
+                expect(actionBottom <= navigationBox.y || actionBox.y >= navigationBottom).toBe(
+                    true,
+                )
+
+                for (const linkBox of linkBoxes) {
+                    expect(linkBox!.width).toBeGreaterThanOrEqual(44)
+                    expect(linkBox!.height).toBeGreaterThanOrEqual(44)
                 }
             }
         })

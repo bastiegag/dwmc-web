@@ -11,7 +11,7 @@ const { locationState, navigateMock } = vi.hoisted(() => ({
     navigateMock: vi.fn(),
 }))
 
-vi.mock('@/features/auth/hooks/useLogin', () => ({
+vi.mock('@/features/auth/hooks/use-login', () => ({
     useLogin: vi.fn(),
 }))
 
