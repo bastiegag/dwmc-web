@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { render, screen } from '@/test/utils/render'
 import { CategoryDialog, SectionDialog } from '@/features/categories/components'
@@ -21,46 +22,30 @@ describe('category dialogs accessibility', () => {
     })
 
     it('restores focus to the opener after closing', async () => {
-        const onOpenChange = vi.fn()
-        const { rerender } = render(
-            <>
-                <button type="button">Open category</button>
-                <CategoryDialog
-                    open={false}
-                    mode="create"
-                    sections={sections}
-                    onOpenChange={onOpenChange}
-                    onSubmit={vi.fn()}
-                />
-            </>,
-        )
+        const user = userEvent.setup()
+        const ControlledCategoryDialog = () => {
+            const [open, setOpen] = useState(false)
+
+            return (
+                <>
+                    <button type="button" onClick={() => setOpen(true)}>
+                        Open category
+                    </button>
+                    <CategoryDialog
+                        open={open}
+                        mode="create"
+                        sections={sections}
+                        onOpenChange={setOpen}
+                        onSubmit={vi.fn()}
+                    />
+                </>
+            )
+        }
+        render(<ControlledCategoryDialog />)
 
         const opener = screen.getByRole('button', { name: 'Open category' })
-        opener.focus()
-        rerender(
-            <>
-                <button type="button">Open category</button>
-                <CategoryDialog
-                    open
-                    mode="create"
-                    sections={sections}
-                    onOpenChange={onOpenChange}
-                    onSubmit={vi.fn()}
-                />
-            </>,
-        )
-        rerender(
-            <>
-                <button type="button">Open category</button>
-                <CategoryDialog
-                    open={false}
-                    mode="create"
-                    sections={sections}
-                    onOpenChange={onOpenChange}
-                    onSubmit={vi.fn()}
-                />
-            </>,
-        )
+        await user.click(opener)
+        await user.click(screen.getByRole('button', { name: /close category dialog/i }))
 
         expect(screen.getByRole('button', { name: 'Open category' })).toHaveFocus()
     })

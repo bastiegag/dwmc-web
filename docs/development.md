@@ -29,9 +29,12 @@ this repository.
 - Keep feature code in `src/features/<feature-name>`.
 - Use feature public `index.ts` exports across feature boundaries.
 - Keep cross-feature code in `src/shared`.
-- Use native modal dialogs with `role="dialog"` or `role="alertdialog"`, an
-  accessible title and description, `aria-modal="true"`, and shared focus
-  management for keyboard trapping, Escape, and focus restoration.
+- Use the shared Radix Dialog and AlertDialog primitives for modal UI. Provide
+  an accessible title and description, use controlled `open` and
+  `onOpenChange` state where the parent owns the workflow, and preserve
+  explicit Cancel and Confirm actions for destructive operations. The
+  primitives provide modal background isolation, focus trapping, Escape
+  handling, and focus restoration.
 
 Tests mirror their source filename and are colocated with the source. Shared
 fixtures, MSW handlers, setup, and test utilities remain under `src/test/`.

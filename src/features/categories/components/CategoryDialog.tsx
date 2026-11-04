@@ -1,7 +1,13 @@
 import type { CategoryFormValues } from '@/features/categories/schemas'
 import type { SectionWithCategories } from '@/features/categories/types'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/shared/dialog'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 import { CategoryForm } from './CategoryForm'
 
 type CategoryDialogProps = {
@@ -25,31 +31,13 @@ export const CategoryDialog = ({
     onOpenChange,
     onSubmit,
 }: CategoryDialogProps) => {
-    const { dialogRef, handleKeyDown } = useDialogFocus({
-        open,
-        onClose: () => onOpenChange(false),
-    })
-
-    if (!open) return null
-
     const title = mode === 'create' ? 'Create category' : 'Edit category'
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <dialog
-                ref={dialogRef}
-                aria-labelledby="category-dialog-title"
-                aria-modal="true"
-                aria-describedby="category-dialog-description"
-                tabIndex={-1}
-                onKeyDown={handleKeyDown}
-                className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
-                open
-            >
-                <div className="mb-4 flex items-center justify-between gap-3">
-                    <h2 id="category-dialog-title" className="text-lg font-semibold">
-                        {title}
-                    </h2>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="max-w-md">
+                <DialogHeader className="mb-4 flex-row items-center justify-between gap-3">
+                    <DialogTitle>{title}</DialogTitle>
                     <Button
                         type="button"
                         variant="link"
@@ -60,10 +48,10 @@ export const CategoryDialog = ({
                     >
                         Close
                     </Button>
-                </div>
-                <p id="category-dialog-description" className="sr-only">
+                </DialogHeader>
+                <DialogDescription className="sr-only">
                     Enter the category details and submit the form.
-                </p>
+                </DialogDescription>
 
                 <CategoryForm
                     sections={sections}
@@ -73,7 +61,7 @@ export const CategoryDialog = ({
                     errorMessage={errorMessage}
                     onSubmit={onSubmit}
                 />
-            </dialog>
-        </div>
+            </DialogContent>
+        </Dialog>
     )
 }

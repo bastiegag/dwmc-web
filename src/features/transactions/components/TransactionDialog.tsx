@@ -1,9 +1,15 @@
 import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 import TransactionForm from './TransactionForm'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
 import type { Account } from '@/features/accounts'
 import type { SectionWithCategories } from '@/features/categories'
-import { useDialogFocus } from '@/shared/dialog'
 
 type TransactionDialogProps = {
     open: boolean
@@ -28,35 +34,17 @@ export const TransactionDialog = ({
     onOpenChange,
     onSubmit,
 }: TransactionDialogProps) => {
-    const { dialogRef, handleKeyDown } = useDialogFocus({
-        open,
-        onClose: () => onOpenChange(false),
-    })
-
-    if (!open) return null
-
     const title = mode === 'create' ? 'New Transaction' : 'Edit transaction'
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <dialog
-                ref={dialogRef}
-                onKeyDown={handleKeyDown}
-                tabIndex={-1}
-                aria-modal="true"
-                aria-labelledby="transaction-dialog-title"
-                aria-describedby="transaction-dialog-description"
-                className="w-full max-w-lg rounded-lg border bg-background p-4 shadow-lg"
-                open
-            >
-                <div className="mb-4 flex items-center justify-between gap-3">
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="max-w-lg">
+                <DialogHeader className="mb-4 flex-row items-center justify-between gap-3">
                     <div>
-                        <h2 id="transaction-dialog-title" className="text-lg font-semibold">
-                            {title}
-                        </h2>
-                        <p id="transaction-dialog-description" className="sr-only">
+                        <DialogTitle>{title}</DialogTitle>
+                        <DialogDescription className="sr-only">
                             Enter the transaction details and submit the form.
-                        </p>
+                        </DialogDescription>
                     </div>
                     <Button
                         type="button"
@@ -68,7 +56,7 @@ export const TransactionDialog = ({
                     >
                         Close
                     </Button>
-                </div>
+                </DialogHeader>
 
                 <TransactionForm
                     accounts={accounts}
@@ -78,8 +66,8 @@ export const TransactionDialog = ({
                     errorMessage={errorMessage}
                     onSubmit={onSubmit}
                 />
-            </dialog>
-        </div>
+            </DialogContent>
+        </Dialog>
     )
 }
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils/render'
 import BudgetCard from '@/features/budgets/components/BudgetCard'
@@ -37,5 +37,25 @@ describe('BudgetCard', () => {
         await user.click(archiveButton)
         await user.click(screen.getByRole('button', { name: /^Archive$/i }))
         expect(onArchive).toHaveBeenCalled()
+    })
+
+    it('keeps the confirmation open and reports archive failures', async () => {
+        const user = userEvent.setup()
+        const onArchive = vi.fn().mockRejectedValue(new Error('Archive failed'))
+
+        render(
+            <BudgetCard
+                budget={budget as unknown as Budget}
+                onEdit={vi.fn()}
+                onArchive={onArchive}
+            />,
+        )
+
+        await user.click(screen.getByRole('button', { name: /Archive Groceries/i }))
+        await user.click(screen.getByRole('button', { name: /^Archive$/i }))
+
+        await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Archive failed'))
+        expect(screen.getByRole('alertdialog')).toBeInTheDocument()
+        expect(onArchive).toHaveBeenCalledTimes(1)
     })
 })

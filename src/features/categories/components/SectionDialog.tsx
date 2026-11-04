@@ -1,6 +1,12 @@
 import type { SectionFormValues } from '@/features/categories/schemas'
 import { Button } from '@/components/ui/button'
-import { useDialogFocus } from '@/shared/dialog'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 import { SectionForm } from './SectionForm'
 
 type SectionDialogProps = {
@@ -22,31 +28,13 @@ export const SectionDialog = ({
     onOpenChange,
     onSubmit,
 }: SectionDialogProps) => {
-    const { dialogRef, handleKeyDown } = useDialogFocus({
-        open,
-        onClose: () => onOpenChange(false),
-    })
-
-    if (!open) return null
-
     const title = mode === 'create' ? 'Create section' : 'Edit section'
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <dialog
-                ref={dialogRef}
-                aria-labelledby="section-dialog-title"
-                aria-modal="true"
-                aria-describedby="section-dialog-description"
-                tabIndex={-1}
-                onKeyDown={handleKeyDown}
-                className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
-                open
-            >
-                <div className="mb-4 flex items-center justify-between gap-3">
-                    <h2 id="section-dialog-title" className="text-lg font-semibold">
-                        {title}
-                    </h2>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="max-w-md">
+                <DialogHeader className="mb-4 flex-row items-center justify-between gap-3">
+                    <DialogTitle>{title}</DialogTitle>
                     <Button
                         type="button"
                         variant="link"
@@ -57,10 +45,10 @@ export const SectionDialog = ({
                     >
                         Close
                     </Button>
-                </div>
-                <p id="section-dialog-description" className="sr-only">
+                </DialogHeader>
+                <DialogDescription className="sr-only">
                     Enter the section details and submit the form.
-                </p>
+                </DialogDescription>
 
                 <SectionForm
                     initialValues={initialValues}
@@ -69,7 +57,7 @@ export const SectionDialog = ({
                     errorMessage={errorMessage}
                     onSubmit={onSubmit}
                 />
-            </dialog>
-        </div>
+            </DialogContent>
+        </Dialog>
     )
 }
