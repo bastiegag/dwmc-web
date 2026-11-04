@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useDialogFocus } from '@/shared/dialog'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
+import { isValidDateOnly } from '@/shared/date'
 
 const currencyFormatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' })
 
@@ -21,13 +22,7 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
     const { type, amount, date } = transaction
 
     const displayAmount = currencyFormatter.format(amount)
-    const dateLabel = (() => {
-        try {
-            return new Date(date).toISOString().slice(0, 10)
-        } catch {
-            return date
-        }
-    })()
+    const dateLabel = isValidDateOnly(date.slice(0, 10)) ? date.slice(0, 10) : date
 
     return (
         <Card className="mb-3">

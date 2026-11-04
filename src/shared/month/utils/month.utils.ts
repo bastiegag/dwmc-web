@@ -1,8 +1,10 @@
+import { formatLocalDate } from '@/shared/date'
+
 /**
  * Returns the current month in YYYY-MM format.
  */
 export const getCurrentMonth = (): string => {
-    return new Date().toISOString().slice(0, 7)
+    return formatLocalDate().slice(0, 7)
 }
 
 /**

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { render, screen } from '@/test/utils/render'
 import { TransactionsPage } from '@/features/transactions/pages/TransactionsPage'
 import { PrimaryActionButton } from '@/shared/primary-action'
+import { formatLocalDate } from '@/shared/date'
 
 describe('TransactionsPage', () => {
     beforeEach(() => {
@@ -27,8 +28,8 @@ describe('TransactionsPage', () => {
 
     it('defaults a new transaction to today for the current month', async () => {
         const user = userEvent.setup()
-        const currentMonth = new Date().toISOString().slice(0, 7)
-        const today = new Date().toISOString().slice(0, 10)
+        const today = formatLocalDate()
+        const currentMonth = today.slice(0, 7)
 
         render(
             <>

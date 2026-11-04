@@ -45,13 +45,19 @@ export const TransactionDialog = ({
                 tabIndex={-1}
                 aria-modal="true"
                 aria-labelledby="transaction-dialog-title"
+                aria-describedby="transaction-dialog-description"
                 className="w-full max-w-lg rounded-lg border bg-background p-4 shadow-lg"
                 open
             >
                 <div className="mb-4 flex items-center justify-between gap-3">
-                    <h2 id="transaction-dialog-title" className="text-lg font-semibold">
-                        {title}
-                    </h2>
+                    <div>
+                        <h2 id="transaction-dialog-title" className="text-lg font-semibold">
+                            {title}
+                        </h2>
+                        <p id="transaction-dialog-description" className="sr-only">
+                            Enter the transaction details and submit the form.
+                        </p>
+                    </div>
                     <Button
                         type="button"
                         variant="link"

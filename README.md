@@ -110,7 +110,10 @@ application; it is not a separate design-system package. Start it with
   budgets, categories, dashboard, and transactions.
 
 Stories should live beside their component as `*.stories.tsx` whenever
-practical. Use human-readable titles under `Design System`, strong CSF
+practical. Unit, hook, component, and integration tests should likewise live
+beside the source files they cover. Shared fixtures, MSW handlers, and test
+utilities remain under `src/test/`; Playwright workflow tests remain under
+`e2e/`. Use human-readable titles under `Design System`, strong CSF
 TypeScript typing, realistic deterministic example data, and stories that
 demonstrate meaningful behavior rather than every prop combination. Include
 accessible labels, focus and disabled states, validation feedback, and small
@@ -119,13 +122,13 @@ data or turn route-level screens into design-system components.
 
 ## Documentation
 
-- [Frontend architecture](docs/frontend-architecture.md)
-- [Engineering standards](docs/engineering-standards.md)
-- [API integration](docs/frontend-api.md)
+- [Architecture](docs/architecture.md)
+- [Development conventions](docs/development.md)
+- [API integration](docs/api.md)
 - [Authentication and routing](docs/frontend-routing.md)
+- [Design system](docs/design-system.md)
 - [Testing](docs/testing.md)
 - [Shared developer playbook](docs/dev-playbook.md)
-- [Development playbook](docs/development-playbook.md)
 - [Development and releases](docs/RELEASING.md)
 - [Engineering audit playbook](docs/engineering-audit-playbook.md)
 - [Roadmap](docs/roadmap.md)

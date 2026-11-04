@@ -18,3 +18,4 @@ export {
     type CreateTransactionPayload,
     type UpdateTransactionPayload,
 } from './types/transaction.types'
+export { toCreateTransactionPayload } from './utils/to-create-transaction-payload'

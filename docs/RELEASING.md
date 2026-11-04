@@ -25,6 +25,6 @@ credentials.
 The frontend requires `VITE_APP_URL`, `VITE_API_URL`, `VITE_SUPABASE_URL`, and
 `VITE_SUPABASE_ANON_KEY`. All `VITE_*` values are browser-visible.
 
-See [frontend API integration](frontend-api.md), [testing](testing.md), and the
-repository README for setup details. Future production deployment is deliberate
-future work and is not configured here.
+See [API integration](api.md), [testing](testing.md), and the repository README
+for setup details. Future production deployment is deliberate future work and
+is not configured here.

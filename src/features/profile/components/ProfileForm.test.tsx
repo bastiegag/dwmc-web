@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { screen, waitFor } from '@testing-library/react'
-import { ProfileForm } from '../ProfileForm'
+import { ProfileForm } from './ProfileForm'
 import { render } from '@/test/utils/render'
 import { server } from '@/test/mocks/server'
 import { http, HttpResponse } from 'msw'

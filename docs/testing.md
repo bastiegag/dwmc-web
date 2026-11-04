@@ -12,7 +12,12 @@ Run `npm run profile:build` to build the production bundle and list the ten larg
 - **Playwright** covers browser workflows and accessibility checks.
 - **Storybook** documents reusable component states; it does not replace tests.
 
-Tests and shared helpers live under `src/test/`; browser tests live under `e2e/`.
+Unit, hook, component, and integration tests are colocated beside the source
+files they cover. Component tests use `ComponentName.test.tsx`; hooks follow
+their source filename, and utility tests use the source utility filename with a
+`.test.ts` suffix. Storybook stories remain beside their components. Shared
+fixtures, MSW handlers, and test utilities remain under `src/test/`; browser
+workflow tests remain under `e2e/`.
 
 Authentication browser tests use deterministic Supabase response routes from
 `e2e/auth-fixtures.ts`. The fixture also mocks the protected summary, account, and
@@ -29,6 +34,7 @@ hash so the browser lifecycle remains deterministic.
 ## What to Test
 
 Unit-test pure month/date utilities, formatters, storage helpers, schemas, and transformations. Component and integration tests should cover forms, loading/error/empty states, navigation, dialog flows, query behavior, contextual actions, and API-error presentation. End-to-end tests should cover important authenticated workflows such as sign-in, transaction and budget entry, month navigation, responsive navigation, and the contextual action.
+Date-only values use the shared local-calendar helpers in `src/shared/date`; test local date formatting, month boundaries, and remembered transaction dates without parsing `YYYY-MM-DD` strings as UTC timestamps.
 
 Category and Section tests should also cover cursor-page consumption, archived Category preservation in historical Transaction and Budget edits, disabled archived options for new selections, and keyboard focus management for dialogs and archive confirmations.
 
@@ -62,7 +68,7 @@ Use the package scripts that exist in `package.json`.
 - `npm run storybook`
 - `npm run build-storybook`
 
-CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml`. Playwright runs separately in `.github/workflows/e2e.yml`; it starts the local Vite server and uses the configured local proxy, so authenticated backend smoke tests require suitable test environment setup.
+CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml` for pushes and pull requests targeting `main`. Playwright runs separately in `.github/workflows/e2e.yml`; it starts the local Vite server and uses the configured local proxy, so authenticated backend smoke tests require suitable test environment setup.
 
 The normal Vitest and Playwright suites use mocks and do not require a running
 PostgreSQL database or live Supabase credentials. Playwright installs or uses

@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeProvider } from '@/shared/theme'
 import { render } from '@/test/utils/render'
-import { SettingsPage } from '../SettingsPage'
+import { SettingsPage } from './SettingsPage'
 
 describe('SettingsPage', () => {
     beforeEach(() => {
