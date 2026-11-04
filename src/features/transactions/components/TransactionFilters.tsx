@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import type { GetTransactionsParams } from '@/features/transactions/types/transaction.types'
-import type { Account } from '@/features/accounts/types/account.types'
+import type { Account } from '@/features/accounts'
 import type { SectionWithCategories } from '@/features/categories/types'
 
 type TransactionFiltersProps = {

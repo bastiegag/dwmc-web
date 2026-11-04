@@ -37,6 +37,7 @@ export const SectionDialog = ({
                 ref={dialogRef}
                 aria-labelledby="section-dialog-title"
                 aria-modal="true"
+                aria-describedby="section-dialog-description"
                 tabIndex={-1}
                 onKeyDown={handleKeyDown}
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
@@ -57,6 +58,9 @@ export const SectionDialog = ({
                         Close
                     </Button>
                 </div>
+                <p id="section-dialog-description" className="sr-only">
+                    Enter the section details and submit the form.
+                </p>
 
                 <SectionForm
                     initialValues={initialValues}

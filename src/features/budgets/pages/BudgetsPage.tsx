@@ -7,7 +7,7 @@ import {
     useUpdateBudget,
     useDeleteBudget,
 } from '@/features/budgets/hooks'
-import { useSections } from '@/features/categories/hooks/use-sections'
+import { useSections } from '@/features/categories'
 import BudgetList from '@/features/budgets/components/BudgetList'
 import BudgetDialog from '@/features/budgets/components/BudgetDialog'
 import EmptyBudgetsState from '@/features/budgets/components/EmptyBudgetsState'

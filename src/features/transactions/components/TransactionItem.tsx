@@ -75,6 +75,7 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                         role="alertdialog"
                         aria-modal="true"
                         aria-labelledby={`archive-transaction-${transaction.id}`}
+                        aria-describedby={`archive-transaction-description-${transaction.id}`}
                         tabIndex={-1}
                         onKeyDown={handleKeyDown}
                         className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
@@ -86,7 +87,10 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                         >
                             Archive transaction?
                         </h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
+                        <p
+                            id={`archive-transaction-description-${transaction.id}`}
+                            className="mt-2 text-sm text-muted-foreground"
+                        >
                             This will archive this transaction.
                         </p>
                         <div className="mt-4 flex justify-end gap-2">

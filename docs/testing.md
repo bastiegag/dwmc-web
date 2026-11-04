@@ -68,7 +68,12 @@ Use the package scripts that exist in `package.json`.
 - `npm run storybook`
 - `npm run build-storybook`
 
-CI runs formatting, linting, typechecking, unit tests, and the production build in `.github/workflows/ci.yml` for pushes and pull requests targeting `main`. Playwright runs separately in `.github/workflows/e2e.yml`; it starts the local Vite server and uses the configured local proxy, so authenticated backend smoke tests require suitable test environment setup.
+CI runs formatting, linting, typechecking, unit tests, the production build,
+and the Storybook build in `.github/workflows/ci.yml` for pushes and pull
+requests targeting `main`. Playwright runs separately in
+`.github/workflows/e2e.yml`; it starts the local Vite server and uses
+deterministic Auth and API route mocks, so the standard suite does not require
+a live API, database, or Supabase project.
 
 The normal Vitest and Playwright suites use mocks and do not require a running
 PostgreSQL database or live Supabase credentials. Playwright installs or uses

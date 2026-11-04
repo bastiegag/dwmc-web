@@ -64,6 +64,7 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
                         ref={dialogRef}
                         role="alertdialog"
                         aria-labelledby={`archive-category-${category.id}`}
+                        aria-describedby={`archive-category-description-${category.id}`}
                         tabIndex={-1}
                         onKeyDown={handleKeyDown}
                         className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
@@ -75,7 +76,10 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
                         >
                             Archive category?
                         </h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
+                        <p
+                            id={`archive-category-description-${category.id}`}
+                            className="mt-2 text-sm text-muted-foreground"
+                        >
                             This will archive <strong>{category.name}</strong>.
                         </p>
                         <div className="mt-4 flex justify-end gap-2">

@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom'
-import { useLogout } from '@/features/auth/hooks'
+import { useLogout } from '@/features/auth'
 import { PrimaryActionProvider } from '@/shared/primary-action'
 import { MonthNavigator } from '@/shared/month'
 import {

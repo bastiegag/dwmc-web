@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Budget } from '@/features/budgets/types/budget.types'
+import { useDialogFocus } from '@/shared/dialog'
 
 type Props = {
     budget: Budget
@@ -13,6 +14,10 @@ type Props = {
 
 export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const { dialogRef, handleKeyDown } = useDialogFocus({
+        open: isConfirmOpen,
+        onClose: () => setIsConfirmOpen(false),
+    })
 
     const { category } = budget
 
@@ -99,13 +104,24 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
 
             {isConfirmOpen ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div
+                    <dialog
+                        ref={dialogRef}
+                        onKeyDown={handleKeyDown}
+                        tabIndex={-1}
                         role="alertdialog"
+                        aria-labelledby={`archive-budget-${budget.id}`}
+                        aria-describedby={`archive-budget-description-${budget.id}`}
                         aria-modal="true"
                         className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
+                        open
                     >
-                        <h3 className="text-base font-semibold">Archive budget?</h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
+                        <h3 id={`archive-budget-${budget.id}`} className="text-base font-semibold">
+                            Archive budget?
+                        </h3>
+                        <p
+                            id={`archive-budget-description-${budget.id}`}
+                            className="mt-2 text-sm text-muted-foreground"
+                        >
                             This will archive the budget for <strong>{category.name}</strong> (
                             {budget.month}).
                         </p>
@@ -129,7 +145,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                                 Archive
                             </Button>
                         </div>
-                    </div>
+                    </dialog>
                 </div>
             ) : null}
         </Card>

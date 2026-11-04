@@ -83,6 +83,7 @@ export const SectionCard = ({
                         ref={dialogRef}
                         role="alertdialog"
                         aria-labelledby={`archive-section-${section.id}`}
+                        aria-describedby={`archive-section-description-${section.id}`}
                         tabIndex={-1}
                         onKeyDown={handleKeyDown}
                         className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
@@ -94,7 +95,10 @@ export const SectionCard = ({
                         >
                             Archive section?
                         </h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
+                        <p
+                            id={`archive-section-description-${section.id}`}
+                            className="mt-2 text-sm text-muted-foreground"
+                        >
                             This will archive <strong>{section.name}</strong>.
                         </p>
                         <div className="mt-4 flex justify-end gap-2">

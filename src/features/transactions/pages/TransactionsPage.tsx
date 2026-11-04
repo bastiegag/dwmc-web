@@ -7,8 +7,8 @@ import {
     useUpdateTransaction,
     useDeleteTransaction,
 } from '@/features/transactions/hooks'
-import { useAccounts } from '@/features/accounts/hooks/use-accounts'
-import { useSections } from '@/features/categories/hooks/use-sections'
+import { useAccounts } from '@/features/accounts'
+import { useSections } from '@/features/categories'
 import TransactionFilters from '@/features/transactions/components/TransactionFilters'
 import TransactionList from '@/features/transactions/components/TransactionList'
 import TransactionDialog from '@/features/transactions/components/TransactionDialog'
@@ -20,7 +20,7 @@ import type { TransactionFormValues } from '@/features/transactions/schemas/tran
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 import { PageHeader } from '@/components/layout'
-import { useAuth } from '@/features/auth/hooks'
+import { useAuth } from '@/features/auth'
 import {
     getRememberedTransactionDate,
     rememberTransactionDate,

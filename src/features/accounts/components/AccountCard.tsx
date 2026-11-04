@@ -135,6 +135,7 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                         tabIndex={-1}
                         role="alertdialog"
                         aria-labelledby={`archive-account-${account.id}`}
+                        aria-describedby={`archive-account-description-${account.id}`}
                         aria-modal="true"
                         className="w-full max-w-sm rounded-lg border bg-background p-4 shadow-lg"
                         open
@@ -145,7 +146,10 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                         >
                             Archive account?
                         </h3>
-                        <p className="mt-2 text-sm text-muted-foreground">
+                        <p
+                            id={`archive-account-description-${account.id}`}
+                            className="mt-2 text-sm text-muted-foreground"
+                        >
                             This will archive <strong>{account.name}</strong>.
                         </p>
                         <div className="mt-4 flex justify-end gap-2">

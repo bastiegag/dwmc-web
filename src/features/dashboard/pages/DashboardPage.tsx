@@ -9,16 +9,16 @@ import { EmptyState } from '@/components/ui'
 import { useMonthlySummary } from '@/features/dashboard/hooks/use-monthly-summary'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
-import { useAccounts } from '@/features/accounts/hooks'
-import { useSections } from '@/features/categories/hooks'
+import { useAccounts } from '@/features/accounts'
+import { useSections } from '@/features/categories'
 import {
     TransactionDialog,
     toCreateTransactionPayload,
     useCreateTransaction,
+    type TransactionFormValues,
+    rememberTransactionDate,
 } from '@/features/transactions'
-import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
-import { useAuth } from '@/features/auth/hooks'
-import { rememberTransactionDate } from '@/features/transactions/utils/transaction-date-storage'
+import { useAuth } from '@/features/auth'
 import { getErrorMessage } from '@/shared/errors'
 
 export const DashboardPage = () => {

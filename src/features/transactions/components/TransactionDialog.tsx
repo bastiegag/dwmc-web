@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import TransactionForm from './TransactionForm'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
-import type { Account } from '@/features/accounts/types/account.types'
-import type { SectionWithCategories } from '@/features/categories/types'
+import type { Account } from '@/features/accounts'
+import type { SectionWithCategories } from '@/features/categories'
 import { useDialogFocus } from '@/shared/dialog'
 
 type TransactionDialogProps = {

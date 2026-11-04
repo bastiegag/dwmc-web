@@ -2,10 +2,11 @@
 
 ## Local workflow
 
-1. Start the local `dwmc-api` service.
-2. Copy `.env.example` to `.env.local`.
-3. Configure `VITE_APP_URL`, `VITE_API_URL`, `VITE_SUPABASE_URL`, and
+1. Copy `.env.example` to `.env.local`.
+2. Configure `VITE_APP_URL`, `VITE_API_URL`, `VITE_SUPABASE_URL`, and
    `VITE_SUPABASE_ANON_KEY`.
+3. Start the local `dwmc-api` service when using the application against
+   backend data.
 4. Run `npm run dev`.
 5. Run focused tests while developing, then `npm run validate` before opening a
    pull request.
@@ -28,6 +29,9 @@ this repository.
 - Keep feature code in `src/features/<feature-name>`.
 - Use feature public `index.ts` exports across feature boundaries.
 - Keep cross-feature code in `src/shared`.
+- Use native modal dialogs with `role="dialog"` or `role="alertdialog"`, an
+  accessible title and description, `aria-modal="true"`, and shared focus
+  management for keyboard trapping, Escape, and focus restoration.
 
 Tests mirror their source filename and are colocated with the source. Shared
 fixtures, MSW handlers, setup, and test utilities remain under `src/test/`.
@@ -60,8 +64,12 @@ npm run lint
 npm run typecheck
 npm run test
 npm run build
+npm run build-storybook
 ```
 
-The CI workflow runs these checks on pushes and pull requests targeting `main`.
-Playwright runs separately. The product-wide process and definition of done are
-maintained in the [shared Developer Playbook](dev-playbook.md).
+The `validate` script runs these checks, including the Storybook build. The CI
+workflow runs the quality checks on pushes and pull requests targeting `main`;
+Playwright runs separately. Standard unit, Storybook browser, and Playwright
+tests use mocks and do not require a live API or database. The product-wide
+process and definition of done are maintained in the [shared Developer
+Playbook](dev-playbook.md).

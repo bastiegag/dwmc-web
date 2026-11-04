@@ -39,6 +39,7 @@ export const AccountDialog = ({
                 tabIndex={-1}
                 aria-modal="true"
                 aria-labelledby="account-dialog-title"
+                aria-describedby="account-dialog-description"
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
                 open
             >
@@ -57,6 +58,9 @@ export const AccountDialog = ({
                         Close
                     </Button>
                 </div>
+                <p id="account-dialog-description" className="sr-only">
+                    Enter the account details and submit the form.
+                </p>
 
                 <AccountForm
                     initialValues={initialValues}

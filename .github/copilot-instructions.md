@@ -21,6 +21,8 @@
 
 - Use a feature-based architecture
 - Keep feature code inside `src/features/<feature-name>`
+- Import another feature only through its public `index.ts`; internal imports
+  are for code within the same feature.
 - Keep cross-feature logic inside `src/shared`
 - Keep reusable layout components outside feature folders
 - Keep API calls in `.api.ts` files
@@ -151,6 +153,10 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Use proper dialog titles
 - Do not rely only on color for state
 - Keep keyboard focus visible
+- Modal dialogs and archive confirmations must expose an accessible title and
+  description, use `aria-modal="true"` with the appropriate dialog role, and
+  trap focus, close on Escape, and restore focus through the shared dialog
+  focus helper.
 
 ## Testing
 
@@ -161,6 +167,8 @@ These invariants define the app's non-negotiable contracts. Violating one is a b
 - Keep shared fixtures, MSW handlers, and test utilities under `src/test/`.
 - Keep Playwright workflow tests under `e2e/` and Storybook stories beside their
   components.
+- Standard mocked unit, Storybook browser, and Playwright tests do not require a
+  live API or database.
 - Test month navigation
 - Test contextual primary actions
 - Test form validation

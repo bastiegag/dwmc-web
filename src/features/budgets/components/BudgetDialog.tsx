@@ -2,7 +2,7 @@ import type { BudgetFormValues } from '@/features/budgets/schemas/budget.schema'
 import { Button } from '@/components/ui/button'
 import { useDialogFocus } from '@/shared/dialog'
 import { BudgetForm } from './BudgetForm'
-import type { SectionWithCategories } from '@/features/categories/types'
+import type { SectionWithCategories } from '@/features/categories'
 
 type Props = {
     open: boolean
@@ -48,6 +48,7 @@ export const BudgetDialog = ({
                 tabIndex={-1}
                 aria-modal="true"
                 aria-labelledby="budget-dialog-title"
+                aria-describedby="budget-dialog-description"
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
                 open
             >
@@ -66,6 +67,9 @@ export const BudgetDialog = ({
                         Close
                     </Button>
                 </div>
+                <p id="budget-dialog-description" className="sr-only">
+                    Enter the budget details and submit the form.
+                </p>
 
                 <BudgetForm
                     sections={sections}

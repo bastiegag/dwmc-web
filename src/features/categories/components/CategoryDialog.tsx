@@ -40,6 +40,7 @@ export const CategoryDialog = ({
                 ref={dialogRef}
                 aria-labelledby="category-dialog-title"
                 aria-modal="true"
+                aria-describedby="category-dialog-description"
                 tabIndex={-1}
                 onKeyDown={handleKeyDown}
                 className="w-full max-w-md rounded-lg border bg-background p-4 shadow-lg"
@@ -60,6 +61,9 @@ export const CategoryDialog = ({
                         Close
                     </Button>
                 </div>
+                <p id="category-dialog-description" className="sr-only">
+                    Enter the category details and submit the form.
+                </p>
 
                 <CategoryForm
                     sections={sections}

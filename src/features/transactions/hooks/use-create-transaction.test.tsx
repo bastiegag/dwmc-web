@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderHookWithQuery, waitFor } from '@/test/utils/render'
 import { useCreateTransaction } from '@/features/transactions/hooks/use-create-transaction'
 import { transactionQueryKeys } from '@/features/transactions/hooks/use-transactions'
-import { accountQueryKeys } from '@/features/accounts/hooks/use-accounts'
+import { accountQueryKeys } from '@/features/accounts'
 import { budgetQueryKeys } from '@/features/budgets/hooks/use-budgets'
 import { dashboardQueryKeys } from '@/features/dashboard'
 

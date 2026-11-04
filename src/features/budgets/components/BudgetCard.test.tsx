@@ -25,8 +25,16 @@ describe('BudgetCard', () => {
         expect(screen.getByText(/Planned/i)).toBeInTheDocument()
         expect(screen.getByText(/Over budget/i)).toBeInTheDocument()
 
-        await user.click(screen.getByRole('button', { name: /Archive Groceries/i }))
-        expect(screen.getByRole('alertdialog')).toBeInTheDocument()
+        const archiveButton = screen.getByRole('button', { name: /Archive Groceries/i })
+        await user.click(archiveButton)
+        const dialog = screen.getByRole('alertdialog')
+        expect(dialog).toHaveAccessibleName('Archive budget?')
+        expect(dialog).toHaveAccessibleDescription(/This will archive the budget/i)
+        await user.keyboard('{Escape}')
+        expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+        expect(archiveButton).toHaveFocus()
+
+        await user.click(archiveButton)
         await user.click(screen.getByRole('button', { name: /^Archive$/i }))
         expect(onArchive).toHaveBeenCalled()
     })
