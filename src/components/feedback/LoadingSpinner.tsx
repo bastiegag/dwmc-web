@@ -18,7 +18,7 @@ export const LoadingSpinner = ({
         role="status"
         aria-label={ariaLabel}
         className={cn(
-            'animate-spin rounded-full border-2 border-current border-t-transparent',
+            'animate-spin rounded-full border-3 border-current border-t-transparent',
             sizeMap[size],
             className,
         )}

@@ -1,6 +1,6 @@
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
-import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Calendar } from './calendar'
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
 
@@ -20,15 +20,17 @@ export const DatePicker = ({
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button
-                    variant="outlined"
+                <button
                     type="button"
                     disabled={disabled}
-                    className="w-full justify-start text-left font-normal"
+                    className={cn(
+                        'flex h-10 w-full items-center rounded-md border border-input bg-card px-3 py-2 text-left text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                        date ? 'text-foreground' : 'text-muted-foreground',
+                    )}
                 >
                     <CalendarIcon className="mr-2 size-4" />
                     {date ? format(date, 'PPP') : placeholder}
-                </Button>
+                </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
                 <Calendar mode="single" selected={date} onSelect={onSelect} initialFocus />
