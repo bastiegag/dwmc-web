@@ -24,4 +24,10 @@ describe('Progress', () => {
 
         expect(screen.getByRole('progressbar').firstElementChild).toHaveClass('bg-success')
     })
+
+    it('applies animated diagonal stripes to the indicator', () => {
+        render(<Progress value={50} />)
+
+        expect(screen.getByRole('progressbar').firstElementChild).toHaveClass('progress-stripe')
+    })
 })

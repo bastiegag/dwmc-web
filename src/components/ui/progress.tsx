@@ -29,7 +29,7 @@ export const Progress = forwardRef<ComponentRef<typeof ProgressPrimitive.Root>, 
             <ProgressPrimitive.Root
                 ref={ref}
                 className={cn(
-                    'relative h-2 w-full overflow-hidden rounded-full bg-muted',
+                    'relative h-3 w-full overflow-hidden rounded-full bg-muted',
                     className,
                 )}
                 value={progress}
@@ -37,7 +37,7 @@ export const Progress = forwardRef<ComponentRef<typeof ProgressPrimitive.Root>, 
             >
                 <ProgressPrimitive.Indicator
                     className={cn(
-                        'h-full w-full flex-1 transition-all',
+                        'progress-stripe h-full w-full flex-1 transition-all',
                         colorClasses[color],
                         indicatorClassName,
                     )}

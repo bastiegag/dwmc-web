@@ -5,3 +5,37 @@
         var(--color-teal-500) 100%
     );
 }
+
+@keyframes progress-stripe {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 22px 0;
+    }
+}
+
+.progress-stripe {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-stripe::after {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent 0 8px,
+        rgb(255 255 255 / 25%) 8px 16px
+    );
+    background-size: 22px 22px;
+    content: '';
+    pointer-events: none;
+    animation: progress-stripe 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progress-stripe::after {
+        animation: none;
+    }
+}
