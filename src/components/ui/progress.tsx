@@ -1,5 +1,5 @@
 import { forwardRef, type ComponentPropsWithoutRef, type ComponentRef } from 'react'
-import * as ProgressPrimitive from '@radix-ui/react-progress'
+import { Progress as ProgressPrimitive } from '@base-ui/react/progress'
 import { cn } from '@/lib/utils'
 
 export type ProgressColor =
@@ -15,7 +15,10 @@ const colorClasses: Record<ProgressColor, string> = {
     info: 'bg-info',
 }
 
-export interface ProgressProps extends ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> {
+export interface ProgressProps extends Omit<
+    ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>,
+    'value'
+> {
     value?: number | null
     color?: ProgressColor
     indicatorClassName?: string

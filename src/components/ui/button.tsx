@@ -1,5 +1,5 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react'
-import { Slot } from '@radix-ui/react-slot'
+import { Button as BaseButton } from '@base-ui/react/button'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { LoadingSpinner } from '@/components/feedback'
 import { cn } from '@/lib/utils'
@@ -70,17 +70,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         },
         ref,
     ) => {
-        const Comp = asChild ? Slot : 'button'
-
         return (
-            <Comp
+            <BaseButton
                 className={cn(buttonVariants({ variant, color, size, icon }), className)}
                 ref={ref}
                 disabled={disabled || isLoading}
                 aria-busy={isLoading}
+                nativeButton={asChild ? false : undefined}
+                render={asChild ? (children as React.ReactElement) : undefined}
                 {...props}
             >
-                {isLoading ? (
+                {asChild ? undefined : isLoading ? (
                     <>
                         <LoadingSpinner size="sm" aria-hidden="true" />
                         <span>{loadingText}</span>
@@ -88,7 +88,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 ) : (
                     children
                 )}
-            </Comp>
+            </BaseButton>
         )
     },
 )

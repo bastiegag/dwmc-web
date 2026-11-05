@@ -19,18 +19,20 @@ export const DatePicker = ({
 }: DatePickerProps) => {
     return (
         <Popover>
-            <PopoverTrigger asChild>
-                <button
-                    type="button"
-                    disabled={disabled}
-                    className={cn(
-                        'flex h-10 w-full items-center rounded-md border border-input bg-card px-3 py-2 text-left text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                        date ? 'text-foreground' : 'text-muted-foreground',
-                    )}
-                >
-                    <CalendarIcon className="mr-2 size-4" />
-                    {date ? format(date, 'PPP') : placeholder}
-                </button>
+            <PopoverTrigger
+                render={
+                    <button
+                        type="button"
+                        disabled={disabled}
+                        className={cn(
+                            'flex h-10 w-full items-center rounded-md border border-input bg-card px-3 py-2 text-left text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                            date ? 'text-foreground' : 'text-muted-foreground',
+                        )}
+                    />
+                }
+            >
+                <CalendarIcon className="mr-2 size-4" />
+                {date ? format(date, 'PPP') : placeholder}
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
                 <Calendar mode="single" selected={date} onSelect={onSelect} initialFocus />
