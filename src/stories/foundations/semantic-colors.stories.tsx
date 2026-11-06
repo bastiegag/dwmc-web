@@ -124,21 +124,6 @@ const tokenGroups: { title: string; tokens: SemanticToken[] }[] = [
             { name: 'link-hover', purpose: 'Link hover color.' },
         ],
     },
-    {
-        title: 'Sidebar and charts (referenced, not defined in src/styles)',
-        tokens: [
-            {
-                name: 'sidebar',
-                purpose: 'Sidebar background. Mapped in colors.css but never defined.',
-            },
-            { name: 'sidebar-foreground', purpose: 'Sidebar text. Mapped but never defined.' },
-            { name: 'chart-1', purpose: 'Chart series 1. Mapped but never defined.' },
-            { name: 'chart-2', purpose: 'Chart series 2. Mapped but never defined.' },
-            { name: 'chart-3', purpose: 'Chart series 3. Mapped but never defined.' },
-            { name: 'chart-4', purpose: 'Chart series 4. Mapped but never defined.' },
-            { name: 'chart-5', purpose: 'Chart series 5. Mapped but never defined.' },
-        ],
-    },
 ]
 
 function TokenPreview({ token }: { token: SemanticToken }) {
@@ -170,7 +155,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Semantic color tokens from `src/styles/colors.css`. Light and dark columns are scoped with the `light` and `dark` classes, so both themes are visible at once. Values are read from the rendered CSS variables. Tokens shown as `undefined` are referenced but not defined and need a decision before use.',
+                    'Semantic color tokens from `src/styles/colors.css`. Light and dark columns are scoped with the `light` and `dark` classes, so both themes are visible at once. Values are read from the rendered CSS variables.',
             },
         },
     },

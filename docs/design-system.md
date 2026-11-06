@@ -149,12 +149,15 @@ Where to edit each kind of value:
 | Component variants and states       | the component's `.tsx` file |
 | Storybook layout or viewports       | `.storybook/preview.ts`     |
 
-Known token gaps to resolve before the visual design work:
+Token decisions:
 
-- `--sidebar-*` and `--chart-1` to `--chart-5` are mapped in `colors.css` but
-  not defined, so they resolve to nothing. The Semantic Colors story lists them.
-- `--card-foreground` is defined only in `.dark`, so `text-card-foreground` has
-  no value in light mode.
+- The `sidebar-*` and `chart-*` color mappings were removed. Nothing in the app
+  or Storybook used them, and the chart components use the primary color
+  directly. Add tokens only when a component needs them.
+- `--card-foreground` is defined in both themes.
+
+Remaining gap:
+
 - `--color-white` comes from Tailwind's default theme, not from DWMC tokens.
 
 The final visual design is owned by the developer. The foundation and pattern
