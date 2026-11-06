@@ -23,10 +23,8 @@ type Story = StoryObj<typeof meta>
 
 const Confirmation = ({ destructive = false }: { destructive?: boolean }) => (
     <AlertDialog>
-        <AlertDialogTrigger asChild>
-            <Button color={destructive ? 'destructive' : 'default'}>
-                {destructive ? 'Delete item' : 'Confirm action'}
-            </Button>
+        <AlertDialogTrigger render={<Button color={destructive ? 'destructive' : 'default'} />}>
+            {destructive ? 'Delete item' : 'Confirm action'}
         </AlertDialogTrigger>
         <AlertDialogContent>
             <AlertDialogHeader>
@@ -39,8 +37,10 @@ const Confirmation = ({ destructive = false }: { destructive?: boolean }) => (
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                    <Button color={destructive ? 'destructive' : 'default'}>Confirm</Button>
+                <AlertDialogAction
+                    render={<Button color={destructive ? 'destructive' : 'default'} />}
+                >
+                    Confirm
                 </AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>

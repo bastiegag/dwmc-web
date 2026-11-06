@@ -14,8 +14,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
     render: () => (
         <Popover>
-            <PopoverTrigger asChild>
-                <Button variant="outlined">View budget details</Button>
+            <PopoverTrigger render={<Button variant="outlined" />}>
+                View budget details
             </PopoverTrigger>
             <PopoverContent>
                 <p className="text-sm font-medium">Everyday spending</p>

@@ -23,9 +23,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
     render: () => (
         <Dialog>
-            <DialogTrigger asChild>
-                <Button>Open dialog</Button>
-            </DialogTrigger>
+            <DialogTrigger render={<Button />}>Open dialog</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Dialog title</DialogTitle>
@@ -44,9 +42,7 @@ export const Default: Story = {
 export const FormDialog: Story = {
     render: () => (
         <Dialog>
-            <DialogTrigger asChild>
-                <Button>Open form</Button>
-            </DialogTrigger>
+            <DialogTrigger render={<Button />}>Open form</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Update profile</DialogTitle>
@@ -67,9 +63,7 @@ export const FormDialog: Story = {
 export const LoadingState: Story = {
     render: () => (
         <Dialog>
-            <DialogTrigger asChild>
-                <Button>Open loading dialog</Button>
-            </DialogTrigger>
+            <DialogTrigger render={<Button />}>Open loading dialog</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Saving changes</DialogTitle>

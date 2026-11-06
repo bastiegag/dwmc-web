@@ -1,90 +1,126 @@
 import * as React from 'react'
-import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
+import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog'
 import { cn } from '@/lib/utils'
 
 const AlertDialogFocusContext =
     React.createContext<React.MutableRefObject<HTMLElement | null> | null>(null)
 
-export const AlertDialog = ({
-    open,
-    children,
-    ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) => {
-    const previouslyFocusedRef = React.useRef<HTMLElement | null>(null)
+type AlertDialogProps = Omit<
+    React.ComponentProps<typeof AlertDialogPrimitive.Root>,
+    'onOpenChange'
+> & {
+    onOpenChange?: (open: boolean) => void
+}
+
+export const AlertDialog = ({ onOpenChange, ...props }: AlertDialogProps) => {
+    const openerRef = React.useRef<HTMLElement | null>(null)
 
     React.useLayoutEffect(() => {
-        if (open) {
-            previouslyFocusedRef.current =
+        if (props.open) {
+            openerRef.current =
                 document.activeElement instanceof HTMLElement ? document.activeElement : null
         }
-    }, [open])
+    }, [props.open])
 
     return (
-        <AlertDialogFocusContext.Provider value={previouslyFocusedRef}>
-            <AlertDialogPrimitive.Root open={open} {...props}>
-                {children}
-            </AlertDialogPrimitive.Root>
+        <AlertDialogFocusContext.Provider value={openerRef}>
+            <AlertDialogPrimitive.Root
+                {...props}
+                onOpenChange={(open) => {
+                    if (open) {
+                        openerRef.current =
+                            document.activeElement instanceof HTMLElement
+                                ? document.activeElement
+                                : null
+                    }
+                    onOpenChange?.(open)
+                }}
+            />
         </AlertDialogFocusContext.Provider>
     )
 }
-export const AlertDialogTrigger = AlertDialogPrimitive.Trigger
+export const AlertDialogTrigger = React.forwardRef<
+    React.ComponentRef<typeof AlertDialogPrimitive.Trigger>,
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Trigger> & { asChild?: boolean }
+>(({ asChild, children, ...props }, ref) => (
+    <AlertDialogPrimitive.Trigger
+        ref={ref}
+        render={asChild ? (children as React.ReactElement) : undefined}
+        {...props}
+    >
+        {asChild ? undefined : children}
+    </AlertDialogPrimitive.Trigger>
+))
 export const AlertDialogPortal = AlertDialogPrimitive.Portal
-export const AlertDialogCancel = AlertDialogPrimitive.Cancel
-export const AlertDialogAction = AlertDialogPrimitive.Action
+export const AlertDialogCancel = React.forwardRef<
+    React.ComponentRef<typeof AlertDialogPrimitive.Close>,
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Close> & { asChild?: boolean }
+>(({ asChild, children, ...props }, ref) => (
+    <AlertDialogPrimitive.Close
+        ref={ref}
+        render={asChild ? (children as React.ReactElement) : undefined}
+        {...props}
+    >
+        {asChild ? undefined : children}
+    </AlertDialogPrimitive.Close>
+))
+export const AlertDialogAction = React.forwardRef<
+    React.ComponentRef<typeof AlertDialogPrimitive.Close>,
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Close> & { asChild?: boolean }
+>(({ asChild, children, onClick, ...props }, ref) => (
+    <AlertDialogPrimitive.Close
+        ref={ref}
+        render={asChild ? (children as React.ReactElement) : undefined}
+        onClick={(event) => {
+            onClick?.(event)
+            if (event.defaultPrevented) {
+                event.preventBaseUIHandler?.()
+            }
+        }}
+        {...props}
+    >
+        {asChild ? undefined : children}
+    </AlertDialogPrimitive.Close>
+))
 
 export const AlertDialogOverlay = React.forwardRef<
-    React.ComponentRef<typeof AlertDialogPrimitive.Overlay>,
-    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
+    React.ComponentRef<typeof AlertDialogPrimitive.Backdrop>,
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Backdrop>
 >(({ className, ...props }, ref) => (
-    <AlertDialogPrimitive.Overlay
+    <AlertDialogPrimitive.Backdrop
         ref={ref}
         className={cn(
-            'fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=open]:animate-in',
+            'fixed inset-0 z-50 bg-black/50 data-ending-style:animate-out data-starting-style:animate-in',
             className,
         )}
         {...props}
     />
 ))
-AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
+AlertDialogOverlay.displayName = AlertDialogPrimitive.Backdrop.displayName
 
 export const AlertDialogContent = React.forwardRef<
-    React.ComponentRef<typeof AlertDialogPrimitive.Content>,
-    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, children, ...props }, ref) => {
-    const previouslyFocusedRef = React.useContext(AlertDialogFocusContext)
-
-    return (
-        <AlertDialogPortal>
-            <AlertDialogOverlay />
-            <AlertDialogPrimitive.Content
-                ref={ref}
-                aria-modal="true"
-                onOpenAutoFocus={() => {
-                    if (previouslyFocusedRef?.current === null) {
-                        previouslyFocusedRef.current =
-                            document.activeElement instanceof HTMLElement
-                                ? document.activeElement
-                                : null
-                    }
-                }}
-                onCloseAutoFocus={(event) => {
-                    if (!previouslyFocusedRef?.current) return
-                    event.preventDefault()
-                    previouslyFocusedRef.current.focus()
-                    previouslyFocusedRef.current = null
-                }}
-                className={cn(
-                    'fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-4 shadow-lg outline-none data-[state=closed]:animate-out data-[state=open]:animate-in',
-                    className,
-                )}
-                {...props}
-            >
-                {children}
-            </AlertDialogPrimitive.Content>
-        </AlertDialogPortal>
-    )
-})
-AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
+    React.ComponentRef<typeof AlertDialogPrimitive.Popup>,
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Popup>
+>(({ className, ...props }, ref) => (
+    <AlertDialogPortal>
+        <AlertDialogOverlay />
+        <AlertDialogPrimitive.Popup
+            ref={(element) => {
+                if (typeof ref === 'function') ref(element)
+                else if (ref) ref.current = element
+                element?.querySelector<HTMLElement>('button')?.focus()
+            }}
+            finalFocus={React.useContext(AlertDialogFocusContext) ?? undefined}
+            className={cn(
+                'fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-4 shadow-lg outline-none data-ending-style:animate-out data-starting-style:animate-in',
+                className,
+            )}
+            {...props}
+            aria-modal="true"
+        />
+    </AlertDialogPortal>
+))
+AlertDialogContent.displayName = AlertDialogPrimitive.Popup.displayName
 
 export const AlertDialogHeader = ({
     className,

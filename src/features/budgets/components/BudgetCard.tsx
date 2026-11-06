@@ -130,8 +130,12 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={isArchiving}>Cancel</AlertDialogCancel>
                         <AlertDialogAction
-                            asChild
                             disabled={isArchiving}
+                            render={
+                                <Button type="button" color="destructive" variant="contained">
+                                    {isArchiving ? 'Archiving...' : 'Archive'}
+                                </Button>
+                            }
                             onClick={async (event) => {
                                 event.preventDefault()
                                 setIsArchiving(true)
@@ -150,11 +154,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                                     setIsArchiving(false)
                                 }
                             }}
-                        >
-                            <Button type="button" color="destructive" variant="contained">
-                                {isArchiving ? 'Archiving...' : 'Archive'}
-                            </Button>
-                        </AlertDialogAction>
+                        />
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

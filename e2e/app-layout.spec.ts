@@ -23,8 +23,28 @@ test.describe('App Layout', () => {
         test('floating action button opens the transaction dialog on the dashboard', async ({
             page,
         }) => {
-            await page.getByTestId('primary-action-button').click()
-            await expect(page.getByRole('heading', { name: 'New Transaction' })).toBeVisible()
+            const opener = page.getByTestId('primary-action-button')
+            await opener.click()
+            const dialog = page.getByRole('dialog', { name: 'New Transaction' })
+            await expect(dialog).toBeVisible()
+            await expect(dialog.locator(':focus')).toBeVisible()
+
+            const focusable = dialog.locator(
+                'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]',
+            )
+            const first = focusable.first()
+            const last = focusable.last()
+            await last.focus()
+            await page.keyboard.press('Tab')
+            await expect(first).toBeFocused()
+
+            await first.focus()
+            await page.keyboard.press('Shift+Tab')
+            await expect(last).toBeFocused()
+
+            await page.keyboard.press('Escape')
+            await expect(dialog).not.toBeVisible()
+            await expect(opener).toBeFocused()
         })
 
         test('floating action button opens the budget dialog on the budgets page', async ({

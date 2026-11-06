@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as SelectPrimitive from '@radix-ui/react-select'
+import { Select as SelectPrimitive } from '@base-ui/react/select'
 import { Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -19,7 +19,7 @@ export const SelectTrigger = React.forwardRef<
         {...props}
     >
         {children}
-        <SelectPrimitive.Icon asChild>
+        <SelectPrimitive.Icon>
             <ChevronDown className="size-5 opacity-50" />
         </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
@@ -27,39 +27,44 @@ export const SelectTrigger = React.forwardRef<
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
 export const SelectContent = React.forwardRef<
-    React.ComponentRef<typeof SelectPrimitive.Content>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+    React.ComponentRef<typeof SelectPrimitive.Popup>,
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Popup> & {
+        position?: 'item-aligned' | 'popper'
+    }
 >(({ className, children, position = 'popper', ...props }, ref) => (
     <SelectPrimitive.Portal>
-        <SelectPrimitive.Content
-            ref={ref}
-            className={cn(
-                'relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2',
-                position === 'popper' && 'translate-y-1',
-                className,
-            )}
-            position={position}
-            {...props}
+        <SelectPrimitive.Positioner
+            className={cn(position === 'popper' && 'translate-y-1')}
+            alignItemWithTrigger={position !== 'popper'}
         >
-            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1">
-                <ChevronUp className="size-5" />
-            </SelectPrimitive.ScrollUpButton>
-            <SelectPrimitive.Viewport
+            <SelectPrimitive.Popup
+                ref={ref}
                 className={cn(
-                    'p-1',
-                    position === 'popper' &&
-                        'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]',
+                    'relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-starting-style:animate-in data-ending-style:animate-out data-ending-style:fade-out-0 data-starting-style:fade-in-0 data-ending-style:zoom-out-95 data-starting-style:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2',
+                    className,
                 )}
+                {...props}
             >
-                {children}
-            </SelectPrimitive.Viewport>
-            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1">
-                <ChevronDown className="size-5" />
-            </SelectPrimitive.ScrollDownButton>
-        </SelectPrimitive.Content>
+                <SelectPrimitive.ScrollUpArrow className="flex items-center justify-center py-1">
+                    <ChevronUp className="size-5" />
+                </SelectPrimitive.ScrollUpArrow>
+                <SelectPrimitive.List
+                    className={cn(
+                        'p-1',
+                        position === 'popper' &&
+                            'h-(--anchor-height) w-full min-w-(--anchor-width)',
+                    )}
+                >
+                    {children}
+                </SelectPrimitive.List>
+                <SelectPrimitive.ScrollDownArrow className="flex items-center justify-center py-1">
+                    <ChevronDown className="size-5" />
+                </SelectPrimitive.ScrollDownArrow>
+            </SelectPrimitive.Popup>
+        </SelectPrimitive.Positioner>
     </SelectPrimitive.Portal>
 ))
-SelectContent.displayName = SelectPrimitive.Content.displayName
+SelectContent.displayName = SelectPrimitive.Popup.displayName
 
 export const SelectItem = React.forwardRef<
     React.ComponentRef<typeof SelectPrimitive.Item>,
@@ -68,7 +73,7 @@ export const SelectItem = React.forwardRef<
     <SelectPrimitive.Item
         ref={ref}
         className={cn(
-            'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+            'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50',
             className,
         )}
         {...props}
@@ -83,5 +88,5 @@ export const SelectItem = React.forwardRef<
 ))
 SelectItem.displayName = SelectPrimitive.Item.displayName
 
-export const SelectScrollUpButton = SelectPrimitive.ScrollUpButton
-export const SelectScrollDownButton = SelectPrimitive.ScrollDownButton
+export const SelectScrollUpButton = SelectPrimitive.ScrollUpArrow
+export const SelectScrollDownButton = SelectPrimitive.ScrollDownArrow

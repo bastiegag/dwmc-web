@@ -70,7 +70,12 @@ const monthOf = (date: string) => date.slice(0, 7)
 const setupTransactionApi = async (
     page: Parameters<typeof mockAuthenticatedSession>[0],
     initialTransactions: Transaction[] = [],
-    options: { failCreate?: boolean } = {},
+    options: {
+        failCreate?: boolean
+        failArchive?: boolean
+        archivePending?: Promise<void>
+        onArchiveRequest?: () => void
+    } = {},
 ) => {
     const accounts = [
         createAccount('checking', 'Checking', 1000),
@@ -208,6 +213,20 @@ const setupTransactionApi = async (
                 updatedAt: timestamp,
             })
         } else if (route.request().method() === 'DELETE') {
+            options.onArchiveRequest?.()
+            if (options.failArchive) {
+                return route.fulfill({
+                    status: 500,
+                    contentType: 'application/json',
+                    body: JSON.stringify({
+                        error: {
+                            code: 'INTERNAL_ERROR',
+                            message: 'Unable to archive transaction',
+                        },
+                    }),
+                })
+            }
+            if (options.archivePending) await options.archivePending
             transaction.isArchived = true
         }
 
@@ -293,6 +312,58 @@ test('shows an understandable API error without closing the transaction form', a
     await expect(dialog.getByRole('alert')).toBeVisible()
     await expect(dialog.getByRole('alert')).toContainText(/unable to save transaction/i)
     await expect(dialog).toBeVisible()
+})
+
+test('keeps the archive confirmation open and reports archive failures', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await mockAuthenticatedSession(page)
+    await setupTransactionApi(page, [createTransaction('transaction-1')], { failArchive: true })
+    await login(page)
+
+    await page.goto('/transactions?month=2026-01')
+    const archiveButton = page.getByRole('button', { name: 'Archive' })
+    await archiveButton.click()
+
+    const confirmation = page.getByRole('alertdialog')
+    const confirmButton = confirmation.getByRole('button', { name: 'Archive' })
+    await confirmButton.click()
+
+    await expect(confirmation).toBeVisible()
+    await expect(page.getByRole('alert')).toContainText('Unable to archive transaction')
+    await expect(confirmButton).toBeEnabled()
+})
+
+test('keeps archive confirmation pending and prevents duplicate confirmation', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await mockAuthenticatedSession(page)
+    let archiveRequestCount = 0
+    let releaseArchive!: () => void
+    const archivePending = new Promise<void>((resolve) => {
+        releaseArchive = resolve
+    })
+    await setupTransactionApi(page, [createTransaction('transaction-1')], {
+        archivePending,
+        onArchiveRequest: () => {
+            archiveRequestCount += 1
+        },
+    })
+    await login(page)
+
+    await page.goto('/transactions?month=2026-01')
+    await page.getByRole('button', { name: 'Archive' }).click()
+    const confirmation = page.getByRole('alertdialog')
+    const confirmButton = confirmation.getByRole('button', { name: 'Archive' })
+    await confirmButton.click()
+
+    const pendingButton = confirmation.getByRole('button', { name: 'Archiving...' })
+    await expect(pendingButton).toBeDisabled()
+    await expect(confirmation.getByRole('button', { name: 'Cancel' })).toBeDisabled()
+    await expect(pendingButton.click({ timeout: 1000 })).rejects.toThrow()
+    await expect.poll(() => archiveRequestCount).toBe(1)
+
+    releaseArchive()
+    await expect(confirmation).not.toBeVisible()
+    expect(archiveRequestCount).toBe(1)
 })
 
 test('creates a transfer and synchronizes both account balances', async ({ page }) => {
