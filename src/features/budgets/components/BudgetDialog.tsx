@@ -1,6 +1,6 @@
 import type { BudgetFormValues } from '@/features/budgets/schemas/budget.schema'
-import { Button } from '@/components/ui'
 import {
+    Button,
     Dialog,
     DialogContent,
     DialogDescription,

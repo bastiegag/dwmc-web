@@ -2,11 +2,10 @@ import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
-import { Button } from '@/components/ui'
+import { Button, Label } from '@/components/ui'
 import { TextField } from '@/components/form/TextField'
 import { categoryFormSchema, type CategoryFormValues } from '@/features/categories/schemas'
 import type { SectionWithCategories } from '@/features/categories/types'
-import { Label } from '@/components/ui'
 
 type CategoryFormProps = {
     sections: SectionWithCategories[]

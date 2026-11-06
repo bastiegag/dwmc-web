@@ -1,6 +1,6 @@
 import type { AccountFormValues } from '@/features/accounts/schemas/account.schema'
-import { Button } from '@/components/ui'
 import {
+    Button,
     Dialog,
     DialogContent,
     DialogDescription,

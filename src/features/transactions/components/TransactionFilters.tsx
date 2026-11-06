@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Label } from '@/components/ui'
-import { Input } from '@/components/ui'
-import { Button } from '@/components/ui'
+import { Button, Input, Label } from '@/components/ui'
 import type { GetTransactionsParams } from '@/features/transactions/types/transaction.types'
 import type { Account } from '@/features/accounts'
 import type { SectionWithCategories } from '@/features/categories/types'

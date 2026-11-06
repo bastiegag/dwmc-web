@@ -1,6 +1,4 @@
 import { useState, type FC } from 'react'
-import { Card } from '@/components/ui'
-import { Button } from '@/components/ui'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,8 +8,10 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    Button,
+    Card,
+    Progress,
 } from '@/components/ui'
-import { Progress } from '@/components/ui'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Budget } from '@/features/budgets/types/budget.types'
 import { getErrorMessage } from '@/shared/errors'
