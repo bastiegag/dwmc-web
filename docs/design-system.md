@@ -63,6 +63,42 @@ disabled states, and both light and dark themes in stories and tests. Muted
 foreground and link tokens are selected to preserve readable text contrast
 against their respective surfaces.
 
+## Choosing native HTML or Base UI
+
+Use native HTML for content, layout, and simple controls where the browser
+already provides correct semantics and keyboard behavior (buttons, links,
+tables, lists, native inputs, and separators). Use Base UI for behavior that
+needs managed state and focus, such as dialogs, menus, comboboxes, tooltips,
+accordions, and number fields. Wrappers in `src/components/ui/` should add only
+styling and token-based defaults; they should not hide the Base UI API.
+
+## Form fields and currency input
+
+Compose form fields with `Field`, `FieldLabel`, `FieldDescription`,
+`FieldError`, and `Fieldset`/`FieldLegend` from `src/components/form/`. The
+label, description, and error are linked to the control with `htmlFor` and
+`aria-describedby`; set `aria-invalid` on the control when `invalid` is true.
+Use `Controller` from React Hook Form for `CurrencyInput` and other controls
+that do not expose a native `ref` value.
+
+`CurrencyInput` uses a `string | null` contract:
+
+- `"12.50"`, `"0"`, and `"-25.99"` are decimal strings; `null` means empty.
+  Empty is never converted to zero.
+- Values are never rounded or truncated. Extra fraction digits are rejected
+  while typing, and only up to the currency's fraction digits are accepted.
+- Arithmetic must stay outside the component using decimal-safe logic. Do not
+  use floating-point numbers as the source of truth.
+- Focus shows an editable decimal with `.` as the separator. Blur shows
+  `Intl.NumberFormat` currency output for the `locale` and `currency` props.
+  Display formatting is never the source of truth.
+- Intermediate input such as `-` or `12.` is preserved while focused and is
+  normalised on commit (`12.` becomes `"12"`). Incomplete text is reverted on
+  blur.
+- Negative values are accepted only with `allowNegative`. `min` and `max` are
+  validated against the decimal value; the range message appears after blur
+  unless an `error` is supplied.
+
 ## Storybook
 
 Run `npm run storybook` for local component development or
@@ -70,3 +106,10 @@ Run `npm run storybook` for local component development or
 represent implemented states, including light/dark themes, hover/focus,
 disabled, loading, empty, error, and validation states where relevant. Use
 deterministic data and avoid live API calls.
+
+Each primitive has its own colocated `*.stories.tsx` beside its implementation
+(for example `src/components/ui/combobox.stories.tsx`). Titles follow
+`Design System/Components/<Category>/<Name>`. Use `tags: ['autodocs']` and
+document public props in the component's story metadata. Navigate to a single
+primitive in Storybook by its name under the category, and add a new story file
+rather than extending a shared catalogue.

@@ -41,6 +41,7 @@ export const NumberFieldDecrement = forwardRef<
     <NumberFieldPrimitive.Decrement
         ref={ref}
         render={<Button type="button" variant="link" icon />}
+        aria-label="Decrease"
         className={cn('rounded-none', className)}
         {...props}
     >
@@ -56,6 +57,7 @@ export const NumberFieldIncrement = forwardRef<
     <NumberFieldPrimitive.Increment
         ref={ref}
         render={<Button type="button" variant="link" icon />}
+        aria-label="Increase"
         className={cn('rounded-none', className)}
         {...props}
     >

@@ -38,7 +38,7 @@ export const Pagination = ({
                 <span className="sr-only sm:not-sr-only">Previous</span>
             </Button>
             {showPageNumbers && (
-                <span aria-current="page" className="text-sm text-muted-foreground">
+                <span className="text-sm text-muted-foreground" aria-live="polite">
                     Page {currentPage} of {totalPages}
                 </span>
             )}
