@@ -11,8 +11,8 @@ import {
     Shield,
     Wallet,
 } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui'
+import { Button } from '@/components/ui'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -22,8 +22,8 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Progress } from '@/components/ui/progress'
+} from '@/components/ui'
+import { Progress } from '@/components/ui'
 import { formatCurrency } from '@/lib/format-currency'
 import { getErrorMessage } from '@/shared/errors'
 import type { Account } from '@/features/accounts/types/account.types'

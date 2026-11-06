@@ -1,13 +1,13 @@
 import type { CategoryFormValues } from '@/features/categories/schemas'
 import type { SectionWithCategories } from '@/features/categories/types'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog'
+} from '@/components/ui'
 import { CategoryForm } from './CategoryForm'
 
 type CategoryDialogProps = {

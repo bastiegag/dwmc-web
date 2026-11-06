@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog'
+} from '@/components/ui'
 import TransactionForm from './TransactionForm'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
 import type { Account } from '@/features/accounts'

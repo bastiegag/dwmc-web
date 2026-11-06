@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui'
 import { ThemePreferenceControl } from '../components/ThemePreferenceControl'
 
 export const SettingsPage = () => (

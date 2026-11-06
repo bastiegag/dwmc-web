@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import { PrimaryActionContext } from '../context/primary-action.context'
 
 export const PrimaryActionButton = () => {

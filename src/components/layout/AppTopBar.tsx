@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import { useSelectedMonth } from '@/shared/month'
 import { ThemeToggle, Logo } from '@/components/layout'
 

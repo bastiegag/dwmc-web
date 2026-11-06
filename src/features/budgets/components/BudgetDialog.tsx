@@ -1,12 +1,12 @@
 import type { BudgetFormValues } from '@/features/budgets/schemas/budget.schema'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog'
+} from '@/components/ui'
 import { BudgetForm } from './BudgetForm'
 import type { SectionWithCategories } from '@/features/categories'
 

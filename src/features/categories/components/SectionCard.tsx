@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { SectionWithCategories } from '@/features/categories/types'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,9 +10,9 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+} from '@/components/ui'
 import { getErrorMessage } from '@/shared/errors'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui'
 import { CategoryList } from './CategoryList'
 
 type SectionCardProps = {

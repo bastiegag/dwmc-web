@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { CircleHelp, Cookie, ShoppingCart, Tags, Utensils } from 'lucide-react'
 import type { Category } from '@/features/categories/types'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -11,7 +11,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+} from '@/components/ui'
 import { getErrorMessage } from '@/shared/errors'
 
 type CategoryItemProps = {

@@ -7,7 +7,17 @@ a separate package.
 
 - `src/components/ui/` contains shadcn-style primitives backed by Base UI where
   an accessible headless primitive is useful, plus semantic native HTML
-  components for layout and content.
+  components for layout and content. Primitives are grouped by category:
+  `actions/`, `forms/`, `overlays/`, `navigation/`, `feedback/`,
+  `data-display/`, `disclosure/`, and `layout/`. Each file is PascalCase and
+  exports one component family, with its `*.stories.tsx` and `*.test.tsx`
+  colocated beside it.
+- Import primitives from the root barrel `@/components/ui`, which re-exports
+  each category barrel. Inside `src/components/ui/`, primitives import sibling
+  or cross-category files by relative path (for example `../actions/Button`)
+  and never import the root barrel, which avoids circular imports.
+- `CurrencyInput` lives in `src/components/form/` and is not part of the UI
+  barrel.
 - `src/components/form/` contains reusable labeled inputs and form feedback.
 - `src/components/layout/` contains navigation and application shell elements.
 - `src/features/*/components/` contains domain-specific compositions.
@@ -108,7 +118,7 @@ disabled, loading, empty, error, and validation states where relevant. Use
 deterministic data and avoid live API calls.
 
 Each primitive has its own colocated `*.stories.tsx` beside its implementation
-(for example `src/components/ui/combobox.stories.tsx`). Titles follow
+(for example `src/components/ui/forms/Combobox.stories.tsx`). Titles follow
 `Design System/Components/<Category>/<Name>`. Use `tags: ['autodocs']` and
 document public props in the component's story metadata. Navigate to a single
 primitive in Storybook by its name under the category, and add a new story file

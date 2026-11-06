@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import { CurrencyInput } from './CurrencyInput'
 import { Field, FieldError, FieldLabel } from './Field'
 
