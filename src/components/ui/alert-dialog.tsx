@@ -5,17 +5,23 @@ import { cn } from '@/lib/utils'
 const AlertDialogFocusContext =
     React.createContext<React.MutableRefObject<HTMLElement | null> | null>(null)
 
-export const AlertDialog = ({
-    onOpenChange,
-    ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) => {
+type AlertDialogProps = Omit<
+    React.ComponentProps<typeof AlertDialogPrimitive.Root>,
+    'onOpenChange'
+> & {
+    onOpenChange?: (open: boolean) => void
+}
+
+export const AlertDialog = ({ onOpenChange, ...props }: AlertDialogProps) => {
     const openerRef = React.useRef<HTMLElement | null>(null)
+
     React.useLayoutEffect(() => {
         if (props.open) {
             openerRef.current =
                 document.activeElement instanceof HTMLElement ? document.activeElement : null
         }
     }, [props.open])
+
     return (
         <AlertDialogFocusContext.Provider value={openerRef}>
             <AlertDialogPrimitive.Root
@@ -26,10 +32,8 @@ export const AlertDialog = ({
                             document.activeElement instanceof HTMLElement
                                 ? document.activeElement
                                 : null
-                    } else {
-                        setTimeout(() => openerRef.current?.focus(), 0)
                     }
-                    ;(onOpenChange as unknown as ((nextOpen: boolean) => void) | undefined)?.(open)
+                    onOpenChange?.(open)
                 }}
             />
         </AlertDialogFocusContext.Provider>
@@ -97,46 +101,43 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Backdrop.displayName
 export const AlertDialogContent = React.forwardRef<
     React.ComponentRef<typeof AlertDialogPrimitive.Popup>,
     React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Popup>
->(({ className, onKeyDown, ...props }, ref) => {
-    const contentRef = React.useRef<HTMLDivElement | null>(null)
-
-    React.useImperativeHandle(ref, () => contentRef.current as HTMLDivElement)
-    return (
-        <AlertDialogPortal>
-            <AlertDialogOverlay />
-            <AlertDialogPrimitive.Popup
-                ref={(element) => {
-                    contentRef.current = element
-                    element?.querySelector<HTMLElement>('button')?.focus()
-                }}
-                onKeyDown={(event) => {
-                    onKeyDown?.(event)
-                    if (event.key !== 'Tab') return
-                    const focusable = Array.from(
-                        event.currentTarget.querySelectorAll<HTMLElement>(
-                            'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-                        ),
-                    )
-                    const first = focusable[0]
-                    const last = focusable[focusable.length - 1]
-                    if (event.shiftKey && document.activeElement === first) {
-                        event.preventDefault()
-                        last?.focus()
-                    } else if (!event.shiftKey && document.activeElement === last) {
-                        event.preventDefault()
-                        first?.focus()
-                    }
-                }}
-                className={cn(
-                    'fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-4 shadow-lg outline-none data-ending-style:animate-out data-starting-style:animate-in',
-                    className,
-                )}
-                {...props}
-                aria-modal="true"
-            />
-        </AlertDialogPortal>
-    )
-})
+>(({ className, onKeyDown, ...props }, ref) => (
+    <AlertDialogPortal>
+        <AlertDialogOverlay />
+        <AlertDialogPrimitive.Popup
+            ref={(element) => {
+                if (typeof ref === 'function') ref(element)
+                else if (ref) ref.current = element
+                element?.querySelector<HTMLElement>('button')?.focus()
+            }}
+            onKeyDown={(event) => {
+                onKeyDown?.(event)
+                if (event.key !== 'Tab') return
+                const focusable = Array.from(
+                    event.currentTarget.querySelectorAll<HTMLElement>(
+                        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+                    ),
+                )
+                const first = focusable[0]
+                const last = focusable[focusable.length - 1]
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault()
+                    last?.focus()
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault()
+                    first?.focus()
+                }
+            }}
+            finalFocus={React.useContext(AlertDialogFocusContext) ?? undefined}
+            className={cn(
+                'fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-4 shadow-lg outline-none data-ending-style:animate-out data-starting-style:animate-in',
+                className,
+            )}
+            {...props}
+            aria-modal="true"
+        />
+    </AlertDialogPortal>
+))
 AlertDialogContent.displayName = AlertDialogPrimitive.Popup.displayName
 
 export const AlertDialogHeader = ({

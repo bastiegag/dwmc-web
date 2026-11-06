@@ -6,41 +6,20 @@ const DialogFocusContext = React.createContext<React.MutableRefObject<HTMLElemen
     null,
 )
 
-export const Dialog = ({
-    onOpenChange,
-    ...props
-}: React.ComponentProps<typeof DialogPrimitive.Root>) => {
+type DialogProps = Omit<React.ComponentProps<typeof DialogPrimitive.Root>, 'onOpenChange'> & {
+    onOpenChange?: (open: boolean) => void
+}
+
+export const Dialog = ({ onOpenChange, ...props }: DialogProps) => {
     const openerRef = React.useRef<HTMLElement | null>(null)
-    const lastExternalFocusRef = React.useRef<HTMLElement | null>(null)
-    const previousOpenRef = React.useRef(props.open ?? false)
-    React.useEffect(() => {
-        const handlePointerDown = (event: PointerEvent) => {
-            const target = event.target
-            if (
-                target instanceof HTMLElement &&
-                !target.closest('[role="dialog"], [role="alertdialog"]')
-            ) {
-                lastExternalFocusRef.current = target
-            }
-        }
-        document.addEventListener('pointerdown', handlePointerDown, true)
-        return () => document.removeEventListener('pointerdown', handlePointerDown, true)
-    }, [])
+
     React.useLayoutEffect(() => {
         if (props.open) {
             openerRef.current =
                 document.activeElement instanceof HTMLElement ? document.activeElement : null
-        } else if (previousOpenRef.current) {
-            const opener =
-                openerRef.current ??
-                lastExternalFocusRef.current ??
-                document.querySelector<HTMLElement>(
-                    'button:not([disabled]):not([aria-hidden="true"])',
-                )
-            opener?.focus()
         }
-        previousOpenRef.current = props.open ?? false
     }, [props.open])
+
     return (
         <DialogFocusContext.Provider value={openerRef}>
             <DialogPrimitive.Root
@@ -51,16 +30,8 @@ export const Dialog = ({
                             document.activeElement instanceof HTMLElement
                                 ? document.activeElement
                                 : null
-                    } else {
-                        const opener =
-                            openerRef.current ??
-                            lastExternalFocusRef.current ??
-                            document.querySelector<HTMLElement>(
-                                'button:not([disabled]):not([aria-hidden="true"])',
-                            )
-                        opener?.focus()
                     }
-                    ;(onOpenChange as unknown as ((nextOpen: boolean) => void) | undefined)?.(open)
+                    onOpenChange?.(open)
                 }}
             />
         </DialogFocusContext.Provider>
@@ -100,50 +71,47 @@ DialogOverlay.displayName = DialogPrimitive.Backdrop.displayName
 export const DialogContent = React.forwardRef<
     React.ComponentRef<typeof DialogPrimitive.Popup>,
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Popup>
->(({ className, onKeyDown, ...props }, ref) => {
-    const contentRef = React.useRef<HTMLDivElement | null>(null)
-
-    React.useImperativeHandle(ref, () => contentRef.current as HTMLDivElement)
-    return (
-        <DialogPortal>
-            <DialogOverlay />
-            <DialogPrimitive.Popup
-                ref={(element) => {
-                    contentRef.current = element
-                    element
-                        ?.querySelector<HTMLElement>(
-                            'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-                        )
-                        ?.focus()
-                }}
-                onKeyDown={(event) => {
-                    onKeyDown?.(event)
-                    if (event.key !== 'Tab') return
-                    const focusable = Array.from(
-                        event.currentTarget.querySelectorAll<HTMLElement>(
-                            'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-                        ),
+>(({ className, onKeyDown, ...props }, ref) => (
+    <DialogPortal>
+        <DialogOverlay />
+        <DialogPrimitive.Popup
+            ref={(element) => {
+                if (typeof ref === 'function') ref(element)
+                else if (ref) ref.current = element
+                element
+                    ?.querySelector<HTMLElement>(
+                        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
                     )
-                    const first = focusable[0]
-                    const last = focusable[focusable.length - 1]
-                    if (event.shiftKey && document.activeElement === first) {
-                        event.preventDefault()
-                        last?.focus()
-                    } else if (!event.shiftKey && document.activeElement === last) {
-                        event.preventDefault()
-                        first?.focus()
-                    }
-                }}
-                className={cn(
-                    'fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-4 shadow-lg outline-none data-ending-style:animate-out data-starting-style:animate-in',
-                    className,
-                )}
-                {...props}
-                aria-modal="true"
-            />
-        </DialogPortal>
-    )
-})
+                    ?.focus()
+            }}
+            onKeyDown={(event) => {
+                onKeyDown?.(event)
+                if (event.key !== 'Tab') return
+                const focusable = Array.from(
+                    event.currentTarget.querySelectorAll<HTMLElement>(
+                        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+                    ),
+                )
+                const first = focusable[0]
+                const last = focusable[focusable.length - 1]
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault()
+                    last?.focus()
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault()
+                    first?.focus()
+                }
+            }}
+            finalFocus={React.useContext(DialogFocusContext) ?? undefined}
+            className={cn(
+                'fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border bg-background p-4 shadow-lg outline-none data-ending-style:animate-out data-starting-style:animate-in',
+                className,
+            )}
+            {...props}
+            aria-modal="true"
+        />
+    </DialogPortal>
+))
 DialogContent.displayName = DialogPrimitive.Popup.displayName
 
 export const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
