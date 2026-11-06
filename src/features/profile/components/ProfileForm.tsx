@@ -3,15 +3,15 @@ import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
 import { FormField } from '@/components/form/FormField'
-import { Button } from '@/components/ui/button'
 import { TextField } from '@/components/form/TextField'
 import {
+    Button,
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select'
+} from '@/components/ui'
 import { useUpdateProfile } from '../hooks'
 import { profileFormSchema, type ProfileFormValues } from '../schemas/profile.schema'
 import { supportedCurrencies, type UserProfile } from '../types/profile.types'

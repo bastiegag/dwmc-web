@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,7 +8,9 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+    Button,
+    Card,
+} from '@/components/ui'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 import { isValidDateOnly } from '@/shared/date'
 import { getErrorMessage } from '@/shared/errors'

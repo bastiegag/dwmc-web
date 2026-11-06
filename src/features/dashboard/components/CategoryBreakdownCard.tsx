@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui'
 import { formatCurrency } from '@/lib/format-currency'
 import type { SummaryCategoryBreakdown } from '@/features/dashboard/types/summary.types'
 

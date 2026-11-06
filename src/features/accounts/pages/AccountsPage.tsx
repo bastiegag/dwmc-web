@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { Alert } from '@/components/ui/alert'
+import { Alert } from '@/components/ui'
 import { QueryState } from '@/components/feedback'
 import type { Account } from '@/features/accounts/types/account.types'
 import type { AccountFormValues } from '@/features/accounts/schemas/account.schema'

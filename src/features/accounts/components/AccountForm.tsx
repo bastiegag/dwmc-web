@@ -3,9 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useWatch } from 'react-hook-form'
 import type { Resolver } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
-import { Button } from '@/components/ui/button'
+import { Button, Label } from '@/components/ui'
 import { TextField } from '@/components/form/TextField'
-import { Label } from '@/components/ui/label'
 import {
     accountFormSchema,
     type AccountFormValues,
