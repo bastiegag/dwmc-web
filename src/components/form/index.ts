@@ -1,4 +1,6 @@
 export { FormField } from './FormField'
 export { TextField } from './TextField'
 export { PasswordField } from './PasswordField'
+export { Field, FieldLabel, FieldDescription, FieldError, Fieldset, FieldLegend } from './Field'
+export { CurrencyInput } from './CurrencyInput'
 export { FormError } from './FormError'

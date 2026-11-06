@@ -5,7 +5,9 @@
 The design system is implemented in the application rather than distributed as
 a separate package.
 
-- `src/components/ui/` contains shadcn/ui and Radix-based primitives.
+- `src/components/ui/` contains shadcn-style primitives backed by Base UI where
+  an accessible headless primitive is useful, plus semantic native HTML
+  components for layout and content.
 - `src/components/form/` contains reusable labeled inputs and form feedback.
 - `src/components/layout/` contains navigation and application shell elements.
 - `src/features/*/components/` contains domain-specific compositions.
@@ -16,6 +18,15 @@ a separate package.
 
 Prefer existing primitives and feature patterns before adding a new component.
 Do not duplicate a shared primitive inside a feature.
+
+The shared primitive library includes overlays and interactions (dialog, drawer,
+sheet, dropdown menu, combobox, tooltip, accordion, and number field), form
+foundations (field, fieldset, input group, and currency input), and semantic
+content primitives (table, pagination, separator, skeleton, and scroll area).
+These components own accessibility and interaction behavior, but not feature
+data fetching or business rules. Currency input values use decimal strings (or
+`null` for empty) so callers can preserve monetary precision without relying on
+binary floating-point values.
 
 ## Tailwind and tokens
 
