@@ -101,7 +101,7 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Backdrop.displayName
 export const AlertDialogContent = React.forwardRef<
     React.ComponentRef<typeof AlertDialogPrimitive.Popup>,
     React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Popup>
->(({ className, onKeyDown, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
     <AlertDialogPortal>
         <AlertDialogOverlay />
         <AlertDialogPrimitive.Popup
@@ -109,24 +109,6 @@ export const AlertDialogContent = React.forwardRef<
                 if (typeof ref === 'function') ref(element)
                 else if (ref) ref.current = element
                 element?.querySelector<HTMLElement>('button')?.focus()
-            }}
-            onKeyDown={(event) => {
-                onKeyDown?.(event)
-                if (event.key !== 'Tab') return
-                const focusable = Array.from(
-                    event.currentTarget.querySelectorAll<HTMLElement>(
-                        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-                    ),
-                )
-                const first = focusable[0]
-                const last = focusable[focusable.length - 1]
-                if (event.shiftKey && document.activeElement === first) {
-                    event.preventDefault()
-                    last?.focus()
-                } else if (!event.shiftKey && document.activeElement === last) {
-                    event.preventDefault()
-                    first?.focus()
-                }
             }}
             finalFocus={React.useContext(AlertDialogFocusContext) ?? undefined}
             className={cn(

@@ -71,7 +71,7 @@ DialogOverlay.displayName = DialogPrimitive.Backdrop.displayName
 export const DialogContent = React.forwardRef<
     React.ComponentRef<typeof DialogPrimitive.Popup>,
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Popup>
->(({ className, onKeyDown, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
     <DialogPortal>
         <DialogOverlay />
         <DialogPrimitive.Popup
@@ -83,24 +83,6 @@ export const DialogContent = React.forwardRef<
                         'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
                     )
                     ?.focus()
-            }}
-            onKeyDown={(event) => {
-                onKeyDown?.(event)
-                if (event.key !== 'Tab') return
-                const focusable = Array.from(
-                    event.currentTarget.querySelectorAll<HTMLElement>(
-                        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-                    ),
-                )
-                const first = focusable[0]
-                const last = focusable[focusable.length - 1]
-                if (event.shiftKey && document.activeElement === first) {
-                    event.preventDefault()
-                    last?.focus()
-                } else if (!event.shiftKey && document.activeElement === last) {
-                    event.preventDefault()
-                    first?.focus()
-                }
             }}
             finalFocus={React.useContext(DialogFocusContext) ?? undefined}
             className={cn(

@@ -74,6 +74,7 @@ const setupTransactionApi = async (
         failCreate?: boolean
         failArchive?: boolean
         archivePending?: Promise<void>
+        onArchiveRequest?: () => void
     } = {},
 ) => {
     const accounts = [
@@ -212,6 +213,7 @@ const setupTransactionApi = async (
                 updatedAt: timestamp,
             })
         } else if (route.request().method() === 'DELETE') {
+            options.onArchiveRequest?.()
             if (options.failArchive) {
                 return route.fulfill({
                     status: 500,
@@ -334,11 +336,17 @@ test('keeps the archive confirmation open and reports archive failures', async (
 test('keeps archive confirmation pending and prevents duplicate confirmation', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await mockAuthenticatedSession(page)
+    let archiveRequestCount = 0
     let releaseArchive!: () => void
     const archivePending = new Promise<void>((resolve) => {
         releaseArchive = resolve
     })
-    await setupTransactionApi(page, [createTransaction('transaction-1')], { archivePending })
+    await setupTransactionApi(page, [createTransaction('transaction-1')], {
+        archivePending,
+        onArchiveRequest: () => {
+            archiveRequestCount += 1
+        },
+    })
     await login(page)
 
     await page.goto('/transactions?month=2026-01')
@@ -350,9 +358,12 @@ test('keeps archive confirmation pending and prevents duplicate confirmation', a
     const pendingButton = confirmation.getByRole('button', { name: 'Archiving...' })
     await expect(pendingButton).toBeDisabled()
     await expect(confirmation.getByRole('button', { name: 'Cancel' })).toBeDisabled()
+    await expect(pendingButton.click({ timeout: 1000 })).rejects.toThrow()
+    await expect.poll(() => archiveRequestCount).toBe(1)
 
     releaseArchive()
     await expect(confirmation).not.toBeVisible()
+    expect(archiveRequestCount).toBe(1)
 })
 
 test('creates a transfer and synchronizes both account balances', async ({ page }) => {

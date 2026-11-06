@@ -36,7 +36,7 @@ describe('TransactionItem', () => {
         expect(onEdit).toHaveBeenCalledWith(transaction)
     })
 
-    it('requires confirmation before archiving and supports cancel, Escape, and focus wrapping', async () => {
+    it('requires confirmation before archiving and supports cancel and Escape', async () => {
         const user = userEvent.setup()
         const onArchive = vi.fn()
         const transaction = createTransaction()
@@ -67,8 +67,6 @@ describe('TransactionItem', () => {
             name: 'Archive',
         })
         expect(reopenedCancelButton).toHaveFocus()
-        await user.tab({ shift: true })
-        expect(reopenedConfirmButton).toHaveFocus()
         await user.click(reopenedConfirmButton)
 
         await waitFor(() => expect(onArchive).toHaveBeenCalledWith(transaction))
