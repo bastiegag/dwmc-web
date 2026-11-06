@@ -13,7 +13,7 @@ import {
 } from './AlertDialog'
 
 const meta = {
-    title: 'Design System/Primitives/Alert Dialog',
+    title: 'Design System/Components/Overlays/Alert Dialog',
     component: AlertDialog,
     tags: ['autodocs'],
 } satisfies Meta<typeof AlertDialog>

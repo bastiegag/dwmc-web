@@ -26,6 +26,30 @@ const preview: Preview = {
     parameters: {
         backgrounds: { disable: true },
         layout: 'centered',
+        viewport: {
+            options: {
+                smallMobile: {
+                    name: 'Small mobile',
+                    styles: { width: '320px', height: '640px' },
+                    type: 'mobile',
+                },
+                largeMobile: {
+                    name: 'Large mobile',
+                    styles: { width: '430px', height: '932px' },
+                    type: 'mobile',
+                },
+                tablet: {
+                    name: 'Tablet',
+                    styles: { width: '768px', height: '1024px' },
+                    type: 'tablet',
+                },
+                desktop: {
+                    name: 'Desktop',
+                    styles: { width: '1280px', height: '800px' },
+                    type: 'desktop',
+                },
+            },
+        },
         controls: {
             matchers: {
                 color: /(background|color)$/i,
