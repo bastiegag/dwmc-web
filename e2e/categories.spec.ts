@@ -136,8 +136,16 @@ test('authenticated users can manage Sections and Categories', async ({ page }) 
     await page.getByRole('button', { name: 'Save changes' }).click()
     await expect(page.getByText('Weekly groceries')).toBeVisible()
 
-    await page.getByRole('button', { name: 'Archive category Weekly groceries' }).click()
-    await page.getByRole('alertdialog').getByRole('button', { name: 'Archive' }).click()
+    const archiveCategory = page.getByRole('button', { name: 'Archive category Weekly groceries' })
+    await archiveCategory.click()
+    const confirmation = page.getByRole('alertdialog')
+    await expect(confirmation.locator(':focus')).toBeVisible()
+    await confirmation.getByRole('button', { name: 'Cancel' }).click()
+    await expect(confirmation).not.toBeVisible()
+    await expect(archiveCategory).toBeFocused()
+
+    await archiveCategory.click()
+    await confirmation.getByRole('button', { name: 'Archive' }).click()
     await expect(
         page
             .getByRole('list', { name: 'Categories list' })
