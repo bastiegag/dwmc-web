@@ -76,6 +76,19 @@ export const IconOnly: Story = {
     ),
 }
 
+export const Sizes: Story = {
+    argTypes: {
+        children: { control: false },
+    },
+    render: () => (
+        <div className="flex items-center gap-3">
+            <Button size="sm">Small</Button>
+            <Button size="md">Medium</Button>
+            <Button size="lg">Large</Button>
+        </div>
+    ),
+}
+
 export const Disabled: Story = {
     args: { children: 'Button', disabled: true },
 }

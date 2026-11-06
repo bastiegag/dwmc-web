@@ -123,3 +123,42 @@ Each primitive has its own colocated `*.stories.tsx` beside its implementation
 document public props in the component's story metadata. Navigate to a single
 primitive in Storybook by its name under the category, and add a new story file
 rather than extending a shared catalogue.
+
+### Design workspace
+
+- **Foundations** (`Design System/Foundations/*`) show the live token values
+  read from the CSS: primitive palettes, semantic colors with light and dark
+  columns, radius, shadows, borders, breakpoints, motion, spacing, typography,
+  surfaces, and icons.
+- **Patterns** (`Design System/Patterns/*`) compose primitives into loading,
+  form-validation, error, and empty states using deterministic data.
+- **Viewports** use the presets in `.storybook/preview.ts`: small mobile (320),
+  large mobile (430), tablet (768), and desktop (1280). Select one from the
+  Storybook toolbar.
+- **Theme** is toggled from the toolbar (light or dark). Storybook has no
+  "system" option, so the OS preference is not previewed automatically.
+
+Where to edit each kind of value:
+
+| Change                              | File                        |
+| ----------------------------------- | --------------------------- |
+| Primitive palettes, semantic colors | `src/styles/colors.css`     |
+| Font families and text styles       | `src/styles/typography.css` |
+| Base radius                         | `src/styles/radius.css`     |
+| Shared utilities and motion guard   | `src/styles/utilities.css`  |
+| Component variants and states       | the component's `.tsx` file |
+| Storybook layout or viewports       | `.storybook/preview.ts`     |
+
+Token decisions:
+
+- The `sidebar-*` and `chart-*` color mappings were removed. Nothing in the app
+  or Storybook used them, and the chart components use the primary color
+  directly. Add tokens only when a component needs them.
+- `--card-foreground` is defined in both themes.
+
+Remaining gap:
+
+- `--color-white` comes from Tailwind's default theme, not from DWMC tokens.
+
+The final visual design is owned by the developer. The foundation and pattern
+stories document the current implementation; they are not a design proposal.
