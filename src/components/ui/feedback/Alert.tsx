@@ -1,19 +1,24 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { CircleCheck, CircleX, Info, TriangleAlert, type LucideIcon } from 'lucide-react'
+import {
+    CircleCheck,
+    CircleEllipsis,
+    CircleX,
+    Info,
+    TriangleAlert,
+    type LucideIcon,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '../actions/Button'
 
 const alertVariants = cva('relative flex w-full items-start gap-2 rounded-lg border-2 p-3 mb-4', {
     variants: {
         variant: {
-            destructive:
-                'border-destructive-border bg-destructive-subtle text-destructive dark:border-destructive [&>svg]:text-destructive',
-            success:
-                'border-success-border bg-success-subtle text-success dark:border-success [&>svg]:text-success',
-            warning:
-                'border-warning-border bg-warning-subtle text-warning dark:border-warning [&>svg]:text-warning',
-            info: 'border-info-border bg-info-subtle text-info dark:border-info [&>svg]:text-info',
+            default: 'border-default bg-default-background text-default-border',
+            destructive: 'border-destructive bg-destructive-background text-destructive-border',
+            warning: 'border-warning bg-warning-background text-warning-border',
+            success: 'border-success bg-success-background text-success-border',
+            info: 'border-info bg-info-background text-info-border',
         },
     },
 })
@@ -21,9 +26,10 @@ const alertVariants = cva('relative flex w-full items-start gap-2 rounded-lg bor
 type AlertVariant = NonNullable<VariantProps<typeof alertVariants>['variant']>
 
 const variantIcons: Record<AlertVariant, LucideIcon> = {
+    default: CircleEllipsis,
     destructive: CircleX,
-    success: CircleCheck,
     warning: TriangleAlert,
+    success: CircleCheck,
     info: Info,
 } as const
 
@@ -77,7 +83,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             {action ? (
                                 <Button
                                     type="button"
-                                    variant="contained"
+                                    variant="outlined"
                                     color={variant}
                                     size="sm"
                                     onClick={action.onClick}

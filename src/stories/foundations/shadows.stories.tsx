@@ -1,7 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TokenValue } from './TokenValue'
 
-const shadows = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const
+const shadows = [
+    { name: 'xs', className: 'shadow-xs' },
+    { name: 'sm', className: 'shadow-sm' },
+    { name: 'md', className: 'shadow-md' },
+    { name: 'lg', className: 'shadow-lg' },
+    { name: 'xl', className: 'shadow-xl' },
+    { name: '2xl', className: 'shadow-2xl' },
+] as const
 
 const meta = {
     title: 'Design System/Foundations/Shadows',
@@ -23,14 +30,14 @@ export const ShadowScale: Story = {
     render: () => (
         <div className="grid max-w-5xl gap-8 gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
             {shadows.map((shadow) => (
-                <div key={shadow} className="space-y-4">
+                <div key={shadow.name} className="space-y-4">
                     <div
-                        className={`shadow-${shadow} flex h-24 items-center justify-center rounded-lg bg-card`}
+                        className={`${shadow.className} flex h-24 items-center justify-center rounded-lg bg-card`}
                     >
-                        <span className="text-sm font-medium">shadow-{shadow}</span>
+                        <span className="text-sm font-medium">{shadow.className}</span>
                     </div>
                     <TokenValue
-                        name={`--shadow-${shadow}`}
+                        name={`--${shadow.className}`}
                         className="block break-all text-xs text-muted-foreground"
                     />
                 </div>

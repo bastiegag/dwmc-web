@@ -53,7 +53,10 @@ export const UsedIcons: Story = {
     render: () => (
         <div className="grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
             {icons.map(([name, Icon]) => (
-                <div key={name} className="flex flex-col items-center gap-2 rounded-lg border p-4">
+                <div
+                    key={name}
+                    className="flex flex-col items-center gap-2 rounded-lg border border-border p-4"
+                >
                     <Icon className="size-5" aria-hidden="true" />
                     <span className="text-center text-xs">{name}</span>
                 </div>

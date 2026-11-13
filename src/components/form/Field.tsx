@@ -43,7 +43,7 @@ export const FieldDescription = forwardRef<
     HTMLParagraphElement,
     HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-    <p ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
+    <p ref={ref} className={cn('text-xs text-muted-foreground', className)} {...props} />
 ))
 FieldDescription.displayName = 'FieldDescription'
 
@@ -59,7 +59,7 @@ export const FieldError = forwardRef<HTMLParagraphElement, FieldErrorProps>(
             <p
                 ref={ref}
                 role="alert"
-                className={cn('text-sm text-destructive', className)}
+                className={cn('text-xs text-destructive', className)}
                 {...props}
             >
                 {message}

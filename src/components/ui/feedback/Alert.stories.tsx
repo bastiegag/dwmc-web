@@ -17,7 +17,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-    args: { variant: 'info' },
+    args: { variant: 'default' },
     render: (args) => (
         <Alert
             {...args}
@@ -27,13 +27,13 @@ export const Default: Story = {
     ),
 }
 
-export const Success: Story = {
-    args: { variant: 'success' },
+export const Destructive: Story = {
+    args: { variant: 'destructive' },
     render: (args) => (
         <Alert
             {...args}
-            title="Transaction saved"
-            description="The grocery transaction was added successfully."
+            title="Could not save changes"
+            description="Check your connection and try again."
         />
     ),
 }
@@ -49,6 +49,17 @@ export const Warning: Story = {
     ),
 }
 
+export const Success: Story = {
+    args: { variant: 'success' },
+    render: (args) => (
+        <Alert
+            {...args}
+            title="Transaction saved"
+            description="The grocery transaction was added successfully."
+        />
+    ),
+}
+
 export const Info: Story = {
     args: { variant: 'info' },
     render: (args) => (
@@ -56,17 +67,6 @@ export const Info: Story = {
             {...args}
             title="New month available"
             description="Review your recurring categories before adding entries."
-        />
-    ),
-}
-
-export const Destructive: Story = {
-    args: { variant: 'destructive' },
-    render: (args) => (
-        <Alert
-            {...args}
-            title="Could not save changes"
-            description="Check your connection and try again."
         />
     ),
 }

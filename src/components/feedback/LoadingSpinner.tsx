@@ -5,7 +5,7 @@ type LoadingSpinnerProps = Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'ro
     size?: 'sm' | 'md' | 'lg'
 }
 
-const sizeMap = { sm: 'h-4 w-4', md: 'h-6 w-6', lg: 'h-8 w-8' }
+const sizeMap = { sm: 'h-4 w-4 border-2', md: 'h-6 w-6 border-3', lg: 'h-8 w-8 border-4' }
 
 export const LoadingSpinner = ({
     size = 'md',
@@ -18,7 +18,7 @@ export const LoadingSpinner = ({
         role="status"
         aria-label={ariaLabel}
         className={cn(
-            'animate-spin rounded-full border-3 border-current border-t-transparent',
+            'animate-spin rounded-full border-current border-t-transparent',
             sizeMap[size],
             className,
         )}

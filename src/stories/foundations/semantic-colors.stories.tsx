@@ -39,15 +39,31 @@ const tokenGroups: { title: string; tokens: SemanticToken[] }[] = [
                 purpose: 'Primary actions and active emphasis.',
                 foreground: 'primary-foreground',
             },
-            { name: 'primary-subtle', purpose: 'Soft primary fill.' },
-            { name: 'primary-border', purpose: 'Primary-tinted border.' },
+            {
+                name: 'primary-subtle',
+                purpose: 'Soft primary fill.',
+                foreground: 'primary-foreground',
+            },
+            {
+                name: 'primary-border',
+                purpose: 'Primary-tinted border.',
+                foreground: 'primary-foreground',
+            },
             {
                 name: 'secondary',
                 purpose: 'Secondary actions and supporting emphasis.',
                 foreground: 'secondary-foreground',
             },
-            { name: 'secondary-subtle', purpose: 'Soft secondary fill.' },
-            { name: 'secondary-border', purpose: 'Secondary-tinted border.' },
+            {
+                name: 'secondary-subtle',
+                purpose: 'Soft secondary fill.',
+                foreground: 'secondary-foreground',
+            },
+            {
+                name: 'secondary-border',
+                purpose: 'Secondary-tinted border.',
+                foreground: 'secondary-foreground',
+            },
         ],
     },
     {
@@ -58,29 +74,61 @@ const tokenGroups: { title: string; tokens: SemanticToken[] }[] = [
                 purpose: 'Irreversible actions and error emphasis.',
                 foreground: 'destructive-foreground',
             },
-            { name: 'destructive-subtle', purpose: 'Soft error fill.' },
-            { name: 'destructive-border', purpose: 'Error-tinted border.' },
+            {
+                name: 'destructive-subtle',
+                purpose: 'Soft error fill.',
+                foreground: 'destructive-foreground',
+            },
+            {
+                name: 'destructive-border',
+                purpose: 'Error-tinted border.',
+                foreground: 'destructive-foreground',
+            },
             {
                 name: 'success',
                 purpose: 'Confirmed successful states.',
                 foreground: 'success-foreground',
             },
-            { name: 'success-subtle', purpose: 'Soft success fill.' },
-            { name: 'success-border', purpose: 'Success-tinted border.' },
+            {
+                name: 'success-subtle',
+                purpose: 'Soft success fill.',
+                foreground: 'success-foreground',
+            },
+            {
+                name: 'success-border',
+                purpose: 'Success-tinted border.',
+                foreground: 'success-foreground',
+            },
             {
                 name: 'warning',
                 purpose: 'Cautionary information and actions.',
                 foreground: 'warning-foreground',
             },
-            { name: 'warning-subtle', purpose: 'Soft warning fill.' },
-            { name: 'warning-border', purpose: 'Warning-tinted border.' },
+            {
+                name: 'warning-subtle',
+                purpose: 'Soft warning fill.',
+                foreground: 'warning-foreground',
+            },
+            {
+                name: 'warning-border',
+                purpose: 'Warning-tinted border.',
+                foreground: 'warning-foreground',
+            },
             {
                 name: 'info',
                 purpose: 'Neutral informational emphasis.',
                 foreground: 'info-foreground',
             },
-            { name: 'info-subtle', purpose: 'Soft informational fill.' },
-            { name: 'info-border', purpose: 'Info-tinted border.' },
+            {
+                name: 'info-subtle',
+                purpose: 'Soft informational fill.',
+                foreground: 'info-foreground',
+            },
+            {
+                name: 'info-border',
+                purpose: 'Info-tinted border.',
+                foreground: 'info-foreground',
+            },
         ],
     },
     {
@@ -120,17 +168,17 @@ const tokenGroups: { title: string; tokens: SemanticToken[] }[] = [
     {
         title: 'Links',
         tokens: [
-            { name: 'link', purpose: 'Link text color.' },
-            { name: 'link-hover', purpose: 'Link hover color.' },
+            { name: 'link', purpose: 'Link text color.', foreground: 'color-white' },
+            { name: 'link-hover', purpose: 'Link hover color.', foreground: 'color-white' },
         ],
     },
 ]
 
 function TokenPreview({ token }: { token: SemanticToken }) {
     return (
-        <div className="overflow-hidden rounded-lg border bg-card text-card-foreground">
+        <div className="overflow-hidden rounded-lg border border-border bg-card text-card-foreground">
             <div
-                className="flex h-16 items-center justify-center border-b text-sm font-medium"
+                className="flex h-16 items-center justify-center border-b border-border text-sm font-medium"
                 style={{
                     background: `var(--${token.name})`,
                     color: `var(--${token.foreground ?? 'foreground'})`,
@@ -170,14 +218,14 @@ export const ThemeComparison: Story = {
             {(['light', 'dark'] as const).map((theme) => (
                 <section
                     key={theme}
-                    className={`${theme} space-y-8 rounded-xl border bg-background p-6 text-foreground`}
+                    className={`${theme} space-y-8 rounded-xl border border-border bg-background p-6 text-foreground`}
                     aria-label={`${theme} theme semantic colors`}
                 >
                     <h2 className="text-heading-3 capitalize">{theme} theme</h2>
                     {tokenGroups.map((group) => (
                         <div key={group.title} className="space-y-3">
                             <h3 className="text-label text-muted-foreground">{group.title}</h3>
-                            <div className="grid gap-3 sm:grid-cols-2">
+                            <div className="grid gap-3 sm:grid-cols-3">
                                 {group.tokens.map((token) => (
                                     <TokenPreview key={token.name} token={token} />
                                 ))}

@@ -1,4 +1,4 @@
-@theme {
+@theme static {
     --color-neutral-50: oklch(97.6% 0.005 170);
     --color-neutral-100: oklch(94% 0.008 210);
     --color-neutral-200: oklch(89% 0.014 220);
@@ -94,35 +94,40 @@
     --color-background: var(--background);
     --color-foreground: var(--foreground);
 
+    --color-default: var(--default);
+    --color-default-background: var(--default-background);
+    --color-default-foreground: var(--default-foreground);
+    --color-default-border: var(--default-border);
+
     --color-primary: var(--primary);
+    --color-primary-background: var(--primary-background);
     --color-primary-foreground: var(--primary-foreground);
-    --color-primary-subtle: var(--primary-subtle);
     --color-primary-border: var(--primary-border);
 
     --color-secondary: var(--secondary);
+    --color-secondary-background: var(--secondary-background);
     --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary-subtle: var(--secondary-subtle);
     --color-secondary-border: var(--secondary-border);
 
     --color-destructive: var(--destructive);
+    --color-destructive-background: var(--destructive-background);
     --color-destructive-foreground: var(--destructive-foreground);
-    --color-destructive-subtle: var(--destructive-subtle);
-    --color-destructive-border: var(--destructive-border);
-
-    --color-success: var(--success);
-    --color-success-foreground: var(--success-foreground);
-    --color-success-subtle: var(--success-subtle);
-    --color-success-border: var(--success-border);
+    --color-destructive-border: var(--semantic-destructive-border);
 
     --color-warning: var(--warning);
+    --color-warning-background: var(--warning-background);
     --color-warning-foreground: var(--warning-foreground);
-    --color-warning-subtle: var(--warning-subtle);
-    --color-warning-border: var(--warning-border);
+    --color-warning-border: var(--semantic-warning-border);
+
+    --color-success: var(--success);
+    --color-success-background: var(--success-background);
+    --color-success-foreground: var(--success-foreground);
+    --color-success-border: var(--semantic-success-border);
 
     --color-info: var(--info);
+    --color-info-background: var(--info-background);
     --color-info-foreground: var(--info-foreground);
-    --color-info-subtle: var(--info-subtle);
-    --color-info-border: var(--info-border);
+    --color-info-border: var(--semantic-info-border);
 
     --color-card: var(--card);
     --color-card-foreground: var(--card-foreground);
@@ -148,43 +153,47 @@
     --background: var(--color-neutral-50);
     --foreground: var(--color-neutral-900);
 
-    --default: var(--color-neutral-900);
-    --default-foreground: var(--color-neutral-50);
-    --default-subtle: var(--color-neutral-100);
-    --default-border: var(--color-neutral-300);
+    --default: var(--color-neutral-500);
+    --default-background: var(--color-neutral-100);
+    --default-foreground: var(--color-neutral-950);
+    --default-border: var(--color-neutral-700);
 
     --primary: var(--color-lavender-500);
-    --primary-foreground: var(--color-white);
-    --primary-subtle: var(--color-lavender-50);
-    --primary-border: var(--color-lavender-200);
+    --primary-background: var(--color-lavender-50);
+    --primary-foreground: var(--color-lavender-950);
+    --primary-border: var(--color-lavender-700);
 
     --secondary: var(--color-teal-500);
-    --secondary-foreground: var(--color-white);
-    --secondary-subtle: var(--color-teal-50);
-    --secondary-border: var(--color-teal-200);
+    --secondary-background: var(--color-teal-50);
+    --secondary-foreground: var(--color-teal-950);
+    --secondary-border: var(--color-teal-800);
 
     --destructive: var(--color-red-500);
-    --destructive-foreground: var(--color-white);
-    --destructive-subtle: var(--color-red-50);
-    --destructive-border: var(--color-red-200);
-
-    --success: var(--color-green-500);
-    --success-foreground: var(--color-white);
-    --success-subtle: var(--color-green-50);
-    --success-border: var(--color-green-200);
+    --destructive-background: var(--color-red-50);
+    --destructive-foreground: var(--color-red-950);
+    --destructive-border: var(--color-red-700);
+    --semantic-destructive-border: var(--color-red-700);
 
     --warning: var(--color-yellow-500);
-    --warning-foreground: var(--color-white);
-    --warning-subtle: var(--color-yellow-50);
-    --warning-border: var(--color-yellow-200);
+    --warning-background: var(--color-yellow-50);
+    --warning-foreground: var(--color-yellow-950);
+    --warning-border: var(--color-yellow-800);
+    --semantic-warning-border: var(--color-yellow-800);
+
+    --success: var(--color-green-500);
+    --success-background: var(--color-green-50);
+    --success-foreground: var(--color-green-950);
+    --success-border: var(--color-green-700);
+    --semantic-success-border: var(--color-green-700);
 
     --info: var(--color-blue-500);
-    --info-foreground: var(--color-white);
-    --info-subtle: var(--color-blue-50);
-    --info-border: var(--color-blue-200);
+    --info-background: var(--color-blue-50);
+    --info-foreground: var(--color-blue-950);
+    --info-border: var(--color-blue-700);
+    --semantic-info-border: var(--color-blue-700);
 
     --muted: var(--color-neutral-100);
-    --muted-foreground: var(--color-neutral-600);
+    --muted-foreground: var(--color-neutral-700);
     --accent: var(--color-neutral-100);
     --accent-foreground: var(--color-neutral-900);
     --link: var(--color-lavender-800);
@@ -204,40 +213,44 @@
     --background: var(--color-neutral-900);
     --foreground: var(--color-neutral-50);
 
-    --default: var(--color-neutral-50);
-    --default-foreground: var(--color-neutral-900);
-    --default-subtle: var(--color-neutral-800);
-    --default-border: var(--color-neutral-700);
+    --default: var(--color-neutral-500);
+    --default-background: var(--color-neutral-950);
+    --default-foreground: var(--color-neutral-950);
+    --default-border: var(--color-neutral-400);
 
-    --primary: var(--color-lavender-400);
-    --primary-foreground: var(--color-neutral-950);
-    --primary-subtle: var(--color-lavender-950);
-    --primary-border: var(--color-lavender-700);
+    --primary: var(--color-lavender-500);
+    --primary-background: var(--color-lavender-950);
+    --primary-foreground: var(--color-lavender-950);
+    --primary-border: var(--color-lavender-400);
 
-    --secondary: var(--color-teal-400);
-    --secondary-foreground: var(--color-neutral-950);
-    --secondary-subtle: var(--color-teal-950);
-    --secondary-border: var(--color-teal-700);
+    --secondary: var(--color-teal-500);
+    --secondary-background: var(--color-teal-950);
+    --secondary-foreground: var(--color-teal-950);
+    --secondary-border: var(--color-teal-500);
 
-    --destructive: var(--color-red-400);
-    --destructive-foreground: var(--color-neutral-950);
-    --destructive-subtle: var(--color-red-950);
-    --destructive-border: var(--color-red-700);
+    --destructive: var(--color-red-500);
+    --destructive-background: var(--color-red-950);
+    --destructive-foreground: var(--color-red-950);
+    --destructive-border: var(--color-red-400);
+    --semantic-destructive-border: var(--color-red-400);
 
-    --success: var(--color-green-400);
-    --success-foreground: var(--color-neutral-950);
-    --success-subtle: var(--color-green-950);
-    --success-border: var(--color-green-700);
+    --warning: var(--color-yellow-500);
+    --warning-background: var(--color-yellow-950);
+    --warning-foreground: var(--color-yellow-950);
+    --warning-border: var(--color-yellow-500);
+    --semantic-warning-border: var(--color-yellow-500);
 
-    --warning: var(--color-yellow-400);
-    --warning-foreground: var(--color-neutral-950);
-    --warning-subtle: var(--color-yellow-950);
-    --warning-border: var(--color-yellow-700);
+    --success: var(--color-green-500);
+    --success-background: var(--color-green-950);
+    --success-foreground: var(--color-green-950);
+    --success-border: var(--color-green-500);
+    --semantic-success-border: var(--color-green-500);
 
-    --info: var(--color-blue-400);
-    --info-foreground: var(--color-neutral-950);
-    --info-subtle: var(--color-blue-950);
-    --info-border: var(--color-blue-700);
+    --info: var(--color-blue-500);
+    --info-background: var(--color-blue-950);
+    --info-foreground: var(--color-blue-950);
+    --info-border: var(--color-blue-500);
+    --semantic-info-border: var(--color-blue-500);
 
     --muted: var(--color-neutral-800);
     --muted-foreground: var(--color-neutral-300);
