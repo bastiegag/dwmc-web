@@ -34,11 +34,11 @@ export const MotionReference: Story = {
                     Transitions
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2 rounded-lg border bg-card p-4">
+                    <div className="space-y-2 rounded-lg border border-border bg-card p-4">
                         <div className="text-sm font-medium">Default duration</div>
                         <TokenValue name="--default-transition-duration" />
                     </div>
-                    <div className="space-y-2 rounded-lg border bg-card p-4">
+                    <div className="space-y-2 rounded-lg border border-border bg-card p-4">
                         <div className="text-sm font-medium">Default timing function</div>
                         <TokenValue name="--default-transition-timing-function" />
                     </div>
@@ -53,7 +53,10 @@ export const MotionReference: Story = {
                     {easings.map((easing) => {
                         const variable = `--${easing}`
                         return (
-                            <div key={easing} className="space-y-2 rounded-lg border bg-card p-4">
+                            <div
+                                key={easing}
+                                className="space-y-2 rounded-lg border border-border bg-card p-4"
+                            >
                                 <div className="text-sm font-medium">{easing}</div>
                                 <TokenValue name={variable} />
                             </div>
@@ -68,7 +71,10 @@ export const MotionReference: Story = {
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                     {animations.map(({ name, variable }) => (
-                        <div key={name} className="space-y-2 rounded-lg border bg-card p-4">
+                        <div
+                            key={name}
+                            className="space-y-2 rounded-lg border border-border bg-card p-4"
+                        >
                             <div className="flex items-center gap-3 text-sm font-medium">
                                 <span
                                     className={`${name} inline-block size-4 rounded-full bg-primary`}

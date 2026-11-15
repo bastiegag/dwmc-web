@@ -19,37 +19,61 @@ export const Pagination = ({
     showPageNumbers = false,
     label = 'Pagination',
 }: PaginationProps) => {
-    const currentPage = Math.min(Math.max(page, 1), Math.max(totalPages, 1))
-    if (totalPages <= 1) return null
+    const pageCount = Number.isFinite(totalPages) ? Math.max(0, Math.trunc(totalPages)) : 0
+
+    const requestedPage = Number.isFinite(page) ? Math.trunc(page) : 1
+
+    const currentPage = Math.min(Math.max(requestedPage, 1), Math.max(pageCount, 1))
+
+    if (pageCount <= 1) return null
+
+    const isFirstPage = currentPage === 1
+    const isLastPage = currentPage === pageCount
 
     return (
         <nav
             aria-label={label}
-            className={cn('flex items-center justify-between gap-4', className)}
+            className={cn('flex w-full items-center justify-between gap-3', className)}
         >
             <Button
                 type="button"
                 variant="outlined"
                 size="sm"
                 onClick={() => onPageChange(currentPage - 1)}
-                disabled={currentPage === 1}
+                disabled={isFirstPage}
+                aria-label="Previous page"
             >
                 <ChevronLeft aria-hidden="true" />
-                <span className="sr-only sm:not-sr-only">Previous</span>
-            </Button>
-            {showPageNumbers && (
-                <span className="text-sm text-muted-foreground" aria-live="polite">
-                    Page {currentPage} of {totalPages}
+
+                <span className="hidden sm:inline" aria-hidden="true">
+                    Previous
                 </span>
-            )}
+            </Button>
+
+            <span
+                className={cn(
+                    'text-sm text-muted-foreground',
+                    'tabular-nums whitespace-nowrap',
+                    !showPageNumbers && 'sr-only',
+                )}
+                aria-live="polite"
+                aria-atomic="true"
+            >
+                Page {currentPage} of {pageCount}
+            </span>
+
             <Button
                 type="button"
                 variant="outlined"
                 size="sm"
                 onClick={() => onPageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
+                disabled={isLastPage}
+                aria-label="Next page"
             >
-                <span className="sr-only sm:not-sr-only">Next</span>
+                <span className="hidden sm:inline" aria-hidden="true">
+                    Next
+                </span>
+
                 <ChevronRight aria-hidden="true" />
             </Button>
         </nav>

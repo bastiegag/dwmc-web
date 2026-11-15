@@ -1,13 +1,24 @@
-import { forwardRef, type ComponentPropsWithoutRef } from 'react'
+import { forwardRef } from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 import { cn } from '@/lib/utils'
 
-const labelClasses = 'text-label peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+export type LabelProps = ComponentPropsWithoutRef<'label'>
 
-const Label = forwardRef<HTMLLabelElement, ComponentPropsWithoutRef<'label'>>(
+export const Label = forwardRef<HTMLLabelElement, LabelProps>(
     ({ className, htmlFor, ...props }, ref) => (
-        <label ref={ref} htmlFor={htmlFor} className={cn(labelClasses, className)} {...props} />
+        <label
+            ref={ref}
+            htmlFor={htmlFor}
+            className={cn(
+                'text-label',
+                'cursor-pointer',
+                'has-[+_:disabled]:cursor-not-allowed',
+                'has-[+_:disabled]:opacity-70',
+                className,
+            )}
+            {...props}
+        />
     ),
 )
-Label.displayName = 'Label'
 
-export { Label }
+Label.displayName = 'Label'

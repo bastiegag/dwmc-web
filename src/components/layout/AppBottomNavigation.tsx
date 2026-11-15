@@ -1,5 +1,6 @@
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Target, WalletCards, Wrench } from 'lucide-react'
+
 import { cn } from '@/lib/utils'
 import { useSelectedMonth } from '@/shared/month'
 
@@ -8,87 +9,106 @@ const navigation = [
         name: 'Overview',
         to: '/dashboard',
         icon: LayoutDashboard,
-        sectionPaths: ['/dashboard', '/transactions'],
+        paths: ['/dashboard', '/transactions'],
     },
-    { name: 'Budgets', to: '/budgets', icon: Target },
-    { name: 'Accounts', to: '/accounts', icon: WalletCards },
-    { name: 'Tools', to: '/tools', icon: Wrench, matchPrefix: true },
-]
+    {
+        name: 'Budgets',
+        to: '/budgets',
+        icon: Target,
+    },
+    {
+        name: 'Accounts',
+        to: '/accounts',
+        icon: WalletCards,
+    },
+    {
+        name: 'Tools',
+        to: '/tools',
+        icon: Wrench,
+        matchPrefix: true,
+    },
+] as const
+
+const matchesPath = (pathname: string, path: string) =>
+    pathname === path || pathname.startsWith(`${path}/`)
+
+const isNavigationActive = (pathname: string, item: (typeof navigation)[number]): boolean => {
+    if ('paths' in item) {
+        return item.paths.some((path) => matchesPath(pathname, path))
+    }
+
+    if ('matchPrefix' in item && item.matchPrefix) {
+        return matchesPath(pathname, item.to)
+    }
+
+    return pathname === item.to
+}
 
 export const AppBottomNavigation = () => {
     const { month } = useSelectedMonth()
-    const location = useLocation()
+    const { pathname } = useLocation()
 
     return (
         <nav
+            aria-label="Main navigation"
             data-testid="mobile-bottom-nav"
-            className="fixed bottom-0 z-40 flex h-[calc(6rem+env(safe-area-inset-bottom))] w-full items-start bg-white px-4 pt-4 lg:hidden"
+            className={cn(
+                'fixed inset-x-0 bottom-0 z-40',
+                'h-[calc(6rem+env(safe-area-inset-bottom))]',
+                'border-t border-border bg-background',
+                'px-4 pt-3 pb-[env(safe-area-inset-bottom)]',
+                'lg:hidden',
+            )}
         >
-            <div className="grid min-w-0 flex-1 grid-cols-2">
-                {navigation.slice(0, 2).map((item) => {
-                    const isSectionActive = item.sectionPaths?.some((path) =>
-                        location.pathname.startsWith(path),
-                    )
-                    const content = (
-                        <>
-                            <item.icon
-                                className="size-6"
-                                fill={isSectionActive ? 'currentColor' : 'none'}
-                            />
-                            <span className="text-xs font-medium">{item.name}</span>
-                        </>
-                    )
-                    const className = cn(
-                        'flex min-h-11 min-w-0 flex-col items-center gap-1 text-muted-foreground',
-                        isSectionActive && 'text-primary',
-                    )
+            <ul className="grid h-full grid-cols-4 gap-1">
+                {navigation.map((item) => {
+                    const active = isNavigationActive(pathname, item)
 
-                    return item.sectionPaths ? (
-                        <Link
-                            key={item.name}
-                            to={`${item.to}?month=${month}`}
-                            className={className}
-                            aria-current={isSectionActive ? 'page' : undefined}
-                        >
-                            {content}
-                        </Link>
-                    ) : (
-                        <NavLink
-                            key={item.name}
-                            to={`${item.to}?month=${month}`}
-                            className={({ isActive }) => cn(className, isActive && 'text-primary')}
-                        >
-                            {content}
-                        </NavLink>
-                    )
-                })}
-            </div>
-
-            <div className="grid min-w-0 flex-1 grid-cols-2">
-                {navigation.slice(2).map((item) => {
-                    const isCurrent = item.matchPrefix
-                        ? location.pathname.startsWith(item.to)
-                        : location.pathname === item.to
+                    const Icon = item.icon
 
                     return (
-                        <NavLink
-                            key={item.name}
-                            to={`${item.to}?month=${month}`}
-                            className={cn(
-                                'flex min-h-11 min-w-0 flex-col items-center gap-1 text-muted-foreground',
-                                isCurrent && 'text-primary',
-                            )}
-                            aria-current={isCurrent ? 'page' : undefined}
-                        >
-                            <item.icon
-                                className="size-6"
-                                fill={isCurrent ? 'currentColor' : 'none'}
-                            />
-                            <span className="text-xs font-medium">{item.name}</span>
-                        </NavLink>
+                        <li key={item.to} className="min-w-0">
+                            <Link
+                                to={{
+                                    pathname: item.to,
+                                    search: `?month=${encodeURIComponent(month)}`,
+                                }}
+                                aria-current={active ? 'page' : undefined}
+                                className={cn(
+                                    'flex h-full min-h-11 flex-col',
+                                    'items-center justify-start gap-1',
+                                    'rounded-md px-1 pt-2',
+                                    'text-xs font-medium',
+                                    'transition-colors motion-reduce:transition-none',
+
+                                    // Default
+                                    'text-muted-foreground',
+
+                                    // Interaction
+                                    'hover:bg-accent',
+                                    'hover:text-accent-foreground',
+                                    'focus-visible:outline-none',
+                                    'focus-visible:ring-2',
+                                    'focus-visible:ring-ring',
+                                    'focus-visible:ring-offset-2',
+                                    'focus-visible:ring-offset-background',
+
+                                    // Active
+                                    active && 'text-primary',
+                                )}
+                            >
+                                <Icon
+                                    className="size-6 shrink-0"
+                                    strokeWidth={active ? 2.5 : 2}
+                                    aria-hidden="true"
+                                />
+
+                                <span className="truncate">{item.name}</span>
+                            </Link>
+                        </li>
                     )
                 })}
-            </div>
+            </ul>
         </nav>
     )
 }

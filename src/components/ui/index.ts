@@ -2,7 +2,7 @@ export { Alert } from './feedback'
 export type { AlertProps } from './feedback'
 export { Button } from './actions'
 export type { ButtonProps } from './actions'
-export { Badge, badgeVariants } from './feedback'
+export { Badge } from './feedback'
 export { Card } from './data-display'
 export type { CardProps } from './data-display'
 export { Checkbox } from './forms'
@@ -18,7 +18,18 @@ export { Popover, PopoverContent, PopoverTrigger } from './overlays'
 export { Progress } from './feedback'
 export { RadioGroup, RadioGroupItem } from './forms'
 export { Toaster } from './feedback'
-export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './forms'
+export {
+    Select,
+    SelectGroup,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectGroupLabel,
+    SelectSeparator,
+    SelectScrollUpButton,
+    SelectScrollDownButton,
+} from './forms'
 export { Switch } from './forms'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './navigation'
 export { Textarea } from './forms'
@@ -80,6 +91,7 @@ export {
 } from './overlays'
 export {
     Combobox,
+    ComboboxInputGroup,
     ComboboxInput,
     ComboboxTrigger,
     ComboboxContent,
@@ -89,6 +101,7 @@ export {
     ComboboxGroup,
     ComboboxGroupLabel,
 } from './forms'
+export type { ComboboxContentProps, SelectContentProps } from './forms'
 export {
     NumberField,
     NumberFieldGroup,
@@ -103,6 +116,8 @@ export {
     DrawerPortal,
     DrawerOverlay,
     DrawerContent,
+    DrawerHeader,
+    DrawerFooter,
     DrawerTitle,
     DrawerDescription,
 } from './overlays'
@@ -113,8 +128,33 @@ export {
     SheetPortal,
     SheetOverlay,
     SheetContent,
+    SheetHeader,
+    SheetFooter,
     SheetTitle,
     SheetDescription,
+} from './overlays'
+export type { SheetContentProps } from './overlays'
+export type {
+    BadgeProps,
+    EmptyStateProps,
+    ProgressColor,
+    ProgressProps,
+    SkeletonProps,
+} from './feedback'
+export type {
+    InputGroupAddonProps,
+    InputGroupButtonProps,
+    InputGroupProps,
+    RadioGroupItemProps,
+    RadioGroupProps,
+} from './forms'
+export type { AppLinkProps, PaginationProps } from './navigation'
+export type { ScrollAreaProps, SeparatorProps } from './layout'
+export type {
+    PopoverContentProps,
+    PopoverTriggerProps,
+    TooltipContentProps,
+    TooltipTriggerProps,
 } from './overlays'
 export {
     Accordion,

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Button } from '../actions/Button'
 import { Popover, PopoverContent, PopoverTrigger } from './Popover'
@@ -23,4 +24,22 @@ export const Default: Story = {
             </PopoverContent>
         </Popover>
     ),
+}
+
+export const ControlledAndPositioned: Story = {
+    render: function ControlledPopover() {
+        const [open, setOpen] = useState(false)
+
+        return (
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger render={<Button variant="outlined" />}>
+                    {open ? 'Hide budget details' : 'Show budget details'}
+                </PopoverTrigger>
+                <PopoverContent side="top" align="end">
+                    <p className="text-sm font-medium">Everyday spending</p>
+                    <p className="mt-1 text-sm text-muted-foreground">$180 remaining this month.</p>
+                </PopoverContent>
+            </Popover>
+        )
+    },
 }

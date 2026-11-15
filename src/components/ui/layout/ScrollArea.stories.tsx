@@ -23,7 +23,7 @@ const items = Array.from({ length: 12 }, (_, index) => `Transaction ${index + 1}
 
 export const Vertical: Story = {
     render: () => (
-        <ScrollArea className="h-40 w-72 rounded border p-3">
+        <ScrollArea tabIndex={0} className="h-40 w-72 rounded border p-3">
             {items.map((item) => (
                 <p key={item}>{item}</p>
             ))}
@@ -33,7 +33,7 @@ export const Vertical: Story = {
 
 export const Horizontal: Story = {
     render: () => (
-        <ScrollArea className="w-72 overflow-x-auto rounded border p-3">
+        <ScrollArea tabIndex={0} className="w-72 overflow-x-auto rounded border p-3">
             <p className="w-[40rem] whitespace-nowrap">
                 Checking · Savings · Credit card · Investment · Mortgage · Car loan · Line of credit
             </p>

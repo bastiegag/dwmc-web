@@ -1,11 +1,18 @@
 import type { HTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
-type LoadingSpinnerProps = Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'role'> & {
+export interface LoadingSpinnerProps extends Omit<
+    HTMLAttributes<HTMLDivElement>,
+    'children' | 'role'
+> {
     size?: 'sm' | 'md' | 'lg'
 }
 
-const sizeMap = { sm: 'h-4 w-4', md: 'h-6 w-6', lg: 'h-8 w-8' }
+const sizeVariants = {
+    sm: 'size-4 border-2',
+    md: 'size-6 border-[3px]',
+    lg: 'size-8 border-4',
+} as const
 
 export const LoadingSpinner = ({
     size = 'md',
@@ -18,8 +25,10 @@ export const LoadingSpinner = ({
         role="status"
         aria-label={ariaLabel}
         className={cn(
-            'animate-spin rounded-full border-3 border-current border-t-transparent',
-            sizeMap[size],
+            'inline-block shrink-0 rounded-full',
+            'border-current border-t-transparent',
+            'animate-spin motion-reduce:animate-none',
+            sizeVariants[size],
             className,
         )}
     />

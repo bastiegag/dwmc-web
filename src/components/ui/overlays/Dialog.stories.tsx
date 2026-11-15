@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Button } from '../actions/Button'
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -20,6 +21,40 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+const ProfileForm = () => {
+    const [submitted, setSubmitted] = useState(false)
+
+    return (
+        <>
+            <form
+                className="space-y-4"
+                onSubmit={(event) => {
+                    event.preventDefault()
+                    setSubmitted(true)
+                }}
+            >
+                <label htmlFor="dialog-display-name" className="grid gap-2 text-sm font-medium">
+                    Display name
+                    <input
+                        id="dialog-display-name"
+                        name="displayName"
+                        required
+                        className="h-10 rounded-md border border-input bg-card px-3 text-sm text-foreground"
+                    />
+                </label>
+                <DialogFooter>
+                    <Button type="submit">Save changes</Button>
+                </DialogFooter>
+            </form>
+            {submitted && (
+                <p role="status" className="text-sm text-muted-foreground">
+                    Profile changes submitted.
+                </p>
+            )}
+        </>
+    )
+}
+
 export const Default: Story = {
     render: () => (
         <Dialog>
@@ -32,7 +67,9 @@ export const Default: Story = {
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button type="button">Save changes</Button>
+                    <DialogClose render={<Button type="button" variant="outlined" />}>
+                        Close dialog
+                    </DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -48,13 +85,7 @@ export const FormDialog: Story = {
                     <DialogTitle>Update profile</DialogTitle>
                     <DialogDescription>Change your display name.</DialogDescription>
                 </DialogHeader>
-                <label className="grid gap-2 text-sm font-medium">
-                    Display name
-                    <input className="h-10 rounded-md border bg-background px-3" />
-                </label>
-                <DialogFooter>
-                    <Button type="submit">Save</Button>
-                </DialogFooter>
+                <ProfileForm />
             </DialogContent>
         </Dialog>
     ),
@@ -74,6 +105,9 @@ export const LoadingState: Story = {
                         Saving...
                     </Button>
                 </DialogFooter>
+                <p role="status" className="text-sm text-muted-foreground">
+                    Saving your changes. Please wait.
+                </p>
             </DialogContent>
         </Dialog>
     ),
@@ -93,9 +127,42 @@ export const Controlled: Story = {
                                 This dialog is controlled by its parent.
                             </DialogDescription>
                         </DialogHeader>
+                        <DialogFooter>
+                            <DialogClose render={<Button variant="outlined" />}>
+                                Close dialog
+                            </DialogClose>
+                        </DialogFooter>
                     </DialogContent>
                 </Dialog>
             </>
         )
     },
+}
+
+export const LongContent: Story = {
+    render: () => (
+        <Dialog>
+            <DialogTrigger render={<Button />}>Open long dialog</DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Review transaction details</DialogTitle>
+                    <DialogDescription>
+                        This example demonstrates a dialog with content that exceeds a short
+                        viewport.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                    {Array.from({ length: 12 }, (_, index) => (
+                        <p key={index}>
+                            Transaction detail {index + 1}: review the date, account, category, and
+                            amount before saving.
+                        </p>
+                    ))}
+                </div>
+                <DialogFooter>
+                    <DialogClose render={<Button variant="outlined" />}>Close dialog</DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    ),
 }

@@ -57,7 +57,10 @@ describe('ProfileForm', () => {
         render(<ProfileForm profile={profile} />)
 
         await user.click(screen.getByRole('button', { name: 'Save changes' }))
-        expect(await screen.findByRole('button', { name: /saving/i })).toBeDisabled()
+        expect(await screen.findByRole('button', { name: /saving/i })).toHaveAttribute(
+            'aria-disabled',
+            'true',
+        )
         expect(await screen.findByText('Profile could not be saved.')).toBeInTheDocument()
     })
 

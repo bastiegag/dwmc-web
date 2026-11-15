@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { AccountCard } from './AccountCard'
 import type { Account } from '@/features/accounts/types/account.types'
 
@@ -39,7 +40,7 @@ const meta = {
             },
         },
     },
-    args: { onEdit: () => undefined, onArchive: () => undefined },
+    args: { onEdit: fn(), onArchive: fn() },
 } satisfies Meta<typeof AccountCard>
 
 export default meta

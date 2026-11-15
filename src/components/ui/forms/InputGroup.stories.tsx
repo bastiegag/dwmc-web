@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { InputGroup, InputGroupAddon, InputGroupButton } from './InputGroup'
 import { Input } from './Input'
 const meta = {
@@ -33,7 +34,7 @@ export const WithButton: Story = {
     render: () => (
         <InputGroup className="w-72">
             <Input aria-label="Search transactions" placeholder="Search transactions" />
-            <InputGroupButton>Search</InputGroupButton>
+            <InputGroupButton onClick={fn()}>Search</InputGroupButton>
         </InputGroup>
     ),
 }

@@ -1,33 +1,45 @@
-import { type ReactNode } from 'react'
-import { Label } from '@/components/ui'
-import { cn } from '@/lib/utils'
+import type { ReactNode } from 'react'
+import { Field, FieldLabel, FieldError, FieldDescription } from './Field'
 
-interface FormFieldProps {
+export interface FormFieldProps {
     id: string
     label: string
     error?: string
+    description?: string
     required?: boolean
+    disabled?: boolean
     children: ReactNode
     className?: string
 }
 
-export const FormField = ({ id, label, error, required, children, className }: FormFieldProps) => {
+export const FormField = ({
+    id,
+    label,
+    error,
+    description,
+    required = false,
+    disabled = false,
+    children,
+    className,
+}: FormFieldProps) => {
     return (
-        <div className={cn('space-y-1.5', className)}>
-            <Label htmlFor={id}>
+        <Field className={className} invalid={Boolean(error)} disabled={disabled}>
+            <FieldLabel htmlFor={id}>
                 {label}
                 {required && (
                     <span className="ml-1 text-destructive" aria-hidden="true">
                         *
                     </span>
                 )}
-            </Label>
+            </FieldLabel>
+
             {children}
-            {error && (
-                <p id={`${id}-error`} role="alert" className="text-sm text-destructive">
-                    {error}
-                </p>
+
+            {description && (
+                <FieldDescription id={`${id}-description`}>{description}</FieldDescription>
             )}
-        </div>
+
+            <FieldError id={`${id}-error`}>{error}</FieldError>
+        </Field>
     )
 }

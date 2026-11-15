@@ -1,8 +1,24 @@
+import { forwardRef } from 'react'
 import type { SVGProps } from 'react'
 
-export const Logo = (props: SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 150 150" fill="currentColor" aria-hidden="true" {...props}>
+import { cn } from '@/lib/utils'
+
+export type LogoProps = SVGProps<SVGSVGElement>
+
+export const Logo = forwardRef<SVGSVGElement, LogoProps>(({ className, ...props }, ref) => (
+    <svg
+        ref={ref}
+        viewBox="0 0 150 150"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        aria-hidden="true"
+        focusable="false"
+        className={cn('inline-block size-6 shrink-0', className)}
+        {...props}
+    >
         <path d="M35.3,16.3l-16.1,16.1c-7.7,7.7-7.7,20.2,0,27.9,7.7,7.7,20.2,7.7,27.9,0l16.1-16.1c7.7-7.7,20.2-7.7,27.9,0,7.7,7.7,7.7,20.2,0,27.9l-16.1,16.1c-7.7,7.7-7.7,20.2,0,27.9,7.7,7.7,20.2,7.7,27.9,0l16.1-16.1c23.1-23.1,23.1-60.7,0-83.8-23.1-23.1-62.9-21-86,2.2,0,0,2.2-2.2,2.2-2.2Z" />
         <circle cx="116.9" cy="130.2" r="19.8" />
     </svg>
-)
+))
+
+Logo.displayName = 'Logo'

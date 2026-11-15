@@ -42,6 +42,10 @@ export const Complete: Story = {
     args: { value: 100, 'aria-label': 'Budget progress' },
 }
 
+export const Indeterminate: Story = {
+    args: { value: null, 'aria-label': 'Loading progress' },
+}
+
 const colors = [
     'default',
     'primary',

@@ -1,12 +1,32 @@
 import { Link, type LinkProps } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
-export const AppLink = ({ className, ...props }: LinkProps) => (
+export type AppLinkProps = LinkProps
+
+export const AppLink = ({ className, ...props }: AppLinkProps) => (
     <Link
+        {...props}
         className={cn(
-            'text-link underline underline-offset-4 transition-colors hover:text-link-hover',
+            // Typography
+            'text-link underline underline-offset-4',
+            'decoration-current',
+
+            // Interaction
+            'cursor-pointer transition-colors',
+            'hover:text-link-hover',
+
+            // Focus
+            'focus-visible:rounded-sm',
+            'focus-visible:outline-none',
+            'focus-visible:ring-2',
+            'focus-visible:ring-ring',
+            'focus-visible:ring-offset-2',
+            'focus-visible:ring-offset-background',
+
+            // Motion
+            'motion-reduce:transition-none',
+
             className,
         )}
-        {...props}
     />
 )

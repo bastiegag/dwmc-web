@@ -38,7 +38,7 @@ describe('AccountsPage', () => {
 
         render(<AccountsPage />)
 
-        expect(screen.getByLabelText(/loading accounts/i)).toBeInTheDocument()
+        expect(screen.getByRole('status')).toHaveTextContent(/loading accounts/i)
     })
 
     it('shows empty state when no accounts exist', async () => {

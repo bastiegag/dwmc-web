@@ -1,14 +1,17 @@
 import { Alert } from '@/components/ui'
+import { cn } from '@/lib/utils'
 import { LoadingSpinner } from './LoadingSpinner'
 
-interface QueryStateProps {
+export interface QueryStateProps {
     isLoading: boolean
     isError: boolean
     loadingLabel: string
     errorTitle: string
-    errorMessage?: string
+    errorMessage?: string | null
     fallbackErrorMessage: string
     onRetry?: () => void
+    retryLabel?: string
+    className?: string
 }
 
 export const QueryState = ({
@@ -19,11 +22,17 @@ export const QueryState = ({
     errorMessage,
     fallbackErrorMessage,
     onRetry,
+    retryLabel = 'Retry',
+    className,
 }: QueryStateProps) => {
     if (isLoading) {
         return (
-            <div className="py-6">
-                <LoadingSpinner aria-label={loadingLabel} />
+            <div className={cn('flex min-h-32 items-center justify-center gap-3 py-6', className)}>
+                <LoadingSpinner aria-hidden="true" />
+
+                <span role="status" className="text-sm text-muted-foreground">
+                    {loadingLabel}
+                </span>
             </div>
         )
     }
@@ -34,8 +43,16 @@ export const QueryState = ({
         <Alert
             variant="destructive"
             title={errorTitle}
-            description={errorMessage ?? fallbackErrorMessage}
-            action={onRetry ? { label: 'Retry', onClick: onRetry } : undefined}
+            description={errorMessage?.trim() || fallbackErrorMessage}
+            action={
+                onRetry
+                    ? {
+                          label: retryLabel,
+                          onClick: onRetry,
+                      }
+                    : undefined
+            }
+            className={className}
         />
     )
 }

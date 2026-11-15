@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { TransactionItem } from './TransactionItem'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 
@@ -38,7 +39,7 @@ const meta = {
             },
         },
     },
-    args: { onEdit: () => undefined, onArchive: () => undefined },
+    args: { onEdit: fn(), onArchive: fn() },
 } satisfies Meta<typeof TransactionItem>
 
 export default meta

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
-import { render, screen } from '@/test/utils/render'
+import { render, screen, waitFor } from '@/test/utils/render'
 import { CategoryDialog, SectionDialog } from '@/features/categories/components'
 import { createSectionWithCategories } from '@/test/fixtures/domain'
 
@@ -14,11 +14,18 @@ describe('category dialogs accessibility', () => {
 
         render(<SectionDialog open mode="create" onOpenChange={onOpenChange} onSubmit={vi.fn()} />)
 
-        expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true')
-        expect(screen.getByRole('button', { name: /close section dialog/i })).toHaveFocus()
+        expect(
+            screen.getByRole('dialog', {
+                name: 'Create section',
+                description: 'Enter the section details and submit the form.',
+            }),
+        ).toBeInTheDocument()
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: /close section dialog/i })).toHaveFocus(),
+        )
 
         await user.keyboard('{Escape}')
-        expect(onOpenChange).toHaveBeenCalledWith(false)
+        expect(onOpenChange.mock.calls[0]?.[0]).toBe(false)
     })
 
     it('restores focus to the opener after closing', async () => {
@@ -63,7 +70,12 @@ describe('category dialogs accessibility', () => {
 
         const closeButton = screen.getByRole('button', { name: /close category dialog/i })
         const submitButton = screen.getByRole('button', { name: /create category/i })
-        expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true')
+        expect(
+            screen.getByRole('dialog', {
+                name: 'Create category',
+                description: 'Enter the category details and submit the form.',
+            }),
+        ).toBeInTheDocument()
         submitButton.focus()
         expect(submitButton).toHaveFocus()
         closeButton.focus()

@@ -30,7 +30,7 @@ export const BreakpointReference: Story = {
         <div className="max-w-4xl overflow-x-auto">
             <table className="w-full border-collapse text-left text-sm">
                 <thead>
-                    <tr className="border-b">
+                    <tr className="border-b border-border">
                         <th scope="col" className="py-2 pr-4 font-medium">
                             Name
                         </th>
@@ -47,7 +47,7 @@ export const BreakpointReference: Story = {
                 </thead>
                 <tbody>
                     {breakpoints.map(({ name, usage }) => (
-                        <tr key={name} className="border-b align-top">
+                        <tr key={name} className="border-b border-border align-top">
                             <th scope="row" className="py-3 pr-4 font-medium">
                                 {name}
                             </th>

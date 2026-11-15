@@ -133,6 +133,18 @@ test.describe('App Layout', () => {
     test.describe('Desktop viewport', () => {
         test.use({ viewport: { width: 1280, height: 720 } })
 
+        test('skip link targets the focusable main content', async ({ page }) => {
+            await page.keyboard.press('Tab')
+
+            const skipLink = page.getByRole('link', { name: 'Skip to main content' })
+            await expect(skipLink).toBeFocused()
+            await expect(skipLink).toHaveAttribute('href', '#main-content')
+            await page.keyboard.press('Enter')
+
+            await expect(page).toHaveURL(/#main-content$/)
+            await expect(page.locator('#main-content')).toHaveAttribute('tabindex', '-1')
+        })
+
         test('shows the desktop sidebar', async ({ page }) => {
             await expect(page.getByTestId('desktop-sidebar')).toBeVisible()
             await expect(page.getByTestId('mobile-bottom-nav')).not.toBeVisible()

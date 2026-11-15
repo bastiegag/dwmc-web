@@ -1,31 +1,63 @@
 import { forwardRef } from 'react'
-import { Input } from '@/components/ui'
-import { FormField } from './FormField'
-import { cn } from '@/lib/utils'
+import type { InputHTMLAttributes } from 'react'
 
-interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
+import { Input } from '@/components/ui'
+import { cn } from '@/lib/utils'
+import { FormField } from './FormField'
+
+export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
     id: string
     label: string
+    description?: string
     error?: string
-    required?: boolean
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
-    ({ id, label, error, required, className, ...props }, ref) => (
-        <FormField id={id} label={label} error={error} required={required}>
-            <Input
-                {...props}
+    (
+        {
+            id,
+            label,
+            description,
+            error,
+            required,
+            disabled,
+            className,
+            'aria-describedby': ariaDescribedBy,
+            ...props
+        },
+        ref,
+    ) => {
+        const describedBy =
+            [ariaDescribedBy, description && `${id}-description`, error && `${id}-error`]
+                .filter(Boolean)
+                .join(' ') || undefined
+
+        return (
+            <FormField
                 id={id}
-                ref={ref}
-                aria-invalid={!!error}
-                aria-describedby={error ? `${id}-error` : undefined}
-                className={cn(
-                    error &&
-                        'border-destructive focus-visible:ring-destructive bg-destructive-subtle',
-                    className,
-                )}
-            />
-        </FormField>
-    ),
+                label={label}
+                description={description}
+                error={error}
+                required={required}
+                disabled={disabled}
+            >
+                <Input
+                    {...props}
+                    ref={ref}
+                    id={id}
+                    required={required}
+                    disabled={disabled}
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={describedBy}
+                    className={cn(
+                        error &&
+                            'border-destructive bg-destructive-subtle focus-visible:ring-destructive',
+                        className,
+                    )}
+                />
+            </FormField>
+        )
+    },
 )
+
 TextField.displayName = 'TextField'

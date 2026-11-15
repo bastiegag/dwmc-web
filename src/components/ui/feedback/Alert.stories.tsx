@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { Alert } from './Alert'
 
 const meta = {
@@ -17,45 +18,12 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-    args: { variant: 'info' },
+    args: { variant: 'default' },
     render: (args) => (
         <Alert
             {...args}
             title="Monthly budget updated"
             description="Your Everyday spending budget is ready to review."
-        />
-    ),
-}
-
-export const Success: Story = {
-    args: { variant: 'success' },
-    render: (args) => (
-        <Alert
-            {...args}
-            title="Transaction saved"
-            description="The grocery transaction was added successfully."
-        />
-    ),
-}
-
-export const Warning: Story = {
-    args: { variant: 'warning' },
-    render: (args) => (
-        <Alert
-            {...args}
-            title="Budget nearly reached"
-            description="You have used 85% of this month's budget."
-        />
-    ),
-}
-
-export const Info: Story = {
-    args: { variant: 'info' },
-    render: (args) => (
-        <Alert
-            {...args}
-            title="New month available"
-            description="Review your recurring categories before adding entries."
         />
     ),
 }
@@ -71,12 +39,45 @@ export const Destructive: Story = {
     ),
 }
 
+export const Warning: Story = {
+    args: { variant: 'warning' },
+    render: (args) => (
+        <Alert
+            {...args}
+            title="Budget nearly reached"
+            description="You have used 85% of this month's budget."
+        />
+    ),
+}
+
+export const Success: Story = {
+    args: { variant: 'success' },
+    render: (args) => (
+        <Alert
+            {...args}
+            title="Transaction saved"
+            description="The grocery transaction was added successfully."
+        />
+    ),
+}
+
+export const Info: Story = {
+    args: { variant: 'info' },
+    render: (args) => (
+        <Alert
+            {...args}
+            title="New month available"
+            description="Review your recurring categories before adding entries."
+        />
+    ),
+}
+
 export const WithAction: Story = {
     args: {
         variant: 'warning',
         title: 'Budget nearly reached',
         description: 'Review your spending before the end of the month.',
-        action: { label: 'Review budget', onClick: () => undefined },
+        action: { label: 'Review budget', onClick: fn() },
     },
 }
 
@@ -85,7 +86,17 @@ export const WithSecondaryAction: Story = {
         variant: 'info',
         title: 'New month available',
         description: 'Review your recurring categories before adding entries.',
-        secondaryAction: { label: 'Later', onClick: () => undefined },
-        action: { label: 'Review now', onClick: () => undefined },
+        secondaryAction: { label: 'Later', onClick: fn() },
+        action: { label: 'Review now', onClick: fn() },
+    },
+}
+
+export const DisabledActions: Story = {
+    args: {
+        variant: 'warning',
+        title: 'Budget nearly reached',
+        description: 'Actions are unavailable while this alert is being handled.',
+        action: { label: 'Review budget', onClick: fn(), disabled: true },
+        secondaryAction: { label: 'Dismiss', onClick: fn(), disabled: true },
     },
 }

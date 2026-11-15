@@ -31,13 +31,16 @@ type Story = StoryObj<typeof meta>
 export const RadiusScale: Story = {
     render: () => (
         <div className="max-w-5xl space-y-6">
-            <div className="rounded-lg border bg-card p-4">
+            <div className="rounded-lg border border-border bg-card p-4">
                 <div className="text-sm font-medium">Base radius</div>
                 <TokenValue name="--radius" />
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {radii.map(({ token, className }) => (
-                    <div key={token} className="space-y-3 rounded-lg border bg-card p-4">
+                    <div
+                        key={token}
+                        className="space-y-3 rounded-lg border border-border bg-card p-4"
+                    >
                         <div
                             className={`${className} h-24 border-2 border-primary bg-primary-subtle`}
                             aria-hidden="true"
@@ -49,6 +52,14 @@ export const RadiusScale: Story = {
                         <TokenValue name={`--radius-${token}`} />
                     </div>
                 ))}
+                <div className="space-y-3 rounded-lg border border-border bg-card p-4">
+                    <div
+                        className="h-24 rounded-full border-2 border-primary bg-primary-subtle"
+                        aria-hidden="true"
+                    />
+                    <div className="text-sm font-medium">rounded-full</div>
+                    <code className="block text-xs text-muted-foreground">Tailwind built-in</code>
+                </div>
             </div>
         </div>
     ),

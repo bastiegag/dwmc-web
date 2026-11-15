@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { Alert } from '@/components/ui'
 import { QueryState } from '@/components/feedback/QueryState'
 
@@ -28,7 +29,7 @@ export const QueryFailed: Story = {
                 errorTitle="Transactions could not be loaded"
                 errorMessage="Check your connection and try again."
                 fallbackErrorMessage="Something went wrong."
-                onRetry={() => undefined}
+                onRetry={fn()}
             />
         </div>
     ),
@@ -54,7 +55,7 @@ export const InlineDestructive: Story = {
             <Alert
                 variant="destructive"
                 title="Changes were not saved"
-                action={{ label: 'Try again', onClick: () => undefined }}
+                action={{ label: 'Try again', onClick: fn() }}
                 description="The server rejected this change. Your input is still here."
             />
         </div>

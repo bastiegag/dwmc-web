@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
+import { fn } from 'storybook/test'
 import { Pagination } from './Pagination'
 
 const meta = {
     title: 'Design System/Components/Navigation/Pagination',
     component: Pagination,
-    args: { page: 1, totalPages: 1, onPageChange: () => {} },
+    args: { page: 1, totalPages: 1, onPageChange: fn() },
     tags: ['autodocs'],
     parameters: {
         layout: 'centered',
@@ -43,5 +44,5 @@ export const WithPageNumbers: Story = {
 }
 
 export const SinglePage: Story = {
-    args: { page: 1, totalPages: 1, onPageChange: () => {} },
+    args: { page: 1, totalPages: 1, onPageChange: fn() },
 }

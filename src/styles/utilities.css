@@ -26,7 +26,7 @@
     background-image: repeating-linear-gradient(
         45deg,
         transparent 0 8px,
-        rgb(255 255 255 / 25%) 8px 16px
+        color-mix(in srgb, var(--background) 15%, transparent) 8px 16px
     );
     background-size: 22px 22px;
     content: '';

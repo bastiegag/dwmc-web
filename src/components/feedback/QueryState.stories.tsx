@@ -33,5 +33,5 @@ const sharedArgs = {
 export const Loading: Story = { args: { ...sharedArgs, isLoading: true, isError: false } }
 
 export const Error: Story = {
-    args: { ...sharedArgs, isLoading: false, isError: true, onRetry: () => undefined },
+    args: { ...sharedArgs, isLoading: false, isError: true },
 }

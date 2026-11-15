@@ -35,10 +35,10 @@ export const AllPalettes: Story = {
                             return (
                                 <div
                                     key={variable}
-                                    className="overflow-hidden rounded-lg border bg-card"
+                                    className="overflow-hidden rounded-lg border border-border bg-card"
                                 >
                                     <div
-                                        className="h-16 border-b"
+                                        className="h-16 border-b border-border"
                                         style={{ background: `var(${variable})` }}
                                         aria-hidden="true"
                                     />
