@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { Alert } from './Alert'
 
 const meta = {
@@ -76,7 +77,7 @@ export const WithAction: Story = {
         variant: 'warning',
         title: 'Budget nearly reached',
         description: 'Review your spending before the end of the month.',
-        action: { label: 'Review budget', onClick: () => undefined },
+        action: { label: 'Review budget', onClick: fn() },
     },
 }
 
@@ -85,8 +86,8 @@ export const WithSecondaryAction: Story = {
         variant: 'info',
         title: 'New month available',
         description: 'Review your recurring categories before adding entries.',
-        secondaryAction: { label: 'Later', onClick: () => undefined },
-        action: { label: 'Review now', onClick: () => undefined },
+        secondaryAction: { label: 'Later', onClick: fn() },
+        action: { label: 'Review now', onClick: fn() },
     },
 }
 
@@ -95,7 +96,7 @@ export const DisabledActions: Story = {
         variant: 'warning',
         title: 'Budget nearly reached',
         description: 'Actions are unavailable while this alert is being handled.',
-        action: { label: 'Review budget', onClick: () => undefined, disabled: true },
-        secondaryAction: { label: 'Dismiss', onClick: () => undefined, disabled: true },
+        action: { label: 'Review budget', onClick: fn(), disabled: true },
+        secondaryAction: { label: 'Dismiss', onClick: fn(), disabled: true },
     },
 }

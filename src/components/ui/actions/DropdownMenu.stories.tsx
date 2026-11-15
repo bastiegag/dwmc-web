@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { useState } from 'react'
 import {
     DropdownMenu,
@@ -38,8 +39,8 @@ export const Default: Story = {
         <DropdownMenu>
             <DropdownMenuTrigger render={<Button />}>Actions</DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuItem>Rename</DropdownMenuItem>
-                <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                <DropdownMenuItem onClick={fn()}>Rename</DropdownMenuItem>
+                <DropdownMenuItem onClick={fn()}>Duplicate</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     ),
@@ -50,7 +51,7 @@ export const DisabledItem: Story = {
         <DropdownMenu>
             <DropdownMenuTrigger render={<Button />}>Actions</DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuItem>Rename</DropdownMenuItem>
+                <DropdownMenuItem onClick={fn()}>Rename</DropdownMenuItem>
                 <DropdownMenuItem disabled>Archive (unavailable)</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
@@ -110,12 +111,12 @@ export const NestedMenu: Story = {
                 <DropdownMenuSub>
                     <DropdownMenuSubTrigger>Export as</DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
-                        <DropdownMenuItem>CSV</DropdownMenuItem>
-                        <DropdownMenuItem>PDF</DropdownMenuItem>
+                        <DropdownMenuItem onClick={fn()}>CSV</DropdownMenuItem>
+                        <DropdownMenuItem onClick={fn()}>PDF</DropdownMenuItem>
                     </DropdownMenuSubContent>
                 </DropdownMenuSub>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Print</DropdownMenuItem>
+                <DropdownMenuItem onClick={fn()}>Print</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     ),
@@ -126,9 +127,12 @@ export const DestructiveAction: Story = {
         <DropdownMenu>
             <DropdownMenuTrigger render={<Button variant="outlined" />}>More</DropdownMenuTrigger>
             <DropdownMenuContent>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={fn()}>Edit</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive focus:text-destructive">
+                <DropdownMenuItem
+                    onClick={fn()}
+                    className="text-destructive focus:text-destructive"
+                >
                     Delete account
                 </DropdownMenuItem>
             </DropdownMenuContent>

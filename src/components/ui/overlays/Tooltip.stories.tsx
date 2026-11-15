@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './Tooltip'
 import { Button } from '../actions/Button'
@@ -45,4 +46,22 @@ export const IconTrigger: Story = {
             <TooltipContent>More information</TooltipContent>
         </Tooltip>
     ),
+}
+
+export const ControlledAndPositioned: Story = {
+    render: function ControlledTooltip() {
+        const [open, setOpen] = useState(false)
+
+        return (
+            <Tooltip open={open} onOpenChange={setOpen}>
+                <TooltipTrigger
+                    render={<Button variant="outlined">Current balance</Button>}
+                    aria-label="Current balance"
+                />
+                <TooltipContent side="right" align="start">
+                    Current balance
+                </TooltipContent>
+            </Tooltip>
+        )
+    },
 }

@@ -43,7 +43,7 @@ export const SelectTrigger = React.forwardRef<
 ))
 SelectTrigger.displayName = 'SelectTrigger'
 
-type SelectContentProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Popup> & {
+export type SelectContentProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Popup> & {
     position?: 'item-aligned' | 'popper'
     sideOffset?: number
     align?: 'start' | 'center' | 'end'

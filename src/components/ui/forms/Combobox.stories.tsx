@@ -7,9 +7,11 @@ import {
     ComboboxGroup,
     ComboboxGroupLabel,
     ComboboxInput,
+    ComboboxInputGroup,
     ComboboxItem,
     ComboboxList,
-} from './Combobox'
+    ComboboxTrigger,
+} from '@/components/ui'
 
 const accounts = ['Checking', 'Savings', 'Credit card']
 
@@ -22,7 +24,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Filterable single-select built on Base UI. Pass the option list through `items` for filtering, render `ComboboxItem` children, and use `ComboboxEmpty` for the no-results message.',
+                    'Filterable single-select built on Base UI. Pass the option list through `items` for filtering, render `ComboboxItem` children, and use `ComboboxEmpty` for no results. Compose `ComboboxInputGroup` and `ComboboxTrigger` when the input includes a popup toggle.',
             },
         },
     },
@@ -34,7 +36,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
     render: () => (
         <Combobox items={accounts}>
-            <ComboboxInput placeholder="Choose an account" />
+            <ComboboxInput aria-label="Account" placeholder="Choose an account" />
             <ComboboxContent>
                 <ComboboxList>
                     <ComboboxEmpty>No accounts found.</ComboboxEmpty>
@@ -49,10 +51,30 @@ export const Default: Story = {
     ),
 }
 
+export const WithTrigger: Story = {
+    render: () => (
+        <Combobox items={accounts}>
+            <ComboboxInputGroup>
+                <ComboboxInput aria-label="Account" placeholder="Choose an account" />
+                <ComboboxTrigger aria-label="Show account options" />
+            </ComboboxInputGroup>
+            <ComboboxContent>
+                <ComboboxList>
+                    {accounts.map((item) => (
+                        <ComboboxItem key={item} value={item}>
+                            {item}
+                        </ComboboxItem>
+                    ))}
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
+    ),
+}
+
 export const Search: Story = {
     render: () => (
         <Combobox items={accounts}>
-            <ComboboxInput placeholder="Type to filter accounts" />
+            <ComboboxInput aria-label="Account" placeholder="Type to filter accounts" />
             <ComboboxContent>
                 <ComboboxList>
                     {accounts.map((item) => (
@@ -69,7 +91,7 @@ export const Search: Story = {
 export const EmptyResults: Story = {
     render: () => (
         <Combobox items={accounts}>
-            <ComboboxInput placeholder="Try typing 'zzz'" />
+            <ComboboxInput aria-label="Account" placeholder="Try typing 'zzz'" />
             <ComboboxContent>
                 <ComboboxList>
                     <ComboboxEmpty>No accounts found.</ComboboxEmpty>
@@ -110,7 +132,7 @@ export const Controlled: Story = {
 export const DisabledOptions: Story = {
     render: () => (
         <Combobox items={accounts}>
-            <ComboboxInput placeholder="Choose an account" />
+            <ComboboxInput aria-label="Account" placeholder="Choose an account" />
             <ComboboxContent>
                 <ComboboxList>
                     <ComboboxItem value="Checking">Checking</ComboboxItem>
@@ -127,7 +149,7 @@ export const DisabledOptions: Story = {
 export const GroupedOptions: Story = {
     render: () => (
         <Combobox items={['Chequing', 'High-interest savings', 'Visa', 'Mastercard']}>
-            <ComboboxInput placeholder="Choose an account" />
+            <ComboboxInput aria-label="Account" placeholder="Choose an account" />
             <ComboboxContent>
                 <ComboboxList>
                     <ComboboxGroup>

@@ -5,12 +5,14 @@ import {
     DrawerClose,
     DrawerContent,
     DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
     DrawerTitle,
     DrawerTrigger,
-} from './Drawer'
-import { Button } from '../actions/Button'
-import { Input } from '../forms/Input'
-import { Label } from '../forms/Label'
+    Button,
+    Input,
+    Label,
+} from '@/components/ui'
 
 const meta = {
     title: 'Design System/Components/Overlays/Drawer',
@@ -35,11 +37,13 @@ export const Default: Story = {
         <Drawer>
             <DrawerTrigger render={<Button />}>Open drawer</DrawerTrigger>
             <DrawerContent>
-                <DrawerTitle>Mobile panel</DrawerTitle>
-                <DrawerDescription>Secondary content for small screens.</DrawerDescription>
-                <DrawerClose render={<Button variant="outlined" className="mt-4" />}>
-                    Close
-                </DrawerClose>
+                <DrawerHeader>
+                    <DrawerTitle>Mobile panel</DrawerTitle>
+                    <DrawerDescription>Secondary content for small screens.</DrawerDescription>
+                </DrawerHeader>
+                <DrawerFooter>
+                    <DrawerClose render={<Button variant="outlined" />}>Close</DrawerClose>
+                </DrawerFooter>
             </DrawerContent>
         </Drawer>
     ),

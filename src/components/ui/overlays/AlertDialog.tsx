@@ -96,6 +96,10 @@ export const AlertDialogContent = React.forwardRef<
                 'gap-4 rounded-lg border',
                 'bg-background p-4 shadow-lg',
 
+                // Viewport
+                'max-h-[calc(100dvh-2rem)] overflow-y-auto',
+                'overscroll-contain',
+
                 // Focus
                 'outline-none',
 

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { BudgetCard } from './BudgetCard'
 import type { Budget } from '@/features/budgets/types/budget.types'
 
@@ -35,7 +36,7 @@ const meta = {
             },
         },
     },
-    args: { onEdit: () => undefined, onArchive: () => undefined },
+    args: { onEdit: fn(), onArchive: fn() },
 } satisfies Meta<typeof BudgetCard>
 
 export default meta

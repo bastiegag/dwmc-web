@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { Inbox } from 'lucide-react'
 import { Button } from '../actions/Button'
 import { EmptyState } from './EmptyState'
@@ -25,6 +26,6 @@ export const WithAction: Story = {
         icon: Inbox,
         title: 'No transactions yet',
         description: 'Add your first transaction to start tracking everyday spending.',
-        action: <Button>Add transaction</Button>,
+        action: <Button onClick={fn()}>Add transaction</Button>,
     },
 }

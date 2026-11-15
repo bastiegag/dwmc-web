@@ -5,12 +5,14 @@ import {
     SheetClose,
     SheetContent,
     SheetDescription,
+    SheetFooter,
+    SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from './Sheet'
-import { Button } from '../actions/Button'
-import { Input } from '../forms/Input'
-import { Label } from '../forms/Label'
+    Button,
+    Input,
+    Label,
+} from '@/components/ui'
 
 const meta = {
     title: 'Design System/Components/Overlays/Sheet',
@@ -35,11 +37,13 @@ export const Default: Story = {
         <Sheet>
             <SheetTrigger render={<Button />}>Open sheet</SheetTrigger>
             <SheetContent>
-                <SheetTitle>Account details</SheetTitle>
-                <SheetDescription>Review the account before making changes.</SheetDescription>
-                <SheetClose render={<Button variant="outlined" className="mt-4" />}>
-                    Close
-                </SheetClose>
+                <SheetHeader>
+                    <SheetTitle>Account details</SheetTitle>
+                    <SheetDescription>Review the account before making changes.</SheetDescription>
+                </SheetHeader>
+                <SheetFooter>
+                    <SheetClose render={<Button variant="outlined" />}>Close</SheetClose>
+                </SheetFooter>
             </SheetContent>
         </Sheet>
     ),

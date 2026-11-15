@@ -11,7 +11,7 @@ export const ComboboxInputGroup = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <ComboboxPrimitive.InputGroup
         ref={ref}
-        className={cn('relative w-full', className)}
+        className={cn('relative w-full [&>input]:pr-10', className)}
         {...props}
     />
 ))
@@ -76,7 +76,9 @@ export const ComboboxTrigger = React.forwardRef<
 ))
 ComboboxTrigger.displayName = 'ComboboxTrigger'
 
-type ComboboxContentProps = React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Popup> & {
+export type ComboboxContentProps = React.ComponentPropsWithoutRef<
+    typeof ComboboxPrimitive.Popup
+> & {
     align?: 'start' | 'center' | 'end'
     sideOffset?: number
 }
