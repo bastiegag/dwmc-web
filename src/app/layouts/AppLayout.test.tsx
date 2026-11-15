@@ -35,15 +35,28 @@ describe('AppLayout', () => {
         expect(screen.getByRole('status')).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /previous month/i })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /next month/i })).toBeInTheDocument()
-        expect(screen.getByRole('link', { name: 'DWMC' })).toHaveAttribute(
-            'href',
-            '/dashboard?month=2026-06',
+        const homeLinks = screen.getAllByRole('link', {
+            name: "Dude, where's my cash? — Home",
+        })
+        expect(homeLinks).toHaveLength(2)
+        homeLinks.forEach((link) =>
+            expect(link).toHaveAttribute('href', '/dashboard?month=2026-06'),
         )
     })
 
     it('hides the month navigator on routes that do not need it', () => {
         renderAppLayout('/accounts')
         expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    })
+
+    it('provides a focusable target for the skip link', () => {
+        renderAppLayout('/accounts')
+
+        expect(screen.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute(
+            'href',
+            '#main-content',
+        )
+        expect(screen.getByRole('main')).toHaveAttribute('tabindex', '-1')
     })
 
     it('calls logout when Sign out is clicked', async () => {

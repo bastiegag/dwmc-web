@@ -79,7 +79,7 @@ export const AppBottomNavigation = () => {
                                     'items-center justify-start gap-1',
                                     'rounded-md px-1 pt-2',
                                     'text-xs font-medium',
-                                    'transition-colors',
+                                    'transition-colors motion-reduce:transition-none',
 
                                     // Default
                                     'text-muted-foreground',

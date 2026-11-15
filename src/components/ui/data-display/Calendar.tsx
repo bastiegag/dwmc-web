@@ -12,14 +12,14 @@ const calendarClassNames: Partial<ClassNames> = {
     nav: 'absolute inset-x-0 top-3 px-3 z-2 flex h-9 items-center justify-between',
     button_previous: cn(
         'inline-flex size-8 items-center justify-center rounded-md',
-        'text-muted-foreground transition-colors',
+        'text-muted-foreground transition-colors motion-reduce:transition-none',
         'hover:bg-accent hover:text-accent-foreground',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         'disabled:pointer-events-none disabled:opacity-50',
     ),
     button_next: cn(
         'inline-flex size-8 items-center justify-center rounded-md',
-        'text-muted-foreground transition-colors',
+        'text-muted-foreground transition-colors motion-reduce:transition-none',
         'hover:bg-accent hover:text-accent-foreground',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         'disabled:pointer-events-none disabled:opacity-50',
@@ -36,7 +36,7 @@ const calendarClassNames: Partial<ClassNames> = {
     // Day interaction
     day_button: cn(
         'inline-flex size-9 items-center justify-center rounded-md',
-        'font-normal transition-colors',
+        'font-normal transition-colors motion-reduce:transition-none',
         'hover:bg-accent hover:text-accent-foreground',
         'focus-visible:relative focus-visible:z-10',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',

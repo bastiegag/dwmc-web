@@ -89,3 +89,13 @@ export const WithSecondaryAction: Story = {
         action: { label: 'Review now', onClick: () => undefined },
     },
 }
+
+export const DisabledActions: Story = {
+    args: {
+        variant: 'warning',
+        title: 'Budget nearly reached',
+        description: 'Actions are unavailable while this alert is being handled.',
+        action: { label: 'Review budget', onClick: () => undefined, disabled: true },
+        secondaryAction: { label: 'Dismiss', onClick: () => undefined, disabled: true },
+    },
+}

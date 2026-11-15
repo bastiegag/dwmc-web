@@ -58,7 +58,7 @@ export const DatePicker = ({
                             'bg-card px-3 py-2 text-left text-sm',
 
                             // Interaction
-                            'cursor-pointer transition-colors',
+                            'cursor-pointer transition-colors motion-reduce:transition-none',
                             'hover:bg-accent/50',
                             'focus-visible:outline-none',
                             'focus-visible:ring-2 focus-visible:ring-ring',

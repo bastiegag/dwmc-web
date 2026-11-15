@@ -17,13 +17,13 @@ describe('BudgetsPage', () => {
     it('renders heading and loading state', () => {
         render(<BudgetsPage />)
         expect(screen.getByRole('heading', { name: /budgets/i, level: 1 })).toBeInTheDocument()
-        expect(screen.getByLabelText(/loading budgets/i)).toBeInTheDocument()
+        expect(screen.getByRole('status')).toHaveTextContent(/loading budgets/i)
     })
 
     it('shows budgets when data is present', async () => {
         render(<BudgetsPage />, { initialEntries: ['/budgets?month=2026-08'] })
 
-        await waitForElementToBeRemoved(() => screen.queryByLabelText(/loading budgets/i))
+        await waitForElementToBeRemoved(() => screen.queryByText(/loading budgets/i))
 
         expect(screen.getByText(/groceries/i)).toBeInTheDocument()
         expect(screen.getByText(/total planned/i)).toBeInTheDocument()
@@ -64,7 +64,7 @@ describe('BudgetsPage', () => {
 
         render(<BudgetsPage />)
 
-        await waitForElementToBeRemoved(() => screen.queryByLabelText(/loading budgets/i))
+        await waitForElementToBeRemoved(() => screen.queryByText(/loading budgets/i))
 
         const expectedTotal = formatCurrency(0.3).replace(/\u00a0/g, ' ')
         expect(screen.getByText(/total planned/i).parentElement).toHaveTextContent(expectedTotal)

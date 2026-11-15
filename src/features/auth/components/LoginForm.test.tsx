@@ -128,6 +128,13 @@ describe('LoginForm', () => {
     it('submit button is disabled with loading label while pending', async () => {
         vi.mocked(useLogin).mockReturnValue({ login: vi.fn(), isPending: true, error: null })
         render(<LoginForm />)
-        expect(screen.getByRole('button', { name: /signing in/i })).toBeDisabled()
+        expect(screen.getByRole('button', { name: /signing in/i })).toHaveAttribute(
+            'aria-disabled',
+            'true',
+        )
+        expect(screen.getByRole('button', { name: /signing in/i })).toHaveAttribute(
+            'aria-busy',
+            'true',
+        )
     })
 })

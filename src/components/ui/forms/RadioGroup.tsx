@@ -39,7 +39,7 @@ export const RadioGroupItem = forwardRef<HTMLButtonElement, RadioGroupItemProps>
                 'rounded-full border border-input bg-card',
 
                 // Interaction
-                'cursor-pointer transition-colors',
+                'cursor-pointer transition-colors motion-reduce:transition-none',
                 'outline-none',
                 'focus-visible:ring-2 focus-visible:ring-ring',
                 'focus-visible:ring-offset-2',

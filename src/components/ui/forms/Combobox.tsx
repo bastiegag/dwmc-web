@@ -28,7 +28,7 @@ export const ComboboxInput = React.forwardRef<
             'bg-card px-3 py-2 text-sm text-foreground',
             'placeholder:text-muted-foreground',
 
-            'outline-none transition-colors',
+            'outline-none transition-colors motion-reduce:transition-none',
             'focus-visible:ring-2 focus-visible:ring-ring',
             'focus-visible:ring-offset-2',
             'focus-visible:ring-offset-background',
@@ -58,7 +58,7 @@ export const ComboboxTrigger = React.forwardRef<
             'flex w-10 items-center justify-center',
             'rounded-r-md text-muted-foreground',
 
-            'cursor-pointer transition-colors',
+            'cursor-pointer transition-colors motion-reduce:transition-none',
             'hover:text-foreground',
             'focus-visible:outline-none',
             'focus-visible:ring-2 focus-visible:ring-ring',

@@ -24,7 +24,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 'file:text-foreground',
 
                 // Interaction
-                'transition-colors',
+                'transition-colors motion-reduce:transition-none',
                 'focus-visible:outline-none',
                 'focus-visible:ring-2',
                 'focus-visible:ring-ring',

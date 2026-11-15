@@ -12,10 +12,9 @@ const orientationClasses = {
 } as const
 
 export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
-    ({ className, orientation = 'vertical', tabIndex = 0, ...props }, ref) => (
+    ({ className, orientation = 'vertical', ...props }, ref) => (
         <div
             ref={ref}
-            tabIndex={tabIndex}
             className={cn(
                 'relative min-h-0 min-w-0',
                 'overscroll-contain',

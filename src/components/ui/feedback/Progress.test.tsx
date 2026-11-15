@@ -30,4 +30,12 @@ describe('Progress', () => {
 
         expect(screen.getByRole('progressbar').firstElementChild).toHaveClass('progress-stripe')
     })
+
+    it('supports indeterminate progress without announcing a numeric value', () => {
+        render(<Progress value={null} aria-label="Loading progress" />)
+
+        expect(screen.getByRole('progressbar', { name: 'Loading progress' })).not.toHaveAttribute(
+            'aria-valuenow',
+        )
+    })
 })

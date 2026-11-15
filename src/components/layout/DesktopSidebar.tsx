@@ -87,7 +87,7 @@ export const DesktopSidebar = () => {
                                             'group flex min-h-11 items-center gap-3',
                                             'rounded-md px-3 py-2',
                                             'text-sm font-medium',
-                                            'transition-colors',
+                                            'transition-colors motion-reduce:transition-none',
 
                                             'focus-visible:outline-none',
                                             'focus-visible:ring-2',

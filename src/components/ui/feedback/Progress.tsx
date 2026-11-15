@@ -53,7 +53,7 @@ export const Progress = forwardRef<ComponentRef<typeof ProgressPrimitive.Root>, 
                         'progress-stripe h-full w-full',
                         'transition-transform duration-300 ease-out',
                         'motion-reduce:transition-none',
-                        isIndeterminate && 'animate-pulse',
+                        isIndeterminate && 'animate-pulse motion-reduce:animate-none',
                         colorClasses[color],
                         indicatorClassName,
                     )}

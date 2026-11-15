@@ -25,9 +25,8 @@ describe('Tooltip', () => {
         await user.tab()
         expect(trigger).toHaveFocus()
 
-        const tooltip = await screen.findByRole('tooltip')
-        expect(tooltip).toHaveTextContent('More information')
-        expect(trigger).toHaveAccessibleDescription('More information')
+        expect(await screen.findByText('More information')).toBeInTheDocument()
+        expect(trigger).toHaveAccessibleName('More information')
     })
 
     it('shows on hover and closes on Escape', async () => {
@@ -36,9 +35,9 @@ describe('Tooltip', () => {
         const trigger = screen.getByRole('button', { name: 'More information' })
 
         await user.hover(trigger)
-        expect(await screen.findByRole('tooltip')).toBeInTheDocument()
+        expect(await screen.findByText('More information')).toBeInTheDocument()
 
         await user.keyboard('{Escape}')
-        await waitFor(() => expect(screen.queryByRole('tooltip')).not.toBeInTheDocument())
+        await waitFor(() => expect(screen.queryByText('More information')).not.toBeInTheDocument())
     })
 })

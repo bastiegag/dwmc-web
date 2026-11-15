@@ -46,7 +46,7 @@ describe('CategoriesPage', () => {
 
         render(<CategoriesPage />)
 
-        expect(screen.getByLabelText(/loading categories/i)).toBeInTheDocument()
+        expect(screen.getByRole('status')).toHaveTextContent(/loading categories/i)
     })
 
     it('shows empty state when no sections exist', async () => {

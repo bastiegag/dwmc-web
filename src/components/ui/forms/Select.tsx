@@ -18,7 +18,7 @@ export const SelectTrigger = React.forwardRef<
             'rounded-md border border-input bg-card px-3 py-2',
             'text-sm text-foreground',
 
-            'cursor-pointer transition-colors',
+            'cursor-pointer transition-colors motion-reduce:transition-none',
             'outline-none',
             'focus-visible:ring-2 focus-visible:ring-ring',
             'focus-visible:ring-offset-2',

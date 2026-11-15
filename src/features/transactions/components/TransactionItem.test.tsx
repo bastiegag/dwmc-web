@@ -49,7 +49,7 @@ describe('TransactionItem', () => {
         const dialog = screen.getByRole('alertdialog')
         const cancelButton = within(dialog).getByRole('button', { name: 'Cancel' })
 
-        expect(cancelButton).toHaveFocus()
+        await waitFor(() => expect(cancelButton).toHaveFocus())
         await user.click(cancelButton)
         expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
         expect(onArchive).not.toHaveBeenCalled()
@@ -66,7 +66,7 @@ describe('TransactionItem', () => {
         const reopenedConfirmButton = within(reopenedDialog).getByRole('button', {
             name: 'Archive',
         })
-        expect(reopenedCancelButton).toHaveFocus()
+        await waitFor(() => expect(reopenedCancelButton).toHaveFocus())
         await user.click(reopenedConfirmButton)
 
         await waitFor(() => expect(onArchive).toHaveBeenCalledWith(transaction))

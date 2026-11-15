@@ -44,7 +44,7 @@ export const AccordionTrigger = React.forwardRef<
             'py-4 text-left text-sm font-medium',
 
             // Interaction
-            'cursor-pointer transition-colors',
+            'cursor-pointer transition-colors motion-reduce:transition-none',
             'hover:text-primary',
             'focus-visible:rounded-sm focus-visible:outline-none',
             'focus-visible:ring-2 focus-visible:ring-ring',

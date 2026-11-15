@@ -33,7 +33,7 @@ export const DashboardSectionNavigation = () => {
                                     'px-4 py-2 text-sm font-medium',
 
                                     // Interaction
-                                    'transition-colors',
+                                    'transition-colors motion-reduce:transition-none',
                                     'hover:bg-primary-foreground/10',
 
                                     // Keyboard focus

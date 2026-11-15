@@ -57,7 +57,7 @@ export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTable
             ref={ref}
             className={cn(
                 'border-b border-border',
-                'transition-colors',
+                'transition-colors motion-reduce:transition-none',
                 'hover:bg-muted/50',
                 'data-[state=selected]:bg-muted',
                 className,

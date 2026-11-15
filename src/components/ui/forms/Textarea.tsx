@@ -19,7 +19,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                 'placeholder:text-muted-foreground',
 
                 // Interaction
-                'transition-colors',
+                'transition-colors motion-reduce:transition-none',
                 'focus-visible:outline-none',
                 'focus-visible:ring-2 focus-visible:ring-ring',
                 'focus-visible:ring-offset-2',

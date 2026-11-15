@@ -83,7 +83,7 @@ export const InputGroupButton = forwardRef<HTMLButtonElement, InputGroupButtonPr
                 'text-sm font-medium text-foreground',
 
                 // Interaction
-                'cursor-pointer transition-colors',
+                'cursor-pointer transition-colors motion-reduce:transition-none',
                 'hover:bg-muted',
                 'focus-visible:outline-none',
                 'focus-visible:ring-2',

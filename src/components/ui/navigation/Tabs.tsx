@@ -44,6 +44,7 @@ export const TabsTrigger = forwardRef<
 
             // Interaction
             'cursor-pointer transition-colors duration-150',
+            'motion-reduce:transition-none',
             'hover:text-foreground',
             'outline-none',
 

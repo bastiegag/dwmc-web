@@ -62,9 +62,6 @@ describe('RadioGroup', () => {
 
         await user.click(screen.getByRole('radio', { name: 'Yearly' }))
         expect(screen.getByRole('radio', { name: 'Monthly' })).toBeChecked()
-        expect(screen.getByRole('radio', { name: 'Yearly' })).toHaveAttribute(
-            'aria-disabled',
-            'true',
-        )
+        expect(screen.getByRole('radio', { name: 'Yearly' })).toBeDisabled()
     })
 })

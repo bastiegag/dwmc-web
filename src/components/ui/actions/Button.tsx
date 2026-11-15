@@ -14,7 +14,7 @@ const buttonVariants = cva(
         'text-sm font-medium',
 
         // Interaction
-        'cursor-pointer select-none transition-colors',
+        'cursor-pointer select-none transition-colors motion-reduce:transition-none',
         'focus-visible:outline-none',
         'focus-visible:ring-2 focus-visible:ring-ring',
         'focus-visible:ring-offset-2 focus-visible:ring-offset-background',

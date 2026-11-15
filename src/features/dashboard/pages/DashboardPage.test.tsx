@@ -16,7 +16,7 @@ describe('DashboardPage', () => {
     it('renders heading and loading state', () => {
         render(<DashboardPage />)
         expect(screen.getByRole('heading', { name: /dashboard/i, level: 1 })).toBeInTheDocument()
-        expect(screen.getByLabelText(/loading summary/i)).toBeInTheDocument()
+        expect(screen.getByRole('status')).toHaveTextContent(/loading summary/i)
     })
 
     it('shows summary cards when data is present', async () => {

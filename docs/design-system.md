@@ -10,8 +10,9 @@ a separate package.
   components for layout and content. Primitives are grouped by category:
   `actions/`, `forms/`, `overlays/`, `navigation/`, `feedback/`,
   `data-display/`, `disclosure/`, and `layout/`. Each file is PascalCase and
-  exports one component family, with its `*.stories.tsx` and `*.test.tsx`
-  colocated beside it.
+  exports one component family. Stories and focused behavior tests are
+  colocated beside components where they provide useful coverage; not every
+  styling-only primitive needs a separate test file.
 - Import primitives from the root barrel `@/components/ui`, which re-exports
   each category barrel. Inside `src/components/ui/`, primitives import sibling
   or cross-category files by relative path (for example `../actions/Button`)
