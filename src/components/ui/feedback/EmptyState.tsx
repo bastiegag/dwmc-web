@@ -1,23 +1,46 @@
+import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-type EmptyStateProps = {
+export interface EmptyStateProps {
     icon: LucideIcon
     title: string
     description: string
+    action?: ReactNode
     className?: string
 }
 
-export const EmptyState = ({ icon: Icon, title, description, className }: EmptyStateProps) => {
-    return (
+export const EmptyState = ({
+    icon: Icon,
+    title,
+    description,
+    action,
+    className,
+}: EmptyStateProps) => (
+    <div
+        className={cn(
+            'flex w-full flex-col items-center justify-center',
+            'px-6 py-12 text-center sm:p-12',
+            className,
+        )}
+    >
         <div
-            className={cn('flex flex-col items-center justify-center p-12 text-center', className)}
+            className={cn(
+                'mb-4 flex size-16 shrink-0 items-center justify-center',
+                'rounded-full bg-primary/10',
+            )}
         >
-            <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-primary/10">
-                <Icon className="size-8 text-primary" aria-hidden="true" />
-            </div>
-            <h3 className="text-lg font-semibold">{title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+            <Icon className="size-8 text-primary" aria-hidden="true" />
         </div>
-    )
-}
+
+        <div className="flex max-w-md flex-col items-center gap-2">
+            <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+
+            <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
+        </div>
+
+        {action && (
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">{action}</div>
+        )}
+    </div>
+)

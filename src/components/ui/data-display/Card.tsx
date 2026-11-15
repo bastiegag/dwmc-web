@@ -11,7 +11,11 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         const hasHeader = title != null || description != null
 
         return (
-            <div ref={ref} className={cn('rounded-xl bg-card shadow-lg', className)} {...props}>
+            <div
+                ref={ref}
+                className={cn('rounded-xl bg-card border-0 shadow-lg', className)}
+                {...props}
+            >
                 {hasHeader ? (
                     <div className="flex flex-col px-4 py-6 text-center">
                         {title != null ? <h2 className="text-heading-2">{title}</h2> : null}

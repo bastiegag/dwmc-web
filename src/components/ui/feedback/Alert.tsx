@@ -23,7 +23,7 @@ const alertVariants = cva('relative flex w-full items-start gap-2 rounded-lg bor
     },
 })
 
-type AlertVariant = NonNullable<VariantProps<typeof alertVariants>['variant']>
+export type AlertVariant = NonNullable<VariantProps<typeof alertVariants>['variant']>
 
 const variantIcons: Record<AlertVariant, LucideIcon> = {
     default: CircleEllipsis,
@@ -31,17 +31,15 @@ const variantIcons: Record<AlertVariant, LucideIcon> = {
     warning: TriangleAlert,
     success: CircleCheck,
     info: Info,
-} as const
-
-interface AlertAction {
-    label: string
-    onClick: () => void
 }
 
-interface AlertProps
-    extends
-        Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'>,
-        Omit<VariantProps<typeof alertVariants>, 'variant'> {
+export interface AlertAction {
+    label: string
+    onClick: () => void
+    disabled?: boolean
+}
+
+export interface AlertProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
     variant: AlertVariant
     title?: ReactNode
     description?: ReactNode
@@ -49,54 +47,50 @@ interface AlertProps
     secondaryAction?: AlertAction
 }
 
-const Alert = forwardRef<HTMLDivElement, AlertProps>(
-    (
-        {
-            className,
-            variant,
-            role = 'alert',
-            title,
-            description,
-            action,
-            secondaryAction,
-            ...props
-        },
-        ref,
-    ) => {
+export const Alert = forwardRef<HTMLDivElement, AlertProps>(
+    ({ className, variant, role, title, description, action, secondaryAction, ...props }, ref) => {
         const Icon = variantIcons[variant]
+
+        const accessibleRole = role ?? (variant === 'destructive' ? 'alert' : 'status')
 
         return (
             <div
-                ref={ref}
-                role={role}
-                className={cn(alertVariants({ variant }), className)}
                 {...props}
+                ref={ref}
+                role={accessibleRole}
+                className={cn(alertVariants({ variant }), className)}
             >
                 <Icon className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+
                 <div className="min-w-0 flex-1">
                     {title ? (
-                        <h5 className="font-semibold text-body-sm leading-none mb-1">{title}</h5>
+                        <div className="mb-1 text-body-sm font-semibold leading-none">{title}</div>
                     ) : null}
-                    {description ? <p className="text-caption">{description}</p> : null}
+
+                    {description ? <div className="text-caption">{description}</div> : null}
+
                     {action || secondaryAction ? (
-                        <div className="mt-4 flex justify-start gap-2">
+                        <div className="mt-4 flex flex-wrap justify-start gap-2">
                             {action ? (
                                 <Button
                                     type="button"
                                     variant="outlined"
                                     color={variant}
                                     size="sm"
+                                    disabled={action.disabled}
                                     onClick={action.onClick}
                                 >
                                     {action.label}
                                 </Button>
                             ) : null}
+
                             {secondaryAction ? (
                                 <Button
                                     type="button"
                                     variant="link"
                                     color={variant}
                                     size="sm"
+                                    disabled={secondaryAction.disabled}
                                     onClick={secondaryAction.onClick}
                                 >
                                     {secondaryAction.label}
@@ -109,7 +103,5 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         )
     },
 )
-Alert.displayName = 'Alert'
 
-export { Alert }
-export type { AlertAction, AlertProps, AlertVariant }
+Alert.displayName = 'Alert'

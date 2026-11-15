@@ -1,9 +1,7 @@
-import type { AnchorHTMLAttributes, ReactNode } from 'react'
+import type { AnchorHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
-interface SkipLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-    children?: ReactNode
-}
+export type SkipLinkProps = AnchorHTMLAttributes<HTMLAnchorElement>
 
 export const SkipLink = ({
     className,
@@ -14,7 +12,35 @@ export const SkipLink = ({
     <a
         href={href}
         className={cn(
-            'sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:ring-2 focus:ring-ring',
+            // Hidden until focused
+            'sr-only',
+            'focus:not-sr-only',
+
+            // Position
+            'focus:fixed',
+            'focus:top-4',
+            'focus:left-4',
+            'focus:z-[100]',
+
+            // Appearance
+            'focus:rounded-md',
+            'focus:border',
+            'focus:border-border',
+            'focus:bg-background',
+            'focus:px-4',
+            'focus:py-3',
+            'focus:text-sm',
+            'focus:font-semibold',
+            'focus:text-foreground',
+            'focus:shadow-lg',
+
+            // Focus
+            'focus:outline-none',
+            'focus:ring-2',
+            'focus:ring-ring',
+            'focus:ring-offset-2',
+            'focus:ring-offset-background',
+
             className,
         )}
         {...props}

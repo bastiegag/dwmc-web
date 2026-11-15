@@ -28,7 +28,10 @@ export const NumberFieldInput = forwardRef<
     <NumberFieldPrimitive.Input
         ref={ref}
         render={<Input />}
-        className={cn('rounded-none border-0 text-center focus-visible:ring-0', className)}
+        className={cn(
+            'rounded-none border-1 border-x-0 text-center focus-visible:ring-0',
+            className,
+        )}
         {...props}
     />
 ))
