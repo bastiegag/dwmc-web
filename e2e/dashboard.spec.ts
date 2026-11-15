@@ -105,3 +105,87 @@ test('preserves a deep-linked month across month-aware navigation', async ({ pag
     await expect(page).toHaveURL('/dashboard?month=2026-05')
     await expect(page.locator('span[role="status"]').filter({ hasText: 'mai 2026' })).toBeVisible()
 })
+
+test('keeps long financial labels and values within responsive dashboard layouts', async ({
+    page,
+}) => {
+    const responsiveSummary = {
+        ...dashboardSummary,
+        totals: {
+            ...dashboardSummary.totals,
+            incomeTotal: 0,
+            expenseTotal: 123456789.99,
+            netTotal: -123456789.99,
+        },
+        topExpenseCategories: [
+            {
+                ...dashboardSummary.topExpenseCategories[0],
+                name: 'Household essentials and recurring home maintenance expenses',
+                total: 123456789.99,
+            },
+        ],
+        accountBreakdown: [
+            {
+                accountId: 'account-long-name',
+                name: 'Primary household chequing account for everyday expenses',
+                type: 'CHECKING',
+                color: '#ed6a5a',
+                icon: 'wallet',
+                incomeTotal: 0,
+                expenseTotal: 123456789.99,
+                adjustmentTotal: 0,
+                transferInTotal: 0,
+                transferOutTotal: 0,
+                netTotal: -123456789.99,
+                transactionCount: 123456,
+            },
+        ],
+        recentTransactions: [
+            {
+                ...dashboardSummary.recentTransactions[0],
+                amount: 123456789.99,
+                merchant:
+                    'A very long merchant name used to verify responsive transaction descriptions',
+            },
+        ],
+    }
+
+    await mockAuthenticatedSession(page, responsiveSummary)
+    const loginPage = new LoginPage(page)
+    await loginPage.goto()
+    await loginPage.login('test@example.com', 'Password123')
+    await page.goto('/dashboard?month=2026-06')
+
+    await expect(
+        page.getByText('Household essentials and recurring home maintenance expenses'),
+    ).toBeVisible()
+    await expect(
+        page.getByText('Primary household chequing account for everyday expenses'),
+    ).toBeVisible()
+
+    for (const width of [320, 430, 768, 1280]) {
+        await page.setViewportSize({ width, height: 800 })
+        expect(
+            await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+        ).toBe(true)
+
+        if (width < 1024) {
+            await expect(page.getByTestId('mobile-bottom-nav')).toBeVisible()
+        } else {
+            await expect(page.getByTestId('mobile-bottom-nav')).toBeHidden()
+        }
+    }
+
+    await page.setViewportSize({ width: 320, height: 640 })
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+    const viewAllLink = page.getByRole('link', { name: /view all transactions/i })
+    const navigation = page.getByTestId('mobile-bottom-nav')
+    const linkBox = await viewAllLink.boundingBox()
+    const navigationBox = await navigation.boundingBox()
+
+    expect(linkBox).not.toBeNull()
+    expect(navigationBox).not.toBeNull()
+    if (linkBox && navigationBox) {
+        expect(linkBox.y + linkBox.height).toBeLessThanOrEqual(navigationBox.y)
+    }
+})

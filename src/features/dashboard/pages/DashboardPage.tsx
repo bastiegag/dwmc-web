@@ -5,7 +5,7 @@ import CategoryBreakdownCard from '@/features/dashboard/components/CategoryBreak
 import AccountBreakdownCard from '@/features/dashboard/components/AccountBreakdownCard'
 import RecentTransactionsCard from '@/features/dashboard/components/RecentTransactionsCard'
 import { Activity } from 'lucide-react'
-import { EmptyState } from '@/components/ui'
+import { Alert, EmptyState } from '@/components/ui'
 import { useMonthlySummary } from '@/features/dashboard/hooks/use-monthly-summary'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
@@ -41,7 +41,7 @@ export const DashboardPage = () => {
     })
 
     const data = summaryQuery.data
-    const isEmpty = data ? data.totals.transactionCount === 0 : false
+    const isEmpty = data?.totals.transactionCount === 0
 
     const handleCreateTransaction = async (values: TransactionFormValues) => {
         try {
@@ -61,7 +61,7 @@ export const DashboardPage = () => {
                 </h1>
                 <QueryState
                     isLoading={summaryQuery.isLoading}
-                    isError={summaryQuery.isError}
+                    isError={summaryQuery.isError && !data}
                     loadingLabel="Loading summary"
                     errorTitle="Could not load summary"
                     errorMessage={getErrorMessage(summaryQuery.error, '')}
@@ -69,7 +69,25 @@ export const DashboardPage = () => {
                     onRetry={() => void summaryQuery.refetch()}
                 />
 
-                {!summaryQuery.isLoading && !summaryQuery.isError && data && isEmpty ? (
+                {summaryQuery.isError && data ? (
+                    <Alert
+                        variant="destructive"
+                        role="status"
+                        title="Summary refresh failed"
+                        description={
+                            getErrorMessage(summaryQuery.error, '') ||
+                            'Please try again in a moment.'
+                        }
+                        action={{
+                            label: 'Retry',
+                            disabled: summaryQuery.isFetching,
+                            onClick: () => void summaryQuery.refetch(),
+                        }}
+                        className="mb-0"
+                    />
+                ) : null}
+
+                {!summaryQuery.isLoading && data && isEmpty ? (
                     <EmptyState
                         icon={Activity}
                         title="No activity this month"
@@ -77,7 +95,7 @@ export const DashboardPage = () => {
                     />
                 ) : null}
 
-                {!summaryQuery.isLoading && !summaryQuery.isError && data && !isEmpty ? (
+                {!summaryQuery.isLoading && data && !isEmpty ? (
                     <div className="space-y-6">
                         <SummaryCards totals={data.totals} />
 

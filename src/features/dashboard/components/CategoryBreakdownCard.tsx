@@ -17,16 +17,19 @@ export const CategoryBreakdownCard = ({ title, items }: Props) => {
                     {items.map((it) => (
                         <li
                             key={String(it.categoryId)}
-                            className="flex items-center justify-between"
+                            className="grid grid-cols-2 items-center gap-x-4"
                         >
-                            <div>
-                                <div className="font-medium">{it.name}</div>
+                            <div className="min-w-0">
+                                <div className="break-words font-medium">{it.name}</div>
                                 <div className="text-sm text-muted-foreground">
-                                    {it.transactionCount} tx
+                                    {it.transactionCount}{' '}
+                                    {it.transactionCount === 1 ? 'transaction' : 'transactions'}
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <div className="font-semibold">{formatCurrency(it.total)}</div>
+                            <div className="min-w-0 text-right">
+                                <div className="break-words font-semibold tabular-nums">
+                                    {formatCurrency(it.total)}
+                                </div>
                                 <div className="text-sm text-muted-foreground">
                                     {Math.round(it.percentage)}%
                                 </div>
