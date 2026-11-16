@@ -92,6 +92,7 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
             description,
             error,
             allowNegative = false,
+            required = false,
             min,
             max,
             id: providedId,
@@ -230,13 +231,23 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
 
         return (
             <Field invalid={Boolean(message)} disabled={disabled}>
-                {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
+                {label && (
+                    <FieldLabel htmlFor={id}>
+                        {label}
+                        {required && (
+                            <span className="ml-1 text-destructive" aria-hidden="true">
+                                *
+                            </span>
+                        )}
+                    </FieldLabel>
+                )}
 
                 <Input
                     {...props}
                     ref={ref}
                     id={id}
                     type="text"
+                    required={required}
                     inputMode="decimal"
                     autoComplete="off"
                     disabled={disabled}

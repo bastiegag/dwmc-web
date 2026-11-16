@@ -328,7 +328,7 @@ test('keeps a selected-month Budget synchronized with expense create, month move
     await page.goto('/budgets?month=2026-06')
     await page.getByRole('heading', { name: 'Budgets', exact: true }).waitFor()
     await page.getByTestId('primary-action-button').click()
-    await page.locator('#budget-category').selectOption({ index: 1 })
+    await chooseOption(page, 'Category', 'Groceries')
     await page.locator('#budget-month').fill('2026-06')
     await page.locator('#budget-amount').fill('100')
     await page.getByRole('button', { name: 'Create budget' }).click()

@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { Alert } from '@/components/ui'
+import { Alert, Button, Card } from '@/components/ui'
 import { QueryState } from '@/components/feedback'
 import {
     useBudgets,
@@ -12,11 +12,8 @@ import BudgetList from '@/features/budgets/components/BudgetList'
 import BudgetDialog from '@/features/budgets/components/BudgetDialog'
 import EmptyBudgetsState from '@/features/budgets/components/EmptyBudgetsState'
 import { formatCurrency, sumCurrency } from '@/lib/format-currency'
-import type {
-    Budget,
-    CreateBudgetPayload,
-    UpdateBudgetPayload,
-} from '@/features/budgets/types/budget.types'
+import type { Budget } from '@/features/budgets/types/budget.types'
+import type { BudgetFormInput, BudgetFormValues } from '@/features/budgets/schemas/budget.schema'
 import { useSelectedMonth } from '@/shared/month'
 import { usePrimaryAction } from '@/shared/primary-action'
 import { PageHeader } from '@/components/layout'
@@ -35,7 +32,6 @@ export const BudgetsPage = () => {
 
     const [isDialogOpen, setDialogOpen] = useState(false)
     const [formError, setFormError] = useState<string | null>(null)
-    const [archiveError, setArchiveError] = useState<string | null>(null)
 
     const openCreate = useCallback(() => {
         setActiveBudget(null)
@@ -56,6 +52,7 @@ export const BudgetsPage = () => {
         const totalRemaining = sumCurrency(budgets.map((budget) => budget.remaining))
         return { totalPlanned, totalSpent, totalRemaining }
     }, [budgets])
+    const hasBudgetsData = budgetsQuery.data !== undefined
 
     const openEdit = (b: Budget) => {
         setActiveBudget(b)
@@ -63,12 +60,13 @@ export const BudgetsPage = () => {
         setDialogOpen(true)
     }
 
-    const handleSubmit = async (values: CreateBudgetPayload | UpdateBudgetPayload) => {
+    const handleSubmit = async (values: BudgetFormValues) => {
+        setFormError(null)
         try {
             if (activeBudget) {
                 await updateMutation.mutateAsync({ id: activeBudget.id, input: values })
             } else {
-                await createMutation.mutateAsync(values as CreateBudgetPayload)
+                await createMutation.mutateAsync(values)
             }
             setDialogOpen(false)
         } catch (err) {
@@ -76,21 +74,14 @@ export const BudgetsPage = () => {
         }
     }
 
-    const handleArchive = async (b: Budget) => {
-        try {
-            setArchiveError(null)
-            await deleteMutation.mutateAsync(b.id)
-        } catch (err) {
-            setArchiveError(getErrorMessage(err, 'Unable to archive budget. Please try again.'))
-        }
-    }
+    const handleArchive = (b: Budget) => deleteMutation.mutateAsync(b.id)
 
-    const dialogInitialValues = useMemo(() => {
+    const dialogInitialValues = useMemo<BudgetFormInput | undefined>(() => {
         if (!activeBudget) return undefined
         return {
             categoryId: activeBudget.category.id,
             month: activeBudget.month,
-            amount: activeBudget.amount,
+            amount: String(activeBudget.amount),
         }
     }, [activeBudget])
 
@@ -102,53 +93,68 @@ export const BudgetsPage = () => {
         }
     }, [])
 
+    const summaryItems = [
+        { label: 'Total planned', value: formatCurrency(totals.totalPlanned) },
+        { label: 'Total spent', value: formatCurrency(totals.totalSpent) },
+        { label: 'Total remaining', value: formatCurrency(totals.totalRemaining) },
+    ]
+
     return (
         <section className="space-y-6" aria-labelledby="budgets-heading">
             <PageHeader
                 id="budgets-heading"
                 title="Budgets"
                 description="Manage monthly spending targets by category."
+                actions={
+                    <Button className="hidden lg:inline-flex" onClick={openCreate}>
+                        Add budget
+                    </Button>
+                }
             />
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="rounded-lg border bg-card p-4">
-                    <div className="text-sm text-muted-foreground">Total planned</div>
-                    <div className="text-2xl font-semibold">
-                        {formatCurrency(totals.totalPlanned)}
-                    </div>
+            {hasBudgetsData ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    {summaryItems.map(({ label, value }) => (
+                        <Card key={label} className="min-w-0">
+                            <h2 className="text-sm text-muted-foreground">{label}</h2>
+                            <p className="break-words text-2xl font-semibold tabular-nums">
+                                {value}
+                            </p>
+                        </Card>
+                    ))}
                 </div>
-                <div className="rounded-lg border bg-card p-4">
-                    <div className="text-sm text-muted-foreground">Total spent</div>
-                    <div className="text-2xl font-semibold">
-                        {formatCurrency(totals.totalSpent)}
-                    </div>
-                </div>
-                <div className="rounded-lg border bg-card p-4">
-                    <div className="text-sm text-muted-foreground">Total remaining</div>
-                    <div className="text-2xl font-semibold">
-                        {formatCurrency(totals.totalRemaining)}
-                    </div>
-                </div>
-            </div>
+            ) : null}
 
             <QueryState
-                isLoading={budgetsQuery.isLoading}
-                isError={budgetsQuery.isError}
+                isLoading={budgetsQuery.isLoading && !hasBudgetsData}
+                isError={budgetsQuery.isError && !hasBudgetsData}
                 loadingLabel="Loading budgets"
                 errorTitle="Could not load budgets"
                 errorMessage={getErrorMessage(budgetsQuery.error, '')}
                 fallbackErrorMessage="Please refresh and try again."
+                onRetry={() => void budgetsQuery.refetch()}
             />
 
-            {archiveError ? (
-                <Alert variant="destructive" title="Archive failed" description={archiveError} />
+            {budgetsQuery.isError && hasBudgetsData ? (
+                <Alert
+                    variant="warning"
+                    role="status"
+                    title="Budget list refresh failed"
+                    description={
+                        getErrorMessage(budgetsQuery.error, '') || 'Please try again in a moment.'
+                    }
+                    action={{
+                        label: 'Retry',
+                        disabled: budgetsQuery.isFetching,
+                        onClick: () => void budgetsQuery.refetch(),
+                    }}
+                    className="mb-0"
+                />
             ) : null}
 
-            {!budgetsQuery.isLoading && !budgetsQuery.isError && budgets.length === 0 ? (
-                <EmptyBudgetsState month={month} />
-            ) : null}
+            {hasBudgetsData && budgets.length === 0 ? <EmptyBudgetsState month={month} /> : null}
 
-            {!budgetsQuery.isLoading && !budgetsQuery.isError && budgets.length > 0 ? (
+            {hasBudgetsData && budgets.length > 0 ? (
                 <BudgetList budgets={budgets} onEdit={openEdit} onArchive={handleArchive} />
             ) : null}
 
@@ -158,6 +164,7 @@ export const BudgetsPage = () => {
                 sections={sectionsQuery.data ?? []}
                 initialValues={dialogInitialValues}
                 defaultMonth={month}
+                isCategoriesLoading={sectionsQuery.isLoading}
                 isPending={createMutation.isPending || updateMutation.isPending}
                 errorMessage={formError}
                 onOpenChange={handleDialogOpenChange}

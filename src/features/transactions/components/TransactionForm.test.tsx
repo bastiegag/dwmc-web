@@ -257,7 +257,7 @@ describe('TransactionForm', () => {
             />,
         )
 
-        const amount = screen.getByLabelText('Amount')
+        const amount = screen.getByRole('textbox', { name: 'Amount' })
         await user.clear(amount)
         await user.type(amount, '123.45')
         await user.click(screen.getByRole('button', { name: 'Save' }))
