@@ -33,7 +33,7 @@ export const accountFormSchema = z
         icon: z.string().trim().min(1, 'Icon is required').max(80),
     })
     .superRefine((data, ctx) => {
-        if (data.goal !== null && data.type !== 'SAVINGS') {
+        if (data.goal !== null && data.goal !== undefined && data.type !== 'SAVINGS') {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: 'Goals are only available for savings accounts',

@@ -144,7 +144,17 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                 ) : null}
             </div>
 
-            <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+            <AlertDialog
+                open={isConfirmOpen}
+                onOpenChange={(open, eventDetails) => {
+                    if (!open && isArchiving) {
+                        eventDetails.cancel()
+                        return
+                    }
+
+                    setIsConfirmOpen(open)
+                }}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Archive account?</AlertDialogTitle>

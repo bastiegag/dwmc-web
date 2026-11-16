@@ -29,18 +29,26 @@ describe('AccountForm', () => {
         ).toBe(true)
     })
 
-    it('requires savings goals to be positive', () => {
-        const account = {
-            name: 'Savings',
-            type: 'SAVINGS' as const,
-            startingBalance: 0,
-            goal: 0,
-            color: '#3b82f6',
-            icon: 'wallet',
-        }
-
-        expect(accountFormSchema.safeParse(account).success).toBe(false)
-        expect(accountFormSchema.safeParse({ ...account, goal: -1 }).success).toBe(false)
+    it.each([
+        ['non-savings account with an undefined goal', 'CHECKING', undefined, true],
+        ['non-savings account with a null goal', 'CHECKING', null, true],
+        ['non-savings account with a positive goal', 'CHECKING', 100, false],
+        ['savings account with an undefined goal', 'SAVINGS', undefined, true],
+        ['savings account with a null goal', 'SAVINGS', null, true],
+        ['savings account with a positive goal', 'SAVINGS', 100, true],
+        ['savings account with a zero goal', 'SAVINGS', 0, false],
+        ['savings account with a negative goal', 'SAVINGS', -1, false],
+    ])('%s', (_description, type, goal, isValid) => {
+        expect(
+            accountFormSchema.safeParse({
+                name: 'Account',
+                type,
+                startingBalance: 0,
+                goal,
+                color: '#3b82f6',
+                icon: 'wallet',
+            }).success,
+        ).toBe(isValid)
     })
 
     it('shows and accepts a positive goal for savings accounts', async () => {

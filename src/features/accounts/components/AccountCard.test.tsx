@@ -111,9 +111,56 @@ describe('AccountCard', () => {
 
         expect(onArchive).toHaveBeenCalledTimes(1)
         expect(confirm).toBeDisabled()
+        expect(within(dialog).getByRole('button', { name: 'Cancel' })).toBeDisabled()
         finishArchive?.()
 
         await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
         expect(archiveTrigger).toHaveFocus()
+    })
+
+    it('prevents Escape from dismissing an archive request while pending', async () => {
+        const user = userEvent.setup()
+        const account = createAccount()
+        let finishArchive: (() => void) | undefined
+        const onArchive = vi.fn(
+            () =>
+                new Promise<void>((resolve) => {
+                    finishArchive = resolve
+                }),
+        )
+
+        render(<AccountCard account={account} onEdit={vi.fn()} onArchive={onArchive} />)
+        await user.click(screen.getByRole('button', { name: `Archive ${account.name}` }))
+        const dialog = await screen.findByRole('alertdialog')
+        await user.click(within(dialog).getByRole('button', { name: /^Archive$/ }))
+        await user.keyboard('{Escape}')
+
+        expect(screen.getByRole('alertdialog')).toBeInTheDocument()
+        expect(onArchive).toHaveBeenCalledTimes(1)
+        finishArchive?.()
+        await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
+    })
+
+    it('prevents outside clicks from dismissing an archive request while pending', async () => {
+        const user = userEvent.setup()
+        const account = createAccount()
+        let finishArchive: (() => void) | undefined
+        const onArchive = vi.fn(
+            () =>
+                new Promise<void>((resolve) => {
+                    finishArchive = resolve
+                }),
+        )
+
+        render(<AccountCard account={account} onEdit={vi.fn()} onArchive={onArchive} />)
+        await user.click(screen.getByRole('button', { name: `Archive ${account.name}` }))
+        const dialog = await screen.findByRole('alertdialog')
+        await user.click(within(dialog).getByRole('button', { name: /^Archive$/ }))
+        await user.click(document.body)
+
+        expect(screen.getByRole('alertdialog')).toBeInTheDocument()
+        expect(onArchive).toHaveBeenCalledTimes(1)
+        finishArchive?.()
+        await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
     })
 })
