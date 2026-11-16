@@ -35,10 +35,14 @@ export const TransactionDialog = ({
     onSubmit,
 }: TransactionDialogProps) => {
     const title = mode === 'create' ? 'New Transaction' : 'Edit transaction'
+    const handleOpenChange = (nextOpen: boolean) => {
+        if (!nextOpen && isPending) return
+        onOpenChange(nextOpen)
+    }
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-lg">
+        <Dialog open={open} onOpenChange={handleOpenChange}>
+            <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-lg overflow-y-auto overscroll-contain">
                 <DialogHeader className="mb-4 flex-row items-center justify-between gap-3">
                     <div>
                         <DialogTitle>{title}</DialogTitle>
@@ -51,7 +55,8 @@ export const TransactionDialog = ({
                         variant="link"
                         className="no-underline hover:bg-accent/10"
                         size="sm"
-                        onClick={() => onOpenChange(false)}
+                        disabled={isPending}
+                        onClick={() => handleOpenChange(false)}
                         aria-label="Close transaction dialog"
                     >
                         Close

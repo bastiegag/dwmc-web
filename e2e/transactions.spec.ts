@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { mockAuthenticatedSession } from './auth-fixtures.js'
 import { LoginPage } from './pages/login.page.js'
 
@@ -16,6 +16,12 @@ type Transaction = {
     isArchived: boolean
     createdAt: string
     updatedAt: string
+    account?: {
+        id: string
+        name: string
+        color: string
+        icon: string
+    } | null
 }
 
 type Account = {
@@ -75,10 +81,11 @@ const setupTransactionApi = async (
         failArchive?: boolean
         archivePending?: Promise<void>
         onArchiveRequest?: () => void
+        checkingAccountName?: string
     } = {},
 ) => {
     const accounts = [
-        createAccount('checking', 'Checking', 1000),
+        createAccount('checking', options.checkingAccountName ?? 'Checking', 1000),
         createAccount('savings', 'Savings', 500),
     ]
     const transactions = [...initialTransactions]
@@ -184,10 +191,25 @@ const setupTransactionApi = async (
 
         const url = new URL(route.request().url())
         const month = url.searchParams.get('month')
-        const data = transactions.filter(
-            (transaction) =>
-                !transaction.isArchived && (!month || monthOf(transaction.date) === month),
-        )
+        const data = transactions
+            .filter(
+                (transaction) =>
+                    !transaction.isArchived && (!month || monthOf(transaction.date) === month),
+            )
+            .map((transaction) => {
+                const account = accounts.find(({ id }) => id === transaction.accountId)
+                return account
+                    ? {
+                          ...transaction,
+                          account: {
+                              id: account.id,
+                              name: account.name,
+                              color: account.color,
+                              icon: account.icon,
+                          },
+                      }
+                    : transaction
+            })
         return route.fulfill({
             status: 200,
             contentType: 'application/json',
@@ -247,6 +269,11 @@ const login = async (page: Parameters<typeof mockAuthenticatedSession>[0]) => {
     await page.waitForURL(/\/dashboard/)
 }
 
+const chooseOption = async (page: Page, label: string, option: string) => {
+    await page.getByRole('combobox', { name: label }).click()
+    await page.getByRole('option', { name: option, exact: true }).click()
+}
+
 test('creates and archives an expense while keeping the account balance synchronized', async ({
     page,
 }) => {
@@ -260,7 +287,7 @@ test('creates and archives an expense while keeping the account balance synchron
     await page.getByTestId('primary-action-button').click()
     const dialog = page.getByRole('dialog', { name: 'New Transaction' })
     await dialog.getByLabel('Amount').fill('75')
-    await dialog.getByLabel('Account').selectOption('checking')
+    await chooseOption(page, 'Account', 'Checking')
     await dialog.getByLabel('Merchant (optional)').fill('Coffee shop')
     await dialog.getByRole('button', { name: 'Save' }).click()
 
@@ -306,7 +333,7 @@ test('shows an understandable API error without closing the transaction form', a
     await page.getByTestId('primary-action-button').click()
     const dialog = page.getByRole('dialog', { name: 'New Transaction' })
     await dialog.getByLabel('Amount').fill('25')
-    await dialog.getByLabel('Account').selectOption('checking')
+    await chooseOption(page, 'Account', 'Checking')
     await dialog.getByRole('button', { name: 'Save' }).click()
 
     await expect(dialog.getByRole('alert')).toBeVisible()
@@ -375,13 +402,15 @@ test('creates a transfer and synchronizes both account balances', async ({ page 
     await page.goto('/transactions?month=2026-01')
     await page.getByTestId('primary-action-button').click()
     const dialog = page.getByRole('dialog', { name: 'New Transaction' })
-    await dialog.getByLabel('Type').selectOption('TRANSFER')
+    await chooseOption(page, 'Type', 'Transfer')
     await dialog.getByLabel('Amount').fill('100')
-    await dialog.getByLabel('From account').selectOption('checking')
-    await dialog.getByLabel('To account').selectOption('savings')
+    await chooseOption(page, 'From account', 'Checking')
+    await chooseOption(page, 'To account', 'Savings')
     await dialog.getByRole('button', { name: 'Save' }).click()
 
-    await expect(page.getByText('TRANSFER', { exact: true })).toBeVisible()
+    await expect(
+        page.getByRole('list', { name: 'Transactions' }).getByText('TRANSFER', { exact: true }),
+    ).toBeVisible()
     await page.goto('/accounts')
     await expect(page.locator('.text-2xl.font-semibold').filter({ hasText: /900/ })).toBeVisible()
     await expect(page.locator('.text-2xl.font-semibold').filter({ hasText: /600/ })).toBeVisible()
@@ -399,10 +428,44 @@ test('moves a transaction from May to June through the edit workflow', async ({ 
     await expect(page.getByText('May expense')).toBeVisible()
     await page.getByRole('button', { name: 'Edit' }).click()
     const dialog = page.getByRole('dialog', { name: 'Edit transaction' })
-    await dialog.getByLabel('Date').fill('2026-06-01')
+    await dialog.getByLabel(/Date/).fill('2026-06-01')
     await dialog.getByRole('button', { name: 'Save' }).click()
 
     await expect(page.getByText('May expense')).not.toBeVisible()
     await page.goto('/transactions?month=2026-06')
     await expect(page.getByText('May expense')).toBeVisible()
+})
+
+test('keeps long transaction content and the dialog within supported viewports', async ({
+    page,
+}) => {
+    const longMerchant = 'MerchantName'.repeat(10)
+    await mockAuthenticatedSession(page)
+    await setupTransactionApi(page, [createTransaction('long-label', { merchant: longMerchant })], {
+        checkingAccountName: 'Household chequing account for everyday and recurring expenses',
+    })
+    await login(page)
+
+    await page.goto('/transactions?month=2026-01')
+    await expect(page.getByText(longMerchant)).toBeVisible()
+
+    for (const width of [320, 430, 768, 1280]) {
+        await page.setViewportSize({ width, height: 844 })
+        await expect
+            .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+            .toBeLessThanOrEqual(width)
+
+        const transactionList = page.getByRole('list', { name: 'Transactions' })
+        const itemBox = await transactionList.getByRole('listitem').first().boundingBox()
+        expect(itemBox).not.toBeNull()
+        expect(itemBox?.width).toBeLessThanOrEqual(width)
+
+        await page.getByRole('button', { name: 'Add transaction' }).click()
+        const dialog = page.getByRole('dialog', { name: 'New Transaction' })
+        const dialogBox = await dialog.boundingBox()
+        expect(dialogBox).not.toBeNull()
+        expect(dialogBox?.x).toBeGreaterThanOrEqual(0)
+        expect((dialogBox?.x ?? 0) + (dialogBox?.width ?? 0)).toBeLessThanOrEqual(width)
+        await dialog.getByRole('button', { name: 'Close transaction dialog' }).click()
+    }
 })

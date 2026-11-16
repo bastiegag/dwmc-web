@@ -30,4 +30,18 @@ describe('PaginationControls', () => {
             screen.queryByRole('navigation', { name: 'Transaction pagination' }),
         ).not.toBeInTheDocument()
     })
+
+    it('disables previous and next actions at their respective boundaries', () => {
+        const { rerender } = render(
+            <PaginationControls page={1} totalPages={3} total={51} onPageChange={vi.fn()} />,
+        )
+
+        expect(screen.getByRole('button', { name: 'Previous transaction page' })).toBeDisabled()
+        expect(screen.getByRole('button', { name: 'Next transaction page' })).toBeEnabled()
+
+        rerender(<PaginationControls page={3} totalPages={3} total={51} onPageChange={vi.fn()} />)
+
+        expect(screen.getByRole('button', { name: 'Previous transaction page' })).toBeEnabled()
+        expect(screen.getByRole('button', { name: 'Next transaction page' })).toBeDisabled()
+    })
 })

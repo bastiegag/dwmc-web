@@ -1,18 +1,30 @@
 import { useEffect } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
-import type { Resolver } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormError } from '@/components/form/FormError'
-import { Button, Label } from '@/components/ui'
+import { CurrencyInput } from '@/components/form/CurrencyInput'
+import {
+    Button,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectGroupLabel,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui'
 import { TextField } from '@/components/form/TextField'
 import { FormField } from '@/components/form/FormField'
 import {
     transactionFormSchema,
+    type TransactionFormInput,
     type TransactionFormValues,
     defaultTransactionFormValues,
 } from '@/features/transactions/schemas/transaction.schema'
 import type { Account } from '@/features/accounts'
 import type { SectionWithCategories } from '@/features/categories/types'
+
+const NO_CATEGORY_VALUE = '__no_category__'
 
 type TransactionFormProps = {
     accounts: Account[]
@@ -37,9 +49,9 @@ export const TransactionForm = ({
         control,
         reset,
         setValue,
-        formState: { errors },
-    } = useForm<TransactionFormValues>({
-        resolver: zodResolver(transactionFormSchema) as unknown as Resolver<TransactionFormValues>,
+        formState: { errors, isSubmitting },
+    } = useForm<TransactionFormInput, unknown, TransactionFormValues>({
+        resolver: zodResolver(transactionFormSchema),
         defaultValues: initialValues ?? defaultTransactionFormValues,
     })
 
@@ -68,7 +80,7 @@ export const TransactionForm = ({
     }, [type, setValue])
 
     const submit = async (values: TransactionFormValues) => {
-        const normalized = { ...values } as TransactionFormValues
+        const normalized = { ...values }
         if (!normalized.categoryId) normalized.categoryId = null
         if (!normalized.merchant) normalized.merchant = null
         if (!normalized.note) normalized.note = null
@@ -76,48 +88,116 @@ export const TransactionForm = ({
     }
 
     return (
-        <form onSubmit={handleSubmit(submit)} noValidate className="space-y-4">
-            <div>
-                <Label htmlFor="type">Type</Label>
-                <select id="type" {...register('type')} className="w-full">
-                    <option value="INCOME">Income</option>
-                    <option value="EXPENSE">Expense</option>
-                    <option value="TRANSFER">Transfer</option>
-                    <option value="ADJUSTMENT">Adjustment</option>
-                </select>
-            </div>
+        <form
+            onSubmit={handleSubmit(async (values) => await submit(values))}
+            noValidate
+            className="space-y-4"
+        >
+            <FormField id="type" label="Type" required error={errors.type?.message}>
+                <Controller
+                    name="type"
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                            value={field.value}
+                            onValueChange={(value) => {
+                                if (value) field.onChange(value)
+                            }}
+                        >
+                            <SelectTrigger
+                                id="type"
+                                ref={field.ref}
+                                onBlur={field.onBlur}
+                                aria-invalid={Boolean(errors.type)}
+                                aria-describedby={errors.type ? 'type-error' : undefined}
+                            >
+                                <SelectValue placeholder="Select transaction type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="INCOME">Income</SelectItem>
+                                <SelectItem value="EXPENSE">Expense</SelectItem>
+                                <SelectItem value="TRANSFER">Transfer</SelectItem>
+                                <SelectItem value="ADJUSTMENT">Adjustment</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+            </FormField>
 
-            <TextField
-                id="amount"
-                label={type === 'ADJUSTMENT' ? 'Balance adjustment' : 'Amount'}
-                type="number"
-                step="0.01"
-                {...register('amount' as const)}
-                error={errors.amount?.message}
+            <Controller
+                name="amount"
+                control={control}
+                render={({ field, fieldState }) => (
+                    <CurrencyInput
+                        id="amount"
+                        name={field.name}
+                        ref={field.ref}
+                        value={
+                            field.value === null || field.value === undefined
+                                ? null
+                                : String(field.value)
+                        }
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        label={type === 'ADJUSTMENT' ? 'Balance adjustment' : 'Amount'}
+                        required
+                        currency="CAD"
+                        locale="fr-CA"
+                        allowNegative={type === 'ADJUSTMENT'}
+                        error={fieldState.error?.message}
+                    />
+                )}
             />
 
             <TextField
                 id="date"
                 label="Date"
                 type="date"
+                required
                 {...register('date' as const)}
                 error={errors.date?.message}
             />
 
             {(type === 'INCOME' || type === 'EXPENSE' || type === 'ADJUSTMENT') && (
-                <FormField id="accountId" label="Account" error={errors.accountId?.message}>
-                    <select id="accountId" {...register('accountId' as const)} className="w-full">
-                        <option value="">Select account</option>
-                        {accounts.map((a) => (
-                            <option
-                                key={a.id}
-                                value={a.id}
-                                disabled={a.isArchived && a.id !== selectedAccountId}
-                            >
-                                {a.name}
-                            </option>
-                        ))}
-                    </select>
+                <FormField
+                    id="accountId"
+                    label="Account"
+                    required
+                    error={errors.accountId?.message}
+                >
+                    <Controller
+                        name="accountId"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Select value={field.value ?? null} onValueChange={field.onChange}>
+                                <SelectTrigger
+                                    id="accountId"
+                                    ref={field.ref}
+                                    onBlur={field.onBlur}
+                                    aria-invalid={Boolean(fieldState.error)}
+                                    aria-describedby={
+                                        fieldState.error ? 'accountId-error' : undefined
+                                    }
+                                >
+                                    <SelectValue placeholder="Select account" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {accounts.map((account) => (
+                                        <SelectItem
+                                            key={account.id}
+                                            value={account.id}
+                                            disabled={
+                                                account.isArchived &&
+                                                account.id !== selectedAccountId
+                                            }
+                                        >
+                                            {account.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
                 </FormField>
             )}
 
@@ -127,27 +207,56 @@ export const TransactionForm = ({
                     label="Category (optional)"
                     error={errors.categoryId?.message}
                 >
-                    <select id="categoryId" {...register('categoryId' as const)} className="w-full">
-                        <option value="">No category</option>
-                        {sections.map((s) => (
-                            <optgroup
-                                key={s.id}
-                                label={s.isArchived ? `${s.name} (archived)` : s.name}
+                    <Controller
+                        name="categoryId"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Select
+                                value={field.value ?? null}
+                                onValueChange={(value) =>
+                                    field.onChange(value === NO_CATEGORY_VALUE ? null : value)
+                                }
                             >
-                                {s.categories.map((c) => (
-                                    <option
-                                        key={c.id}
-                                        value={c.id}
-                                        disabled={
-                                            c.isArchived && c.id !== (selectedCategoryId ?? '')
-                                        }
-                                    >
-                                        {c.isArchived ? `${c.name} (archived)` : c.name}
-                                    </option>
-                                ))}
-                            </optgroup>
-                        ))}
-                    </select>
+                                <SelectTrigger
+                                    id="categoryId"
+                                    ref={field.ref}
+                                    onBlur={field.onBlur}
+                                    aria-invalid={Boolean(fieldState.error)}
+                                    aria-describedby={
+                                        fieldState.error ? 'categoryId-error' : undefined
+                                    }
+                                >
+                                    <SelectValue placeholder="No category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value={NO_CATEGORY_VALUE}>No category</SelectItem>
+                                    {sections.map((section) => (
+                                        <SelectGroup key={section.id}>
+                                            <SelectGroupLabel>
+                                                {section.isArchived
+                                                    ? `${section.name} (archived)`
+                                                    : section.name}
+                                            </SelectGroupLabel>
+                                            {section.categories.map((category) => (
+                                                <SelectItem
+                                                    key={category.id}
+                                                    value={category.id}
+                                                    disabled={
+                                                        category.isArchived &&
+                                                        category.id !== (selectedCategoryId ?? '')
+                                                    }
+                                                >
+                                                    {category.isArchived
+                                                        ? `${category.name} (archived)`
+                                                        : category.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
                 </FormField>
             )}
 
@@ -161,50 +270,86 @@ export const TransactionForm = ({
             )}
 
             {type === 'TRANSFER' && (
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <FormField
                         id="fromAccountId"
                         label="From account"
+                        required
                         error={errors.fromAccountId?.message}
                     >
-                        <select
-                            id="fromAccountId"
-                            {...register('fromAccountId' as const)}
-                            className="w-full"
-                        >
-                            <option value="">Select account</option>
-                            {accounts.map((a) => (
-                                <option
-                                    key={a.id}
-                                    value={a.id}
-                                    disabled={a.isArchived && a.id !== selectedFromAccountId}
-                                >
-                                    {a.name}
-                                </option>
-                            ))}
-                        </select>
+                        <Controller
+                            name="fromAccountId"
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <Select value={field.value ?? null} onValueChange={field.onChange}>
+                                    <SelectTrigger
+                                        id="fromAccountId"
+                                        ref={field.ref}
+                                        onBlur={field.onBlur}
+                                        aria-invalid={Boolean(fieldState.error)}
+                                        aria-describedby={
+                                            fieldState.error ? 'fromAccountId-error' : undefined
+                                        }
+                                    >
+                                        <SelectValue placeholder="Select account" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {accounts.map((account) => (
+                                            <SelectItem
+                                                key={account.id}
+                                                value={account.id}
+                                                disabled={
+                                                    account.isArchived &&
+                                                    account.id !== selectedFromAccountId
+                                                }
+                                            >
+                                                {account.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
                     </FormField>
                     <FormField
                         id="toAccountId"
                         label="To account"
+                        required
                         error={errors.toAccountId?.message}
                     >
-                        <select
-                            id="toAccountId"
-                            {...register('toAccountId' as const)}
-                            className="w-full"
-                        >
-                            <option value="">Select account</option>
-                            {accounts.map((a) => (
-                                <option
-                                    key={a.id}
-                                    value={a.id}
-                                    disabled={a.isArchived && a.id !== selectedToAccountId}
-                                >
-                                    {a.name}
-                                </option>
-                            ))}
-                        </select>
+                        <Controller
+                            name="toAccountId"
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <Select value={field.value ?? null} onValueChange={field.onChange}>
+                                    <SelectTrigger
+                                        id="toAccountId"
+                                        ref={field.ref}
+                                        onBlur={field.onBlur}
+                                        aria-invalid={Boolean(fieldState.error)}
+                                        aria-describedby={
+                                            fieldState.error ? 'toAccountId-error' : undefined
+                                        }
+                                    >
+                                        <SelectValue placeholder="Select account" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {accounts.map((account) => (
+                                            <SelectItem
+                                                key={account.id}
+                                                value={account.id}
+                                                disabled={
+                                                    account.isArchived &&
+                                                    account.id !== selectedToAccountId
+                                                }
+                                            >
+                                                {account.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
                     </FormField>
                 </div>
             )}
@@ -218,7 +363,12 @@ export const TransactionForm = ({
 
             <FormError message={errorMessage} />
 
-            <Button type="submit" className="w-full" isLoading={isPending} loadingText="Saving...">
+            <Button
+                type="submit"
+                className="w-full"
+                isLoading={isPending || isSubmitting}
+                loadingText="Saving..."
+            >
                 Save
             </Button>
         </form>

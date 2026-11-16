@@ -4,16 +4,18 @@ import { TransactionItem } from './TransactionItem'
 type TransactionListProps = {
     transactions: Transaction[]
     onEdit: (t: Transaction) => void
-    onArchive: (t: Transaction) => void
+    onArchive: (t: Transaction) => Promise<void> | void
 }
 
 export const TransactionList = ({ transactions, onEdit, onArchive }: TransactionListProps) => {
     return (
-        <div>
+        <ul aria-label="Transactions" className="space-y-3">
             {transactions.map((t) => (
-                <TransactionItem key={t.id} transaction={t} onEdit={onEdit} onArchive={onArchive} />
+                <li key={t.id}>
+                    <TransactionItem transaction={t} onEdit={onEdit} onArchive={onArchive} />
+                </li>
             ))}
-        </div>
+        </ul>
     )
 }
 

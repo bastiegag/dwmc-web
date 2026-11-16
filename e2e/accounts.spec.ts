@@ -1,6 +1,11 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { mockAuthenticatedSession } from './auth-fixtures.js'
 import { LoginPage } from './pages/login.page.js'
+
+const chooseOption = async (page: Page, label: string, option: string) => {
+    await page.getByRole('combobox', { name: label }).click()
+    await page.getByRole('option', { name: option }).click()
+}
 
 test('authenticated users can create an account and record an expense', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
@@ -124,7 +129,7 @@ test('authenticated users can create an account and record an expense', async ({
     await page.getByTestId('primary-action-button').click()
     const transactionDialog = page.getByRole('dialog', { name: 'New Transaction' })
     await page.getByLabel('Amount').fill('75')
-    await transactionDialog.getByLabel('Account').selectOption('account-1')
+    await chooseOption(page, 'Account', 'Daily Checking')
     await transactionDialog.getByLabel('Merchant (optional)').fill('Coffee shop')
     await transactionDialog.getByRole('button', { name: 'Save' }).click()
 
