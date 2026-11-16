@@ -390,3 +390,152 @@ test('keeps a selected-month Budget synchronized with expense create, month move
     await page.goto('/budgets?month=2026-06')
     await expectBudgetValues(page, 0, 100)
 })
+
+test('keeps long-name, high-value budgets and dialogs usable at responsive viewports', async ({
+    page,
+}) => {
+    const categoryName = 'Household essentials and recurring home maintenance expenses'
+    const amount = 9_999_999_999.99
+    const formattedAmount = new Intl.NumberFormat('fr-CA', {
+        style: 'currency',
+        currency: 'CAD',
+        maximumFractionDigits: 2,
+    }).format(amount)
+
+    await page.setViewportSize({ width: 390, height: 844 })
+    await mockAuthenticatedSession(page)
+    await setupBudgetApi(page)
+    await login(page)
+
+    await page.goto('/categories?month=2026-06')
+    await page.getByRole('heading', { name: 'Categories' }).waitFor()
+    await page.getByTestId('primary-action-button').click()
+    await page.getByLabel('Category name').fill(categoryName)
+    await page.getByLabel('Icon').fill('tag')
+    await page.getByLabel('Section', { exact: true }).selectOption('section-food')
+    await page.getByRole('button', { name: 'Create category' }).click()
+    await expect(page.getByText(categoryName)).toBeVisible()
+
+    await page.goto('/budgets?month=2026-06')
+    await page.getByRole('heading', { name: 'Budgets', exact: true }).waitFor()
+    await page.setViewportSize({ width: 320, height: 400 })
+    await page.getByTestId('primary-action-button').click()
+
+    const createDialog = page.getByRole('dialog', { name: 'New Budget' })
+    await expect(createDialog).toBeVisible()
+    await chooseOption(page, 'Category', categoryName)
+    await page.locator('#budget-month').fill('2026-06')
+    await page.locator('#budget-amount').fill(String(amount))
+
+    const createDialogBox = await createDialog.boundingBox()
+    const createDialogScrolls = await createDialog.evaluate(
+        (element) => element.scrollHeight > element.clientHeight,
+    )
+    expect(createDialogBox).not.toBeNull()
+    if (createDialogBox) {
+        expect(createDialogBox.y).toBeGreaterThanOrEqual(0)
+        expect(createDialogBox.y + createDialogBox.height).toBeLessThanOrEqual(400)
+    }
+    expect(createDialogScrolls).toBe(true)
+
+    const createButton = createDialog.getByRole('button', { name: 'Create budget' })
+    await createButton.scrollIntoViewIfNeeded()
+    await expect(createButton).toBeVisible()
+    await createButton.click()
+
+    const card = page.getByRole('listitem').filter({ hasText: categoryName })
+    await expect(card).toBeVisible()
+    await expect(
+        card.getByRole('progressbar', { name: `Budget usage for ${categoryName}` }),
+    ).toBeVisible()
+
+    for (const width of [320, 430, 768, 1280]) {
+        await page.setViewportSize({ width, height: 800 })
+
+        expect(
+            await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+        ).toBe(true)
+        const categoryHeading = card.getByRole('heading', { name: categoryName })
+        await expect(categoryHeading).toBeVisible()
+        expect(
+            await categoryHeading.evaluate((element) => element.scrollWidth <= element.clientWidth),
+        ).toBe(true)
+
+        const plannedAmount = card.getByText(formattedAmount, { exact: true })
+        await expect(plannedAmount).toBeVisible()
+        expect(
+            await plannedAmount.evaluate((element) => element.scrollWidth <= element.clientWidth),
+        ).toBe(true)
+        const progress = card.getByRole('progressbar', {
+            name: `Budget usage for ${categoryName}`,
+        })
+        await expect(progress).toBeVisible()
+        await expect(progress).toHaveAttribute('aria-valuetext', '0% used')
+
+        await expect(card.getByRole('button', { name: `Edit ${categoryName}` })).toBeEnabled()
+        await expect(card.getByRole('button', { name: `Archive ${categoryName}` })).toBeEnabled()
+
+        if (width < 1024) {
+            await expect(page.getByTestId('mobile-bottom-nav')).toBeVisible()
+        } else {
+            await expect(page.getByTestId('mobile-bottom-nav')).toBeHidden()
+        }
+    }
+
+    await page.setViewportSize({ width: 320, height: 400 })
+    await card.getByRole('button', { name: `Edit ${categoryName}` }).click()
+
+    const editDialog = page.getByRole('dialog', { name: 'Edit budget' })
+    await expect(editDialog).toBeVisible()
+    await expect(editDialog.getByLabel('Amount')).toBeVisible()
+    await expect(editDialog.getByLabel('Month')).toBeVisible()
+
+    const editDialogBox = await editDialog.boundingBox()
+    const editDialogScrolls = await editDialog.evaluate(
+        (element) => element.scrollHeight > element.clientHeight,
+    )
+    expect(editDialogBox).not.toBeNull()
+    if (editDialogBox) {
+        expect(editDialogBox.y).toBeGreaterThanOrEqual(0)
+        expect(editDialogBox.y + editDialogBox.height).toBeLessThanOrEqual(400)
+    }
+    expect(editDialogScrolls).toBe(true)
+    await editDialog.getByRole('button', { name: 'Save changes' }).scrollIntoViewIfNeeded()
+    await expect(editDialog.getByRole('button', { name: 'Save changes' })).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(editDialog).not.toBeVisible()
+
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.evaluate(() => {
+        document.documentElement.classList.add('dark')
+        window.scrollTo(0, document.documentElement.scrollHeight)
+    })
+    await expect(card.getByRole('button', { name: `Edit ${categoryName}` })).toBeVisible()
+    await expect(card.getByText(formattedAmount, { exact: true })).toBeVisible()
+    await expect(
+        card.getByRole('progressbar', { name: `Budget usage for ${categoryName}` }),
+    ).toBeVisible()
+    await expect(page.getByTestId('mobile-bottom-nav')).toBeVisible()
+    expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true)
+
+    const navigationBox = await page.getByTestId('mobile-bottom-nav').boundingBox()
+    const editBox = await card.getByRole('button', { name: `Edit ${categoryName}` }).boundingBox()
+    const archiveBox = await card
+        .getByRole('button', { name: `Archive ${categoryName}` })
+        .boundingBox()
+    expect(navigationBox).not.toBeNull()
+    expect(editBox).not.toBeNull()
+    expect(archiveBox).not.toBeNull()
+    if (navigationBox && editBox && archiveBox) {
+        expect(
+            editBox.y + editBox.height <= navigationBox.y ||
+                editBox.y >= navigationBox.y + navigationBox.height,
+        ).toBe(true)
+        expect(
+            archiveBox.y + archiveBox.height <= navigationBox.y ||
+                archiveBox.y >= navigationBox.y + navigationBox.height,
+        ).toBe(true)
+    }
+})

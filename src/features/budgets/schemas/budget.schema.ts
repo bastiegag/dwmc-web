@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+// Prisma Decimal(12, 2) allows at most 10 integer digits and 2 fractional digits.
 const MAX_BUDGET_CENTS = 999_999_999_999n
 
 const budgetAmountSchema = z
@@ -7,7 +8,7 @@ const budgetAmountSchema = z
     .transform((value) => value ?? '')
     .refine((value) => value.trim().length > 0, 'Budget amount is required')
     .refine(
-        (value) => /^\d+(?:\.\d{0,2})?$|^\.\d{1,2}$/.test(value),
+        (value) => /^\d+(?:\.\d{1,2})?$|^\.\d{1,2}$/.test(value),
         'Budget amount must be non-negative and have at most 2 decimal places',
     )
     .refine((value) => {
