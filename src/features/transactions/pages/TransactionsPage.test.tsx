@@ -194,7 +194,7 @@ describe('TransactionsPage', () => {
         expect(await screen.findByText('Page 2')).toBeInTheDocument()
 
         await user.click(screen.getByRole('combobox', { name: 'Type' }))
-        await user.click(screen.getByRole('option', { name: 'Income' }))
+        await user.click(await screen.findByRole('option', { name: 'Income' }))
 
         await waitFor(() => {
             expect(requests).toContainEqual({ page: '1', type: 'INCOME' })
