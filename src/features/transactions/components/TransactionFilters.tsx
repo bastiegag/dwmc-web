@@ -1,8 +1,27 @@
 import { useState, useEffect } from 'react'
-import { Button, Input, Label } from '@/components/ui'
-import type { GetTransactionsParams } from '@/features/transactions/types/transaction.types'
+import {
+    Button,
+    Input,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectGroupLabel,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui'
+import { FormField } from '@/components/form/FormField'
+import type {
+    GetTransactionsParams,
+    TransactionType,
+} from '@/features/transactions/types/transaction.types'
 import type { Account } from '@/features/accounts'
 import type { SectionWithCategories } from '@/features/categories/types'
+
+const ALL_FILTERS_VALUE = '__all__'
+
+const isTransactionType = (value: string): value is TransactionType =>
+    value === 'INCOME' || value === 'EXPENSE' || value === 'TRANSFER' || value === 'ADJUSTMENT'
 
 type TransactionFiltersProps = {
     accounts: Account[]
@@ -11,14 +30,14 @@ type TransactionFiltersProps = {
 }
 
 export const TransactionFilters = ({ accounts, sections, onChange }: TransactionFiltersProps) => {
-    const [type, setType] = useState<string>('')
-    const [accountId, setAccountId] = useState<string>('')
-    const [categoryId, setCategoryId] = useState<string>('')
+    const [type, setType] = useState<string | null>(null)
+    const [accountId, setAccountId] = useState<string | null>(null)
+    const [categoryId, setCategoryId] = useState<string | null>(null)
     const [search, setSearch] = useState<string>('')
 
     useEffect(() => {
         const filters: GetTransactionsParams = {}
-        if (type) filters.type = type as GetTransactionsParams['type']
+        if (type && isTransactionType(type)) filters.type = type
         if (accountId) filters.accountId = accountId
         if (categoryId) filters.categoryId = categoryId
         if (search) filters.search = search
@@ -27,81 +46,94 @@ export const TransactionFilters = ({ accounts, sections, onChange }: Transaction
 
     return (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
-            <div>
-                <Label htmlFor="filter-type">Type</Label>
-                <select
-                    id="filter-type"
-                    className="w-full"
+            <FormField id="filter-type" label="Type">
+                <Select
                     value={type}
-                    onChange={(e) => setType(e.target.value)}
+                    onValueChange={(value) => setType(value === ALL_FILTERS_VALUE ? null : value)}
                 >
-                    <option value="">All</option>
-                    <option value="INCOME">Income</option>
-                    <option value="EXPENSE">Expense</option>
-                    <option value="TRANSFER">Transfer</option>
-                    <option value="ADJUSTMENT">Adjustment</option>
-                </select>
-            </div>
+                    <SelectTrigger id="filter-type">
+                        <SelectValue placeholder="All" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value={ALL_FILTERS_VALUE}>All</SelectItem>
+                        <SelectItem value="INCOME">Income</SelectItem>
+                        <SelectItem value="EXPENSE">Expense</SelectItem>
+                        <SelectItem value="TRANSFER">Transfer</SelectItem>
+                        <SelectItem value="ADJUSTMENT">Adjustment</SelectItem>
+                    </SelectContent>
+                </Select>
+            </FormField>
 
-            <div>
-                <Label htmlFor="filter-account">Account</Label>
-                <select
-                    id="filter-account"
-                    className="w-full"
+            <FormField id="filter-account" label="Account">
+                <Select
                     value={accountId}
-                    onChange={(e) => setAccountId(e.target.value)}
+                    onValueChange={(value) =>
+                        setAccountId(value === ALL_FILTERS_VALUE ? null : value)
+                    }
                 >
-                    <option value="">All accounts</option>
-                    {accounts.map((a) => (
-                        <option key={a.id} value={a.id}>
-                            {a.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
+                    <SelectTrigger id="filter-account">
+                        <SelectValue placeholder="All accounts" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value={ALL_FILTERS_VALUE}>All accounts</SelectItem>
+                        {accounts.map((account) => (
+                            <SelectItem key={account.id} value={account.id}>
+                                {account.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </FormField>
 
-            <div>
-                <Label htmlFor="filter-category">Category</Label>
-                <select
-                    id="filter-category"
-                    className="w-full"
+            <FormField id="filter-category" label="Category">
+                <Select
                     value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
+                    onValueChange={(value) =>
+                        setCategoryId(value === ALL_FILTERS_VALUE ? null : value)
+                    }
                 >
-                    <option value="">All categories</option>
-                    {sections.map((s) => (
-                        <optgroup key={s.id} label={s.name}>
-                            {s.categories.map((c) => (
-                                <option key={c.id} value={c.id}>
-                                    {c.name}
-                                </option>
-                            ))}
-                        </optgroup>
-                    ))}
-                </select>
-            </div>
+                    <SelectTrigger id="filter-category">
+                        <SelectValue placeholder="All categories" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value={ALL_FILTERS_VALUE}>All categories</SelectItem>
+                        {sections.map((section) => (
+                            <SelectGroup key={section.id}>
+                                <SelectGroupLabel>{section.name}</SelectGroupLabel>
+                                {section.categories.map((category) => (
+                                    <SelectItem key={category.id} value={category.id}>
+                                        {category.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </FormField>
 
-            <div>
-                <Label htmlFor="filter-search">Search</Label>
+            <FormField id="filter-search" label="Search">
                 <div className="flex gap-2">
                     <Input
                         id="filter-search"
+                        className="min-w-0 flex-1"
                         placeholder="merchant or note"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                     <Button
+                        type="button"
+                        className="shrink-0"
                         onClick={() => {
-                            setType('')
-                            setAccountId('')
-                            setCategoryId('')
+                            setType(null)
+                            setAccountId(null)
+                            setCategoryId(null)
                             setSearch('')
                         }}
                     >
                         Clear
                     </Button>
                 </div>
-            </div>
+            </FormField>
         </div>
     )
 }

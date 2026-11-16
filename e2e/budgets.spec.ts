@@ -1,4 +1,4 @@
-import { expect, test, type Route } from '@playwright/test'
+import { expect, test, type Page, type Route } from '@playwright/test'
 import { mockAuthenticatedSession } from './auth-fixtures.js'
 import { LoginPage } from './pages/login.page.js'
 
@@ -289,6 +289,11 @@ const login = async (page: Parameters<typeof mockAuthenticatedSession>[0]) => {
     await page.waitForURL(/\/dashboard/)
 }
 
+const chooseOption = async (page: Page, label: string, option: string) => {
+    await page.getByRole('combobox', { name: label }).click()
+    await page.getByRole('option', { name: option }).click()
+}
+
 const budgetCard = (page: Parameters<typeof mockAuthenticatedSession>[0]) =>
     page.locator('div.rounded-xl').filter({ hasText: 'Groceries' }).last()
 
@@ -335,10 +340,8 @@ test('keeps a selected-month Budget synchronized with expense create, month move
     const firstTransactionDialog = page.getByRole('dialog', { name: 'New Transaction' })
     await firstTransactionDialog.getByLabel('Amount').fill('25')
     await firstTransactionDialog.getByLabel('Date').fill('2026-06-15')
-    await firstTransactionDialog.getByLabel('Account').selectOption('checking')
-    await firstTransactionDialog
-        .getByLabel('Category (optional)')
-        .selectOption('category-groceries')
+    await chooseOption(page, 'Account', 'Checking')
+    await chooseOption(page, 'Category (optional)', 'Groceries')
     await firstTransactionDialog.getByLabel('Merchant (optional)').fill('June groceries')
     await firstTransactionDialog.getByRole('button', { name: 'Save' }).click()
     await expect(page.getByText('June groceries')).toBeVisible()
@@ -366,10 +369,8 @@ test('keeps a selected-month Budget synchronized with expense create, month move
     const secondTransactionDialog = page.getByRole('dialog', { name: 'New Transaction' })
     await secondTransactionDialog.getByLabel('Amount').fill('10')
     await secondTransactionDialog.getByLabel('Date').fill('2026-06-20')
-    await secondTransactionDialog.getByLabel('Account').selectOption('checking')
-    await secondTransactionDialog
-        .getByLabel('Category (optional)')
-        .selectOption('category-groceries')
+    await chooseOption(page, 'Account', 'Checking')
+    await chooseOption(page, 'Category (optional)', 'Groceries')
     await secondTransactionDialog.getByLabel('Merchant (optional)').fill('Archived groceries')
     await secondTransactionDialog.getByRole('button', { name: 'Save' }).click()
     await expect(page.getByText('Archived groceries')).toBeVisible()

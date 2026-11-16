@@ -9,18 +9,18 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     Button,
+    Badge,
     Card,
 } from '@/components/ui'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 import { isValidDateOnly } from '@/shared/date'
 import { getErrorMessage } from '@/shared/errors'
-
-const currencyFormatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' })
+import { formatCurrency } from '@/lib/format-currency'
 
 type TransactionItemProps = {
     transaction: Transaction
     onEdit: (t: Transaction) => void
-    onArchive: (t: Transaction) => void
+    onArchive: (t: Transaction) => Promise<void> | void
 }
 
 export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionItemProps) => {
@@ -29,44 +29,72 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
     const [isArchiving, setIsArchiving] = useState(false)
     const { type, amount, date } = transaction
 
-    const displayAmount = currencyFormatter.format(amount)
+    const displayAmount = formatCurrency(amount)
     const dateLabel = isValidDateOnly(date.slice(0, 10)) ? date.slice(0, 10) : date
+    const isIncomeOrExpense = type === 'INCOME' || type === 'EXPENSE'
+    const accountLabel =
+        transaction.account?.name ?? (transaction.accountId ? 'Account unavailable' : 'No account')
+    const categoryLabel =
+        transaction.category?.name ??
+        (transaction.categoryId ? 'Category unavailable' : 'No category')
 
     return (
-        <Card className="mb-3">
-            <div className="flex items-center justify-between">
-                <div>
-                    <div className="flex items-baseline gap-3">
-                        <span className="font-medium">{type}</span>
-                        <span className="text-sm text-muted-foreground">{dateLabel}</span>
+        <Card>
+            <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <Badge
+                            variant={
+                                type === 'INCOME'
+                                    ? 'success'
+                                    : type === 'EXPENSE'
+                                      ? 'destructive'
+                                      : type === 'TRANSFER'
+                                        ? 'info'
+                                        : 'warning'
+                            }
+                        >
+                            {type}
+                        </Badge>
+                        <span className="text-sm text-muted-foreground">
+                            <span className="sr-only">Date: </span>
+                            {dateLabel}
+                        </span>
                     </div>
-                    <div className="mt-1 text-lg font-semibold">{displayAmount}</div>
-                    <div className="text-sm text-muted-foreground mt-2">
-                        {transaction.merchant ?? transaction.note ?? (
-                            <span className="text-muted-foreground">No description</span>
-                        )}
-                    </div>
+                    <p className="mt-1 max-w-full break-all text-lg font-semibold tabular-nums">
+                        {displayAmount}
+                    </p>
+                    <p className="mt-2 break-words text-sm text-muted-foreground">
+                        {transaction.merchant ?? transaction.note ?? 'No description'}
+                    </p>
                 </div>
 
-                <div className="flex flex-col items-end gap-2">
-                    <div className="text-sm text-muted-foreground">
+                <div className="flex min-w-0 flex-col items-start gap-2 sm:items-end">
+                    <div className="break-words text-sm text-muted-foreground sm:text-right">
                         {type === 'TRANSFER'
                             ? `${transaction.fromAccount?.name ?? 'From'} → ${transaction.toAccount?.name ?? 'To'}`
-                            : transaction.account?.name}
+                            : accountLabel}
                     </div>
-
-                    <div className="flex gap-2">
+                    {isIncomeOrExpense && (
+                        <div className="break-words text-sm text-muted-foreground sm:text-right">
+                            <span className="sr-only">Category: </span>
+                            {categoryLabel}
+                        </div>
+                    )}
+                    <div className="flex min-h-11 w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
                         <Button
                             variant="link"
-                            className="no-underline hover:bg-accent/10"
+                            className="min-h-11 no-underline hover:bg-accent/10"
                             size="sm"
                             onClick={() => onEdit(transaction)}
+                            aria-label={`Edit transaction ${transaction.id}`}
                         >
                             Edit
                         </Button>
                         <Button
                             variant="outlined"
                             size="sm"
+                            className="min-h-11"
                             onClick={() => {
                                 setArchiveError(null)
                                 setIsConfirmOpen(true)
@@ -79,7 +107,16 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                 </div>
             </div>
 
-            <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+            <AlertDialog
+                open={isConfirmOpen}
+                onOpenChange={(open, eventDetails) => {
+                    if (!open && isArchiving) {
+                        eventDetails.cancel()
+                        return
+                    }
+                    setIsConfirmOpen(open)
+                }}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Archive transaction?</AlertDialogTitle>

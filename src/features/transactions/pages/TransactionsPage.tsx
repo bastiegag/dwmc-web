@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { Alert } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { QueryState } from '@/components/feedback'
 import {
     useTransactions,
@@ -39,7 +39,6 @@ export const TransactionsPage = () => {
     const [isDialogOpen, setDialogOpen] = useState(false)
     const [activeTransaction, setActiveTransaction] = useState<Transaction | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
-    const [archiveError, setArchiveError] = useState<string | null>(null)
 
     const accountsQuery = useAccounts({ includeArchived: Boolean(activeTransaction) })
     const sectionsQuery = useSections({ includeArchived: Boolean(activeTransaction) })
@@ -65,6 +64,7 @@ export const TransactionsPage = () => {
 
     const transactions = transactionsQuery.data?.data ?? []
     const pagination = transactionsQuery.data?.meta
+    const hasTransactionsData = transactionsQuery.data !== undefined
 
     const handleFiltersChange = useCallback(
         (nextFilters: GetTransactionsParams) => {
@@ -99,16 +99,7 @@ export const TransactionsPage = () => {
         }
     }
 
-    const handleArchive = async (t: Transaction) => {
-        try {
-            setArchiveError(null)
-            await deleteMutation.mutateAsync(t.id)
-        } catch (err) {
-            setArchiveError(
-                getErrorMessage(err, 'Unable to archive transaction. Please try again.'),
-            )
-        }
-    }
+    const handleArchive = (t: Transaction) => deleteMutation.mutateAsync(t.id)
 
     const dialogInitialValues = useMemo<TransactionFormValues | undefined>(() => {
         if (activeTransaction) {
@@ -165,6 +156,11 @@ export const TransactionsPage = () => {
                 id="transactions-heading"
                 title="Transactions"
                 description="Log and manage your transactions"
+                actions={
+                    <Button className="hidden lg:inline-flex" onClick={openCreate}>
+                        Add transaction
+                    </Button>
+                }
             />
 
             <div className="pt-4">
@@ -176,27 +172,20 @@ export const TransactionsPage = () => {
             </div>
 
             <QueryState
-                isLoading={transactionsQuery.isLoading}
+                isLoading={transactionsQuery.isLoading && !hasTransactionsData}
                 isError={transactionsQuery.isError}
                 loadingLabel="Loading transactions"
                 errorTitle="Could not load transactions"
                 errorMessage={getErrorMessage(transactionsQuery.error, '')}
                 fallbackErrorMessage="Please refresh and try again in a moment."
+                onRetry={() => {
+                    void transactionsQuery.refetch()
+                }}
             />
 
-            {archiveError ? (
-                <Alert variant="destructive" title="Archive failed" description={archiveError} />
-            ) : null}
+            {hasTransactionsData && transactions.length === 0 ? <EmptyTransactionsState /> : null}
 
-            {!transactionsQuery.isLoading &&
-            !transactionsQuery.isError &&
-            transactions.length === 0 ? (
-                <EmptyTransactionsState />
-            ) : null}
-
-            {!transactionsQuery.isLoading &&
-            !transactionsQuery.isError &&
-            transactions.length > 0 ? (
+            {hasTransactionsData && transactions.length > 0 ? (
                 <TransactionList
                     transactions={transactions}
                     onEdit={openEdit}
@@ -204,7 +193,7 @@ export const TransactionsPage = () => {
                 />
             ) : null}
 
-            {!transactionsQuery.isLoading && !transactionsQuery.isError && pagination ? (
+            {hasTransactionsData && pagination ? (
                 <PaginationControls
                     page={pagination.page}
                     totalPages={pagination.totalPages}

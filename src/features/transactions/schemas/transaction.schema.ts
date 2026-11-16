@@ -4,11 +4,13 @@ import { formatLocalDate, isValidDateOnly } from '@/shared/date'
 
 const baseSchema = z.object({
     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER', 'ADJUSTMENT'] as const),
-    amount: z.preprocess((v) => {
-        if (v === '' || v === null || v === undefined) return 0
-        if (typeof v === 'string') return Number(v)
-        return v
-    }, z.number().finite('Amount must be a finite number')),
+    amount: z
+        .union([z.number(), z.string(), z.null(), z.undefined()])
+        .transform((value) => {
+            if (value === '' || value === null || value === undefined) return 0
+            return typeof value === 'string' ? Number(value) : value
+        })
+        .pipe(z.number().finite('Amount must be a finite number')),
     date: z.string().refine(isValidDateOnly, 'Date must be a valid calendar date'),
     accountId: z.string().nullable().optional(),
     fromAccountId: z.string().nullable().optional(),
@@ -97,9 +99,10 @@ export const transactionFormSchema = baseSchema.superRefine((data, ctx) => {
     }
 })
 
-export type TransactionFormValues = z.infer<typeof transactionFormSchema>
+export type TransactionFormInput = z.input<typeof transactionFormSchema>
+export type TransactionFormValues = z.output<typeof transactionFormSchema>
 
-export const defaultTransactionFormValues: TransactionFormValues = {
+export const defaultTransactionFormValues: TransactionFormInput = {
     type: 'EXPENSE',
     amount: 0,
     date: formatLocalDate(),
