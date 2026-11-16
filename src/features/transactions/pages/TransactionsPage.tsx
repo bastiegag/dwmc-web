@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { Button } from '@/components/ui'
+import { Alert, Button } from '@/components/ui'
 import { QueryState } from '@/components/feedback'
 import {
     useTransactions,
@@ -173,7 +173,7 @@ export const TransactionsPage = () => {
 
             <QueryState
                 isLoading={transactionsQuery.isLoading && !hasTransactionsData}
-                isError={transactionsQuery.isError}
+                isError={transactionsQuery.isError && !hasTransactionsData}
                 loadingLabel="Loading transactions"
                 errorTitle="Could not load transactions"
                 errorMessage={getErrorMessage(transactionsQuery.error, '')}
@@ -182,6 +182,24 @@ export const TransactionsPage = () => {
                     void transactionsQuery.refetch()
                 }}
             />
+
+            {transactionsQuery.isError && hasTransactionsData ? (
+                <Alert
+                    variant="destructive"
+                    role="status"
+                    title="Transaction list refresh failed"
+                    description={
+                        getErrorMessage(transactionsQuery.error, '') ||
+                        'Please try again in a moment.'
+                    }
+                    action={{
+                        label: 'Retry',
+                        disabled: transactionsQuery.isFetching,
+                        onClick: () => void transactionsQuery.refetch(),
+                    }}
+                    className="mb-0"
+                />
+            ) : null}
 
             {hasTransactionsData && transactions.length === 0 ? <EmptyTransactionsState /> : null}
 

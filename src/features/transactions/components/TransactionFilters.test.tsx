@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { act, fireEvent, waitFor } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@/test/utils/render'
 import TransactionFilters from '@/features/transactions/components/TransactionFilters'
 
@@ -13,6 +14,10 @@ const chooseOption = async (
 }
 
 describe('TransactionFilters', () => {
+    afterEach(() => {
+        vi.useRealTimers()
+    })
+
     it('reports selected type, account, category, and search filters', async () => {
         const user = userEvent.setup()
         const onChange = vi.fn()
@@ -64,11 +69,13 @@ describe('TransactionFilters', () => {
         await chooseOption(user, 'Category', 'Groceries')
         await user.type(screen.getByLabelText('Search'), 'groceries')
 
-        expect(onChange).toHaveBeenLastCalledWith({
-            type: 'INCOME',
-            accountId: 'account-1',
-            categoryId: 'category-1',
-            search: 'groceries',
+        await waitFor(() => {
+            expect(onChange).toHaveBeenLastCalledWith({
+                type: 'INCOME',
+                accountId: 'account-1',
+                categoryId: 'category-1',
+                search: 'groceries',
+            })
         })
     })
 
@@ -83,5 +90,85 @@ describe('TransactionFilters', () => {
 
         expect(onChange).toHaveBeenLastCalledWith({})
         expect(screen.getByRole('combobox', { name: 'Type' })).toHaveTextContent('All')
+    })
+
+    it('updates the search input immediately and applies only the latest value after 300ms', async () => {
+        vi.useFakeTimers()
+        const onChange = vi.fn()
+
+        render(<TransactionFilters accounts={[]} sections={[]} onChange={onChange} />)
+
+        const searchInput = screen.getByLabelText('Search')
+        fireEvent.change(searchInput, { target: { value: 'coffee' } })
+
+        expect(searchInput).toHaveValue('coffee')
+        expect(onChange).toHaveBeenLastCalledWith({})
+
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(299)
+        })
+        expect(onChange).toHaveBeenLastCalledWith({})
+
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(1)
+        })
+        expect(onChange).toHaveBeenLastCalledWith({ search: 'coffee' })
+        expect(onChange.mock.calls.filter(([filters]) => 'search' in filters)).toHaveLength(1)
+    })
+
+    it('applies other filters immediately without losing a pending search', async () => {
+        const user = userEvent.setup()
+        const onChange = vi.fn()
+
+        render(<TransactionFilters accounts={[]} sections={[]} onChange={onChange} />)
+
+        await user.type(screen.getByLabelText('Search'), 'coffee')
+        await chooseOption(user, 'Type', 'Income')
+
+        expect(onChange).toHaveBeenLastCalledWith({ type: 'INCOME' })
+
+        await waitFor(() => {
+            expect(onChange).toHaveBeenLastCalledWith({ type: 'INCOME', search: 'coffee' })
+        })
+    })
+
+    it('clears filters immediately and does not apply an outdated pending search', async () => {
+        vi.useFakeTimers()
+        const onChange = vi.fn()
+
+        render(<TransactionFilters accounts={[]} sections={[]} onChange={onChange} />)
+
+        const searchInput = screen.getByLabelText('Search')
+        fireEvent.change(searchInput, { target: { value: 'outdated' } })
+        fireEvent.click(screen.getByRole('button', { name: 'Clear' }))
+
+        expect(searchInput).toHaveValue('')
+        expect(onChange).toHaveBeenLastCalledWith({})
+
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(300)
+        })
+
+        expect(onChange).toHaveBeenLastCalledWith({})
+        expect(onChange.mock.calls.filter(([filters]) => 'search' in filters)).toHaveLength(0)
+    })
+
+    it('cancels a pending search update when unmounted', async () => {
+        vi.useFakeTimers()
+        const onChange = vi.fn()
+
+        const { unmount } = render(
+            <TransactionFilters accounts={[]} sections={[]} onChange={onChange} />,
+        )
+
+        fireEvent.change(screen.getByLabelText('Search'), { target: { value: 'pending' } })
+        unmount()
+
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(300)
+        })
+
+        expect(onChange.mock.calls.filter(([filters]) => 'search' in filters)).toHaveLength(0)
+        expect(vi.getTimerCount()).toBe(0)
     })
 })
