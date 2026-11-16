@@ -172,6 +172,13 @@ describe('CurrencyInput', () => {
         expect(screen.getByRole('alert')).toHaveTextContent('Amount is required')
     })
 
+    it('identifies required values in the label and input semantics', () => {
+        render(<CurrencyInput label="Budget amount" required defaultValue="0" />)
+
+        expect(getInput()).toBeRequired()
+        expect(screen.getByText('*')).toHaveAttribute('aria-hidden', 'true')
+    })
+
     it('ignores edits when disabled', async () => {
         const user = userEvent.setup()
         render(<CurrencyInput label="Amount" disabled defaultValue="5" />)

@@ -9,11 +9,13 @@ type Props = {
 
 export const BudgetList = ({ budgets, onEdit, onArchive }: Props) => {
     return (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {budgets.map((b) => (
-                <BudgetCard key={b.id} budget={b} onEdit={onEdit} onArchive={onArchive} />
+                <li key={b.id} className="min-w-0">
+                    <BudgetCard budget={b} onEdit={onEdit} onArchive={onArchive} />
+                </li>
             ))}
-        </div>
+        </ul>
     )
 }
 

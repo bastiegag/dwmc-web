@@ -28,11 +28,21 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
     const [isArchiving, setIsArchiving] = useState(false)
 
     const { category } = budget
+    const progress = Number.isFinite(budget.progress) ? budget.progress : 0
+    const isZeroLimitOverBudget = budget.amount === 0 && budget.isOverBudget
+    const progressText = isZeroLimitOverBudget
+        ? 'Percentage unavailable for a zero budget limit'
+        : `${Math.round(progress)}% used`
+    const progressValueText = isZeroLimitOverBudget
+        ? `Over budget by ${formatCurrency(Math.abs(budget.remaining))}. Percentage unavailable because the budget limit is zero.`
+        : progress > 100
+          ? `${Math.round(progress)}% used. The progress bar is capped at 100%.`
+          : progressText
 
     return (
         <Card>
-            <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex min-w-0 flex-1 items-start gap-3">
                     <div
                         style={{
                             width: 12,
@@ -42,16 +52,18 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                         }}
                         aria-hidden="true"
                     />
-                    <div>
-                        <div className="font-medium">{category.name}</div>
-                        <div className="text-sm text-muted-foreground">{category.section.name}</div>
+                    <div className="min-w-0 flex-1">
+                        <h2 className="break-words font-medium">{category.name}</h2>
+                        <p className="break-words text-sm text-muted-foreground">
+                            {category.section.name}
+                        </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 flex-wrap gap-2">
                     <Button
                         variant="link"
-                        className="no-underline hover:bg-accent/10"
+                        className="min-h-11 no-underline hover:bg-accent/10"
                         size="sm"
                         onClick={() => onEdit(budget)}
                         aria-label={`Edit ${category.name}`}
@@ -60,6 +72,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                     </Button>
                     <Button
                         variant="outlined"
+                        className="min-h-11"
                         size="sm"
                         onClick={() => {
                             setArchiveError(null)
@@ -72,48 +85,62 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                 </div>
             </div>
 
-            <div className="mt-4">
-                <div className="mb-3 flex items-end justify-between">
-                    <div>
-                        <div className="text-2xl font-semibold">
+            <div className="mt-4 space-y-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="min-w-0">
+                        <p className="break-words text-2xl font-semibold tabular-nums">
                             {formatCurrency(budget.amount)}
-                        </div>
-                        <div className="text-sm text-muted-foreground">Planned</div>
+                        </p>
+                        <p className="text-sm text-muted-foreground">Planned</p>
                     </div>
 
-                    <div className="text-right">
-                        <div className="text-sm">Spent</div>
-                        <div className="font-medium">{formatCurrency(budget.spent)}</div>
+                    <div className="min-w-0 sm:text-right">
+                        <p className="text-sm">Spent</p>
+                        <p className="break-words font-medium tabular-nums">
+                            {formatCurrency(budget.spent)}
+                        </p>
                     </div>
                 </div>
 
-                <div className="mb-3">
+                <div>
                     <Progress
-                        value={Math.min(budget.progress, 100)}
+                        value={progress}
                         indicatorClassName={budget.isOverBudget ? 'bg-destructive' : 'bg-primary'}
+                        aria-label={`Budget usage for ${category.name}`}
+                        aria-valuetext={progressValueText}
                     />
-                    <div className="mt-2 flex items-center justify-between text-sm">
-                        <div>{Math.round(budget.progress)}% used</div>
-                        <div>
-                            {budget.remaining >= 0 ? (
+                    <div className="mt-2 flex flex-wrap items-start justify-between gap-x-4 gap-y-1 text-sm">
+                        <p className="break-words">{progressText}</p>
+                        <p className="break-words text-right tabular-nums">
+                            {budget.isOverBudget ? (
+                                <span className="text-destructive">
+                                    Over budget: {formatCurrency(Math.abs(budget.remaining))}
+                                </span>
+                            ) : (
                                 <span className="text-sm text-muted-foreground">
                                     Remaining: {formatCurrency(budget.remaining)}
                                 </span>
-                            ) : (
-                                <span className="text-sm text-destructive">
-                                    Over budget: {formatCurrency(Math.abs(budget.remaining))}
-                                </span>
                             )}
-                        </div>
+                        </p>
                     </div>
                 </div>
 
                 <div className="text-sm text-muted-foreground">
-                    {budget.transactionCount} transaction{budget.transactionCount !== 1 ? 's' : ''}
+                    {budget.transactionCount} transaction
+                    {budget.transactionCount !== 1 ? 's' : ''}
                 </div>
             </div>
 
-            <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+            <AlertDialog
+                open={isConfirmOpen}
+                onOpenChange={(open, eventDetails) => {
+                    if (!open && isArchiving) {
+                        eventDetails.cancel()
+                        return
+                    }
+                    setIsConfirmOpen(open)
+                }}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Archive budget?</AlertDialogTitle>
@@ -130,12 +157,8 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={isArchiving}>Cancel</AlertDialogCancel>
                         <AlertDialogAction
+                            asChild
                             disabled={isArchiving}
-                            render={
-                                <Button type="button" color="destructive" variant="contained">
-                                    {isArchiving ? 'Archiving...' : 'Archive'}
-                                </Button>
-                            }
                             onClick={async (event) => {
                                 event.preventDefault()
                                 setIsArchiving(true)
@@ -154,7 +177,11 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                                     setIsArchiving(false)
                                 }
                             }}
-                        />
+                        >
+                            <Button type="button" color="destructive" variant="contained">
+                                {isArchiving ? 'Archiving...' : 'Archive'}
+                            </Button>
+                        </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

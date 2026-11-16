@@ -117,19 +117,23 @@ describe('TransactionFilters', () => {
     })
 
     it('applies other filters immediately without losing a pending search', async () => {
-        const user = userEvent.setup()
+        vi.useFakeTimers()
         const onChange = vi.fn()
 
         render(<TransactionFilters accounts={[]} sections={[]} onChange={onChange} />)
 
-        await user.type(screen.getByLabelText('Search'), 'coffee')
-        await chooseOption(user, 'Type', 'Income')
+        fireEvent.change(screen.getByLabelText('Search'), { target: { value: 'coffee' } })
+        fireEvent.click(screen.getByRole('combobox', { name: 'Type' }))
+        const incomeOption = screen.getByRole('option', { name: 'Income' })
+        fireEvent.pointerDown(incomeOption, { button: 0, pointerId: 1, pointerType: 'mouse' })
+        fireEvent.click(incomeOption, { button: 0, detail: 1 })
 
         expect(onChange).toHaveBeenLastCalledWith({ type: 'INCOME' })
 
-        await waitFor(() => {
-            expect(onChange).toHaveBeenLastCalledWith({ type: 'INCOME', search: 'coffee' })
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(300)
         })
+        expect(onChange).toHaveBeenLastCalledWith({ type: 'INCOME', search: 'coffee' })
     })
 
     it('clears filters immediately and does not apply an outdated pending search', async () => {

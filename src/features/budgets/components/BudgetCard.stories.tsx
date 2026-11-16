@@ -32,7 +32,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Shows planned, spent, remaining, and progress values for one budget. Over-budget progress uses the destructive semantic color.',
+                    'Shows backend-provided planned, spent, remaining, and usage values. The progress bar is visually clamped, while its text and accessible value retain the actual percentage.',
             },
         },
     },
@@ -43,6 +43,34 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const OnTrack: Story = { args: { budget } }
+
+export const NoSpending: Story = {
+    args: {
+        budget: {
+            ...budget,
+            amount: 250,
+            spent: 0,
+            remaining: 250,
+            progress: 0,
+            isOverBudget: false,
+            transactionCount: 0,
+        },
+    },
+}
+
+export const FullyUsed: Story = {
+    args: {
+        budget: {
+            ...budget,
+            amount: 250,
+            spent: 250,
+            remaining: 0,
+            progress: 100,
+            isOverBudget: false,
+        },
+    },
+}
+
 export const OverBudget: Story = {
     args: {
         budget: {
@@ -55,6 +83,44 @@ export const OverBudget: Story = {
             progress: 110,
             isOverBudget: true,
             transactionCount: 8,
+        },
+    },
+}
+
+export const ZeroLimit: Story = {
+    args: {
+        budget: {
+            ...budget,
+            amount: 0,
+            spent: 25,
+            remaining: -25,
+            progress: 100,
+            isOverBudget: true,
+        },
+    },
+}
+
+export const LargeAmounts: Story = {
+    args: {
+        budget: {
+            ...budget,
+            amount: 9_876_543_210.99,
+            spent: 1_234_567_890.12,
+            remaining: 8_641_975_320.87,
+            progress: 12.5,
+            isOverBudget: false,
+        },
+    },
+}
+
+export const LongCategoryName: Story = {
+    args: {
+        budget: {
+            ...budget,
+            category: {
+                ...budget.category,
+                name: 'A very long category name for responsive layout review',
+            },
         },
     },
 }
