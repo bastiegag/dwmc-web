@@ -8,21 +8,24 @@ type Props = {
 
 export const AccountBreakdownCard = ({ items }: Props) => {
     return (
-        <Card title={<span className="text-sm">Account breakdown</span>}>
+        <Card title={<span className="text-sm">Monthly account activity</span>}>
             {items.length === 0 ? (
                 <div className="text-sm text-muted-foreground">No accounts to show.</div>
             ) : (
                 <ul className="space-y-3">
                     {items.map((a) => (
-                        <li key={a.accountId} className="flex items-center justify-between">
-                            <div>
-                                <div className="font-medium">{a.name}</div>
+                        <li key={a.accountId} className="grid grid-cols-2 items-center gap-x-4">
+                            <div className="min-w-0">
+                                <div className="break-words font-medium">{a.name}</div>
                                 <div className="text-sm text-muted-foreground">{a.type}</div>
                             </div>
-                            <div className="text-right">
-                                <div className="font-semibold">{formatCurrency(a.netTotal)}</div>
+                            <div className="min-w-0 text-right">
+                                <div className="break-words font-semibold tabular-nums">
+                                    {formatCurrency(a.netTotal)}
+                                </div>
                                 <div className="text-sm text-muted-foreground">
-                                    {a.transactionCount} tx
+                                    {a.transactionCount}{' '}
+                                    {a.transactionCount === 1 ? 'transaction' : 'transactions'}
                                 </div>
                             </div>
                         </li>

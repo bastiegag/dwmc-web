@@ -13,6 +13,7 @@ export const SummaryCard = ({ label, value, subtitle, icon }: SummaryCardProps) 
     const display = typeof value === 'number' ? formatCurrency(value) : String(value)
     return (
         <Card
+            className="min-w-0"
             title={
                 <div className="flex items-center justify-between text-sm">
                     {label}
@@ -20,7 +21,7 @@ export const SummaryCard = ({ label, value, subtitle, icon }: SummaryCardProps) 
                 </div>
             }
         >
-            <div className="text-2xl font-semibold">{display}</div>
+            <div className="min-w-0 break-words text-2xl font-semibold tabular-nums">{display}</div>
             {subtitle ? <div className="text-sm text-muted-foreground mt-1">{subtitle}</div> : null}
         </Card>
     )

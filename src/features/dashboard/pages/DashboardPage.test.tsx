@@ -1,11 +1,26 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useQueryClient } from '@tanstack/react-query'
 import { http, HttpResponse } from 'msw'
 import { render, renderMonthAwareNavigation } from '@/test/utils/render'
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
 import { MonthNavigator } from '@/shared/month'
 import { server } from '@/test/mocks/server'
+import { dashboardQueryKeys } from '@/features/dashboard/hooks/use-monthly-summary'
+
+const RefreshDashboardSummary = () => {
+    const queryClient = useQueryClient()
+
+    return (
+        <button
+            type="button"
+            onClick={() => void queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.all })}
+        >
+            Refresh dashboard summary
+        </button>
+    )
+}
 
 describe('DashboardPage', () => {
     beforeEach(() => {
@@ -47,7 +62,8 @@ describe('DashboardPage', () => {
         expect(screen.queryByRole('heading', { name: /income/i, level: 2 })).not.toBeInTheDocument()
     })
 
-    it('shows an error state when the summary request fails', async () => {
+    it('shows an error state when the summary request fails and retries successfully', async () => {
+        const user = userEvent.setup()
         server.use(
             http.get('http://localhost:8787/summary/monthly*', () =>
                 HttpResponse.json(
@@ -60,7 +76,39 @@ describe('DashboardPage', () => {
         render(<DashboardPage />)
 
         expect(await screen.findByText('Summary unavailable')).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument()
+        server.resetHandlers()
+        await user.click(screen.getByRole('button', { name: 'Retry' }))
+        expect(
+            await screen.findByRole('heading', { name: /income/i, level: 2 }),
+        ).toBeInTheDocument()
+    })
+
+    it('keeps visible summary data when a background refresh fails', async () => {
+        const user = userEvent.setup()
+        render(
+            <>
+                <DashboardPage />
+                <RefreshDashboardSummary />
+            </>,
+            { initialEntries: ['/dashboard?month=2026-06'] },
+        )
+
+        expect(await screen.findByText('23')).toBeInTheDocument()
+
+        server.use(
+            http.get('http://localhost:8787/summary/monthly*', () =>
+                HttpResponse.json(
+                    { error: { code: 'INTERNAL_SERVER_ERROR', message: 'Summary unavailable' } },
+                    { status: 500 },
+                ),
+            ),
+        )
+        await user.click(screen.getByRole('button', { name: 'Refresh dashboard summary' }))
+
+        expect(await screen.findByText('Summary unavailable')).toBeInTheDocument()
+        expect(screen.getByRole('heading', { name: /income/i, level: 2 })).toBeInTheDocument()
+        expect(screen.getByText('23')).toBeInTheDocument()
+        expect(screen.getByRole('status')).toHaveTextContent(/summary refresh failed/i)
     })
 
     it('requests the newly selected month when the shared navigator changes month', async () => {

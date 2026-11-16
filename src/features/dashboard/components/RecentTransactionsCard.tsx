@@ -17,17 +17,19 @@ export const RecentTransactionsCard = ({ transactions }: Props) => {
             ) : (
                 <ul className="space-y-3">
                     {transactions.map((t) => (
-                        <li key={t.id} className="flex items-center justify-between">
-                            <div>
-                                <div className="font-medium">
+                        <li key={t.id} className="grid grid-cols-2 items-center gap-x-4">
+                            <div className="min-w-0">
+                                <div className="break-words font-medium">
                                     {t.merchant ?? t.note ?? 'No description'}
                                 </div>
                                 <div className="text-sm text-muted-foreground">
                                     {t.date.slice(0, 10)}
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <div className="font-semibold">{formatCurrency(t.amount)}</div>
+                            <div className="min-w-0 text-right">
+                                <div className="break-words font-semibold tabular-nums">
+                                    {formatCurrency(t.amount)}
+                                </div>
                                 <div className="text-sm text-muted-foreground">{t.type}</div>
                             </div>
                         </li>
