@@ -23,7 +23,6 @@ export const AccountsPage = () => {
     const [isDialogOpen, setDialogOpen] = useState(false)
     const [activeAccount, setActiveAccount] = useState<Account | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
-    const [archiveError, setArchiveError] = useState<string | null>(null)
 
     const openCreate = useCallback(() => {
         setActiveAccount(null)
@@ -47,7 +46,7 @@ export const AccountsPage = () => {
             goal: activeAccount.goal,
             color: activeAccount.color,
             icon: activeAccount.icon,
-        } as AccountFormValues
+        }
     }, [activeAccount])
 
     const closeDialog = () => {
@@ -70,13 +69,10 @@ export const AccountsPage = () => {
     }
 
     const handleArchive = async (account: Account) => {
-        try {
-            setArchiveError(null)
-            await deleteMutation.mutateAsync(account.id)
-        } catch (error) {
-            setArchiveError(getErrorMessage(error, 'Unable to archive account. Please try again.'))
-        }
+        await deleteMutation.mutateAsync(account.id)
     }
+
+    const hasAccountsData = accountsQuery.data !== undefined
 
     return (
         <section className="space-y-6" aria-labelledby="accounts-heading">
@@ -88,22 +84,36 @@ export const AccountsPage = () => {
 
             <QueryState
                 isLoading={accountsQuery.isLoading}
-                isError={accountsQuery.isError}
+                isError={accountsQuery.isError && !hasAccountsData}
                 loadingLabel="Loading accounts"
                 errorTitle="Could not load accounts"
                 errorMessage={getErrorMessage(accountsQuery.error, '')}
                 fallbackErrorMessage="Please refresh and try again in a moment."
+                onRetry={() => void accountsQuery.refetch()}
             />
 
-            {archiveError ? (
-                <Alert variant="destructive" title="Archive failed" description={archiveError} />
+            {accountsQuery.isError && hasAccountsData ? (
+                <Alert
+                    variant="warning"
+                    role="status"
+                    title="Account list refresh failed"
+                    description={
+                        getErrorMessage(accountsQuery.error, '') || 'Please try again in a moment.'
+                    }
+                    action={{
+                        label: 'Retry',
+                        disabled: accountsQuery.isFetching,
+                        onClick: () => void accountsQuery.refetch(),
+                    }}
+                    className="mb-0"
+                />
             ) : null}
 
-            {!accountsQuery.isLoading && !accountsQuery.isError && accounts.length === 0 ? (
-                <EmptyAccountsState />
+            {!accountsQuery.isLoading && hasAccountsData && accounts.length === 0 ? (
+                <EmptyAccountsState onCreate={openCreate} />
             ) : null}
 
-            {!accountsQuery.isLoading && !accountsQuery.isError && accounts.length > 0 ? (
+            {!accountsQuery.isLoading && hasAccountsData && accounts.length > 0 ? (
                 <AccountList
                     accounts={accounts}
                     onEdit={(a) => {

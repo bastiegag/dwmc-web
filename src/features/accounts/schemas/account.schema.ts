@@ -10,15 +10,25 @@ export const accountTypeSchema = z.enum([
     'OTHER',
 ])
 
+const startingBalanceSchema = z
+    .union([z.number(), z.string(), z.null()])
+    .transform((value) => (value === null || value === '' ? 0 : Number(value)))
+    .pipe(z.number().finite())
+    .default(0)
+
+const goalSchema = z
+    .union([z.number(), z.string(), z.null(), z.undefined()])
+    .transform((value) =>
+        value === undefined ? undefined : value === null || value === '' ? null : Number(value),
+    )
+    .pipe(z.number().finite().positive().nullable().optional())
+
 export const accountFormSchema = z
     .object({
         name: z.string().trim().min(1, 'Account name is required').max(80),
         type: accountTypeSchema.default('CHECKING'),
-        startingBalance: z.coerce.number().default(0),
-        goal: z.preprocess((v) => {
-            if (v === '' || v === undefined || v === null) return null
-            return Number(v)
-        }, z.number().nullable().optional()),
+        startingBalance: startingBalanceSchema,
+        goal: goalSchema,
         color: z.string().trim().min(1, 'Color is required').max(40),
         icon: z.string().trim().min(1, 'Icon is required').max(80),
     })
@@ -32,4 +42,5 @@ export const accountFormSchema = z
         }
     })
 
-export type AccountFormValues = z.infer<typeof accountFormSchema>
+export type AccountFormInput = z.input<typeof accountFormSchema>
+export type AccountFormValues = z.output<typeof accountFormSchema>

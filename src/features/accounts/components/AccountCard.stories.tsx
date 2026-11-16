@@ -28,6 +28,16 @@ const savings: Account = {
     icon: 'landmark',
 }
 
+const accountTypes: { type: Account['type']; name: string }[] = [
+    { type: 'CHECKING', name: 'Checking' },
+    { type: 'SAVINGS', name: 'Savings' },
+    { type: 'CREDIT_CARD', name: 'Credit card' },
+    { type: 'CASH', name: 'Cash' },
+    { type: 'INVESTMENT', name: 'Investment' },
+    { type: 'LOAN', name: 'Loan' },
+    { type: 'OTHER', name: 'Other' },
+]
+
 const meta = {
     title: 'Design System/Product/Accounts/Account Card',
     component: AccountCard,
@@ -36,7 +46,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Displays an account balance and actions. Archive is destructive and opens an explicit confirmation dialog before calling the supplied callback.',
+                    'Displays the current and starting account balances, and a savings-goal progress indicator when applicable. Archive is destructive and opens an explicit confirmation dialog before calling the supplied callback. Archived accounts are not shown by the default Accounts query.',
             },
         },
     },
@@ -48,3 +58,57 @@ type Story = StoryObj<typeof meta>
 
 export const Chequing: Story = { args: { account } }
 export const SavingsGoal: Story = { args: { account: savings } }
+
+export const Default: Story = { args: { account } }
+
+export const ZeroBalance: Story = {
+    args: { account: { ...account, id: 'account-zero', name: 'Zero balance', currentBalance: 0 } },
+}
+
+export const NegativeBalance: Story = {
+    args: {
+        account: {
+            ...account,
+            id: 'account-negative',
+            name: 'Credit card',
+            type: 'CREDIT_CARD',
+            currentBalance: -1250.75,
+        },
+    },
+}
+
+export const LargeBalance: Story = {
+    args: {
+        account: { ...account, id: 'account-large', currentBalance: 123456789.99 },
+    },
+}
+
+export const LongAccountName: Story = {
+    args: {
+        account: {
+            ...account,
+            id: 'account-long-name',
+            name: 'Primary household chequing account for everyday expenses',
+        },
+    },
+}
+
+export const DifferentAccountTypes: Story = {
+    args: { account },
+    render: (args) => (
+        <div className="grid gap-4 sm:grid-cols-2">
+            {accountTypes.map(({ type, name }) => (
+                <AccountCard
+                    key={type}
+                    {...args}
+                    account={{
+                        ...account,
+                        id: `account-${type.toLowerCase()}`,
+                        name,
+                        type,
+                    }}
+                />
+            ))}
+        </div>
+    ),
+}
