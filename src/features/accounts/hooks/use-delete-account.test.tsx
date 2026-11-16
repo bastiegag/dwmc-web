@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderHookWithQuery, waitFor } from '@/test/utils/render'
 import { useDeleteAccount } from '@/features/accounts/hooks/use-delete-account'
 import { accountQueryKeys } from '@/features/accounts/hooks/use-accounts'
+import { dashboardQueryKeys } from '@/features/dashboard'
 
 describe('useDeleteAccount', () => {
     beforeEach(() => {
@@ -16,6 +17,8 @@ describe('useDeleteAccount', () => {
 
         await waitFor(() => {
             expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: accountQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: dashboardQueryKeys.lists() })
+            expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: accountQueryKeys.detail('a1') })
         })
     })
 })

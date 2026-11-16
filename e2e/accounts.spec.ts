@@ -135,3 +135,59 @@ test('authenticated users can create an account and record an expense', async ({
             .filter({ hasText: /1,175\.00|1\s*175,00|1\s*175\.00/ }),
     ).toBeVisible()
 })
+
+test('keeps long account content and dialogs within responsive viewports', async ({ page }) => {
+    const account = {
+        id: 'account-responsive',
+        name: 'Primary household chequing account for everyday expenses',
+        type: 'CHECKING' as const,
+        startingBalance: 123456789.99,
+        currentBalance: -123456789.99,
+        goal: null,
+        color: '#ed6a5a',
+        icon: 'wallet',
+        isArchived: false,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+    }
+
+    await mockAuthenticatedSession(page)
+    await page.route(/\/api\/v1\/accounts(?:\?.*)?$/, (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ data: [account] }),
+        }),
+    )
+
+    const loginPage = new LoginPage(page)
+    await loginPage.goto()
+    await loginPage.login('test@example.com', 'Password123')
+    await page.goto('/accounts')
+
+    await expect(page.getByText(account.name)).toBeVisible()
+    for (const width of [320, 430, 768, 1280]) {
+        await page.setViewportSize({ width, height: 800 })
+        expect(
+            await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+        ).toBe(true)
+
+        if (width < 1024) {
+            await expect(page.getByTestId('mobile-bottom-nav')).toBeVisible()
+        } else {
+            await expect(page.getByTestId('mobile-bottom-nav')).toBeHidden()
+        }
+    }
+
+    await page.setViewportSize({ width: 320, height: 640 })
+    await page.getByTestId('primary-action-button').click()
+    const dialog = page.getByRole('dialog', { name: 'Create account' })
+    await expect(dialog).toBeVisible()
+    const dialogBox = await dialog.boundingBox()
+
+    expect(dialogBox).not.toBeNull()
+    if (dialogBox) {
+        expect(dialogBox.y).toBeGreaterThanOrEqual(0)
+        expect(dialogBox.y + dialogBox.height).toBeLessThanOrEqual(640)
+    }
+})

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 import { EmptyAccountsState } from '@/features/accounts/components/EmptyAccountsState'
 import { EmptyBudgetsState } from '@/features/budgets/components/EmptyBudgetsState'
 import { EmptyCategoriesState } from '@/features/categories/components/EmptyCategoriesState'
@@ -20,7 +21,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Accounts: Story = { render: () => <EmptyAccountsState /> }
+export const Accounts: Story = { render: () => <EmptyAccountsState onCreate={fn()} /> }
 export const Budgets: Story = { render: () => <EmptyBudgetsState month="2026-10" /> }
 export const Categories: Story = { render: () => <EmptyCategoriesState /> }
 export const Transactions: Story = { render: () => <EmptyTransactionsState /> }

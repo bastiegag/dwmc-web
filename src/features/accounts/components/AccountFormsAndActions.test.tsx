@@ -23,6 +23,9 @@ vi.mock('@/features/accounts/hooks', () => ({
 describe('accounts forms and actions', () => {
     beforeEach(() => {
         accountsData = [createAccount()]
+        createMock.mockReset().mockResolvedValue(undefined)
+        updateMock.mockReset().mockResolvedValue(undefined)
+        deleteMock.mockReset().mockResolvedValue(undefined)
         createMock.mockClear()
         updateMock.mockClear()
         deleteMock.mockClear()
@@ -56,7 +59,7 @@ describe('accounts forms and actions', () => {
         )
 
         await user.click(screen.getByRole('button', { name: /add account/i }))
-        await user.type(screen.getByLabelText('Account name'), 'Savings')
+        await user.type(screen.getByRole('textbox', { name: 'Account name' }), 'Savings')
         await user.click(screen.getByRole('button', { name: 'Create account' }))
 
         await waitFor(() =>
@@ -75,9 +78,9 @@ describe('accounts forms and actions', () => {
 
         await user.click(screen.getByRole('button', { name: 'Edit Checking' }))
         expect(screen.getByRole('heading', { name: 'Edit account' })).toBeInTheDocument()
-        expect(screen.getByLabelText('Account name')).toHaveValue('Checking')
-        await user.clear(screen.getByLabelText('Account name'))
-        await user.type(screen.getByLabelText('Account name'), 'Updated checking')
+        expect(screen.getByRole('textbox', { name: 'Account name' })).toHaveValue('Checking')
+        await user.clear(screen.getByRole('textbox', { name: 'Account name' }))
+        await user.type(screen.getByRole('textbox', { name: 'Account name' }), 'Updated checking')
         await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
         await waitFor(() =>
@@ -100,5 +103,7 @@ describe('accounts forms and actions', () => {
         await user.click(within(dialog).getByRole('button', { name: /Archive/i }))
 
         expect(await screen.findByText('Archive unavailable')).toBeInTheDocument()
+        expect(screen.getByRole('alertdialog')).toBeInTheDocument()
+        expect(deleteMock).toHaveBeenCalledTimes(1)
     })
 })

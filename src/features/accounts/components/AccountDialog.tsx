@@ -29,9 +29,13 @@ export const AccountDialog = ({
     onSubmit,
 }: AccountDialogProps) => {
     const title = mode === 'create' ? 'Create account' : 'Edit account'
+    const handleOpenChange = (nextOpen: boolean) => {
+        if (!nextOpen && isPending) return
+        onOpenChange(nextOpen)
+    }
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className="max-w-md">
                 <DialogHeader className="mb-4 flex-row items-center justify-between gap-3">
                     <DialogTitle>{title}</DialogTitle>
@@ -40,7 +44,8 @@ export const AccountDialog = ({
                         variant="link"
                         className="no-underline hover:bg-accent/10"
                         size="sm"
-                        onClick={() => onOpenChange(false)}
+                        disabled={isPending}
+                        onClick={() => handleOpenChange(false)}
                         aria-label="Close account dialog"
                     >
                         Close

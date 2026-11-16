@@ -57,31 +57,33 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
 
     const { currentBalance, startingBalance, goal } = account
 
-    const showGoal =
+    const savingsGoal =
         account.type === 'SAVINGS' &&
         goal !== null &&
         goal !== undefined &&
         typeof goal === 'number' &&
         goal > 0
+            ? goal
+            : null
     const progress =
-        showGoal && goal > 0 ? Math.max(0, Math.min(100, (currentBalance / goal) * 100)) : 0
+        savingsGoal === null ? 0 : Math.max(0, Math.min(100, (currentBalance / savingsGoal) * 100))
 
     return (
         <Card>
-            <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex min-w-0 flex-1 items-start gap-3">
                     <span
-                        className="inline-block h-3 w-3 rounded-full border"
+                        className="mt-2 inline-block size-3 shrink-0 rounded-full border"
                         style={{ backgroundColor: account.color }}
                         aria-hidden="true"
                     />
-                    <div>
-                        <h2 className="flex items-center gap-2 text-lg">
+                    <div className="min-w-0 flex-1">
+                        <h2 className="flex min-w-0 items-center gap-2 text-lg">
                             {createElement(iconComp, {
-                                className: 'h-5 w-5 text-muted-foreground',
+                                className: 'size-5 shrink-0 text-muted-foreground',
                                 'aria-hidden': true,
                             })}
-                            <span>{account.name}</span>
+                            <span className="min-w-0 break-words">{account.name}</span>
                         </h2>
                         <p className="text-sm text-muted-foreground">
                             {String(account.type).replace(/_/g, ' ')}
@@ -93,7 +95,7 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                     <Button
                         size="sm"
                         variant="link"
-                        className="no-underline hover:bg-accent/10"
+                        className="min-h-11 no-underline hover:bg-accent/10"
                         onClick={() => onEdit(account)}
                         aria-label={`Edit ${account.name}`}
                     >
@@ -102,7 +104,7 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                     <Button
                         size="sm"
                         variant="link"
-                        className="no-underline hover:bg-accent/10"
+                        className="min-h-11 no-underline hover:bg-accent/10"
                         onClick={() => {
                             setArchiveError(null)
                             setIsConfirmOpen(true)
@@ -114,28 +116,32 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
                 </div>
             </div>
 
-            <div className="mt-4">
-                <div className="flex items-end justify-between">
-                    <div>
-                        <div className="text-2xl font-semibold">
-                            {formatCurrency(currentBalance)}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                            Starting: {formatCurrency(startingBalance)}
-                        </div>
+            <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                    <div className="break-words text-2xl font-semibold tabular-nums">
+                        {formatCurrency(currentBalance)}
                     </div>
-
-                    <div className="w-40 text-right">
-                        {showGoal ? (
-                            <div>
-                                <div className="text-sm text-muted-foreground">
-                                    Savings goal: {formatCurrency(goal!)}
-                                </div>
-                                <Progress className="mt-2" value={progress} />
-                            </div>
-                        ) : null}
+                    <div className="break-words text-sm text-muted-foreground tabular-nums">
+                        Starting: {formatCurrency(startingBalance)}
                     </div>
                 </div>
+
+                {savingsGoal !== null ? (
+                    <div className="min-w-40 max-w-full flex-1 text-right">
+                        <div className="break-words text-sm text-muted-foreground tabular-nums">
+                            Savings goal: {formatCurrency(savingsGoal)}
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground">
+                            {Math.round(progress)}% complete
+                        </div>
+                        <Progress
+                            className="mt-2"
+                            value={progress}
+                            aria-label={`Progress toward savings goal for ${account.name}`}
+                            aria-valuetext={`${Math.round(progress)}% complete`}
+                        />
+                    </div>
+                ) : null}
             </div>
 
             <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>

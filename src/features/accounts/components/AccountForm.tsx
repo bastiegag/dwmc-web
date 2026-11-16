@@ -1,12 +1,21 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useWatch } from 'react-hook-form'
-import type { Resolver } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
-import { Button, Label } from '@/components/ui'
+import { CurrencyInput } from '@/components/form/CurrencyInput'
+import { FormField } from '@/components/form/FormField'
+import {
+    Button,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui'
 import { TextField } from '@/components/form/TextField'
 import {
     accountFormSchema,
+    type AccountFormInput,
     type AccountFormValues,
 } from '@/features/accounts/schemas/account.schema'
 import type { AccountType } from '@/features/accounts/types/account.types'
@@ -50,10 +59,10 @@ export const AccountForm = ({
         handleSubmit,
         control,
         setValue,
-        formState: { errors },
         reset,
-    } = useForm<AccountFormValues>({
-        resolver: zodResolver(accountFormSchema) as unknown as Resolver<AccountFormValues>,
+        formState: { errors, isSubmitting },
+    } = useForm<AccountFormInput, unknown, AccountFormValues>({
+        resolver: zodResolver(accountFormSchema),
         mode: 'onBlur',
         defaultValues: initialValues ?? defaultValues,
     })
@@ -78,43 +87,81 @@ export const AccountForm = ({
                 id="account-name"
                 label="Account name"
                 placeholder="Checking"
+                required
                 {...register('name')}
                 error={errors.name?.message}
             />
 
-            <div className="space-y-2">
-                <Label htmlFor="account-type">Type</Label>
-                <select
-                    id="account-type"
-                    className="border-input bg-transparent flex h-9 w-full rounded-md border px-3 py-1 text-base"
-                    {...register('type')}
-                >
-                    {accountTypeOptions.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            <FormField id="account-type" label="Type" required error={errors.type?.message}>
+                <Controller
+                    name="type"
+                    control={control}
+                    render={({ field }) => (
+                        <Select value={field.value} onValueChange={field.onChange} required>
+                            <SelectTrigger
+                                id="account-type"
+                                ref={field.ref}
+                                onBlur={field.onBlur}
+                                aria-invalid={Boolean(errors.type)}
+                                aria-describedby={errors.type ? 'account-type-error' : undefined}
+                            >
+                                <SelectValue placeholder="Select account type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {accountTypeOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+            </FormField>
 
-            <TextField
-                id="starting-balance"
-                label="Starting balance (at setup)"
-                type="number"
-                step="0.01"
-                {...register('startingBalance' as const)}
-                error={errors.startingBalance?.message}
+            <Controller
+                name="startingBalance"
+                control={control}
+                render={({ field, fieldState }) => (
+                    <CurrencyInput
+                        id="starting-balance"
+                        name={field.name}
+                        ref={field.ref}
+                        value={field.value === null ? null : String(field.value)}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        label="Starting balance (at setup, optional)"
+                        currency="CAD"
+                        locale="fr-CA"
+                        allowNegative
+                        error={fieldState.error?.message}
+                    />
+                )}
             />
 
             {accountType === 'SAVINGS' ? (
-                <TextField
-                    id="goal"
-                    label="Savings goal (optional)"
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    {...register('goal' as const)}
-                    error={errors.goal?.message}
+                <Controller
+                    name="goal"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <CurrencyInput
+                            id="goal"
+                            name={field.name}
+                            ref={field.ref}
+                            value={
+                                field.value === null || field.value === undefined
+                                    ? null
+                                    : String(field.value)
+                            }
+                            onValueChange={field.onChange}
+                            onBlur={field.onBlur}
+                            label="Savings goal (optional)"
+                            currency="CAD"
+                            locale="fr-CA"
+                            min="0.01"
+                            error={fieldState.error?.message}
+                        />
+                    )}
                 />
             ) : null}
 
@@ -127,6 +174,7 @@ export const AccountForm = ({
                 id="color"
                 label="Color"
                 type="color"
+                required
                 {...register('color' as const)}
                 error={errors.color?.message}
             />
@@ -135,13 +183,19 @@ export const AccountForm = ({
                 id="icon"
                 label="Icon"
                 placeholder="wallet"
+                required
                 {...register('icon' as const)}
                 error={errors.icon?.message}
             />
 
             <FormError message={errorMessage} />
 
-            <Button type="submit" className="w-full" isLoading={isPending} loadingText="Saving...">
+            <Button
+                type="submit"
+                className="w-full"
+                isLoading={isPending || isSubmitting}
+                loadingText="Saving..."
+            >
                 {submitLabel}
             </Button>
         </form>
