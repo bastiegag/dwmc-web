@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
 import { FormField } from '@/components/form/FormField'
@@ -29,20 +29,38 @@ const getProfileFormValues = (profile: UserProfile): ProfileFormValues => ({
 
 export const ProfileForm = ({ profile }: ProfileFormProps) => {
     const updateProfile = useUpdateProfile()
+    const profileIdentity = `${profile.authUserId}:${profile.id}`
+    const previousProfileIdentity = useRef(profileIdentity)
     const {
         register,
         control,
         handleSubmit,
         reset,
-        formState: { errors, isDirty },
+        formState: { errors, isDirty, dirtyFields },
     } = useForm<ProfileFormValues>({
         resolver: zodResolver(profileFormSchema),
         defaultValues: getProfileFormValues(profile),
     })
+    const dirtyFieldsRef = useRef(dirtyFields)
 
     useEffect(() => {
-        reset(getProfileFormValues(profile))
-    }, [profile, reset])
+        dirtyFieldsRef.current = dirtyFields
+    }, [dirtyFields])
+
+    useEffect(() => {
+        const values = getProfileFormValues(profile)
+        const profileChanged = previousProfileIdentity.current !== profileIdentity
+        previousProfileIdentity.current = profileIdentity
+
+        if (profileChanged) {
+            reset(values)
+            return
+        }
+
+        reset(values, {
+            keepDirtyValues: Object.keys(dirtyFieldsRef.current).length > 0,
+        })
+    }, [profile, profileIdentity, reset])
 
     const onSubmit = (values: ProfileFormValues) =>
         updateProfile.mutate(

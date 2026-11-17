@@ -63,7 +63,10 @@ export const ProfilePage = () => {
                                 <span className="sr-only">Read-only</span>
                             </div>
                         </section>
-                        <ProfileForm profile={profile.data} />
+                        <ProfileForm
+                            key={`${profile.data.authUserId}:${profile.data.id}`}
+                            profile={profile.data}
+                        />
                     </div>
                     <div className="flex items-start gap-2 text-sm text-muted-foreground">
                         <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />

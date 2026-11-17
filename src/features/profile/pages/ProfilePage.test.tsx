@@ -95,4 +95,47 @@ describe('ProfilePage', () => {
         await user.click(screen.getByRole('button', { name: 'Retry' }))
         expect(await screen.findByLabelText('First name')).toHaveValue('Ada')
     })
+
+    it('keeps the confirmed save response when an older profile refetch finishes late', async () => {
+        const user = userEvent.setup()
+        const { queryClient } = renderPage()
+
+        expect(await screen.findByLabelText('Display name')).toHaveValue('Ada')
+
+        let finishRefetch: () => void = () => {}
+        let notifyRefetchStarted: () => void = () => {}
+        const refetchStarted = new Promise<void>((resolve) => {
+            notifyRefetchStarted = resolve
+        })
+        const refetchResponse = new Promise<void>((resolve) => {
+            finishRefetch = resolve
+        })
+        const savedProfile = {
+            ...profile,
+            displayName: 'Grace Hopper',
+            updatedAt: '2026-02-01T00:00:00.000Z',
+        }
+        server.use(
+            http.get(`${API_URL}/profile`, async () => {
+                notifyRefetchStarted()
+                await refetchResponse
+                return HttpResponse.json({ data: profile })
+            }),
+            http.patch(`${API_URL}/profile`, () => HttpResponse.json({ data: savedProfile })),
+        )
+
+        const staleRefetch = queryClient.invalidateQueries({ queryKey: ['profile'] })
+        await refetchStarted
+        await user.clear(screen.getByLabelText('Display name'))
+        await user.type(screen.getByLabelText('Display name'), 'Grace Hopper')
+        await user.click(screen.getByRole('button', { name: 'Save changes' }))
+
+        expect(await screen.findByRole('status')).toHaveTextContent('Profile saved.')
+        finishRefetch()
+        await staleRefetch
+
+        await waitFor(() =>
+            expect(screen.getByLabelText('Display name')).toHaveValue('Grace Hopper'),
+        )
+    })
 })

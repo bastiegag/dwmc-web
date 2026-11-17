@@ -56,17 +56,31 @@ describe('ProfileForm', () => {
         )
         render(<ProfileForm profile={profile} />)
 
+        await user.clear(screen.getByLabelText('First name'))
+        await user.type(screen.getByLabelText('First name'), 'Grace')
+        await user.clear(screen.getByLabelText('Display name'))
+        await user.type(screen.getByLabelText('Display name'), 'Grace Hopper')
         await user.click(screen.getByRole('button', { name: 'Save changes' }))
         expect(await screen.findByRole('button', { name: /saving/i })).toHaveAttribute(
             'aria-disabled',
             'true',
         )
         expect(await screen.findByText('Profile could not be saved.')).toBeInTheDocument()
+        expect(screen.getByLabelText('First name')).toHaveValue('Grace')
+        expect(screen.getByLabelText('Display name')).toHaveValue('Grace Hopper')
         expect(screen.queryByText('Profile saved.')).not.toBeInTheDocument()
     })
 
     it('announces success only after the profile mutation succeeds', async () => {
         const user = userEvent.setup()
+        server.use(
+            http.patch('http://localhost:8787/profile', async ({ request }) => {
+                const values = (await request.json()) as Partial<typeof profile>
+                return HttpResponse.json({
+                    data: { ...profile, ...values, displayName: 'Grace Hopper' },
+                })
+            }),
+        )
         render(<ProfileForm profile={profile} />)
 
         await user.clear(screen.getByLabelText('Display name'))
@@ -74,7 +88,112 @@ describe('ProfileForm', () => {
         await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
         expect(await screen.findByRole('status')).toHaveTextContent('Profile saved.')
-        expect(screen.getByLabelText('Display name')).toHaveValue('Grace')
+        expect(screen.getByLabelText('Display name')).toHaveValue('Grace Hopper')
+    })
+
+    it('preserves dirty fields and updates untouched fields after a profile refresh', async () => {
+        const user = userEvent.setup()
+        const { rerender } = render(<ProfileForm profile={profile} />)
+
+        await user.clear(screen.getByLabelText('First name'))
+        await user.type(screen.getByLabelText('First name'), 'Grace')
+
+        rerender(
+            <ProfileForm
+                profile={{
+                    ...profile,
+                    firstName: 'Server first name',
+                    lastName: 'Byron',
+                    displayName: 'Ada Lovelace',
+                    updatedAt: '2026-02-01T00:00:00.000Z',
+                }}
+            />,
+        )
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('First name')).toHaveValue('Grace')
+            expect(screen.getByLabelText('Last name')).toHaveValue('Byron')
+            expect(screen.getByLabelText('Display name')).toHaveValue('Ada Lovelace')
+        })
+    })
+
+    it('resets all fields when switching to a different profile', async () => {
+        const user = userEvent.setup()
+        const { rerender } = render(<ProfileForm profile={profile} />)
+
+        await user.clear(screen.getByLabelText('Display name'))
+        await user.type(screen.getByLabelText('Display name'), 'Unsaved name')
+
+        rerender(
+            <ProfileForm
+                profile={{
+                    ...profile,
+                    id: 'profile-2',
+                    authUserId: 'other-user',
+                    firstName: 'Katherine',
+                    lastName: 'Johnson',
+                    displayName: 'Katherine Johnson',
+                }}
+            />,
+        )
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('First name')).toHaveValue('Katherine')
+            expect(screen.getByLabelText('Last name')).toHaveValue('Johnson')
+            expect(screen.getByLabelText('Display name')).toHaveValue('Katherine Johnson')
+        })
+    })
+
+    it('keeps edits during a refetch while saving and resets from the save response', async () => {
+        const user = userEvent.setup()
+        const apiUrl = 'http://profile-save-race.test'
+        const savedProfile = {
+            ...profile,
+            firstName: 'Grace',
+            lastName: 'Confirmed',
+            displayName: 'Grace Hopper',
+        }
+        let finishSave: () => void = () => {}
+        let notifySaveStarted: () => void = () => {}
+        const saveStarted = new Promise<void>((resolve) => {
+            notifySaveStarted = resolve
+        })
+        const saveResponse = new Promise<void>((resolve) => {
+            finishSave = resolve
+        })
+        vi.stubEnv('VITE_API_URL', apiUrl)
+        server.use(
+            http.patch(`${apiUrl}/profile`, async () => {
+                notifySaveStarted()
+                await saveResponse
+                return HttpResponse.json({ data: savedProfile })
+            }),
+        )
+        const { rerender } = render(<ProfileForm profile={profile} />)
+
+        await user.clear(screen.getByLabelText('First name'))
+        await user.type(screen.getByLabelText('First name'), 'Grace')
+        await user.click(screen.getByRole('button', { name: 'Save changes' }))
+        await saveStarted
+
+        rerender(
+            <ProfileForm
+                profile={{
+                    ...profile,
+                    firstName: 'Refreshed first name',
+                    lastName: 'Byron',
+                    updatedAt: '2026-02-01T00:00:00.000Z',
+                }}
+            />,
+        )
+
+        expect(screen.getByLabelText('First name')).toHaveValue('Grace')
+        finishSave()
+
+        expect(await screen.findByRole('status')).toHaveTextContent('Profile saved.')
+        expect(screen.getByLabelText('First name')).toHaveValue('Grace')
+        expect(screen.getByLabelText('Last name')).toHaveValue('Confirmed')
+        expect(screen.getByLabelText('Display name')).toHaveValue('Grace Hopper')
     })
 
     it('disables form controls while saving', async () => {
