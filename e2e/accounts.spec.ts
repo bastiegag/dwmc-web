@@ -67,6 +67,22 @@ test('authenticated users can create an account and record an expense', async ({
         })
     })
 
+    await page.route(/\/api\/v1\/accounts\/[^/]+$/, async (route) => {
+        if (route.request().method() === 'PATCH' && account) {
+            const updates = (await route.request().postDataJSON()) as Partial<
+                NonNullable<typeof account>
+            >
+            account = { ...account, ...updates }
+            return route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify({ data: account }),
+            })
+        }
+
+        return route.fulfill({ status: 405 })
+    })
+
     await page.route(/\/api\/v1\/transactions(?:\?.*)?$/, async (route) => {
         if (route.request().method() === 'POST') {
             const body = (await route.request().postDataJSON()) as {
@@ -124,12 +140,18 @@ test('authenticated users can create an account and record an expense', async ({
             .filter({ hasText: /1,250\.00|1\s*250,00|1\s*250\.00/ }),
     ).toBeVisible()
 
+    await page.getByRole('button', { name: 'Edit Daily Checking' }).click()
+    const editAccountDialog = page.getByRole('dialog', { name: 'Edit account' })
+    await editAccountDialog.getByLabel('Account name').fill('Daily Chequing')
+    await editAccountDialog.getByRole('button', { name: 'Save changes' }).click()
+    await expect(page.getByRole('heading', { name: 'Daily Chequing' })).toBeVisible()
+
     await page.goto('/transactions')
     await expect(page.getByRole('heading', { name: 'Transactions', exact: true })).toBeVisible()
     await page.getByTestId('primary-action-button').click()
     const transactionDialog = page.getByRole('dialog', { name: 'New Transaction' })
     await page.getByLabel('Amount').fill('75')
-    await chooseOption(page, 'Account', 'Daily Checking')
+    await chooseOption(page, 'Account', 'Daily Chequing')
     await transactionDialog.getByLabel('Merchant (optional)').fill('Coffee shop')
     await transactionDialog.getByRole('button', { name: 'Save' }).click()
 

@@ -49,21 +49,45 @@ describe('AccountForm', () => {
         ).toBe(true)
     })
 
-    it.each(['10000000000', '-10000000000', '1.234', '-1.234'])(
-        'rejects unsupported starting balance %s',
-        (startingBalance) => {
-            expect(
-                accountFormSchema.safeParse({
-                    name: 'Account',
-                    type: 'CHECKING',
-                    startingBalance,
-                    goal: null,
-                    color: '#3b82f6',
-                    icon: 'wallet',
-                }).success,
-            ).toBe(false)
-        },
-    )
+    it.each([
+        '10000000000',
+        '-10000000000',
+        '9999999999.995',
+        '-9999999999.995',
+        '1.234',
+        '-1.234',
+        'NaN',
+        'Infinity',
+        '-Infinity',
+        `1${'0'.repeat(100)}`,
+        Number.NaN,
+        Number.POSITIVE_INFINITY,
+    ])('rejects unsupported starting balance %s', (startingBalance) => {
+        expect(
+            accountFormSchema.safeParse({
+                name: 'Account',
+                type: 'CHECKING',
+                startingBalance,
+                goal: null,
+                color: '#3b82f6',
+                icon: 'wallet',
+            }).success,
+        ).toBe(false)
+    })
+
+    it.each([null, '', undefined])('accepts an empty starting balance %s as zero', (value) => {
+        const result = accountFormSchema.safeParse({
+            name: 'Account',
+            type: 'CHECKING',
+            startingBalance: value,
+            goal: null,
+            color: '#3b82f6',
+            icon: 'wallet',
+        })
+
+        expect(result.success).toBe(true)
+        if (result.success) expect(result.data.startingBalance).toBe(0)
+    })
 
     it('applies the supported monetary range and precision to savings goals', () => {
         const account = {
@@ -78,7 +102,15 @@ describe('AccountForm', () => {
             true,
         )
         expect(accountFormSchema.safeParse({ ...account, goal: '10000000000' }).success).toBe(false)
+        expect(accountFormSchema.safeParse({ ...account, goal: '9999999999.995' }).success).toBe(
+            false,
+        )
         expect(accountFormSchema.safeParse({ ...account, goal: '1.234' }).success).toBe(false)
+        expect(
+            accountFormSchema.safeParse({ ...account, goal: `1${'0'.repeat(100)}` }).success,
+        ).toBe(false)
+        expect(accountFormSchema.safeParse({ ...account, goal: null }).success).toBe(true)
+        expect(accountFormSchema.safeParse({ ...account, goal: undefined }).success).toBe(true)
     })
 
     it.each([

@@ -137,30 +137,59 @@ const setupTransactionApi = async (
         }),
     )
 
-    await page.route(/\/api\/v1\/summary\/monthly(?:\?.*)?$/, (route) =>
-        route.fulfill({
+    await page.route(/\/api\/v1\/summary\/monthly(?:\?.*)?$/, (route) => {
+        const url = new URL(route.request().url())
+        const month = url.searchParams.get('month') ?? '2026-01'
+        const [year, monthNumber] = month.split('-').map(Number)
+        const monthTransactions = transactions.filter(
+            (transaction) => !transaction.isArchived && monthOf(transaction.date) === month,
+        )
+        const total = (type: Transaction['type']) =>
+            monthTransactions
+                .filter((transaction) => transaction.type === type)
+                .reduce((sum, transaction) => sum + transaction.amount, 0)
+        const recentTransactions = monthTransactions.slice(0, 5).map((transaction) => {
+            const account = accounts.find(({ id }) => id === transaction.accountId)
+            return account
+                ? {
+                      ...transaction,
+                      account: {
+                          id: account.id,
+                          name: account.name,
+                          color: account.color,
+                          icon: account.icon,
+                      },
+                  }
+                : transaction
+        })
+        return route.fulfill({
             status: 200,
             contentType: 'application/json',
             body: JSON.stringify({
                 data: {
-                    month: '2026-01',
-                    period: { startDate: '2026-01-01', endDate: '2026-01-31' },
+                    month,
+                    period: {
+                        startDate: `${month}-01`,
+                        endDate: new Date(Date.UTC(year, monthNumber, 0))
+                            .toISOString()
+                            .slice(0, 10),
+                    },
                     totals: {
-                        incomeTotal: 0,
-                        expenseTotal: 0,
-                        adjustmentTotal: 0,
-                        transferTotal: 0,
-                        netTotal: 0,
-                        transactionCount: 0,
+                        incomeTotal: total('INCOME'),
+                        expenseTotal: total('EXPENSE'),
+                        adjustmentTotal: total('ADJUSTMENT'),
+                        transferTotal: total('TRANSFER'),
+                        netTotal: total('INCOME') - total('EXPENSE') + total('ADJUSTMENT'),
+                        transactionCount: monthTransactions.length,
                     },
                     topExpenseCategories: [],
                     topIncomeCategories: [],
                     accountBreakdown: [],
-                    recentTransactions: [],
+                    recentTransactions,
                 },
             }),
-        }),
-    )
+        })
+    })
 
     await page.route(/\/api\/v1\/transactions(?:\?.*)?$/, async (route) => {
         if (route.request().method() === 'POST') {
@@ -292,12 +321,18 @@ test('creates and archives an expense while keeping the account balance synchron
     await dialog.getByRole('button', { name: 'Save' }).click()
 
     await expect(page.getByText('Coffee shop')).toBeVisible()
+    await page.goto('/dashboard?month=2026-01')
+    await expect(page.getByText('Coffee shop')).toBeVisible()
+
     await page.goto('/accounts')
     await expect(page.locator('.text-2xl.font-semibold').filter({ hasText: /925/ })).toBeVisible()
 
     await page.goto('/transactions?month=2026-01')
     await page.getByRole('button', { name: 'Archive' }).click()
     await page.getByRole('alertdialog').getByRole('button', { name: 'Archive' }).click()
+    await expect(page.getByText('Coffee shop')).not.toBeVisible()
+
+    await page.goto('/dashboard?month=2026-01')
     await expect(page.getByText('Coffee shop')).not.toBeVisible()
 
     await page.goto('/accounts')
@@ -334,11 +369,15 @@ test('shows an understandable API error without closing the transaction form', a
     const dialog = page.getByRole('dialog', { name: 'New Transaction' })
     await dialog.getByLabel('Amount').fill('25')
     await chooseOption(page, 'Account', 'Checking')
+    await dialog.getByLabel('Merchant (optional)').fill('Preserved purchase')
     await dialog.getByRole('button', { name: 'Save' }).click()
 
     await expect(dialog.getByRole('alert')).toBeVisible()
     await expect(dialog.getByRole('alert')).toContainText(/unable to save transaction/i)
     await expect(dialog).toBeVisible()
+    await expect(dialog.getByLabel('Amount')).toHaveValue(/25/)
+    await expect(dialog.getByLabel('Merchant (optional)')).toHaveValue('Preserved purchase')
+    await expect(dialog.getByRole('combobox', { name: 'Account' })).toContainText(/checking/i)
 })
 
 test('keeps the archive confirmation open and reports archive failures', async ({ page }) => {
@@ -385,6 +424,11 @@ test('keeps archive confirmation pending and prevents duplicate confirmation', a
     const pendingButton = confirmation.getByRole('button', { name: 'Archiving...' })
     await expect(pendingButton).toBeDisabled()
     await expect(confirmation.getByRole('button', { name: 'Cancel' })).toBeDisabled()
+    await page.keyboard.press('Escape')
+    await expect(confirmation).toBeVisible()
+    await page.mouse.click(5, 5)
+    await expect(confirmation).toBeVisible()
+    await expect(confirmation).toHaveCSS('opacity', '1')
     await expect(pendingButton.click({ timeout: 1000 })).rejects.toThrow()
     await expect.poll(() => archiveRequestCount).toBe(1)
 

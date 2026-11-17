@@ -27,7 +27,7 @@ export const FormField = ({
             <FieldLabel htmlFor={id}>
                 {label}
                 {required && (
-                    <span className="ml-1 text-destructive" aria-hidden="true">
+                    <span className="ml-1 text-destructive-border" aria-hidden="true">
                         *
                     </span>
                 )}

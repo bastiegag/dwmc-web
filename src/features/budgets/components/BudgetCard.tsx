@@ -113,7 +113,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                         <p className="break-words">{progressText}</p>
                         <p className="break-words text-right tabular-nums">
                             {budget.isOverBudget ? (
-                                <span className="text-destructive">
+                                <span className="text-destructive-border">
                                     Over budget: {formatCurrency(Math.abs(budget.remaining))}
                                 </span>
                             ) : (
@@ -150,7 +150,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     {archiveError ? (
-                        <p role="alert" className="text-sm text-destructive">
+                        <p role="alert" className="text-sm text-destructive-border">
                             {archiveError}
                         </p>
                     ) : null}

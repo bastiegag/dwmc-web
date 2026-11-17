@@ -6,7 +6,7 @@ export const MonthNavigator = () => {
     const { label, goToPreviousMonth, goToNextMonth } = useSelectedMonth()
 
     return (
-        <div className="flex items-center justify-between gap-2 bg-white rounded-full shadow-md w-full p-1">
+        <div className="flex items-center justify-between gap-2 rounded-full bg-card p-1 shadow-md w-full">
             <Button
                 variant="link"
                 className="no-underline hover:bg-foreground/5"

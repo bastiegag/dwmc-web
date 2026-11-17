@@ -62,7 +62,7 @@ export const FieldError = forwardRef<HTMLParagraphElement, FieldErrorProps>(
             <p
                 ref={ref}
                 role="alert"
-                className={cn('text-xs text-destructive', className)}
+                className={cn('text-xs text-destructive-border', className)}
                 {...props}
             >
                 {message}

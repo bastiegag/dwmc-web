@@ -69,7 +69,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 role="alert"
                 className="flex min-h-100 flex-col items-center justify-center gap-4 p-8 text-center"
             >
-                <AlertCircle className="size-12 text-destructive" aria-hidden="true" />
+                <AlertCircle className="size-12 text-destructive-border" aria-hidden="true" />
 
                 <div className="space-y-2">
                     <h2 className="text-xl font-semibold">Something went wrong</h2>
