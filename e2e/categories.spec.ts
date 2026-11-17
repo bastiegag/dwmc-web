@@ -2,6 +2,11 @@ import { expect, test } from '@playwright/test'
 import { mockAuthenticatedSession } from './auth-fixtures.js'
 import { LoginPage } from './pages/login.page.js'
 
+const selectSection = async (page: import('@playwright/test').Page, name: string) => {
+    await page.getByRole('combobox', { name: 'Section' }).click()
+    await page.getByRole('option', { name }).click()
+}
+
 test('authenticated users can manage Sections and Categories', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await mockAuthenticatedSession(page)
@@ -127,7 +132,7 @@ test('authenticated users can manage Sections and Categories', async ({ page }) 
     await page.getByTestId('primary-action-button').click()
     await page.getByLabel('Category name').fill('Groceries')
     await page.getByLabel('Icon').fill('shopping-cart')
-    await page.getByLabel('Section', { exact: true }).selectOption('section-1')
+    await selectSection(page, 'Food')
     await page.getByRole('button', { name: 'Create category' }).click()
     await expect(page.getByText('Groceries')).toBeVisible()
 
@@ -219,6 +224,22 @@ test('a new user can create a section and then organize a category inside it', a
         })
     })
 
+    await page.route(/\/api\/v1\/categories\/[^/]+$/, async (route) => {
+        if (route.request().method() === 'PATCH') {
+            const body = (await route.request().postDataJSON()) as Partial<
+                NonNullable<typeof category>
+            >
+            category = { ...category, ...body }
+            if (section) section = { ...section, categories: [category] }
+        }
+
+        return route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ data: category }),
+        })
+    })
+
     const loginPage = new LoginPage(page)
     await loginPage.goto()
     await loginPage.login('test@example.com', 'Password123')
@@ -233,8 +254,120 @@ test('a new user can create a section and then organize a category inside it', a
     await page.getByTestId('primary-action-button').click()
     await page.getByLabel('Category name').fill('Groceries')
     await page.getByLabel('Icon').fill('shopping-cart')
-    await page.getByLabel('Section', { exact: true }).selectOption('section-new')
+    await selectSection(page, 'Food')
     await page.getByRole('button', { name: 'Create category' }).click()
 
     await expect(page.getByText('Groceries')).toBeVisible()
+    await page.getByRole('button', { name: 'Edit category Groceries' }).click()
+    await page.getByLabel('Category name').fill('Weekly groceries')
+    await page.getByRole('button', { name: 'Save changes' }).click()
+    await expect(page.getByText('Weekly groceries')).toBeVisible()
+})
+
+test('category layout and dialogs adapt across responsive viewports', async ({ page }) => {
+    await mockAuthenticatedSession(page)
+
+    const sectionName = 'Household essentials and everyday expenses'
+    const categoryName = 'Groceries and fresh produce for the entire household throughout the month'
+    const section = {
+        id: 'section-responsive',
+        name: sectionName,
+        color: '#22c55e',
+        isArchived: false,
+        categories: [
+            {
+                id: 'category-responsive',
+                name: categoryName,
+                icon: 'shopping-cart',
+                sectionId: 'section-responsive',
+                isArchived: false,
+                createdAt: '2026-01-01T00:00:00.000Z',
+                updatedAt: '2026-01-01T00:00:00.000Z',
+            },
+        ],
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+    }
+
+    await page.route(/\/api\/v1\/sections(?:\?.*)?$/, (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ data: [section], nextCursor: null }),
+        }),
+    )
+    await page.route(/\/api\/v1\/categories(?:\?.*)?$/, (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ data: section.categories, nextCursor: null }),
+        }),
+    )
+
+    const loginPage = new LoginPage(page)
+    await loginPage.goto()
+    await loginPage.login('test@example.com', 'Password123')
+    await page.goto('/categories')
+    await expect(page.getByRole('heading', { name: sectionName })).toBeVisible()
+    await expect(page.getByText(categoryName)).toBeVisible()
+
+    for (const width of [320, 430, 768, 1280]) {
+        await page.setViewportSize({ width, height: 900 })
+        await expect(
+            page.getByRole('button', { name: `Edit category ${categoryName}` }),
+        ).toBeVisible()
+        expect(
+            await page.evaluate(
+                () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+            ),
+        ).toBe(true)
+
+        if (width < 1024) {
+            const navigation = page.getByTestId('mobile-bottom-nav')
+            await expect(navigation).toBeVisible()
+            const editButton = page.getByRole('button', { name: `Edit category ${categoryName}` })
+            await editButton.scrollIntoViewIfNeeded()
+            const actionBounds = await editButton.boundingBox()
+            const navigationBounds = await navigation.boundingBox()
+            expect(actionBounds).not.toBeNull()
+            expect(navigationBounds).not.toBeNull()
+            expect(actionBounds!.y + actionBounds!.height).toBeLessThanOrEqual(navigationBounds!.y)
+        }
+    }
+
+    await page.setViewportSize({ width: 320, height: 320 })
+    await page.locator('html').evaluate((element) => element.classList.add('dark'))
+    await page.getByRole('button', { name: `Edit category ${categoryName}` }).click()
+    const editDialog = page.getByRole('dialog', { name: 'Edit category' })
+    await expect(editDialog).toBeVisible()
+    const editDialogBounds = await editDialog.boundingBox()
+    expect(editDialogBounds).not.toBeNull()
+    expect(editDialogBounds!.x).toBeGreaterThanOrEqual(0)
+    expect(editDialogBounds!.x + editDialogBounds!.width).toBeLessThanOrEqual(320)
+    await page.keyboard.press('Escape')
+    await expect(editDialog).not.toBeVisible()
+
+    await page.getByTestId('primary-action-button').click()
+    const dialog = page.getByRole('dialog', { name: 'Create category' })
+    await expect(dialog).toBeVisible()
+
+    const dialogBounds = await dialog.boundingBox()
+    expect(dialogBounds).not.toBeNull()
+    expect(dialogBounds!.x).toBeGreaterThanOrEqual(0)
+    expect(dialogBounds!.x + dialogBounds!.width).toBeLessThanOrEqual(320)
+    expect(
+        await page.evaluate(
+            () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+        ),
+    ).toBe(true)
+
+    const dialogDimensions = await dialog.evaluate((element) => ({
+        clientHeight: element.clientHeight,
+        scrollHeight: element.scrollHeight,
+    }))
+    expect(dialogDimensions.scrollHeight).toBeGreaterThan(dialogDimensions.clientHeight)
+    await dialog.evaluate((element) => {
+        element.scrollTop = element.scrollHeight
+    })
+    await expect(dialog.getByRole('button', { name: 'Create category' })).toBeVisible()
 })

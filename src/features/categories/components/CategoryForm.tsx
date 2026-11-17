@@ -1,10 +1,22 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { FormError } from '@/components/form/FormError'
-import { Button, Label } from '@/components/ui'
+import { FormField } from '@/components/form/FormField'
+import {
+    Button,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui'
 import { TextField } from '@/components/form/TextField'
-import { categoryFormSchema, type CategoryFormValues } from '@/features/categories/schemas'
+import {
+    categoryFormSchema,
+    type CategoryFormSubmitValues,
+    type CategoryFormValues,
+} from '@/features/categories/schemas'
 import type { SectionWithCategories } from '@/features/categories/types'
 
 type CategoryFormProps = {
@@ -13,7 +25,7 @@ type CategoryFormProps = {
     submitLabel: string
     isPending?: boolean
     errorMessage?: string | null
-    onSubmit: (values: CategoryFormValues) => Promise<void> | void
+    onSubmit: (values: CategoryFormSubmitValues) => Promise<void> | void
 }
 
 const defaultValues: CategoryFormValues = {
@@ -33,7 +45,8 @@ export const CategoryForm = ({
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        control,
+        formState: { errors, isSubmitting },
         reset,
     } = useForm<CategoryFormValues>({
         resolver: zodResolver(categoryFormSchema),
@@ -45,62 +58,115 @@ export const CategoryForm = ({
         reset(initialValues ?? defaultValues)
     }, [initialValues, reset])
 
+    const isBusy = isPending || isSubmitting
+    const selectableSections = sections.filter(
+        (section) => !section.isArchived || section.id === initialValues?.sectionId,
+    )
+
+    const submit = async (values: CategoryFormValues) => {
+        const currentSection = sections.find((section) => section.id === initialValues?.sectionId)
+        if (currentSection?.isArchived && values.sectionId === initialValues?.sectionId) {
+            await onSubmit({ name: values.name, icon: values.icon })
+            return
+        }
+
+        await onSubmit(values)
+    }
+
     return (
-        <form
-            className="space-y-4"
-            onSubmit={handleSubmit(async (values) => {
-                await onSubmit(values)
-            })}
-            noValidate
-        >
-            <TextField
-                id="category-name"
-                label="Category name"
-                placeholder="Groceries"
-                {...register('name')}
-                error={errors.name?.message}
-            />
+        <form className="space-y-4" onSubmit={handleSubmit(submit)} noValidate>
+            <fieldset disabled={isBusy} className="min-w-0 space-y-4 border-0 p-0">
+                <TextField
+                    id="category-name"
+                    label="Category name"
+                    placeholder="Groceries"
+                    required
+                    maxLength={80}
+                    {...register('name')}
+                    error={errors.name?.message}
+                />
 
-            <TextField
-                id="category-icon"
-                label="Icon"
-                placeholder="shopping-cart"
-                {...register('icon')}
-                error={errors.icon?.message}
-            />
+                <TextField
+                    id="category-icon"
+                    label="Icon"
+                    placeholder="shopping-cart"
+                    required
+                    maxLength={80}
+                    {...register('icon')}
+                    error={errors.icon?.message}
+                />
 
-            <div className="space-y-2">
-                <Label htmlFor="category-section">Section</Label>
-                <select
+                <FormField
                     id="category-section"
-                    className="border-input bg-transparent placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex h-9 w-full rounded-md border px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] md:text-sm"
-                    aria-invalid={errors.sectionId ? 'true' : 'false'}
-                    aria-describedby={errors.sectionId ? 'category-section-error' : undefined}
-                    {...register('sectionId')}
+                    label="Section"
+                    required
+                    error={errors.sectionId?.message}
+                    description={
+                        selectableSections.length === 0
+                            ? 'No active sections are available. Create a section before adding a category.'
+                            : undefined
+                    }
+                    disabled={isBusy || selectableSections.length === 0}
                 >
-                    <option value="">Select a section</option>
-                    {sections.map((section) => (
-                        <option key={section.id} value={section.id}>
-                            {section.name}
-                        </option>
-                    ))}
-                </select>
-                {errors.sectionId ? (
-                    <p
-                        id="category-section-error"
-                        className="text-sm text-destructive"
-                        role="alert"
-                    >
-                        {errors.sectionId.message}
-                    </p>
-                ) : null}
-            </div>
+                    <Controller
+                        name="sectionId"
+                        control={control}
+                        render={({ field }) => {
+                            const selectedSection = sections.find(
+                                (section) => section.id === field.value,
+                            )
+
+                            return (
+                                <Select
+                                    name={field.name}
+                                    value={field.value || null}
+                                    required
+                                    disabled={isBusy || selectableSections.length === 0}
+                                    onValueChange={(value) => field.onChange(value ?? '')}
+                                >
+                                    <SelectTrigger
+                                        id="category-section"
+                                        ref={field.ref}
+                                        onBlur={field.onBlur}
+                                        aria-required="true"
+                                        aria-invalid={Boolean(errors.sectionId)}
+                                        aria-describedby={
+                                            errors.sectionId ? 'category-section-error' : undefined
+                                        }
+                                    >
+                                        <SelectValue placeholder="Select a section">
+                                            {selectedSection
+                                                ? `${selectedSection.name}${selectedSection.isArchived ? ' (archived)' : ''}`
+                                                : undefined}
+                                        </SelectValue>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {sections.map((section) => (
+                                            <SelectItem
+                                                key={section.id}
+                                                value={section.id}
+                                                disabled={
+                                                    section.isArchived &&
+                                                    section.id !== initialValues?.sectionId
+                                                }
+                                            >
+                                                {section.name}
+                                                {section.isArchived ? ' (archived)' : ''}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )
+                        }}
+                    />
+                </FormField>
+
+                <Button type="submit" className="w-full" isLoading={isBusy} loadingText="Saving...">
+                    {submitLabel}
+                </Button>
+            </fieldset>
 
             <FormError message={errorMessage} />
-
-            <Button type="submit" className="w-full" isLoading={isPending} loadingText="Saving...">
-                {submitLabel}
-            </Button>
         </form>
     )
 }

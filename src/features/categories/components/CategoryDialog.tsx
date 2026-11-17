@@ -1,4 +1,4 @@
-import type { CategoryFormValues } from '@/features/categories/schemas'
+import type { CategoryFormSubmitValues, CategoryFormValues } from '@/features/categories/schemas'
 import type { SectionWithCategories } from '@/features/categories/types'
 import {
     Button,
@@ -18,7 +18,7 @@ type CategoryDialogProps = {
     isPending?: boolean
     errorMessage?: string | null
     onOpenChange: (open: boolean) => void
-    onSubmit: (values: CategoryFormValues) => Promise<void> | void
+    onSubmit: (values: CategoryFormSubmitValues) => Promise<void> | void
 }
 
 export const CategoryDialog = ({
@@ -32,9 +32,13 @@ export const CategoryDialog = ({
     onSubmit,
 }: CategoryDialogProps) => {
     const title = mode === 'create' ? 'Create category' : 'Edit category'
+    const handleOpenChange = (nextOpen: boolean) => {
+        if (!nextOpen && isPending) return
+        onOpenChange(nextOpen)
+    }
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className="max-w-md">
                 <DialogHeader className="mb-4 flex-row items-center justify-between gap-3">
                     <DialogTitle>{title}</DialogTitle>
@@ -43,7 +47,8 @@ export const CategoryDialog = ({
                         variant="link"
                         className="no-underline hover:bg-accent/10"
                         size="sm"
-                        onClick={() => onOpenChange(false)}
+                        disabled={isPending}
+                        onClick={() => handleOpenChange(false)}
                         aria-label="Close category dialog"
                     >
                         Close

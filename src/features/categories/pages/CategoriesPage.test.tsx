@@ -13,17 +13,21 @@ const createCategoryMock = vi.fn().mockResolvedValue(undefined)
 const updateCategoryMock = vi.fn().mockResolvedValue(undefined)
 const deleteCategoryMock = vi.fn().mockResolvedValue(undefined)
 
-let sectionsData: SectionWithCategories[] = []
+let sectionsData: SectionWithCategories[] | undefined = []
 let isLoading = false
 let isError = false
+let isFetching = false
 let error: Error | null = null
+const refetchMock = vi.fn().mockResolvedValue(undefined)
 
 vi.mock('@/features/categories/hooks', () => ({
     useSections: () => ({
         data: sectionsData,
         isLoading,
         isError,
+        isFetching,
         error,
+        refetch: refetchMock,
     }),
     useCreateSection: () => ({ mutateAsync: createSectionMock, isPending: false }),
     useUpdateSection: () => ({ mutateAsync: updateSectionMock, isPending: false }),
@@ -38,10 +42,13 @@ describe('CategoriesPage', () => {
         sectionsData = []
         isLoading = false
         isError = false
+        isFetching = false
         error = null
+        refetchMock.mockReset().mockResolvedValue(undefined)
     })
 
     it('shows loading state while sections are being fetched', async () => {
+        sectionsData = undefined
         isLoading = true
 
         render(<CategoriesPage />)
@@ -56,12 +63,42 @@ describe('CategoriesPage', () => {
     })
 
     it('shows an error state when loading sections fails', async () => {
+        sectionsData = undefined
         isError = true
         error = new Error('Categories unavailable')
 
         render(<CategoriesPage />)
 
         expect(await screen.findByText('Categories unavailable')).toBeInTheDocument()
+        await userEvent.setup().click(screen.getByRole('button', { name: 'Retry' }))
+        expect(refetchMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('preserves cached sections and retries a failed background refresh', async () => {
+        const user = userEvent.setup()
+        sectionsData = [createSectionWithCategories()]
+        isError = true
+        error = new Error('Refresh failed')
+
+        render(<CategoriesPage />)
+
+        expect(screen.getByText('Food')).toBeInTheDocument()
+        expect(screen.getByText('Groceries')).toBeInTheDocument()
+        expect(screen.getByRole('status')).toHaveTextContent('Category list refresh failed')
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', { name: 'Retry' }))
+        expect(refetchMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('disables the background retry while sections are refetching', () => {
+        sectionsData = [createSectionWithCategories()]
+        isError = true
+        isFetching = true
+
+        render(<CategoriesPage />)
+
+        expect(screen.getByRole('button', { name: 'Retry' })).toBeDisabled()
     })
 
     it('renders sections and categories from API response', async () => {
@@ -83,7 +120,7 @@ describe('CategoriesPage', () => {
         )
 
         await user.click(screen.getByRole('button', { name: 'Add section' }))
-        await user.type(screen.getByLabelText('Section name'), 'Household')
+        await user.type(screen.getByLabelText(/section name/i), 'Household')
         await user.click(screen.getByRole('button', { name: 'Create section' }))
 
         await waitFor(() =>
@@ -104,9 +141,10 @@ describe('CategoriesPage', () => {
         )
 
         await user.click(screen.getByRole('button', { name: 'Add category' }))
-        await user.type(screen.getByLabelText('Category name'), 'Utilities')
-        await user.type(screen.getByLabelText('Icon'), 'bolt')
-        await user.selectOptions(screen.getByLabelText('Section'), 'section-1')
+        await user.type(screen.getByLabelText(/category name/i), 'Utilities')
+        await user.type(screen.getByLabelText(/icon/i), 'bolt')
+        await user.click(screen.getByRole('combobox', { name: /section/i }))
+        await user.click(await screen.findByRole('option', { name: 'Food' }))
         await user.click(screen.getByRole('button', { name: 'Create category' }))
 
         await waitFor(() =>
@@ -128,6 +166,9 @@ describe('CategoriesPage', () => {
         const dialog = await screen.findByRole('alertdialog')
         await user.click(within(dialog).getByRole('button', { name: /Archive/i }))
 
-        expect(await screen.findByText('Category archive failed')).toBeInTheDocument()
+        expect(await within(dialog).findByRole('alert')).toHaveTextContent(
+            'Category archive failed',
+        )
+        expect(screen.getByRole('alertdialog')).toBeInTheDocument()
     })
 })
