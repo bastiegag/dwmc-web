@@ -54,7 +54,7 @@ export const DesktopSidebar = () => {
                         pathname: '/dashboard',
                         search,
                     }}
-                    aria-label="Dude, where's my cash? — Home"
+                    aria-label="DWMC — Home"
                     className={cn(
                         'flex items-center gap-3 rounded-md',
                         'text-lg font-bold',

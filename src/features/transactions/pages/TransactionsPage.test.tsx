@@ -98,6 +98,34 @@ describe('TransactionsPage', () => {
         expect(requestCount).toBe(2)
     })
 
+    it('reports and retries failed account options used by filters and transaction forms', async () => {
+        const user = userEvent.setup()
+        let requestCount = 0
+        server.use(
+            http.get('http://localhost:8787/accounts*', () => {
+                requestCount += 1
+                if (requestCount === 1) {
+                    return HttpResponse.json(
+                        { error: { message: 'Accounts unavailable' } },
+                        { status: 500 },
+                    )
+                }
+                return HttpResponse.json({ data: [] })
+            }),
+        )
+
+        render(<TransactionsPage />)
+
+        expect(await screen.findByText('Accounts unavailable')).toBeInTheDocument()
+        expect(screen.getByRole('alert')).toHaveTextContent('Could not load accounts')
+        await user.click(screen.getByRole('button', { name: 'Retry accounts' }))
+
+        await waitFor(() => {
+            expect(screen.queryByText('Accounts unavailable')).not.toBeInTheDocument()
+            expect(requestCount).toBe(2)
+        })
+    })
+
     it('keeps cached results and pagination during a failed background refresh and retry', async () => {
         const user = userEvent.setup()
         const transaction = createTransaction({

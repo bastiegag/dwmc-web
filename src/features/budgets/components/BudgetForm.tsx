@@ -15,6 +15,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui'
+import { MAX_MONEY_AMOUNT } from '@/shared/money'
 import {
     budgetFormSchema,
     type BudgetFormInput,
@@ -178,6 +179,7 @@ export const BudgetForm = ({
                             currency="CAD"
                             locale="fr-CA"
                             min="0"
+                            max={MAX_MONEY_AMOUNT}
                             error={fieldState.error?.message}
                         />
                     )}

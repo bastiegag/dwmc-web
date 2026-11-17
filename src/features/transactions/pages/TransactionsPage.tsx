@@ -12,6 +12,7 @@ import { useSections } from '@/features/categories'
 import TransactionFilters from '@/features/transactions/components/TransactionFilters'
 import TransactionList from '@/features/transactions/components/TransactionList'
 import TransactionDialog from '@/features/transactions/components/TransactionDialog'
+import { TransactionOptionsState } from '@/features/transactions/components/TransactionOptionsState'
 import EmptyTransactionsState from '@/features/transactions/components/EmptyTransactionsState'
 import { PaginationControls } from '@/features/transactions/components/PaginationControls'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
@@ -65,6 +66,25 @@ export const TransactionsPage = () => {
     const transactions = transactionsQuery.data?.data ?? []
     const pagination = transactionsQuery.data?.meta
     const hasTransactionsData = transactionsQuery.data !== undefined
+    const transactionOptionsState = (
+        <TransactionOptionsState
+            accounts={{
+                hasData: accountsQuery.data !== undefined,
+                isLoading: accountsQuery.isLoading,
+                isFetching: accountsQuery.isFetching,
+                error: accountsQuery.error,
+                onRetry: () => void accountsQuery.refetch(),
+            }}
+            categories={{
+                hasData: sectionsQuery.data !== undefined,
+                isLoading: sectionsQuery.isLoading,
+                isFetching: sectionsQuery.isFetching,
+                error: sectionsQuery.error,
+                onRetry: () => void sectionsQuery.refetch(),
+            }}
+            showLoading={isDialogOpen}
+        />
+    )
 
     const handleFiltersChange = useCallback(
         (nextFilters: GetTransactionsParams) => {
@@ -171,6 +191,8 @@ export const TransactionsPage = () => {
                 />
             </div>
 
+            {!isDialogOpen ? transactionOptionsState : null}
+
             <QueryState
                 isLoading={transactionsQuery.isLoading && !hasTransactionsData}
                 isError={transactionsQuery.isError && !hasTransactionsData}
@@ -225,6 +247,7 @@ export const TransactionsPage = () => {
                 mode={activeTransaction ? 'edit' : 'create'}
                 accounts={accounts}
                 sections={sections}
+                optionsState={transactionOptionsState}
                 initialValues={dialogInitialValues}
                 isPending={createMutation.isPending || updateMutation.isPending}
                 errorMessage={formError}

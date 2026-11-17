@@ -21,6 +21,7 @@ import {
     type TransactionFormValues,
     defaultTransactionFormValues,
 } from '@/features/transactions/schemas/transaction.schema'
+import { MAX_MONEY_AMOUNT } from '@/shared/money'
 import type { Account } from '@/features/accounts'
 import type { SectionWithCategories } from '@/features/categories/types'
 
@@ -144,6 +145,8 @@ export const TransactionForm = ({
                         currency="CAD"
                         locale="fr-CA"
                         allowNegative={type === 'ADJUSTMENT'}
+                        min={type === 'ADJUSTMENT' ? `-${MAX_MONEY_AMOUNT}` : undefined}
+                        max={MAX_MONEY_AMOUNT}
                         error={fieldState.error?.message}
                     />
                 )}

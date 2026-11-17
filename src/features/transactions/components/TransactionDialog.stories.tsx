@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 import { Button } from '@/components/ui'
 import type { TransactionFormValues } from '@/features/transactions/schemas/transaction.schema'
+import { TransactionOptionsState } from './TransactionOptionsState'
 import TransactionDialog from './TransactionDialog'
 import type { Account } from '@/features/accounts'
 import type { SectionWithCategories } from '@/features/categories/types'
@@ -105,5 +106,50 @@ export const ServerError: Story = {
     args: {
         initialValues,
         errorMessage: 'Unable to save transaction. Please try again.',
+    },
+}
+export const OptionsLoading: Story = {
+    args: {
+        optionsState: (
+            <TransactionOptionsState
+                accounts={{
+                    hasData: false,
+                    isLoading: true,
+                    isFetching: true,
+                    error: null,
+                    onRetry: fn(),
+                }}
+                categories={{
+                    hasData: false,
+                    isLoading: true,
+                    isFetching: true,
+                    error: null,
+                    onRetry: fn(),
+                }}
+                showLoading
+            />
+        ),
+    },
+}
+export const OptionsError: Story = {
+    args: {
+        optionsState: (
+            <TransactionOptionsState
+                accounts={{
+                    hasData: false,
+                    isLoading: false,
+                    isFetching: false,
+                    error: new Error('Accounts unavailable.'),
+                    onRetry: fn(),
+                }}
+                categories={{
+                    hasData: true,
+                    isLoading: false,
+                    isFetching: false,
+                    error: null,
+                    onRetry: fn(),
+                }}
+            />
+        ),
     },
 }

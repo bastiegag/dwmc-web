@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useQueryClient } from '@tanstack/react-query'
 import { http, HttpResponse } from 'msw'
@@ -8,6 +8,7 @@ import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
 import { MonthNavigator } from '@/shared/month'
 import { server } from '@/test/mocks/server'
 import { dashboardQueryKeys } from '@/features/dashboard/hooks/use-monthly-summary'
+import { PrimaryActionButton } from '@/shared/primary-action'
 
 const RefreshDashboardSummary = () => {
     const queryClient = useQueryClient()
@@ -81,6 +82,69 @@ describe('DashboardPage', () => {
         expect(
             await screen.findByRole('heading', { name: /income/i, level: 2 }),
         ).toBeInTheDocument()
+    })
+
+    it('announces transaction option loading inside the open transaction dialog', async () => {
+        const user = userEvent.setup()
+        let finishAccountsResponse: () => void = () => {}
+        const accountsResponse = new Promise<void>((resolve) => {
+            finishAccountsResponse = resolve
+        })
+        server.use(
+            http.get('http://localhost:8787/accounts*', async () => {
+                await accountsResponse
+                return HttpResponse.json({ data: [] })
+            }),
+        )
+
+        render(
+            <>
+                <DashboardPage />
+                <PrimaryActionButton />
+            </>,
+        )
+
+        await user.click(await screen.findByTestId('primary-action-button'))
+        expect(await screen.findByText('Loading transaction options...')).toBeInTheDocument()
+
+        finishAccountsResponse()
+        await waitFor(() =>
+            expect(screen.queryByText('Loading transaction options...')).not.toBeInTheDocument(),
+        )
+    })
+
+    it('shows and retries account-option errors from the transaction dialog', async () => {
+        const user = userEvent.setup()
+        let requestCount = 0
+        server.use(
+            http.get('http://localhost:8787/accounts*', () => {
+                requestCount += 1
+                if (requestCount === 1) {
+                    return HttpResponse.json(
+                        { error: { message: 'Accounts unavailable' } },
+                        { status: 500 },
+                    )
+                }
+                return HttpResponse.json({ data: [] })
+            }),
+        )
+
+        render(
+            <>
+                <DashboardPage />
+                <PrimaryActionButton />
+            </>,
+        )
+
+        await user.click(await screen.findByTestId('primary-action-button'))
+        expect(await screen.findByText('Accounts unavailable')).toBeInTheDocument()
+        expect(screen.getByRole('dialog', { name: 'New Transaction' })).toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', { name: 'Retry accounts' }))
+        await waitFor(() =>
+            expect(screen.queryByText('Accounts unavailable')).not.toBeInTheDocument(),
+        )
+        expect(requestCount).toBe(2)
     })
 
     it('keeps visible summary data when a background refresh fails', async () => {

@@ -11,11 +11,7 @@ export const EmptyAccountsState = ({ onCreate }: EmptyAccountsStateProps) => {
             icon={Landmark}
             title="No accounts yet"
             description="Get started by creating your first account."
-            action={
-                <Button onClick={onCreate} aria-label="Create your first account">
-                    Create account
-                </Button>
-            }
+            action={<Button onClick={onCreate}>Create account</Button>}
         />
     )
 }

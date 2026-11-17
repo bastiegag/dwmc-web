@@ -13,6 +13,7 @@ import {
     SelectValue,
 } from '@/components/ui'
 import { TextField } from '@/components/form/TextField'
+import { MAX_MONEY_AMOUNT } from '@/shared/money'
 import {
     accountFormSchema,
     type AccountFormInput,
@@ -134,6 +135,8 @@ export const AccountForm = ({
                         currency="CAD"
                         locale="fr-CA"
                         allowNegative
+                        min={`-${MAX_MONEY_AMOUNT}`}
+                        max={MAX_MONEY_AMOUNT}
                         error={fieldState.error?.message}
                     />
                 )}
@@ -159,6 +162,7 @@ export const AccountForm = ({
                             currency="CAD"
                             locale="fr-CA"
                             min="0.01"
+                            max={MAX_MONEY_AMOUNT}
                             error={fieldState.error?.message}
                         />
                     )}

@@ -101,6 +101,32 @@ describe('transactionFormSchema', () => {
         ).toBe(false)
     })
 
+    it.each([9999999999.99, -9999999999.99])(
+        'accepts the backend monetary boundary %s',
+        (amount) => {
+            expect(
+                transactionFormSchema.safeParse({
+                    ...validExpense,
+                    type: 'ADJUSTMENT',
+                    amount,
+                }).success,
+            ).toBe(true)
+        },
+    )
+
+    it.each(['10000000000', '-10000000000', '1.234', '-1.234'])(
+        'rejects unsupported monetary amount %s',
+        (amount) => {
+            expect(
+                transactionFormSchema.safeParse({
+                    ...validExpense,
+                    type: 'ADJUSTMENT',
+                    amount,
+                }).success,
+            ).toBe(false)
+        },
+    )
+
     it('accepts negative adjustment amounts', () => {
         expect(
             transactionFormSchema.safeParse({
