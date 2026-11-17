@@ -185,6 +185,24 @@ const setupBudgetApi = async (page: Parameters<typeof mockAuthenticatedSession>[
         return fulfill(route, data).then(() => undefined)
     })
 
+    await page.route(/\/api\/v1\/budgets\/[^/]+$/, async (route) => {
+        const id = route.request().url().split('/').pop() as string
+        const budget = budgets.find((item) => item.id === id)
+        if (!budget) return route.fulfill({ status: 404 })
+
+        if (route.request().method() === 'PATCH') {
+            Object.assign(budget, await route.request().postDataJSON(), {
+                updatedAt: timestamp,
+            })
+        } else if (route.request().method() === 'DELETE') {
+            budget.isArchived = true
+        }
+
+        return fulfill(route, buildBudgetResponse(budget, sections, transactions)).then(
+            () => undefined,
+        )
+    })
+
     await page.route(/\/api\/v1\/transactions(?:\?.*)?$/, async (route) => {
         if (route.request().method() === 'POST') {
             const body = (await route.request().postDataJSON()) as {
@@ -389,6 +407,12 @@ test('keeps a selected-month Budget synchronized with expense create, month move
 
     await page.goto('/budgets?month=2026-06')
     await expectBudgetValues(page, 0, 100)
+
+    await budgetCard(page).getByRole('button', { name: 'Edit Groceries' }).click()
+    const editBudgetDialog = page.getByRole('dialog', { name: 'Edit budget' })
+    await editBudgetDialog.getByLabel('Amount').fill('200')
+    await editBudgetDialog.getByRole('button', { name: 'Save changes' }).click()
+    await expectBudgetValues(page, 0, 200)
 })
 
 test('keeps long-name, high-value budgets and dialogs usable at responsive viewports', async ({

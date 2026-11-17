@@ -94,7 +94,7 @@ export const AppBottomNavigation = () => {
                                     'focus-visible:ring-offset-background',
 
                                     // Active
-                                    active && 'text-primary',
+                                    active && 'text-primary-border',
                                 )}
                             >
                                 <Icon

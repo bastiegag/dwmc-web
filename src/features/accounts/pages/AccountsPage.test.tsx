@@ -92,7 +92,7 @@ describe('AccountsPage', () => {
         const user = userEvent.setup()
         render(<AccountsPage />)
 
-        await user.click(await screen.findByRole('button', { name: 'Create your first account' }))
+        await user.click(await screen.findByRole('button', { name: 'Create account' }))
 
         expect(screen.getByRole('dialog', { name: 'Create account' })).toBeInTheDocument()
     })

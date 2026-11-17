@@ -34,7 +34,7 @@ export const EmptyState = ({
         </div>
 
         <div className="flex max-w-md flex-col items-center gap-2">
-            <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
 
             <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
         </div>

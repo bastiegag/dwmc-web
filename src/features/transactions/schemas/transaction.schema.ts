@@ -1,11 +1,20 @@
 import { z } from 'zod'
 import type { TransactionType } from '@/features/transactions/types/transaction.types'
 import { formatLocalDate, isValidDateOnly } from '@/shared/date'
+import { isSupportedMoneyAmount } from '@/shared/money'
 
 const baseSchema = z.object({
     type: z.enum(['INCOME', 'EXPENSE', 'TRANSFER', 'ADJUSTMENT'] as const),
     amount: z
         .union([z.number(), z.string(), z.null(), z.undefined()])
+        .refine(
+            (value) =>
+                value === null ||
+                value === undefined ||
+                (typeof value === 'string' && value.trim() === '') ||
+                isSupportedMoneyAmount(value),
+            'Amount must have at most 2 decimal places and be within the supported range',
+        )
         .transform((value) => {
             if (value === '' || value === null || value === undefined) return 0
             return typeof value === 'string' ? Number(value) : value

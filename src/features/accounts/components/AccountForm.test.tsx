@@ -30,6 +30,90 @@ describe('AccountForm', () => {
     })
 
     it.each([
+        ['zero', '0'],
+        ['integer', '125'],
+        ['one decimal place', '1.2'],
+        ['two decimal places', '125.50'],
+        ['maximum supported value', '9999999999.99'],
+        ['minimum supported value', '-9999999999.99'],
+    ])('accepts a %s starting balance', (_label, startingBalance) => {
+        expect(
+            accountFormSchema.safeParse({
+                name: 'Account',
+                type: 'CHECKING',
+                startingBalance,
+                goal: null,
+                color: '#3b82f6',
+                icon: 'wallet',
+            }).success,
+        ).toBe(true)
+    })
+
+    it.each([
+        '10000000000',
+        '-10000000000',
+        '9999999999.995',
+        '-9999999999.995',
+        '1.234',
+        '-1.234',
+        'NaN',
+        'Infinity',
+        '-Infinity',
+        `1${'0'.repeat(100)}`,
+        Number.NaN,
+        Number.POSITIVE_INFINITY,
+    ])('rejects unsupported starting balance %s', (startingBalance) => {
+        expect(
+            accountFormSchema.safeParse({
+                name: 'Account',
+                type: 'CHECKING',
+                startingBalance,
+                goal: null,
+                color: '#3b82f6',
+                icon: 'wallet',
+            }).success,
+        ).toBe(false)
+    })
+
+    it.each([null, '', undefined])('accepts an empty starting balance %s as zero', (value) => {
+        const result = accountFormSchema.safeParse({
+            name: 'Account',
+            type: 'CHECKING',
+            startingBalance: value,
+            goal: null,
+            color: '#3b82f6',
+            icon: 'wallet',
+        })
+
+        expect(result.success).toBe(true)
+        if (result.success) expect(result.data.startingBalance).toBe(0)
+    })
+
+    it('applies the supported monetary range and precision to savings goals', () => {
+        const account = {
+            name: 'Savings',
+            type: 'SAVINGS',
+            startingBalance: 0,
+            color: '#3b82f6',
+            icon: 'wallet',
+        }
+
+        expect(accountFormSchema.safeParse({ ...account, goal: '9999999999.99' }).success).toBe(
+            true,
+        )
+        expect(accountFormSchema.safeParse({ ...account, goal: '10000000000' }).success).toBe(false)
+        expect(accountFormSchema.safeParse({ ...account, goal: '9999999999.995' }).success).toBe(
+            false,
+        )
+        expect(accountFormSchema.safeParse({ ...account, goal: '1.234' }).success).toBe(false)
+        expect(
+            accountFormSchema.safeParse({ ...account, goal: `1${'0'.repeat(100)}` }).success,
+        ).toBe(false)
+        expect(accountFormSchema.safeParse({ ...account, goal: null }).success).toBe(true)
+        expect(accountFormSchema.safeParse({ ...account, goal: undefined }).success).toBe(true)
+    })
+
+    it.each([
         ['non-savings account with an undefined goal', 'CHECKING', undefined, true],
         ['non-savings account with a null goal', 'CHECKING', null, true],
         ['non-savings account with a positive goal', 'CHECKING', 100, false],

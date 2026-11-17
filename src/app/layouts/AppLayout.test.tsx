@@ -35,12 +35,13 @@ describe('AppLayout', () => {
         expect(screen.getByRole('status')).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /previous month/i })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /next month/i })).toBeInTheDocument()
-        const homeLinks = screen.getAllByRole('link', {
-            name: "Dude, where's my cash? — Home",
-        })
-        expect(homeLinks).toHaveLength(2)
-        homeLinks.forEach((link) =>
-            expect(link).toHaveAttribute('href', '/dashboard?month=2026-06'),
+        expect(screen.getByRole('link', { name: "Dude, where's my cash? — Home" })).toHaveAttribute(
+            'href',
+            '/dashboard?month=2026-06',
+        )
+        expect(screen.getByRole('link', { name: 'DWMC — Home' })).toHaveAttribute(
+            'href',
+            '/dashboard?month=2026-06',
         )
     })
 

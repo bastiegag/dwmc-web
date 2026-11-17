@@ -139,10 +139,38 @@ test.describe('App Layout', () => {
             const skipLink = page.getByRole('link', { name: 'Skip to main content' })
             await expect(skipLink).toBeFocused()
             await expect(skipLink).toHaveAttribute('href', '#main-content')
+            const hasVisibleFocus = await skipLink.evaluate((element) => {
+                const style = getComputedStyle(element)
+                return (
+                    (style.outlineStyle !== 'none' && style.outlineWidth !== '0px') ||
+                    style.boxShadow !== 'none'
+                )
+            })
+            expect(hasVisibleFocus).toBe(true)
             await page.keyboard.press('Enter')
 
             await expect(page).toHaveURL(/#main-content$/)
             await expect(page.locator('#main-content')).toHaveAttribute('tabindex', '-1')
+        })
+
+        test('supports keyboard selection in the transaction form', async ({ page }) => {
+            await page.setViewportSize({ width: 390, height: 844 })
+            await page.getByTestId('primary-action-button').focus()
+            await page.keyboard.press('Enter')
+
+            const dialog = page.getByRole('dialog', { name: 'New Transaction' })
+            await expect(dialog).toBeVisible()
+            const type = dialog.getByRole('combobox', { name: 'Type' })
+            await type.focus()
+            await page.keyboard.press('Space')
+            await page.keyboard.press('Home')
+            await page.keyboard.press('ArrowDown')
+            await page.keyboard.press('ArrowDown')
+            await page.keyboard.press('Enter')
+
+            await expect(type).toContainText(/transfer/i)
+            await expect(dialog.getByRole('combobox', { name: 'From account' })).toBeVisible()
+            await expect(dialog.getByRole('combobox', { name: 'To account' })).toBeVisible()
         })
 
         test('shows the desktop sidebar', async ({ page }) => {

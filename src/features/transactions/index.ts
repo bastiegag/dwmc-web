@@ -1,5 +1,6 @@
 export { TransactionsPage } from './pages/TransactionsPage'
 export { TransactionDialog } from './components/TransactionDialog'
+export { TransactionOptionsState } from './components/TransactionOptionsState'
 export {
     transactionQueryKeys,
     useTransactions,

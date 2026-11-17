@@ -13,6 +13,7 @@ import { useAccounts } from '@/features/accounts'
 import { useSections } from '@/features/categories'
 import {
     TransactionDialog,
+    TransactionOptionsState,
     toCreateTransactionPayload,
     useCreateTransaction,
     type TransactionFormValues,
@@ -42,6 +43,25 @@ export const DashboardPage = () => {
 
     const data = summaryQuery.data
     const isEmpty = data?.totals.transactionCount === 0
+    const transactionOptionsState = (
+        <TransactionOptionsState
+            accounts={{
+                hasData: accountsQuery.data !== undefined,
+                isLoading: accountsQuery.isLoading,
+                isFetching: accountsQuery.isFetching,
+                error: accountsQuery.error,
+                onRetry: () => void accountsQuery.refetch(),
+            }}
+            categories={{
+                hasData: sectionsQuery.data !== undefined,
+                isLoading: sectionsQuery.isLoading,
+                isFetching: sectionsQuery.isFetching,
+                error: sectionsQuery.error,
+                onRetry: () => void sectionsQuery.refetch(),
+            }}
+            showLoading={isCreateOpen}
+        />
+    )
 
     const handleCreateTransaction = async (values: TransactionFormValues) => {
         try {
@@ -87,6 +107,8 @@ export const DashboardPage = () => {
                     />
                 ) : null}
 
+                {!isCreateOpen ? transactionOptionsState : null}
+
                 {!summaryQuery.isLoading && data && isEmpty ? (
                     <EmptyState
                         icon={Activity}
@@ -120,6 +142,7 @@ export const DashboardPage = () => {
                 mode="create"
                 accounts={accountsQuery.data ?? []}
                 sections={sectionsQuery.data ?? []}
+                optionsState={transactionOptionsState}
                 isPending={createTransaction.isPending}
                 errorMessage={formError}
                 onOpenChange={setCreateOpen}

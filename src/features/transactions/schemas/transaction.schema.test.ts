@@ -101,6 +101,76 @@ describe('transactionFormSchema', () => {
         ).toBe(false)
     })
 
+    it.each([9999999999.99, -9999999999.99])(
+        'accepts the backend monetary boundary %s',
+        (amount) => {
+            expect(
+                transactionFormSchema.safeParse({
+                    ...validExpense,
+                    type: 'ADJUSTMENT',
+                    amount,
+                }).success,
+            ).toBe(true)
+        },
+    )
+
+    it.each(['INCOME', 'EXPENSE', 'TRANSFER'] as const)(
+        'accepts the maximum positive amount for %s transactions',
+        (type) => {
+            const result = transactionFormSchema.safeParse({
+                ...validExpense,
+                type,
+                amount: '9999999999.99',
+                ...(type === 'TRANSFER'
+                    ? {
+                          accountId: null,
+                          fromAccountId: 'account-1',
+                          toAccountId: 'account-2',
+                      }
+                    : {}),
+            })
+
+            expect(result.success).toBe(true)
+        },
+    )
+
+    it.each([
+        '10000000000',
+        '-10000000000',
+        '9999999999.995',
+        '-9999999999.995',
+        '1.234',
+        '-1.234',
+        'NaN',
+        'Infinity',
+        '-Infinity',
+        `1${'0'.repeat(100)}`,
+        1.005,
+        Number.MAX_VALUE,
+    ])('rejects unsupported monetary amount %s', (amount) => {
+        expect(
+            transactionFormSchema.safeParse({
+                ...validExpense,
+                type: 'ADJUSTMENT',
+                amount,
+            }).success,
+        ).toBe(false)
+    })
+
+    it.each(['', null, undefined])(
+        'preserves existing zero-value adjustment behavior for empty amount %s',
+        (amount) => {
+            const result = transactionFormSchema.safeParse({
+                ...validExpense,
+                type: 'ADJUSTMENT',
+                amount,
+            })
+
+            expect(result.success).toBe(true)
+            if (result.success) expect(result.data.amount).toBe(0)
+        },
+    )
+
     it('accepts negative adjustment amounts', () => {
         expect(
             transactionFormSchema.safeParse({

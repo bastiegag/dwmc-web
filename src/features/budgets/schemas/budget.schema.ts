@@ -1,7 +1,5 @@
 import { z } from 'zod'
-
-// Prisma Decimal(12, 2) allows at most 10 integer digits and 2 fractional digits.
-const MAX_BUDGET_CENTS = 999_999_999_999n
+import { isSupportedMoneyAmount } from '@/shared/money'
 
 const budgetAmountSchema = z
     .union([z.string(), z.null(), z.undefined()])
@@ -11,14 +9,7 @@ const budgetAmountSchema = z
         (value) => /^\d+(?:\.\d{1,2})?$|^\.\d{1,2}$/.test(value),
         'Budget amount must be non-negative and have at most 2 decimal places',
     )
-    .refine((value) => {
-        const [whole = '0', fraction = ''] = value.split('.')
-        if (!/^\d+$/.test(whole || '0') || fraction.length > 2) return false
-
-        return (
-            BigInt(whole || '0') * 100n + BigInt(fraction.padEnd(2, '0') || '0') <= MAX_BUDGET_CENTS
-        )
-    }, 'Budget amount exceeds the maximum supported value')
+    .refine(isSupportedMoneyAmount, 'Budget amount exceeds the maximum supported value')
     .transform(Number)
     .pipe(z.number().finite().min(0, 'Budget amount must be greater than or equal to 0'))
 

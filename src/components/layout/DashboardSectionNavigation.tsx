@@ -44,7 +44,7 @@ export const DashboardSectionNavigation = () => {
                                     'focus-visible:ring-offset-primary',
 
                                     // Active
-                                    isActive && 'bg-primary-foreground/20',
+                                    isActive && 'bg-primary-foreground/10',
                                 )
                             }
                         >

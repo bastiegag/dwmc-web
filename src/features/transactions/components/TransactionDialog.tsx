@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import {
     Button,
     Dialog,
@@ -19,6 +20,7 @@ type TransactionDialogProps = {
     initialValues?: TransactionFormValues | null
     isPending?: boolean
     errorMessage?: string | null
+    optionsState?: ReactNode
     onOpenChange: (open: boolean) => void
     onSubmit: (values: TransactionFormValues) => Promise<void> | void
 }
@@ -31,6 +33,7 @@ export const TransactionDialog = ({
     initialValues,
     isPending = false,
     errorMessage,
+    optionsState,
     onOpenChange,
     onSubmit,
 }: TransactionDialogProps) => {
@@ -62,6 +65,8 @@ export const TransactionDialog = ({
                         Close
                     </Button>
                 </DialogHeader>
+
+                {optionsState}
 
                 <TransactionForm
                     accounts={accounts}
