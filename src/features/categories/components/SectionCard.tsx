@@ -9,6 +9,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    Badge,
     Button,
     Card,
 } from '@/components/ui'
@@ -37,16 +38,17 @@ export const SectionCard = ({
     const [isArchiving, setIsArchiving] = useState(false)
 
     return (
-        <Card>
-            <div className="flex flex-row items-start justify-between gap-3 space-y-0">
-                <div className="space-y-1">
-                    <h2 className="flex items-center gap-2 text-lg">
+        <Card className="min-w-0">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0 flex-1 space-y-1">
+                    <h2 className="flex min-w-0 flex-wrap items-center gap-2 text-lg">
                         <span
-                            className="inline-block h-3 w-3 rounded-full border"
+                            className="inline-block h-3 w-3 shrink-0 rounded-full border"
                             style={{ backgroundColor: section.color }}
                             aria-hidden="true"
                         />
-                        <span>{section.name}</span>
+                        <span className="break-words">{section.name}</span>
+                        {section.isArchived ? <Badge variant="secondary">Archived</Badge> : null}
                     </h2>
                     <p className="text-sm text-muted-foreground">
                         {section.categories.length}{' '}
@@ -54,30 +56,32 @@ export const SectionCard = ({
                     </p>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex shrink-0 flex-wrap gap-2">
                     <Button
                         type="button"
                         variant="link"
-                        className="no-underline hover:bg-accent/10"
+                        className="min-h-11 no-underline hover:bg-accent/10"
                         size="sm"
                         onClick={() => onEditSection(section)}
                         aria-label={`Edit section ${section.name}`}
                     >
                         Edit
                     </Button>
-                    <Button
-                        type="button"
-                        variant="link"
-                        className="no-underline hover:bg-accent/10"
-                        size="sm"
-                        onClick={() => {
-                            setArchiveError(null)
-                            setIsConfirmOpen(true)
-                        }}
-                        aria-label={`Archive section ${section.name}`}
-                    >
-                        Archive
-                    </Button>
+                    {!section.isArchived ? (
+                        <Button
+                            type="button"
+                            variant="link"
+                            className="min-h-11 no-underline hover:bg-accent/10"
+                            size="sm"
+                            onClick={() => {
+                                setArchiveError(null)
+                                setIsConfirmOpen(true)
+                            }}
+                            aria-label={`Archive section ${section.name}`}
+                        >
+                            Archive
+                        </Button>
+                    ) : null}
                 </div>
             </div>
             <div className="mt-4">
@@ -88,12 +92,23 @@ export const SectionCard = ({
                 />
             </div>
 
-            <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+            <AlertDialog
+                open={isConfirmOpen}
+                onOpenChange={(open, eventDetails) => {
+                    if (!open && isArchiving) {
+                        eventDetails.cancel()
+                        return
+                    }
+                    setIsConfirmOpen(open)
+                }}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Archive section?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This will archive <strong>{section.name}</strong>.
+                            This will archive <strong>{section.name}</strong> and all categories in
+                            it. Existing transactions and budgets will remain associated with those
+                            categories.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     {archiveError ? (

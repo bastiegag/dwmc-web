@@ -81,4 +81,48 @@ describe('category dialogs accessibility', () => {
         closeButton.focus()
         expect(closeButton).toHaveFocus()
     })
+
+    it('prevents a pending section dialog from being dismissed', async () => {
+        const user = userEvent.setup()
+        const onOpenChange = vi.fn()
+
+        render(
+            <SectionDialog
+                open
+                mode="create"
+                isPending
+                onOpenChange={onOpenChange}
+                onSubmit={vi.fn()}
+            />,
+        )
+
+        expect(screen.getByRole('button', { name: /close section dialog/i })).toBeDisabled()
+        expect(screen.getByLabelText(/section name/i)).toBeDisabled()
+        await user.keyboard('{Escape}')
+
+        expect(onOpenChange).not.toHaveBeenCalled()
+        expect(screen.getByRole('dialog', { name: 'Create section' })).toBeInTheDocument()
+    })
+
+    it('prevents a pending category dialog from being dismissed', async () => {
+        const user = userEvent.setup()
+        const onOpenChange = vi.fn()
+
+        render(
+            <CategoryDialog
+                open
+                mode="create"
+                sections={sections}
+                isPending
+                onOpenChange={onOpenChange}
+                onSubmit={vi.fn()}
+            />,
+        )
+
+        expect(screen.getByRole('button', { name: /close category dialog/i })).toBeDisabled()
+        await user.keyboard('{Escape}')
+
+        expect(onOpenChange).not.toHaveBeenCalled()
+        expect(screen.getByRole('dialog', { name: 'Create category' })).toBeInTheDocument()
+    })
 })

@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@/test/utils/render'
 import { CategoryForm, SectionForm } from '@/features/categories/components'
 import { CategoriesPage } from '@/features/categories/pages/CategoriesPage'
 import type { SectionWithCategories } from '@/features/categories/types'
-import { createSectionWithCategories } from '@/test/fixtures/domain'
+import { createCategory, createSectionWithCategories } from '@/test/fixtures/domain'
 
 const createSectionMock = vi.fn().mockResolvedValue(undefined)
 const updateSectionMock = vi.fn().mockResolvedValue(undefined)
@@ -14,6 +14,15 @@ const updateCategoryMock = vi.fn().mockResolvedValue(undefined)
 const deleteCategoryMock = vi.fn().mockResolvedValue(undefined)
 
 let sectionsData: SectionWithCategories[] = []
+
+const chooseOption = async (
+    user: ReturnType<typeof userEvent.setup>,
+    label: RegExp,
+    option: string,
+) => {
+    await user.click(screen.getByRole('combobox', { name: label }))
+    await user.click(await screen.findByRole('option', { name: option }))
+}
 
 vi.mock('@/features/categories/hooks', () => ({
     useSections: () => ({
@@ -54,6 +63,15 @@ describe('categories forms and actions', () => {
         expect(onSubmit).not.toHaveBeenCalled()
     })
 
+    it('marks required section fields and disables them while saving', () => {
+        render(<SectionForm submitLabel="Create section" isPending onSubmit={vi.fn()} />)
+
+        expect(screen.getByLabelText(/section name/i)).toBeRequired()
+        expect(screen.getByLabelText(/color/i)).toHaveAttribute('required')
+        expect(screen.getByLabelText(/section name/i)).toBeDisabled()
+        expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
+    })
+
     it('validates required fields in CategoryForm', async () => {
         const user = userEvent.setup()
         const onSubmit = vi.fn()
@@ -72,6 +90,27 @@ describe('categories forms and actions', () => {
         expect(screen.getByText(/icon is required/i)).toBeInTheDocument()
         expect(screen.getByText(/section is required/i)).toBeInTheDocument()
         expect(onSubmit).not.toHaveBeenCalled()
+    })
+
+    it('marks category fields required and prevents edits while saving', () => {
+        render(
+            <CategoryForm
+                sections={sectionsData}
+                submitLabel="Create category"
+                isPending
+                onSubmit={vi.fn()}
+            />,
+        )
+
+        expect(screen.getByLabelText(/category name/i)).toBeRequired()
+        expect(screen.getByLabelText(/icon/i)).toBeRequired()
+        expect(screen.getByRole('combobox', { name: /section/i })).toHaveAttribute(
+            'aria-required',
+            'true',
+        )
+        expect(screen.getByLabelText(/category name/i)).toBeDisabled()
+        expect(screen.getByRole('combobox', { name: /section/i })).toBeDisabled()
+        expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
     })
 
     it('creating a section calls the section mutation', async () => {
@@ -109,7 +148,7 @@ describe('categories forms and actions', () => {
 
         await user.type(screen.getByLabelText(/category name/i), 'Restaurants')
         await user.type(screen.getByLabelText(/icon/i), 'utensils')
-        await user.selectOptions(screen.getByLabelText('Section'), 'section-1')
+        await chooseOption(user, /section/i, 'Food')
 
         await user.click(screen.getByRole('button', { name: /create category/i }))
 
@@ -120,6 +159,70 @@ describe('categories forms and actions', () => {
                 sectionId: 'section-1',
             })
         })
+    })
+
+    it('preserves an existing archived section when editing a category', async () => {
+        const user = userEvent.setup()
+        const onSubmit = vi.fn()
+        const sectionId = 'section-archived'
+        const archivedCategory = createCategory({ sectionId })
+        const archivedSection = createSectionWithCategories([archivedCategory], {
+            id: sectionId,
+            name: 'Archived section',
+            isArchived: true,
+        })
+
+        render(
+            <CategoryForm
+                sections={[archivedSection]}
+                initialValues={{
+                    name: archivedCategory.name,
+                    icon: archivedCategory.icon,
+                    sectionId,
+                }}
+                submitLabel="Save changes"
+                onSubmit={onSubmit}
+            />,
+        )
+
+        expect(screen.getByRole('combobox', { name: /section/i })).toHaveTextContent(
+            'Archived section (archived)',
+        )
+        await user.click(screen.getByRole('button', { name: 'Save changes' }))
+
+        await waitFor(() => {
+            expect(onSubmit).toHaveBeenCalledWith({
+                name: archivedCategory.name,
+                icon: archivedCategory.icon,
+            })
+        })
+    })
+
+    it('disables archived sections for new category assignments', async () => {
+        const user = userEvent.setup()
+        const activeSection = createSectionWithCategories([], {
+            id: 'section-active',
+            name: 'Active',
+        })
+        const archivedSection = createSectionWithCategories([], {
+            id: 'section-archived',
+            name: 'Archived',
+            isArchived: true,
+        })
+
+        render(
+            <CategoryForm
+                sections={[activeSection, archivedSection]}
+                submitLabel="Create category"
+                onSubmit={vi.fn()}
+            />,
+        )
+
+        await user.click(screen.getByRole('combobox', { name: /section/i }))
+        expect(await screen.findByRole('option', { name: 'Archived (archived)' })).toHaveAttribute(
+            'aria-disabled',
+            'true',
+        )
     })
 
     it('archive actions show confirmation dialog', async () => {

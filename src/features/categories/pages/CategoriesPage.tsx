@@ -1,7 +1,11 @@
 import { useMemo, useState, useCallback } from 'react'
 import { Alert } from '@/components/ui'
 import { QueryState } from '@/components/feedback'
-import { type CategoryFormValues, type SectionFormValues } from '@/features/categories/schemas'
+import {
+    type CategoryFormSubmitValues,
+    type CategoryFormValues,
+    type SectionFormValues,
+} from '@/features/categories/schemas'
 import type { Category, SectionWithCategories } from '@/features/categories/types'
 import {
     useCreateCategory,
@@ -41,10 +45,10 @@ export const CategoriesPage = () => {
 
     const [sectionFormError, setSectionFormError] = useState<string | null>(null)
     const [categoryFormError, setCategoryFormError] = useState<string | null>(null)
-    const [archiveError, setArchiveError] = useState<string | null>(null)
 
     const sections = sectionsQuery.data ?? []
     const hasSections = sections.length > 0
+    const hasSectionsData = sectionsQuery.data !== undefined
 
     const openCreateSection = useCallback(() => {
         setActiveSection(null)
@@ -118,7 +122,7 @@ export const CategoriesPage = () => {
         }
     }
 
-    const handleCategorySubmit = async (values: CategoryFormValues) => {
+    const handleCategorySubmit = async (values: CategoryFormSubmitValues) => {
         try {
             if (activeCategory) {
                 await updateCategoryMutation.mutateAsync({
@@ -126,6 +130,9 @@ export const CategoriesPage = () => {
                     input: values,
                 })
             } else {
+                if (!('sectionId' in values)) {
+                    throw new Error('A section is required to create a category.')
+                }
                 await createCategoryMutation.mutateAsync(values)
             }
 
@@ -137,23 +144,11 @@ export const CategoriesPage = () => {
         }
     }
 
-    const handleArchiveSection = async (section: SectionWithCategories) => {
-        try {
-            setArchiveError(null)
-            await deleteSectionMutation.mutateAsync(section.id)
-        } catch (error) {
-            setArchiveError(getErrorMessage(error, 'Unable to archive section. Please try again.'))
-        }
-    }
+    const handleArchiveSection = async (section: SectionWithCategories) =>
+        deleteSectionMutation.mutateAsync(section.id)
 
-    const handleArchiveCategory = async (category: Category) => {
-        try {
-            setArchiveError(null)
-            await deleteCategoryMutation.mutateAsync(category.id)
-        } catch (error) {
-            setArchiveError(getErrorMessage(error, 'Unable to archive category. Please try again.'))
-        }
-    }
+    const handleArchiveCategory = async (category: Category) =>
+        deleteCategoryMutation.mutateAsync(category.id)
 
     return (
         <section className="space-y-6" aria-labelledby="categories-heading">
@@ -164,23 +159,34 @@ export const CategoriesPage = () => {
             />
 
             <QueryState
-                isLoading={sectionsQuery.isLoading}
-                isError={sectionsQuery.isError}
+                isLoading={sectionsQuery.isLoading && !hasSectionsData}
+                isError={sectionsQuery.isError && !hasSectionsData}
                 loadingLabel="Loading categories"
                 errorTitle="Could not load categories"
                 errorMessage={getErrorMessage(sectionsQuery.error, '')}
                 fallbackErrorMessage="Please refresh and try again in a moment."
+                onRetry={() => void sectionsQuery.refetch()}
             />
 
-            {archiveError ? (
-                <Alert variant="destructive" title="Archive failed" description={archiveError} />
+            {sectionsQuery.isError && hasSectionsData ? (
+                <Alert
+                    variant="warning"
+                    role="status"
+                    title="Category list refresh failed"
+                    description={
+                        getErrorMessage(sectionsQuery.error, '') || 'Please try again in a moment.'
+                    }
+                    action={{
+                        label: 'Retry',
+                        disabled: sectionsQuery.isFetching,
+                        onClick: () => void sectionsQuery.refetch(),
+                    }}
+                />
             ) : null}
 
-            {!sectionsQuery.isLoading && !sectionsQuery.isError && sections.length === 0 ? (
-                <EmptyCategoriesState />
-            ) : null}
+            {hasSectionsData && sections.length === 0 ? <EmptyCategoriesState /> : null}
 
-            {!sectionsQuery.isLoading && !sectionsQuery.isError && sections.length > 0 ? (
+            {hasSectionsData && sections.length > 0 ? (
                 <SectionList
                     sections={sections}
                     onEditSection={(section) => {

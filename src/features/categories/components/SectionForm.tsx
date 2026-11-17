@@ -29,7 +29,7 @@ export const SectionForm = ({
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
         reset,
     } = useForm<SectionFormValues>({
         resolver: zodResolver(sectionFormSchema),
@@ -41,6 +41,8 @@ export const SectionForm = ({
         reset(initialValues ?? defaultValues)
     }, [initialValues, reset])
 
+    const isBusy = isPending || isSubmitting
+
     return (
         <form
             className="space-y-4"
@@ -49,27 +51,32 @@ export const SectionForm = ({
             })}
             noValidate
         >
-            <TextField
-                id="section-name"
-                label="Section name"
-                placeholder="Food"
-                {...register('name')}
-                error={errors.name?.message}
-            />
+            <fieldset disabled={isBusy} className="min-w-0 space-y-4 border-0 p-0">
+                <TextField
+                    id="section-name"
+                    label="Section name"
+                    placeholder="Food"
+                    required
+                    maxLength={80}
+                    {...register('name')}
+                    error={errors.name?.message}
+                />
 
-            <TextField
-                id="section-color"
-                label="Color"
-                type="color"
-                {...register('color')}
-                error={errors.color?.message}
-            />
+                <TextField
+                    id="section-color"
+                    label="Color"
+                    type="color"
+                    required
+                    {...register('color')}
+                    error={errors.color?.message}
+                />
+
+                <Button type="submit" className="w-full" isLoading={isBusy} loadingText="Saving...">
+                    {submitLabel}
+                </Button>
+            </fieldset>
 
             <FormError message={errorMessage} />
-
-            <Button type="submit" className="w-full" isLoading={isPending} loadingText="Saving...">
-                {submitLabel}
-            </Button>
         </form>
     )
 }

@@ -10,6 +10,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    Badge,
     Button,
 } from '@/components/ui'
 import { getErrorMessage } from '@/shared/errors'
@@ -37,44 +38,57 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
     const Icon = useMemo(() => categoryIcons[category.icon] ?? CircleHelp, [category.icon])
 
     return (
-        <li className="flex items-center justify-between gap-2 rounded-md border px-3 py-2">
-            <div className="flex items-center gap-3">
-                <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                <span className="text-sm font-medium">{category.name}</span>
+        <li className="flex min-w-0 flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2">
+            <div className="flex min-w-0 flex-1 items-start gap-3">
+                <Icon className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <span className="min-w-0 break-words text-sm font-medium">{category.name}</span>
+                {category.isArchived ? <Badge variant="secondary">Archived</Badge> : null}
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex shrink-0 flex-wrap gap-2">
                 <Button
                     type="button"
                     variant="link"
-                    className="no-underline hover:bg-accent/10"
+                    className="min-h-11 no-underline hover:bg-accent/10"
                     size="sm"
                     onClick={() => onEdit(category)}
                     aria-label={`Edit category ${category.name}`}
                 >
                     Edit
                 </Button>
-                <Button
-                    type="button"
-                    variant="link"
-                    className="no-underline hover:bg-accent/10"
-                    size="sm"
-                    onClick={() => {
-                        setArchiveError(null)
-                        setIsConfirmOpen(true)
-                    }}
-                    aria-label={`Archive category ${category.name}`}
-                >
-                    Archive
-                </Button>
+                {!category.isArchived ? (
+                    <Button
+                        type="button"
+                        variant="link"
+                        className="min-h-11 no-underline hover:bg-accent/10"
+                        size="sm"
+                        onClick={() => {
+                            setArchiveError(null)
+                            setIsConfirmOpen(true)
+                        }}
+                        aria-label={`Archive category ${category.name}`}
+                    >
+                        Archive
+                    </Button>
+                ) : null}
             </div>
 
-            <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+            <AlertDialog
+                open={isConfirmOpen}
+                onOpenChange={(open, eventDetails) => {
+                    if (!open && isArchiving) {
+                        eventDetails.cancel()
+                        return
+                    }
+                    setIsConfirmOpen(open)
+                }}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Archive category?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This will archive <strong>{category.name}</strong>.
+                            This will archive <strong>{category.name}</strong>. Existing
+                            transactions and budgets will remain associated with it.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     {archiveError ? (

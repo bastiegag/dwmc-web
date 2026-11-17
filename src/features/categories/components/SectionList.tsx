@@ -17,17 +17,18 @@ export const SectionList = ({
     onArchiveCategory,
 }: SectionListProps) => {
     return (
-        <div className="space-y-4" aria-label="Sections list">
+        <ul className="space-y-4" aria-label="Sections list">
             {sections.map((section) => (
-                <SectionCard
-                    key={section.id}
-                    section={section}
-                    onEditSection={onEditSection}
-                    onArchiveSection={onArchiveSection}
-                    onEditCategory={onEditCategory}
-                    onArchiveCategory={onArchiveCategory}
-                />
+                <li key={section.id} className="min-w-0">
+                    <SectionCard
+                        section={section}
+                        onEditSection={onEditSection}
+                        onArchiveSection={onArchiveSection}
+                        onEditCategory={onEditCategory}
+                        onArchiveCategory={onArchiveCategory}
+                    />
+                </li>
             ))}
-        </div>
+        </ul>
     )
 }

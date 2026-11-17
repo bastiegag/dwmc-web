@@ -321,7 +321,7 @@ test('keeps a selected-month Budget synchronized with expense create, month move
     await page.getByTestId('primary-action-button').click()
     await page.getByLabel('Category name').fill('Groceries')
     await page.getByLabel('Icon').fill('shopping-cart')
-    await page.getByLabel('Section', { exact: true }).selectOption('section-food')
+    await chooseOption(page, 'Section', 'Food')
     await page.getByRole('button', { name: 'Create category' }).click()
     await expect(page.getByText('Groceries')).toBeVisible()
 
@@ -412,7 +412,7 @@ test('keeps long-name, high-value budgets and dialogs usable at responsive viewp
     await page.getByTestId('primary-action-button').click()
     await page.getByLabel('Category name').fill(categoryName)
     await page.getByLabel('Icon').fill('tag')
-    await page.getByLabel('Section', { exact: true }).selectOption('section-food')
+    await chooseOption(page, 'Section', 'Food')
     await page.getByRole('button', { name: 'Create category' }).click()
     await expect(page.getByText(categoryName)).toBeVisible()
 
