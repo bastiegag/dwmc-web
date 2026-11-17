@@ -45,12 +45,17 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
     }, [profile, reset])
 
     const onSubmit = (values: ProfileFormValues) =>
-        updateProfile.mutate({
-            firstName: values.firstName.trim() || null,
-            lastName: values.lastName.trim() || null,
-            displayName: values.displayName.trim() || null,
-            preferredCurrency: values.preferredCurrency,
-        })
+        updateProfile.mutate(
+            {
+                firstName: values.firstName.trim() || null,
+                lastName: values.lastName.trim() || null,
+                displayName: values.displayName.trim() || null,
+                preferredCurrency: values.preferredCurrency,
+            },
+            {
+                onSuccess: (updatedProfile) => reset(getProfileFormValues(updatedProfile)),
+            },
+        )
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">

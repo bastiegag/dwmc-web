@@ -90,7 +90,11 @@ export const ServerError: Story = {
 
 export const SuccessFeedback: Story = {
     play: async ({ canvas, userEvent }) => {
+        await userEvent.clear(canvas.getByLabelText('Display name'))
+        await userEvent.type(canvas.getByLabelText('Display name'), 'Grace')
         await userEvent.click(canvas.getByRole('button', { name: 'Save changes' }))
-        await expect(canvas.findByRole('status')).resolves.toHaveTextContent('Profile saved.')
+        await expect(canvas.findByRole('status', {}, { timeout: 5000 })).resolves.toHaveTextContent(
+            'Profile saved.',
+        )
     },
 }

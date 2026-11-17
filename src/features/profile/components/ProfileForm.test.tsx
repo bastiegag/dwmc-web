@@ -69,9 +69,12 @@ describe('ProfileForm', () => {
         const user = userEvent.setup()
         render(<ProfileForm profile={profile} />)
 
+        await user.clear(screen.getByLabelText('Display name'))
+        await user.type(screen.getByLabelText('Display name'), 'Grace')
         await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
         expect(await screen.findByRole('status')).toHaveTextContent('Profile saved.')
+        expect(screen.getByLabelText('Display name')).toHaveValue('Grace')
     })
 
     it('disables form controls while saving', async () => {
