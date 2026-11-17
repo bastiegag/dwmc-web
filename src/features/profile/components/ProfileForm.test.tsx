@@ -79,9 +79,12 @@ describe('ProfileForm', () => {
 
     it('disables form controls while saving', async () => {
         const user = userEvent.setup()
-        const fetchSpy = vi.spyOn(globalThis, 'fetch')
+        const apiUrl = 'http://profile-pending.test'
+        let patchRequestCount = 0
+        vi.stubEnv('VITE_API_URL', apiUrl)
         server.use(
-            http.patch('http://localhost:8787/profile', async ({ request }) => {
+            http.patch(`${apiUrl}/profile`, async ({ request }) => {
+                patchRequestCount += 1
                 await new Promise((resolve) => setTimeout(resolve, 100))
                 const values = (await request.json()) as Partial<typeof profile>
                 return HttpResponse.json({
@@ -101,11 +104,7 @@ describe('ProfileForm', () => {
         await user.click(screen.getByRole('button', { name: /saving/i }))
         await waitFor(() => expect(screen.getByLabelText('First name')).toBeEnabled())
 
-        const patchCalls = fetchSpy.mock.calls.filter(
-            ([url, init]) => String(url).endsWith('/profile') && init?.method === 'PATCH',
-        )
-        expect(patchCalls).toHaveLength(1)
-        fetchSpy.mockRestore()
+        expect(patchRequestCount).toBe(1)
     })
 
     it('clears optional fields as null when saved', async () => {
