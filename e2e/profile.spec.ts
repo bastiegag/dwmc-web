@@ -40,6 +40,20 @@ test.describe('Profile', () => {
 
         await expect(page).toHaveURL(/\/tools\/profile/)
         await expect(page.getByRole('heading', { name: 'Profile', level: 1 })).toBeVisible()
+
+        for (const width of [320, 430, 768, 1280]) {
+            await page.setViewportSize({ width, height: 900 })
+            await expect(page.getByLabel('Display name')).toBeVisible()
+            await expect(page.getByRole('button', { name: 'Save changes' })).toBeVisible()
+            expect(
+                await page.evaluate(
+                    () =>
+                        document.documentElement.scrollWidth <=
+                        document.documentElement.clientWidth,
+                ),
+            ).toBe(true)
+        }
+
         await page.getByLabel('Display name').fill('Countess')
         const patchResponse = page.waitForResponse(
             (response) =>
@@ -51,5 +65,50 @@ test.describe('Profile', () => {
 
         await page.reload()
         await expect(page.getByLabel('Display name')).toHaveValue('Countess')
+    })
+
+    test('preserves profile edits and does not report success when the API rejects an update', async ({
+        page,
+    }) => {
+        await mockAuthenticatedSession(page)
+        await page.route(/\/api\/v1\/profile$/, async (route) => {
+            if (route.request().method() === 'PATCH') {
+                return route.fulfill({
+                    status: 422,
+                    contentType: 'application/json',
+                    body: JSON.stringify({
+                        error: { code: 'VALIDATION_ERROR', message: 'Profile could not be saved.' },
+                    }),
+                })
+            }
+
+            return route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify({
+                    data: {
+                        id: 'profile-1',
+                        authUserId: 'mock-user-id',
+                        firstName: 'Ada',
+                        lastName: 'Lovelace',
+                        displayName: 'Ada',
+                        preferredCurrency: 'CAD',
+                        createdAt: '2026-01-01T00:00:00.000Z',
+                        updatedAt: '2026-01-01T00:00:00.000Z',
+                    },
+                }),
+            })
+        })
+
+        const loginPage = new LoginPage(page)
+        await loginPage.goto()
+        await loginPage.login('test@example.com', 'Password123')
+        await page.goto('/tools/profile')
+        await page.getByLabel('Display name').fill('Countess')
+        await page.getByRole('button', { name: 'Save changes' }).click()
+
+        await expect(page.getByRole('alert')).toContainText('Profile could not be saved.')
+        await expect(page.getByLabel('Display name')).toHaveValue('Countess')
+        await expect(page.getByText('Profile saved.')).not.toBeVisible()
     })
 })

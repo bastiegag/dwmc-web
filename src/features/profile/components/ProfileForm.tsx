@@ -34,7 +34,7 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
         control,
         handleSubmit,
         reset,
-        formState: { errors, isDirty, isSubmitSuccessful },
+        formState: { errors, isDirty },
     } = useForm<ProfileFormValues>({
         resolver: zodResolver(profileFormSchema),
         defaultValues: getProfileFormValues(profile),
@@ -44,112 +44,109 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
         reset(getProfileFormValues(profile))
     }, [profile, reset])
 
-    const onSubmit = async (values: ProfileFormValues) => {
-        try {
-            await updateProfile.mutateAsync({
-                firstName: values.firstName.trim() || null,
-                lastName: values.lastName.trim() || null,
-                displayName: values.displayName.trim() || null,
-                preferredCurrency: values.preferredCurrency,
-            })
-        } catch {
-            // The mutation state renders the API error in the form.
-        }
-    }
+    const onSubmit = (values: ProfileFormValues) =>
+        updateProfile.mutate({
+            firstName: values.firstName.trim() || null,
+            lastName: values.lastName.trim() || null,
+            displayName: values.displayName.trim() || null,
+            preferredCurrency: values.preferredCurrency,
+        })
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8">
-            <section aria-labelledby="personal-information-heading" className="space-y-4">
-                <div>
-                    <h2 id="personal-information-heading" className="text-lg font-semibold">
-                        Personal information
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                        Choose how your name appears in the application.
-                    </p>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+            <fieldset disabled={updateProfile.isPending} className="min-w-0 space-y-8 border-0 p-0">
+                <section aria-labelledby="personal-information-heading" className="space-y-4">
+                    <div>
+                        <h2 id="personal-information-heading" className="text-lg font-semibold">
+                            Personal information
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                            Choose how your name appears in the application.
+                        </p>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <TextField
+                            id="firstName"
+                            label="First name"
+                            autoComplete="given-name"
+                            error={errors.firstName?.message}
+                            {...register('firstName')}
+                        />
+                        <TextField
+                            id="lastName"
+                            label="Last name"
+                            autoComplete="family-name"
+                            error={errors.lastName?.message}
+                            {...register('lastName')}
+                        />
+                    </div>
                     <TextField
-                        id="firstName"
-                        label="First name"
-                        autoComplete="given-name"
-                        error={errors.firstName?.message}
-                        {...register('firstName')}
+                        id="displayName"
+                        label="Display name"
+                        autoComplete="nickname"
+                        error={errors.displayName?.message}
+                        {...register('displayName')}
                     />
-                    <TextField
-                        id="lastName"
-                        label="Last name"
-                        autoComplete="family-name"
-                        error={errors.lastName?.message}
-                        {...register('lastName')}
-                    />
-                </div>
-                <TextField
-                    id="displayName"
-                    label="Display name"
-                    autoComplete="nickname"
-                    error={errors.displayName?.message}
-                    {...register('displayName')}
-                />
-            </section>
+                </section>
 
-            <section aria-labelledby="preferences-heading" className="space-y-4">
-                <div>
-                    <h2 id="preferences-heading" className="text-lg font-semibold">
-                        Preferences
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                        This preference affects presentation only; it does not convert stored
-                        amounts.
-                    </p>
-                </div>
-                <FormField
-                    id="preferredCurrency"
-                    label="Preferred currency"
-                    error={errors.preferredCurrency?.message}
+                <section aria-labelledby="preferences-heading" className="space-y-4">
+                    <div>
+                        <h2 id="preferences-heading" className="text-lg font-semibold">
+                            Preferences
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                            This preference affects presentation only; it does not convert stored
+                            amounts.
+                        </p>
+                    </div>
+                    <FormField
+                        id="preferredCurrency"
+                        label="Preferred currency"
+                        error={errors.preferredCurrency?.message}
+                    >
+                        <Controller
+                            name="preferredCurrency"
+                            control={control}
+                            render={({ field }) => (
+                                <Select value={field.value} onValueChange={field.onChange}>
+                                    <SelectTrigger
+                                        id="preferredCurrency"
+                                        aria-describedby={
+                                            errors.preferredCurrency
+                                                ? 'preferredCurrency-error'
+                                                : undefined
+                                        }
+                                    >
+                                        <SelectValue placeholder="Select a currency" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {supportedCurrencies.map((currency) => (
+                                            <SelectItem key={currency} value={currency}>
+                                                {currency}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </FormField>
+                </section>
+
+                <Button
+                    type="submit"
+                    className="w-full"
+                    isLoading={updateProfile.isPending}
+                    loadingText="Saving..."
                 >
-                    <Controller
-                        name="preferredCurrency"
-                        control={control}
-                        render={({ field }) => (
-                            <Select value={field.value} onValueChange={field.onChange}>
-                                <SelectTrigger
-                                    id="preferredCurrency"
-                                    aria-describedby={
-                                        errors.preferredCurrency
-                                            ? 'preferredCurrency-error'
-                                            : undefined
-                                    }
-                                >
-                                    <SelectValue placeholder="Select a currency" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {supportedCurrencies.map((currency) => (
-                                        <SelectItem key={currency} value={currency}>
-                                            {currency}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        )}
-                    />
-                </FormField>
-            </section>
-
+                    Save changes
+                </Button>
+            </fieldset>
             <FormError message={updateProfile.error?.message} />
-            {isSubmitSuccessful && !updateProfile.isPending && !isDirty && (
+            {updateProfile.isSuccess && !updateProfile.isPending && !isDirty && (
                 <p role="status" className="text-sm text-emerald-700 dark:text-emerald-400">
                     Profile saved.
                 </p>
             )}
-            <Button
-                type="submit"
-                className="w-full"
-                isLoading={updateProfile.isPending}
-                loadingText="Saving..."
-            >
-                Save changes
-            </Button>
         </form>
     )
 }

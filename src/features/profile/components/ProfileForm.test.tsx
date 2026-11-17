@@ -62,6 +62,47 @@ describe('ProfileForm', () => {
             'true',
         )
         expect(await screen.findByText('Profile could not be saved.')).toBeInTheDocument()
+        expect(screen.queryByText('Profile saved.')).not.toBeInTheDocument()
+    })
+
+    it('announces success only after the profile mutation succeeds', async () => {
+        const user = userEvent.setup()
+        render(<ProfileForm profile={profile} />)
+
+        await user.click(screen.getByRole('button', { name: 'Save changes' }))
+
+        expect(await screen.findByRole('status')).toHaveTextContent('Profile saved.')
+    })
+
+    it('disables form controls while saving', async () => {
+        const user = userEvent.setup()
+        const fetchSpy = vi.spyOn(globalThis, 'fetch')
+        server.use(
+            http.patch('http://localhost:8787/profile', async ({ request }) => {
+                await new Promise((resolve) => setTimeout(resolve, 100))
+                const values = (await request.json()) as Partial<typeof profile>
+                return HttpResponse.json({
+                    data: { ...profile, ...values },
+                })
+            }),
+        )
+        render(<ProfileForm profile={profile} />)
+
+        await user.clear(screen.getByLabelText('First name'))
+        await user.type(screen.getByLabelText('First name'), 'Grace')
+        await user.click(screen.getByRole('button', { name: 'Save changes' }))
+
+        expect(await screen.findByLabelText('First name')).toBeDisabled()
+        expect(screen.getByRole('combobox', { name: 'Preferred currency' })).toBeDisabled()
+        expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
+        await user.click(screen.getByRole('button', { name: /saving/i }))
+        await waitFor(() => expect(screen.getByLabelText('First name')).toBeEnabled())
+
+        const patchCalls = fetchSpy.mock.calls.filter(
+            ([url, init]) => String(url).endsWith('/profile') && init?.method === 'PATCH',
+        )
+        expect(patchCalls).toHaveLength(1)
+        fetchSpy.mockRestore()
     })
 
     it('clears optional fields as null when saved', async () => {
@@ -70,6 +111,7 @@ describe('ProfileForm', () => {
         render(<ProfileForm profile={profile} />)
 
         await user.clear(screen.getByLabelText('First name'))
+        fetchSpy.mockClear()
         await user.click(screen.getByRole('button', { name: 'Save changes' }))
         await waitFor(() => expect(fetchSpy).toHaveBeenCalled())
 

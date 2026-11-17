@@ -29,3 +29,10 @@ test('authenticated users are redirected away from anonymous-only routes', async
     await page.goto('/signup')
     await expect(page).toHaveURL('/dashboard')
 })
+
+test('all Tools routes and Categories stay protected', async ({ page }) => {
+    for (const path of ['/tools', '/tools/profile', '/tools/settings', '/categories']) {
+        await page.goto(path)
+        await expect(page).toHaveURL('/login')
+    }
+})
