@@ -8,7 +8,11 @@ export const useUpdateProfile = () => {
 
     return useMutation({
         mutationFn: (input: UpdateProfilePayload) => updateProfile(input),
-        onSuccess: (profile) => {
+        onMutate: async () => {
+            await queryClient.cancelQueries({ queryKey: profileQueryKey })
+        },
+        onSuccess: async (profile) => {
+            await queryClient.cancelQueries({ queryKey: profileQueryKey })
             queryClient.setQueryData(profileQueryKey, profile)
         },
     })
