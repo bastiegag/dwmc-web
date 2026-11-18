@@ -19,7 +19,6 @@ const meta = {
     component: Drawer,
     tags: ['autodocs'],
     parameters: {
-        layout: 'fullscreen',
         docs: {
             description: {
                 component:

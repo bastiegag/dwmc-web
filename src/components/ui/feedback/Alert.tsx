@@ -74,7 +74,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             {action ? (
                                 <Button
                                     type="button"
-                                    variant="outlined"
+                                    variant="contained"
                                     color={variant}
                                     size="sm"
                                     disabled={action.disabled}
