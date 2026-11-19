@@ -77,6 +77,8 @@ export {
     AlertDialogTitle,
     AlertDialogDescription,
 } from './overlays'
+export { ConfirmDialog } from './overlays'
+export type { ConfirmDialogProps } from './overlays'
 export {
     Dialog,
     DialogTrigger,

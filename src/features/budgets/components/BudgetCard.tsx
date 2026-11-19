@@ -1,21 +1,8 @@
 import { useState, type FC } from 'react'
 import { SquarePen, Archive } from 'lucide-react'
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    Button,
-    Card,
-    Progress,
-} from '@/components/ui'
+import { Button, Card, ConfirmDialog, Progress } from '@/components/ui'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Budget } from '@/features/budgets/types/budget.types'
-import { getErrorMessage } from '@/shared/errors'
 
 type Props = {
     budget: Budget
@@ -25,8 +12,6 @@ type Props = {
 
 export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-    const [archiveError, setArchiveError] = useState<string | null>(null)
-    const [isArchiving, setIsArchiving] = useState(false)
 
     const { category } = budget
     const progress = Number.isFinite(budget.progress) ? budget.progress : 0
@@ -76,7 +61,6 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                         size="sm"
                         icon
                         onClick={() => {
-                            setArchiveError(null)
                             setIsConfirmOpen(true)
                         }}
                         aria-label={`Archive ${category.name}`}
@@ -132,60 +116,22 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                 </div>
             </div>
 
-            <AlertDialog
+            <ConfirmDialog
                 open={isConfirmOpen}
-                onOpenChange={(open, eventDetails) => {
-                    if (!open && isArchiving) {
-                        eventDetails.cancel()
-                        return
-                    }
-                    setIsConfirmOpen(open)
-                }}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Archive budget?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This will archive the budget for <strong>{category.name}</strong> (
-                            {budget.month}).
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    {archiveError ? (
-                        <p role="alert" className="text-sm text-destructive-border">
-                            {archiveError}
-                        </p>
-                    ) : null}
-                    <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isArchiving}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            asChild
-                            disabled={isArchiving}
-                            onClick={async (event) => {
-                                event.preventDefault()
-                                setIsArchiving(true)
-                                setArchiveError(null)
-                                try {
-                                    await onArchive(budget)
-                                    setIsConfirmOpen(false)
-                                } catch (error) {
-                                    setArchiveError(
-                                        getErrorMessage(
-                                            error,
-                                            'Unable to archive budget. Please try again.',
-                                        ),
-                                    )
-                                } finally {
-                                    setIsArchiving(false)
-                                }
-                            }}
-                        >
-                            <Button type="button" color="destructive" variant="contained">
-                                {isArchiving ? 'Archiving...' : 'Archive'}
-                            </Button>
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+                onOpenChange={setIsConfirmOpen}
+                title="Archive budget?"
+                description={
+                    <>
+                        This will archive the budget for <strong>{category.name}</strong> (
+                        {budget.month}).
+                    </>
+                }
+                confirmLabel="Archive"
+                pendingLabel="Archiving..."
+                errorFallback="Unable to archive budget. Please try again."
+                variant="destructive"
+                onConfirm={() => onArchive(budget)}
+            />
         </Card>
     )
 }

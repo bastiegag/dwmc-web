@@ -1,19 +1,7 @@
 import { useMemo, useState } from 'react'
 import { CircleHelp, Cookie, ShoppingCart, Tags, Utensils } from 'lucide-react'
 import type { Category } from '@/features/categories/types'
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    Badge,
-    Button,
-} from '@/components/ui'
-import { getErrorMessage } from '@/shared/errors'
+import { Badge, Button, ConfirmDialog } from '@/components/ui'
 
 type CategoryItemProps = {
     category: Category
@@ -32,8 +20,6 @@ const categoryIcons: Record<string, LucideIconComponent> = {
 
 export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-    const [archiveError, setArchiveError] = useState<string | null>(null)
-    const [isArchiving, setIsArchiving] = useState(false)
 
     const Icon = useMemo(() => categoryIcons[category.icon] ?? CircleHelp, [category.icon])
 
@@ -63,7 +49,6 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
                         className="min-h-11 no-underline hover:bg-accent/10"
                         size="sm"
                         onClick={() => {
-                            setArchiveError(null)
                             setIsConfirmOpen(true)
                         }}
                         aria-label={`Archive category ${category.name}`}
@@ -73,60 +58,22 @@ export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps)
                 ) : null}
             </div>
 
-            <AlertDialog
+            <ConfirmDialog
                 open={isConfirmOpen}
-                onOpenChange={(open, eventDetails) => {
-                    if (!open && isArchiving) {
-                        eventDetails.cancel()
-                        return
-                    }
-                    setIsConfirmOpen(open)
-                }}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Archive category?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This will archive <strong>{category.name}</strong>. Existing
-                            transactions and budgets will remain associated with it.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    {archiveError ? (
-                        <p role="alert" className="text-sm text-destructive-border">
-                            {archiveError}
-                        </p>
-                    ) : null}
-                    <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isArchiving}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            asChild
-                            disabled={isArchiving}
-                            onClick={async (event) => {
-                                event.preventDefault()
-                                setIsArchiving(true)
-                                setArchiveError(null)
-                                try {
-                                    await onArchive(category)
-                                    setIsConfirmOpen(false)
-                                } catch (error) {
-                                    setArchiveError(
-                                        getErrorMessage(
-                                            error,
-                                            'Unable to archive category. Please try again.',
-                                        ),
-                                    )
-                                } finally {
-                                    setIsArchiving(false)
-                                }
-                            }}
-                        >
-                            <Button type="button" color="destructive" variant="contained">
-                                {isArchiving ? 'Archiving...' : 'Archive'}
-                            </Button>
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+                onOpenChange={setIsConfirmOpen}
+                title="Archive category?"
+                description={
+                    <>
+                        This will archive <strong>{category.name}</strong>. Existing transactions
+                        and budgets will remain associated with it.
+                    </>
+                }
+                confirmLabel="Archive"
+                pendingLabel="Archiving..."
+                errorFallback="Unable to archive category. Please try again."
+                variant="destructive"
+                onConfirm={() => onArchive(category)}
+            />
         </li>
     )
 }
