@@ -1,7 +1,9 @@
+import type { FinanceIconName } from '@/shared/finance-icons'
+
 export type Category = {
     id: string
     name: string
-    icon: string
+    icon: FinanceIconName
     sectionId: string
     isArchived: boolean
     createdAt: string

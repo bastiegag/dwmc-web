@@ -10,6 +10,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
+    IconPicker,
 } from '@/components/ui'
 import { TextField } from '@/components/form/TextField'
 import {
@@ -30,7 +31,7 @@ type CategoryFormProps = {
 
 const defaultValues: CategoryFormValues = {
     name: '',
-    icon: '',
+    icon: 'shopping-cart',
     sectionId: '',
 }
 
@@ -86,15 +87,34 @@ export const CategoryForm = ({
                     error={errors.name?.message}
                 />
 
-                <TextField
+                <FormField
                     id="category-icon"
                     label="Icon"
-                    placeholder="shopping-cart"
                     required
-                    maxLength={80}
-                    {...register('icon')}
                     error={errors.icon?.message}
-                />
+                    disabled={isBusy}
+                >
+                    <Controller
+                        name="icon"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <IconPicker
+                                id="category-icon"
+                                ref={field.ref}
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                onBlur={field.onBlur}
+                                aria-labelledby="category-icon-label"
+                                required
+                                disabled={isBusy}
+                                invalid={Boolean(fieldState.error)}
+                                aria-describedby={
+                                    fieldState.error ? 'category-icon-error' : undefined
+                                }
+                            />
+                        )}
+                    />
+                </FormField>
 
                 <FormField
                     id="category-section"

@@ -20,9 +20,9 @@ const makeBudget = (id: string, name: string, overrides: Partial<Budget> = {}): 
     category: {
         id: `category-${id}`,
         name,
-        icon: 'tag',
+        icon: 'shopping-bag',
         sectionId: 'section-needs',
-        section: { id: 'section-needs', name: 'Needs', color: '#7cb2ac' },
+        section: { id: 'section-needs', name: 'Needs', color: 'secondary' },
     },
     ...overrides,
 })

@@ -1,5 +1,7 @@
 export * from './Checkbox'
+export * from './ColorPicker'
 export * from './Combobox'
+export * from './IconPicker'
 export * from './Input'
 export * from './InputGroup'
 export * from './Label'

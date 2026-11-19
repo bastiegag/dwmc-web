@@ -1,3 +1,6 @@
+import type { FinanceIconName } from '@/shared/finance-icons'
+import type { SemanticColor } from '@/shared/semantic-colors'
+
 export type AccountType =
     'CHECKING' | 'SAVINGS' | 'CREDIT_CARD' | 'CASH' | 'INVESTMENT' | 'LOAN' | 'OTHER'
 
@@ -8,8 +11,8 @@ export type Account = {
     startingBalance: number
     currentBalance: number
     goal: number | null
-    color: string
-    icon: string
+    color: SemanticColor
+    icon: FinanceIconName
     isArchived: boolean
     createdAt: string
     updatedAt: string
@@ -20,8 +23,8 @@ export type CreateAccountPayload = {
     type?: AccountType
     startingBalance?: number
     goal?: number | null
-    color: string
-    icon: string
+    color: SemanticColor
+    icon: FinanceIconName
 }
 
 export type UpdateAccountPayload = {
@@ -29,8 +32,8 @@ export type UpdateAccountPayload = {
     type?: AccountType
     startingBalance?: number
     goal?: number | null
-    color?: string
-    icon?: string
+    color?: SemanticColor
+    icon?: FinanceIconName
     isArchived?: boolean
 }
 

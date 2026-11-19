@@ -171,7 +171,7 @@ test('keeps long account content and dialogs within responsive viewports', async
         startingBalance: 123456789.99,
         currentBalance: -123456789.99,
         goal: null,
-        color: '#ed6a5a',
+        color: 'destructive',
         icon: 'wallet',
         isArchived: false,
         createdAt: '2026-01-01T00:00:00.000Z',

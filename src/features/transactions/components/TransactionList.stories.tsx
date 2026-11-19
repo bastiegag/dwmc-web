@@ -17,7 +17,7 @@ const baseTransaction: Transaction = {
     isArchived: false,
     createdAt: '2026-10-02T12:00:00.000Z',
     updatedAt: '2026-10-02T12:00:00.000Z',
-    account: { id: 'account-chequing', name: 'Chequing', color: '#ed6a5a', icon: 'wallet' },
+    account: { id: 'account-chequing', name: 'Chequing', color: 'destructive', icon: 'wallet' },
     category: {
         id: 'category-groceries',
         name: 'Groceries',
@@ -38,7 +38,7 @@ const transactions: Transaction[] = [
         category: {
             id: 'category-salary',
             name: 'Salary',
-            icon: 'briefcase',
+            icon: 'briefcase-business',
             sectionId: 'income',
         },
     },
@@ -57,13 +57,13 @@ const transactions: Transaction[] = [
         fromAccount: {
             id: 'account-chequing',
             name: 'Chequing',
-            color: '#ed6a5a',
+            color: 'destructive',
             icon: 'wallet',
         },
         toAccount: {
             id: 'account-savings',
             name: 'Savings',
-            color: '#4f9d69',
+            color: 'success',
             icon: 'piggy-bank',
         },
     },

@@ -1,34 +1,9 @@
-import { useState, useMemo, createElement } from 'react'
-import {
-    Archive,
-    Banknote,
-    CreditCard,
-    Coins,
-    DollarSign,
-    Landmark,
-    ShoppingBag,
-    ShoppingCart,
-    Shield,
-    Wallet,
-} from 'lucide-react'
+import { useState } from 'react'
 import { Button, Card, ConfirmDialog, Progress } from '@/components/ui'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Account } from '@/features/accounts/types/account.types'
-
-const accountIcons: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
-    archive: Archive,
-    banknote: Banknote,
-    'credit-card': CreditCard,
-    coins: Coins,
-    'dollar-sign': DollarSign,
-    landmark: Landmark,
-    'shopping-bag': ShoppingBag,
-    'shopping-cart': ShoppingCart,
-    shield: Shield,
-    wallet: Wallet,
-}
-
-const getIconComponent = (name: string) => accountIcons[name] ?? Wallet
+import { getFinanceIconOption } from '@/shared/finance-icons'
+import { getSemanticColorClassName } from '@/shared/semantic-colors'
 
 type AccountCardProps = {
     account: Account
@@ -38,7 +13,8 @@ type AccountCardProps = {
 
 export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-    const iconComp = useMemo(() => getIconComponent(account.icon), [account.icon])
+    const AccountIcon = getFinanceIconOption(account.icon)?.Component
+    const colorClassName = getSemanticColorClassName(account.color)
 
     const { currentBalance, startingBalance, goal } = account
 
@@ -58,16 +34,17 @@ export const AccountCard = ({ account, onEdit, onArchive }: AccountCardProps) =>
             <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
                     <span
-                        className="mt-2 inline-block size-3 shrink-0 rounded-full border"
-                        style={{ backgroundColor: account.color }}
+                        className={`mt-2 inline-block size-3 shrink-0 rounded-full border ${colorClassName ?? ''}`}
                         aria-hidden="true"
                     />
                     <div className="min-w-0 flex-1">
                         <h2 className="flex min-w-0 items-center gap-2 text-lg">
-                            {createElement(iconComp, {
-                                className: 'size-5 shrink-0 text-muted-foreground',
-                                'aria-hidden': true,
-                            })}
+                            {AccountIcon ? (
+                                <AccountIcon
+                                    className="size-5 shrink-0 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                            ) : null}
                             <span className="min-w-0 break-words">{account.name}</span>
                         </h2>
                         <p className="text-sm text-muted-foreground">

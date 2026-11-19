@@ -3,6 +3,7 @@ import { SquarePen, Archive } from 'lucide-react'
 import { Button, Card, ConfirmDialog, Progress } from '@/components/ui'
 import { formatCurrency } from '@/lib/format-currency'
 import type { Budget } from '@/features/budgets/types/budget.types'
+import { getSemanticColorClassName } from '@/shared/semantic-colors'
 
 type Props = {
     budget: Budget
@@ -14,6 +15,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
     const { category } = budget
+    const sectionColorClassName = getSemanticColorClassName(category.section.color)
     const progress = Number.isFinite(budget.progress) ? budget.progress : 0
     const isZeroLimitOverBudget = budget.amount === 0 && budget.isOverBudget
     const progressText = isZeroLimitOverBudget
@@ -30,12 +32,7 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
             <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
                     <div
-                        style={{
-                            width: 12,
-                            height: 12,
-                            borderRadius: 6,
-                            backgroundColor: category.section.color,
-                        }}
+                        className={`size-3 shrink-0 rounded-full ${sectionColorClassName ?? ''}`}
                         aria-hidden="true"
                     />
                     <div className="min-w-0 flex-1">

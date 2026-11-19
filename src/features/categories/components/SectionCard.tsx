@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { SectionWithCategories } from '@/features/categories/types'
 import { Badge, Button, Card, ConfirmDialog } from '@/components/ui'
 import { CategoryList } from './CategoryList'
+import { getSemanticColorClassName } from '@/shared/semantic-colors'
 
 type SectionCardProps = {
     section: SectionWithCategories
@@ -21,6 +22,7 @@ export const SectionCard = ({
     onArchiveCategory,
 }: SectionCardProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const colorClassName = getSemanticColorClassName(section.color)
 
     return (
         <Card className="min-w-0">
@@ -28,8 +30,7 @@ export const SectionCard = ({
                 <div className="min-w-0 flex-1 space-y-1">
                     <h2 className="flex min-w-0 flex-wrap items-center gap-2 text-lg">
                         <span
-                            className="inline-block h-3 w-3 shrink-0 rounded-full border"
-                            style={{ backgroundColor: section.color }}
+                            className={`inline-block size-3 shrink-0 rounded-full border ${colorClassName ?? ''}`}
                             aria-hidden="true"
                         />
                         <span className="break-words">{section.name}</span>

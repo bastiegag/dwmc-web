@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
-import { CircleHelp, Cookie, ShoppingCart, Tags, Utensils } from 'lucide-react'
+import { useState } from 'react'
 import type { Category } from '@/features/categories/types'
 import { Badge, Button, ConfirmDialog } from '@/components/ui'
+import { getFinanceIconOption } from '@/shared/finance-icons'
 
 type CategoryItemProps = {
     category: Category
@@ -9,24 +9,19 @@ type CategoryItemProps = {
     onArchive: (category: Category) => Promise<void> | void
 }
 
-type LucideIconComponent = React.ComponentType<{ className?: string }>
-
-const categoryIcons: Record<string, LucideIconComponent> = {
-    cookie: Cookie,
-    'shopping-cart': ShoppingCart,
-    tags: Tags,
-    utensils: Utensils,
-}
-
 export const CategoryItem = ({ category, onEdit, onArchive }: CategoryItemProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-
-    const Icon = useMemo(() => categoryIcons[category.icon] ?? CircleHelp, [category.icon])
+    const Icon = getFinanceIconOption(category.icon)?.Component
 
     return (
         <li className="flex min-w-0 flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2">
             <div className="flex min-w-0 flex-1 items-start gap-3">
-                <Icon className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                {Icon ? (
+                    <Icon
+                        className="mt-1 h-4 w-4 shrink-0 text-muted-foreground"
+                        aria-hidden="true"
+                    />
+                ) : null}
                 <span className="min-w-0 break-words text-sm font-medium">{category.name}</span>
                 {category.isArchived ? <Badge variant="secondary">Archived</Badge> : null}
             </div>

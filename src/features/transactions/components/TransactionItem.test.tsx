@@ -62,7 +62,7 @@ describe('TransactionItem', () => {
             category: {
                 id: 'category-long',
                 name: 'A very long category name that should remain readable on narrow screens',
-                icon: 'tag',
+                icon: 'shopping-bag',
                 sectionId: 'section-1',
             },
             categoryId: 'category-long',

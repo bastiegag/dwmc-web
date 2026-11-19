@@ -8,7 +8,7 @@ const editValues: AccountFormValues = {
     type: 'SAVINGS',
     startingBalance: 4200,
     goal: 6000,
-    color: '#7cb2ac',
+    color: 'secondary',
     icon: 'landmark',
 }
 

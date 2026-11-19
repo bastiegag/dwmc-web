@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import TransactionFilters from './TransactionFilters'
+import type { Account } from '@/features/accounts/types'
+import type { SectionWithCategories } from '@/features/categories/types'
 
-const accounts = [
+const accounts: Account[] = [
     {
         id: 'account-chequing',
         name: 'Chequing',
@@ -10,7 +12,7 @@ const accounts = [
         startingBalance: 1200,
         currentBalance: 1200,
         goal: null,
-        color: '#ed6a5a',
+        color: 'destructive',
         icon: 'wallet',
         isArchived: false,
         createdAt: '2026-10-01T00:00:00.000Z',
@@ -18,11 +20,11 @@ const accounts = [
     },
 ]
 
-const sections = [
+const sections: SectionWithCategories[] = [
     {
         id: 'section-needs',
         name: 'Needs',
-        color: '#ed6a5a',
+        color: 'destructive',
         isArchived: false,
         createdAt: '2026-10-01T00:00:00.000Z',
         updatedAt: '2026-10-01T00:00:00.000Z',

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor, within } from '@/test/utils/render'
 import AccountCard from '@/features/accounts/components/AccountCard'
 import { createAccount } from '@/test/fixtures/domain'
+import { getFinanceIconOption } from '@/shared/finance-icons'
 
 describe('AccountCard', () => {
     it('renders a savings goal with clamped progress and supports editing', async () => {
@@ -29,8 +30,8 @@ describe('AccountCard', () => {
         expect(onEdit).toHaveBeenCalledWith(account)
     })
 
-    it('uses fallback icon and hides invalid or non-savings goals', () => {
-        const account = createAccount({ icon: 'unknown-icon', goal: 0 })
+    it('uses a registered icon and hides non-savings goals without resolving a fallback', () => {
+        const account = createAccount({ icon: 'wallet', goal: 0 })
 
         const { container } = render(
             <AccountCard account={account} onEdit={vi.fn()} onArchive={vi.fn()} />,
@@ -38,6 +39,7 @@ describe('AccountCard', () => {
 
         expect(screen.queryByText(/savings goal/i)).not.toBeInTheDocument()
         expect(container.querySelector('.lucide-wallet')).toBeInTheDocument()
+        expect(getFinanceIconOption('unknown-icon')).toBeUndefined()
     })
 
     it('formats zero, negative, and large balances and wraps long account names', () => {

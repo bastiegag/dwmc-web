@@ -20,7 +20,7 @@ const budget: Budget = {
         name: 'Groceries',
         icon: 'shopping-cart',
         sectionId: 'section-needs',
-        section: { id: 'section-needs', name: 'Needs', color: '#7cb2ac' },
+        section: { id: 'section-needs', name: 'Needs', color: 'secondary' },
     },
 }
 
