@@ -59,7 +59,6 @@ export const BudgetDialog = ({
                     <Button
                         type="button"
                         variant="link"
-                        className="no-underline hover:bg-accent/10"
                         size="sm"
                         disabled={isPending}
                         onClick={() => handleOpenChange(false)}

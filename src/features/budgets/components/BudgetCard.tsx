@@ -1,4 +1,5 @@
 import { useState, type FC } from 'react'
+import { SquarePen, Archive } from 'lucide-react'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -63,24 +64,24 @@ export const BudgetCard: FC<Props> = ({ budget, onEdit, onArchive }) => {
                 <div className="flex shrink-0 flex-wrap gap-2">
                     <Button
                         variant="link"
-                        className="min-h-11 no-underline hover:bg-accent/10"
                         size="sm"
+                        icon
                         onClick={() => onEdit(budget)}
                         aria-label={`Edit ${category.name}`}
                     >
-                        Edit
+                        <SquarePen aria-hidden="true" />
                     </Button>
                     <Button
-                        variant="outlined"
-                        className="min-h-11"
+                        variant="link"
                         size="sm"
+                        icon
                         onClick={() => {
                             setArchiveError(null)
                             setIsConfirmOpen(true)
                         }}
                         aria-label={`Archive ${category.name}`}
                     >
-                        Archive
+                        <Archive aria-hidden="true" />
                     </Button>
                 </div>
             </div>

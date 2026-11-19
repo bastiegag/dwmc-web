@@ -60,7 +60,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
                 role={accessibleRole}
                 className={cn(alertVariants({ variant }), className)}
             >
-                <Icon className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                <Icon className="-mt-0.5 size-5 shrink-0" aria-hidden="true" />
 
                 <div className="min-w-0 flex-1">
                     {title ? (
