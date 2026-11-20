@@ -23,7 +23,11 @@ describe('ColorPicker', () => {
         expect(group).toHaveAttribute('aria-invalid', 'true')
         expect(group).toHaveAttribute('aria-describedby', 'color-error')
         expect(screen.getAllByRole('radio')).toHaveLength(6)
-        expect(screen.getByRole('radio', { name: 'Primary color' })).toBeChecked()
+        const primary = screen.getByRole('radio', { name: 'Primary color' })
+        expect(primary).toBeChecked()
+        expect(primary.querySelector('[aria-hidden="true"]')).toBeNull()
+        expect(primary).toHaveClass('data-checked:border-background')
+        expect(primary).not.toHaveClass('data-checked:ring-2')
 
         await user.click(screen.getByRole('radio', { name: 'Warning color' }))
         expect(onValueChange).toHaveBeenCalledWith('warning')

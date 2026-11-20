@@ -58,10 +58,11 @@ export const ColorPicker = forwardRef<HTMLButtonElement, ColorPickerProps>(
                     aria-label={`${option.label} color`}
                     aria-invalid={invalid || undefined}
                     aria-describedby={ariaDescribedby}
+                    showIndicator={false}
                     className={cn(
-                        'size-9 border-2 border-background shadow-sm',
-                        'focus-visible:ring-offset-2',
-                        'data-checked:ring-2 data-checked:ring-ring data-checked:ring-offset-2',
+                        'size-8 border-0',
+                        'focus-visible:ring-2 focus-visible:ring-ring',
+                        'data-checked:ring-offset-2 data-checked:ring-2 data-checked:ring-ring',
                         option.swatchClassName,
                         option.selectedTextClassName,
                     )}

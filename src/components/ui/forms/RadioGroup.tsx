@@ -5,29 +5,43 @@ import { cn } from '@/lib/utils'
 
 export interface RadioGroupProps extends Omit<
     ComponentPropsWithoutRef<typeof RadioGroupPrimitive>,
-    'value' | 'defaultValue' | 'onValueChange'
+    'value' | 'defaultValue' | 'onValueChange' | 'aria-orientation'
 > {
+    orientation?: 'vertical' | 'horizontal'
+    'aria-orientation'?: 'vertical' | 'horizontal'
     value?: string
     defaultValue?: string
     onValueChange?: (value: string) => void
 }
 
 export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
-    ({ className, ...props }, ref) => (
-        <RadioGroupPrimitive
-            ref={ref}
-            className={cn('flex flex-col gap-3', className)}
-            {...props}
-        />
-    ),
+    ({ className, orientation, 'aria-orientation': ariaOrientation, ...props }, ref) => {
+        const resolvedOrientation = orientation ?? ariaOrientation ?? 'vertical'
+
+        return (
+            <RadioGroupPrimitive
+                ref={ref}
+                aria-orientation={resolvedOrientation}
+                className={cn(
+                    resolvedOrientation === 'horizontal'
+                        ? 'flex flex-row flex-wrap gap-3'
+                        : 'flex flex-col gap-3',
+                    className,
+                )}
+                {...props}
+            />
+        )
+    },
 )
 
 RadioGroup.displayName = 'RadioGroup'
 
-export type RadioGroupItemProps = ComponentPropsWithoutRef<typeof RadioPrimitive.Root>
+export type RadioGroupItemProps = ComponentPropsWithoutRef<typeof RadioPrimitive.Root> & {
+    showIndicator?: boolean
+}
 
 export const RadioGroupItem = forwardRef<HTMLButtonElement, RadioGroupItemProps>(
-    ({ className, ...props }, ref) => (
+    ({ className, showIndicator = true, ...props }, ref) => (
         <RadioPrimitive.Root
             {...props}
             ref={ref}
@@ -62,9 +76,11 @@ export const RadioGroupItem = forwardRef<HTMLButtonElement, RadioGroupItemProps>
                 className,
             )}
         >
-            <RadioPrimitive.Indicator className={cn('flex items-center justify-center')}>
-                <span className="size-2.5 rounded-full bg-current" aria-hidden="true" />
-            </RadioPrimitive.Indicator>
+            {showIndicator && (
+                <RadioPrimitive.Indicator className={cn('flex items-center justify-center')}>
+                    <span className="size-2.5 rounded-full bg-current" aria-hidden="true" />
+                </RadioPrimitive.Indicator>
+            )}
         </RadioPrimitive.Root>
     ),
 )
