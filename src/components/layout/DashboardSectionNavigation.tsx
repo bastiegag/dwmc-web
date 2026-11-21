@@ -14,7 +14,7 @@ export const DashboardSectionNavigation = () => {
     return (
         <nav
             aria-label="Dashboard sections"
-            className={cn('flex justify-center', 'bg-primary px-4 pb-4', 'text-primary-foreground')}
+            className={cn('flex justify-center', 'bg-foreground px-4 pb-4', 'text-background')}
         >
             <ul className="flex items-center gap-2">
                 {navigation.map((item) => (

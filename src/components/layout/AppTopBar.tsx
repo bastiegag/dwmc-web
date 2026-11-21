@@ -18,7 +18,7 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
         <header
             className="
                 flex h-16 shrink-0 items-center justify-between
-                gap-4 bg-primary px-4 text-primary-foreground
+                gap-4 bg-foreground px-4 text-background
                 sm:px-6
             "
         >
