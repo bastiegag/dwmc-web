@@ -41,7 +41,7 @@ export const AppLayout = () => {
                     <main
                         id="main-content"
                         tabIndex={-1}
-                        className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8 pb-[calc(4rem+1.5rem+env(safe-area-inset-bottom))]"
+                        className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8 pb-[calc(6rem+1.5rem+env(safe-area-inset-bottom))]"
                     >
                         <Outlet />
                     </main>

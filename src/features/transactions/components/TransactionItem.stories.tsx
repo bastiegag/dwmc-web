@@ -17,7 +17,7 @@ const transaction: Transaction = {
     isArchived: false,
     createdAt: '2026-10-02T12:00:00.000Z',
     updatedAt: '2026-10-02T12:00:00.000Z',
-    account: { id: 'account-chequing', name: 'Chequing', color: '#ed6a5a', icon: 'wallet' },
+    account: { id: 'account-chequing', name: 'Chequing', color: 'destructive', icon: 'wallet' },
     category: {
         id: 'category-groceries',
         name: 'Groceries',
@@ -61,7 +61,7 @@ export const Income: Story = {
             category: {
                 id: 'category-salary',
                 name: 'Salary',
-                icon: 'briefcase',
+                icon: 'briefcase-business',
                 sectionId: 'income',
             },
             categoryId: 'category-salary',
@@ -84,13 +84,13 @@ export const Transfer: Story = {
             fromAccount: {
                 id: 'account-chequing',
                 name: 'Chequing',
-                color: '#ed6a5a',
+                color: 'destructive',
                 icon: 'wallet',
             },
             toAccount: {
                 id: 'account-savings',
                 name: 'Long-term savings',
-                color: '#4f9d69',
+                color: 'success',
                 icon: 'piggy-bank',
             },
         }),
@@ -126,7 +126,7 @@ export const LongAccountName: Story = {
             account: {
                 id: 'account-chequing',
                 name: 'Household chequing account for everyday and recurring expenses',
-                color: '#ed6a5a',
+                color: 'destructive',
                 icon: 'wallet',
             },
         }),

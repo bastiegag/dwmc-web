@@ -16,7 +16,7 @@ export const Create: Story = { args: {} }
 
 export const Edit: Story = {
     args: {
-        initialValues: { name: 'Needs', color: '#7cb2ac' },
+        initialValues: { name: 'Needs', color: 'secondary' },
         submitLabel: 'Save changes',
     },
 }

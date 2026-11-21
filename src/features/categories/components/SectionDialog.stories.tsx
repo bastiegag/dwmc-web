@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>
 export const Create: Story = { args: {} }
 
 export const Edit: Story = {
-    args: { mode: 'edit', initialValues: { name: 'Needs', color: '#7cb2ac' } },
+    args: { mode: 'edit', initialValues: { name: 'Needs', color: 'secondary' } },
 }
 
 export const Controlled: Story = {

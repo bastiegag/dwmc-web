@@ -37,7 +37,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
     render: () => (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button />}>Actions</DropdownMenuTrigger>
+            <DropdownMenuTrigger render={<Button>Actions</Button>}></DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem onClick={fn()}>Rename</DropdownMenuItem>
                 <DropdownMenuItem onClick={fn()}>Duplicate</DropdownMenuItem>
@@ -49,7 +49,7 @@ export const Default: Story = {
 export const DisabledItem: Story = {
     render: () => (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button />}>Actions</DropdownMenuTrigger>
+            <DropdownMenuTrigger render={<Button>Actions</Button>}></DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem onClick={fn()}>Rename</DropdownMenuItem>
                 <DropdownMenuItem disabled>Archive (unavailable)</DropdownMenuItem>
@@ -64,9 +64,9 @@ export const CheckboxItem: Story = {
         const [showHidden, setShowHidden] = useState(true)
         return (
             <DropdownMenu>
-                <DropdownMenuTrigger render={<Button variant="outlined" />}>
-                    View options
-                </DropdownMenuTrigger>
+                <DropdownMenuTrigger
+                    render={<Button variant="outlined">View options</Button>}
+                ></DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuCheckboxItem
                         checked={showArchived}
@@ -88,9 +88,9 @@ export const RadioItem: Story = {
         const [period, setPeriod] = useState('month')
         return (
             <DropdownMenu>
-                <DropdownMenuTrigger render={<Button variant="outlined" />}>
-                    Period: {period}
-                </DropdownMenuTrigger>
+                <DropdownMenuTrigger
+                    render={<Button variant="outlined">Period: {period}</Button>}
+                ></DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuRadioGroup value={period} onValueChange={setPeriod}>
                         <DropdownMenuRadioItem value="week">Week</DropdownMenuRadioItem>
@@ -106,7 +106,7 @@ export const RadioItem: Story = {
 export const NestedMenu: Story = {
     render: () => (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button />}>Export</DropdownMenuTrigger>
+            <DropdownMenuTrigger render={<Button>Export</Button>}></DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuSub>
                     <DropdownMenuSubTrigger>Export as</DropdownMenuSubTrigger>
@@ -125,7 +125,9 @@ export const NestedMenu: Story = {
 export const DestructiveAction: Story = {
     render: () => (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="outlined" />}>More</DropdownMenuTrigger>
+            <DropdownMenuTrigger
+                render={<Button variant="outlined">More</Button>}
+            ></DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem onClick={fn()}>Edit</DropdownMenuItem>
                 <DropdownMenuSeparator />

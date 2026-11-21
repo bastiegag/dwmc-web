@@ -1,5 +1,7 @@
 import { z } from 'zod'
 import { isSupportedMoneyAmount } from '@/shared/money'
+import { isFinanceIconName, type FinanceIconName } from '@/shared/finance-icons'
+import { isSemanticColor, type SemanticColor } from '@/shared/semantic-colors'
 
 export const accountTypeSchema = z.enum([
     'CHECKING',
@@ -45,8 +47,8 @@ export const accountFormSchema = z
         type: accountTypeSchema.default('CHECKING'),
         startingBalance: startingBalanceSchema,
         goal: goalSchema,
-        color: z.string().trim().min(1, 'Color is required').max(40),
-        icon: z.string().trim().min(1, 'Icon is required').max(80),
+        color: z.custom<SemanticColor>(isSemanticColor, 'Select a supported color'),
+        icon: z.custom<FinanceIconName>(isFinanceIconName, 'Select a supported icon'),
     })
     .superRefine((data, ctx) => {
         if (data.goal !== null && data.goal !== undefined && data.type !== 'SAVINGS') {

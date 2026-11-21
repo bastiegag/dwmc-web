@@ -24,7 +24,7 @@ export const FormField = ({
 }: FormFieldProps) => {
     return (
         <Field className={className} invalid={Boolean(error)} disabled={disabled}>
-            <FieldLabel htmlFor={id}>
+            <FieldLabel id={`${id}-label`} htmlFor={id}>
                 {label}
                 {required && (
                     <span className="ml-1 text-destructive-border" aria-hidden="true">

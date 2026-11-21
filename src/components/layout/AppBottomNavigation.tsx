@@ -55,7 +55,7 @@ export const AppBottomNavigation = () => {
             className={cn(
                 'fixed inset-x-0 bottom-0 z-40',
                 'h-[calc(6rem+env(safe-area-inset-bottom))]',
-                'border-t border-border bg-background',
+                'bg-card',
                 'px-4 pt-3 pb-[env(safe-area-inset-bottom)]',
                 'lg:hidden',
             )}

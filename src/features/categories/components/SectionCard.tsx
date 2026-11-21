@@ -1,20 +1,8 @@
 import { useState } from 'react'
 import type { SectionWithCategories } from '@/features/categories/types'
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    Badge,
-    Button,
-    Card,
-} from '@/components/ui'
-import { getErrorMessage } from '@/shared/errors'
+import { Badge, Button, Card, ConfirmDialog } from '@/components/ui'
 import { CategoryList } from './CategoryList'
+import { getSemanticColorClassName } from '@/shared/semantic-colors'
 
 type SectionCardProps = {
     section: SectionWithCategories
@@ -34,8 +22,7 @@ export const SectionCard = ({
     onArchiveCategory,
 }: SectionCardProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-    const [archiveError, setArchiveError] = useState<string | null>(null)
-    const [isArchiving, setIsArchiving] = useState(false)
+    const colorClassName = getSemanticColorClassName(section.color)
 
     return (
         <Card className="min-w-0">
@@ -43,8 +30,7 @@ export const SectionCard = ({
                 <div className="min-w-0 flex-1 space-y-1">
                     <h2 className="flex min-w-0 flex-wrap items-center gap-2 text-lg">
                         <span
-                            className="inline-block h-3 w-3 shrink-0 rounded-full border"
-                            style={{ backgroundColor: section.color }}
+                            className={`inline-block size-3 shrink-0 rounded-full border ${colorClassName ?? ''}`}
                             aria-hidden="true"
                         />
                         <span className="break-words">{section.name}</span>
@@ -74,7 +60,6 @@ export const SectionCard = ({
                             className="min-h-11 no-underline hover:bg-accent/10"
                             size="sm"
                             onClick={() => {
-                                setArchiveError(null)
                                 setIsConfirmOpen(true)
                             }}
                             aria-label={`Archive section ${section.name}`}
@@ -92,61 +77,23 @@ export const SectionCard = ({
                 />
             </div>
 
-            <AlertDialog
+            <ConfirmDialog
                 open={isConfirmOpen}
-                onOpenChange={(open, eventDetails) => {
-                    if (!open && isArchiving) {
-                        eventDetails.cancel()
-                        return
-                    }
-                    setIsConfirmOpen(open)
-                }}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Archive section?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This will archive <strong>{section.name}</strong> and all categories in
-                            it. Existing transactions and budgets will remain associated with those
-                            categories.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    {archiveError ? (
-                        <p role="alert" className="text-sm text-destructive-border">
-                            {archiveError}
-                        </p>
-                    ) : null}
-                    <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isArchiving}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            asChild
-                            disabled={isArchiving}
-                            onClick={async (event) => {
-                                event.preventDefault()
-                                setIsArchiving(true)
-                                setArchiveError(null)
-                                try {
-                                    await onArchiveSection(section)
-                                    setIsConfirmOpen(false)
-                                } catch (error) {
-                                    setArchiveError(
-                                        getErrorMessage(
-                                            error,
-                                            'Unable to archive section. Please try again.',
-                                        ),
-                                    )
-                                } finally {
-                                    setIsArchiving(false)
-                                }
-                            }}
-                        >
-                            <Button type="button" color="destructive" variant="contained">
-                                {isArchiving ? 'Archiving...' : 'Archive'}
-                            </Button>
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+                onOpenChange={setIsConfirmOpen}
+                title="Archive section?"
+                description={
+                    <>
+                        This will archive <strong>{section.name}</strong> and all categories in it.
+                        Existing transactions and budgets will remain associated with those
+                        categories.
+                    </>
+                }
+                confirmLabel="Archive"
+                pendingLabel="Archiving..."
+                errorFallback="Unable to archive section. Please try again."
+                variant="destructive"
+                onConfirm={() => onArchiveSection(section)}
+            />
         </Card>
     )
 }

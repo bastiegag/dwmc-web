@@ -47,7 +47,7 @@ const createAccount = (id: string, name: string, startingBalance: number): Accou
     currentBalance: startingBalance,
     type: 'CHECKING',
     goal: null,
-    color: '#3b82f6',
+    color: 'primary',
     icon: 'wallet',
     isArchived: false,
     createdAt: timestamp,

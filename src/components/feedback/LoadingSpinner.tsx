@@ -10,7 +10,7 @@ export interface LoadingSpinnerProps extends Omit<
 
 const sizeVariants = {
     sm: 'size-4 border-2',
-    md: 'size-6 border-[3px]',
+    md: 'size-6 border-3',
     lg: 'size-8 border-4',
 } as const
 

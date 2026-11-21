@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 import { BudgetForm } from './BudgetForm'
 import type { BudgetFormInput } from '@/features/budgets/schemas/budget.schema'
-import type { SectionWithCategories } from '@/features/categories/types'
+import type { Category, SectionWithCategories } from '@/features/categories/types'
 
 const sections: SectionWithCategories[] = [
     {
         id: 'section-needs',
         name: 'Needs',
-        color: '#7cb2ac',
+        color: 'secondary',
         isArchived: false,
         createdAt: '2026-01-01T00:00:00.000Z',
         updatedAt: '2026-01-01T00:00:00.000Z',
@@ -32,7 +32,7 @@ const editValues: BudgetFormInput = {
     amount: '600',
 }
 
-const archivedCategory = {
+const archivedCategory: Category = {
     id: 'category-archived',
     name: 'Archived groceries',
     icon: 'shopping-cart',
@@ -84,7 +84,7 @@ export const ArchivedCategory: Story = {
             {
                 id: 'section-archived',
                 name: 'Archived',
-                color: '#7cb2ac',
+                color: 'secondary',
                 isArchived: true,
                 createdAt: '2026-01-01T00:00:00.000Z',
                 updatedAt: '2026-01-01T00:00:00.000Z',

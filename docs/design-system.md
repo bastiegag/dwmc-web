@@ -32,8 +32,9 @@ Do not duplicate a shared primitive inside a feature.
 
 The shared primitive library includes overlays and interactions (dialog, drawer,
 sheet, dropdown menu, combobox, tooltip, accordion, and number field), form
-foundations (field, fieldset, input group, and currency input), and semantic
-content primitives (table, pagination, separator, skeleton, and scroll area).
+foundations (field, fieldset, input group, color picker, icon picker, and
+currency input), and semantic content primitives (table, pagination,
+separator, skeleton, and scroll area).
 These components own accessibility and interaction behavior, but not feature
 data fetching or business rules. Currency input values use decimal strings (or
 `null` for empty) so callers can preserve monetary precision without relying on
@@ -91,6 +92,12 @@ label, description, and error are linked to the control with `htmlFor` and
 `aria-describedby`; set `aria-invalid` on the control when `invalid` is true.
 Use `Controller` from React Hook Form for `CurrencyInput` and other controls
 that do not expose a native `ref` value.
+
+Account and section colors use the finite semantic color options in
+`src/shared/semantic-colors.ts`; account and category icons use the shared
+finance icon registry in `src/shared/finance-icons.ts`. Pickers and feature
+displays must resolve from these registries rather than accepting arbitrary CSS
+colors or maintaining separate icon maps.
 
 `CurrencyInput` uses a `string | null` contract:
 

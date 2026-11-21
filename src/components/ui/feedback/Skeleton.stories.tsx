@@ -31,7 +31,7 @@ export const Text: Story = {
 
 export const Card: Story = {
     render: () => (
-        <div className="w-72 space-y-3 rounded-lg border p-4">
+        <div className="w-72 space-y-3 rounded-lg bg-card p-4">
             <Skeleton className="h-5 w-1/2" />
             <Skeleton className="h-20 w-full" />
             <Skeleton className="h-8 w-24" />
@@ -41,7 +41,7 @@ export const Card: Story = {
 
 export const AccountBalance: Story = {
     render: () => (
-        <div className="w-64 space-y-2 rounded-lg border p-4">
+        <div className="w-64 space-y-2 rounded-lg bg-card p-4">
             <Skeleton className="h-4 w-20" />
             <Skeleton className="h-8 w-36" />
         </div>

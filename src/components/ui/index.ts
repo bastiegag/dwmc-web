@@ -6,6 +6,8 @@ export { Badge } from './feedback'
 export { Card } from './data-display'
 export type { CardProps } from './data-display'
 export { Checkbox } from './forms'
+export { ColorPicker, IconPicker } from './forms'
+export type { ColorPickerProps, IconPickerProps } from './forms'
 export { Chart } from './data-display'
 export { Calendar } from './data-display'
 export { DatePicker } from './data-display'
@@ -77,6 +79,8 @@ export {
     AlertDialogTitle,
     AlertDialogDescription,
 } from './overlays'
+export { ConfirmDialog } from './overlays'
+export type { ConfirmDialogProps } from './overlays'
 export {
     Dialog,
     DialogTrigger,

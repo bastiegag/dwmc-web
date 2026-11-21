@@ -23,11 +23,5 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Sizes: Story = {
-    render: () => (
-        <div className="flex items-center gap-6">
-            <LoadingSpinner size="sm" aria-label="Loading small content" />
-            <LoadingSpinner size="md" aria-label="Loading content" />
-            <LoadingSpinner size="lg" aria-label="Loading large content" />
-        </div>
-    ),
+    render: () => <LoadingSpinner size="md" aria-label="Loading content" />,
 }

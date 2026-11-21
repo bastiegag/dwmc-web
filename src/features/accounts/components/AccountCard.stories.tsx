@@ -10,7 +10,7 @@ const account: Account = {
     startingBalance: 1200,
     currentBalance: 2450.5,
     goal: null,
-    color: '#ed6a5a',
+    color: 'destructive',
     icon: 'wallet',
     isArchived: false,
     createdAt: '2026-01-01T00:00:00.000Z',
@@ -24,7 +24,7 @@ const savings: Account = {
     type: 'SAVINGS',
     currentBalance: 4200,
     goal: 6000,
-    color: '#7cb2ac',
+    color: 'secondary',
     icon: 'landmark',
 }
 

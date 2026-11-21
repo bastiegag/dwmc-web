@@ -88,7 +88,7 @@ const setupBudgetApi = async (page: Parameters<typeof mockAuthenticatedSession>[
     const section: Section = {
         id: 'section-food',
         name: 'Food',
-        color: '#22c55e',
+        color: 'success',
         isArchived: false,
         categories: [],
         createdAt: timestamp,
@@ -154,7 +154,7 @@ const setupBudgetApi = async (page: Parameters<typeof mockAuthenticatedSession>[
                 startingBalance: 1000,
                 currentBalance: 1000,
                 goal: null,
-                color: '#3b82f6',
+                color: 'primary',
                 icon: 'wallet',
                 isArchived: false,
                 createdAt: timestamp,
@@ -338,7 +338,6 @@ test('keeps a selected-month Budget synchronized with expense create, month move
     await page.getByRole('heading', { name: 'Categories' }).waitFor()
     await page.getByTestId('primary-action-button').click()
     await page.getByLabel('Category name').fill('Groceries')
-    await page.getByLabel('Icon').fill('shopping-cart')
     await chooseOption(page, 'Section', 'Food')
     await page.getByRole('button', { name: 'Create category' }).click()
     await expect(page.getByText('Groceries')).toBeVisible()
@@ -435,7 +434,7 @@ test('keeps long-name, high-value budgets and dialogs usable at responsive viewp
     await page.getByRole('heading', { name: 'Categories' }).waitFor()
     await page.getByTestId('primary-action-button').click()
     await page.getByLabel('Category name').fill(categoryName)
-    await page.getByLabel('Icon').fill('tag')
+    await page.getByRole('radio', { name: 'Shopping bag' }).click()
     await chooseOption(page, 'Section', 'Food')
     await page.getByRole('button', { name: 'Create category' }).click()
     await expect(page.getByText(categoryName)).toBeVisible()

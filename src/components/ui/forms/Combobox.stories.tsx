@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect, userEvent, within } from 'storybook/test'
 import { useState } from 'react'
 import {
     Combobox,
@@ -24,7 +25,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Filterable single-select built on Base UI. Pass the option list through `items` for filtering, render `ComboboxItem` children, and use `ComboboxEmpty` for no results. Compose `ComboboxInputGroup` and `ComboboxTrigger` when the input includes a popup toggle.',
+                    'Filterable single-select built on Base UI. Pass the option list through `items` and render `ComboboxItem` from a `ComboboxList` render function for filtering. Use `ComboboxEmpty` for no results. Compose `ComboboxInputGroup` and `ComboboxTrigger` when the input includes a popup toggle.',
             },
         },
     },
@@ -38,13 +39,13 @@ export const Default: Story = {
         <Combobox items={accounts}>
             <ComboboxInput aria-label="Account" placeholder="Choose an account" />
             <ComboboxContent>
+                <ComboboxEmpty>No accounts found.</ComboboxEmpty>
                 <ComboboxList>
-                    <ComboboxEmpty>No accounts found.</ComboboxEmpty>
-                    {accounts.map((item) => (
+                    {(item: string) => (
                         <ComboboxItem key={item} value={item}>
                             {item}
                         </ComboboxItem>
-                    ))}
+                    )}
                 </ComboboxList>
             </ComboboxContent>
         </Combobox>
@@ -60,11 +61,11 @@ export const WithTrigger: Story = {
             </ComboboxInputGroup>
             <ComboboxContent>
                 <ComboboxList>
-                    {accounts.map((item) => (
+                    {(item: string) => (
                         <ComboboxItem key={item} value={item}>
                             {item}
                         </ComboboxItem>
-                    ))}
+                    )}
                 </ComboboxList>
             </ComboboxContent>
         </Combobox>
@@ -77,15 +78,22 @@ export const Search: Story = {
             <ComboboxInput aria-label="Account" placeholder="Type to filter accounts" />
             <ComboboxContent>
                 <ComboboxList>
-                    {accounts.map((item) => (
+                    {(item: string) => (
                         <ComboboxItem key={item} value={item}>
                             {item}
                         </ComboboxItem>
-                    ))}
+                    )}
                 </ComboboxList>
             </ComboboxContent>
         </Combobox>
     ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement.ownerDocument.body)
+        const input = canvas.getByRole('combobox', { name: 'Account' })
+        await userEvent.type(input, 'sav')
+        await expect(canvas.findByRole('option', { name: 'Savings' })).resolves.toBeVisible()
+        expect(canvas.queryByRole('option', { name: 'Checking' })).not.toBeInTheDocument()
+    },
 }
 
 export const EmptyResults: Story = {
@@ -93,13 +101,13 @@ export const EmptyResults: Story = {
         <Combobox items={accounts}>
             <ComboboxInput aria-label="Account" placeholder="Try typing 'zzz'" />
             <ComboboxContent>
+                <ComboboxEmpty>No accounts found.</ComboboxEmpty>
                 <ComboboxList>
-                    <ComboboxEmpty>No accounts found.</ComboboxEmpty>
-                    {accounts.map((item) => (
+                    {(item: string) => (
                         <ComboboxItem key={item} value={item}>
                             {item}
                         </ComboboxItem>
-                    ))}
+                    )}
                 </ComboboxList>
             </ComboboxContent>
         </Combobox>
@@ -115,11 +123,11 @@ export const Controlled: Story = {
                     <ComboboxInput aria-label="Account" placeholder="Choose an account" />
                     <ComboboxContent>
                         <ComboboxList>
-                            {accounts.map((item) => (
+                            {(item: string) => (
                                 <ComboboxItem key={item} value={item}>
                                     {item}
                                 </ComboboxItem>
-                            ))}
+                            )}
                         </ComboboxList>
                     </ComboboxContent>
                 </Combobox>
@@ -135,11 +143,11 @@ export const DisabledOptions: Story = {
             <ComboboxInput aria-label="Account" placeholder="Choose an account" />
             <ComboboxContent>
                 <ComboboxList>
-                    <ComboboxItem value="Checking">Checking</ComboboxItem>
-                    <ComboboxItem value="Savings" disabled>
-                        Savings (locked)
-                    </ComboboxItem>
-                    <ComboboxItem value="Credit card">Credit card</ComboboxItem>
+                    {(item: string) => (
+                        <ComboboxItem key={item} value={item} disabled={item === 'Savings'}>
+                            {item === 'Savings' ? 'Savings (locked)' : item}
+                        </ComboboxItem>
+                    )}
                 </ComboboxList>
             </ComboboxContent>
         </Combobox>

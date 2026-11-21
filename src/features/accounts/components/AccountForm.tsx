@@ -11,6 +11,8 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
+    ColorPicker,
+    IconPicker,
 } from '@/components/ui'
 import { TextField } from '@/components/form/TextField'
 import { MAX_MONEY_AMOUNT } from '@/shared/money'
@@ -34,7 +36,7 @@ const defaultValues: AccountFormValues = {
     type: 'CHECKING',
     startingBalance: 0,
     goal: null,
-    color: '#3b82f6',
+    color: 'primary',
     icon: 'wallet',
 }
 
@@ -174,23 +176,47 @@ export const AccountForm = ({
                 with reality.
             </p>
 
-            <TextField
-                id="color"
-                label="Color"
-                type="color"
-                required
-                {...register('color' as const)}
-                error={errors.color?.message}
-            />
+            <FormField id="account-color" label="Color" required error={errors.color?.message}>
+                <Controller
+                    name="color"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <ColorPicker
+                            id="account-color"
+                            ref={field.ref}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            onBlur={field.onBlur}
+                            aria-labelledby="account-color-label"
+                            required
+                            disabled={isPending || isSubmitting}
+                            invalid={Boolean(fieldState.error)}
+                            aria-describedby={fieldState.error ? 'account-color-error' : undefined}
+                        />
+                    )}
+                />
+            </FormField>
 
-            <TextField
-                id="icon"
-                label="Icon"
-                placeholder="wallet"
-                required
-                {...register('icon' as const)}
-                error={errors.icon?.message}
-            />
+            <FormField id="account-icon" label="Icon" required error={errors.icon?.message}>
+                <Controller
+                    name="icon"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <IconPicker
+                            id="account-icon"
+                            ref={field.ref}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            onBlur={field.onBlur}
+                            aria-labelledby="account-icon-label"
+                            required
+                            disabled={isPending || isSubmitting}
+                            invalid={Boolean(fieldState.error)}
+                            aria-describedby={fieldState.error ? 'account-icon-error' : undefined}
+                        />
+                    )}
+                />
+            </FormField>
 
             <FormError message={errorMessage} />
 

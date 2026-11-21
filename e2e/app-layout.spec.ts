@@ -163,6 +163,7 @@ test.describe('App Layout', () => {
             const type = dialog.getByRole('combobox', { name: 'Type' })
             await type.focus()
             await page.keyboard.press('Space')
+            await expect(page.getByRole('listbox')).toBeVisible()
             await page.keyboard.press('Home')
             await page.keyboard.press('ArrowDown')
             await page.keyboard.press('ArrowDown')

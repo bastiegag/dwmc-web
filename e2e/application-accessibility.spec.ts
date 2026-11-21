@@ -23,7 +23,7 @@ const account = {
     startingBalance: 1000,
     currentBalance: 850,
     goal: null,
-    color: '#3b82f6',
+    color: 'primary',
     icon: 'wallet',
     isArchived: false,
     createdAt: timestamp,
@@ -41,7 +41,7 @@ const category = {
 const section = {
     id: 'section-needs',
     name: 'Household Needs',
-    color: '#3b82f6',
+    color: 'primary',
     isArchived: false,
     categories: [
         category,
@@ -49,7 +49,7 @@ const section = {
             ...category,
             id: 'category-utilities',
             name: 'Utilities',
-            icon: 'bolt',
+            icon: 'smartphone',
         },
     ],
     createdAt: timestamp,

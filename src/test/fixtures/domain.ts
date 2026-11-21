@@ -13,7 +13,7 @@ export const createAccount = (overrides: Partial<Account> = {}): Account => ({
     startingBalance: 1250.75,
     currentBalance: 1250.75,
     goal: null,
-    color: '#3b82f6',
+    color: 'primary',
     icon: 'wallet',
     isArchived: false,
     createdAt: fixtureTimestamp,
@@ -35,7 +35,7 @@ export const createCategory = (overrides: Partial<Category> = {}): Category => (
 export const createSection = (overrides: Partial<Section> = {}): Section => ({
     id: 'section-1',
     name: 'Food',
-    color: '#22c55e',
+    color: 'success',
     isArchived: false,
     createdAt: fixtureTimestamp,
     updatedAt: fixtureTimestamp,
@@ -65,12 +65,12 @@ export const createBudget = (overrides: Partial<Budget> = {}): Budget => ({
     category: {
         id: 'cat-1',
         name: 'Groceries',
-        icon: 'cart',
+        icon: 'shopping-cart',
         sectionId: 'section-1',
         section: {
             id: 'section-1',
             name: 'Food',
-            color: '#3b82f6',
+            color: 'primary',
         },
     },
     ...overrides,
@@ -93,7 +93,7 @@ export const createTransaction = (overrides: Partial<Transaction> = {}): Transac
     account: {
         id: 'a1',
         name: 'Checking',
-        color: '#3b82f6',
+        color: 'primary',
         icon: 'wallet',
     },
     category: {

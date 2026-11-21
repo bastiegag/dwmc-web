@@ -1,9 +1,10 @@
 import type { Category } from './category.types'
+import type { SemanticColor } from '@/shared/semantic-colors'
 
 export type Section = {
     id: string
     name: string
-    color: string
+    color: SemanticColor
     isArchived: boolean
     createdAt: string
     updatedAt: string

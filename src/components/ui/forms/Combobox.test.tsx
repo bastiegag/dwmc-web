@@ -38,6 +38,9 @@ describe('Combobox', () => {
         await user.click(screen.getByRole('combobox', { name: 'Account' }))
         await user.type(screen.getByRole('combobox', { name: 'Account' }), 'sav')
 
+        const emptyStatus = screen.getByRole('status')
+        expect(emptyStatus).toBeEmptyDOMElement()
+        expect(emptyStatus).toHaveClass('empty:sr-only')
         expect(await screen.findByRole('option', { name: 'Savings' })).toBeInTheDocument()
         expect(screen.queryByRole('option', { name: 'Checking' })).not.toBeInTheDocument()
     })
