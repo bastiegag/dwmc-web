@@ -15,9 +15,6 @@ const buttonVariants = cva(
 
         // Interaction
         'cursor-pointer select-none transition-colors motion-reduce:transition-none',
-        'focus-visible:outline-none',
-        'focus-visible:ring-2 focus-visible:ring-ring',
-        'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 
         // Disabled
         'disabled:cursor-not-allowed disabled:opacity-50',
@@ -46,40 +43,41 @@ const buttonVariants = cva(
                 link: cn('text-(--button-border)', 'hover:bg-(--button-tint)'),
             },
             color: {
-                default:
-                    '[--button-color:var(--default)] ' +
-                    '[--button-foreground:var(--default-foreground)] ' +
+                default: cn(
+                    '[--button-color:var(--default)]',
+                    '[--button-foreground:var(--default-foreground)]',
                     '[--button-border:var(--default-border)]',
-
-                primary:
-                    '[--button-color:var(--primary)] ' +
-                    '[--button-foreground:var(--primary-foreground)] ' +
+                ),
+                primary: cn(
+                    '[--button-color:var(--primary)]',
+                    '[--button-foreground:var(--primary-foreground)]',
                     '[--button-border:var(--primary-border)]',
-
-                secondary:
-                    '[--button-color:var(--secondary)] ' +
-                    '[--button-foreground:var(--secondary-foreground)] ' +
+                ),
+                secondary: cn(
+                    '[--button-color:var(--secondary)]',
+                    '[--button-foreground:var(--secondary-foreground)]',
                     '[--button-border:var(--secondary-border)]',
-
-                destructive:
-                    '[--button-color:var(--destructive)] ' +
-                    '[--button-foreground:var(--destructive-foreground)] ' +
+                ),
+                destructive: cn(
+                    '[--button-color:var(--destructive)]',
+                    '[--button-foreground:var(--destructive-foreground)]',
                     '[--button-border:var(--destructive-border)]',
-
-                warning:
-                    '[--button-color:var(--warning)] ' +
-                    '[--button-foreground:var(--warning-foreground)] ' +
+                ),
+                warning: cn(
+                    '[--button-color:var(--warning)]',
+                    '[--button-foreground:var(--warning-foreground)]',
                     '[--button-border:var(--warning-border)]',
-
-                success:
-                    '[--button-color:var(--success)] ' +
-                    '[--button-foreground:var(--success-foreground)] ' +
+                ),
+                success: cn(
+                    '[--button-color:var(--success)]',
+                    '[--button-foreground:var(--success-foreground)]',
                     '[--button-border:var(--success-border)]',
-
-                info:
-                    '[--button-color:var(--info)] ' +
-                    '[--button-foreground:var(--info-foreground)] ' +
+                ),
+                info: cn(
+                    '[--button-color:var(--info)]',
+                    '[--button-foreground:var(--info-foreground)]',
                     '[--button-border:var(--info-border)]',
+                ),
             },
             size: {
                 sm: 'h-8 px-4',
