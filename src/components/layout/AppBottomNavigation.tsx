@@ -85,23 +85,13 @@ export const AppBottomNavigation = () => {
                                     'text-muted-foreground',
 
                                     // Interaction
-                                    'hover:bg-accent',
-                                    'hover:text-accent-foreground',
-                                    'focus-visible:outline-none',
-                                    'focus-visible:ring-2',
-                                    'focus-visible:ring-ring',
-                                    'focus-visible:ring-offset-2',
-                                    'focus-visible:ring-offset-background',
+                                    'hover:bg-background',
 
                                     // Active
-                                    active && 'text-primary-border',
+                                    active && 'text-primary-border hover:bg-primary-background',
                                 )}
                             >
-                                <Icon
-                                    className="size-6 shrink-0"
-                                    strokeWidth={active ? 2.5 : 2}
-                                    aria-hidden="true"
-                                />
+                                <Icon className="size-6" strokeWidth="1.5" aria-hidden="true" />
 
                                 <span className="truncate">{item.name}</span>
                             </Link>

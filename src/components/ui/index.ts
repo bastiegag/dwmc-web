@@ -38,6 +38,7 @@ export { Textarea } from './forms'
 export { Skeleton } from './feedback'
 export { Separator } from './layout'
 export { ScrollArea } from './layout'
+export { Stack } from './layout'
 export {
     Table,
     TableHeader,
@@ -153,7 +154,7 @@ export type {
     RadioGroupProps,
 } from './forms'
 export type { AppLinkProps, PaginationProps } from './navigation'
-export type { ScrollAreaProps, SeparatorProps } from './layout'
+export type { ScrollAreaProps, SeparatorProps, StackProps } from './layout'
 export type {
     PopoverContentProps,
     PopoverTriggerProps,

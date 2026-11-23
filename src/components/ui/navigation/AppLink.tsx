@@ -8,20 +8,12 @@ export const AppLink = ({ className, ...props }: AppLinkProps) => (
         {...props}
         className={cn(
             // Typography
-            'text-link underline underline-offset-4',
+            'text-link underline underline-offset-2',
             'decoration-current',
 
             // Interaction
             'cursor-pointer transition-colors',
             'hover:text-link-hover',
-
-            // Focus
-            'focus-visible:rounded-sm',
-            'focus-visible:outline-none',
-            'focus-visible:ring-2',
-            'focus-visible:ring-ring',
-            'focus-visible:ring-offset-2',
-            'focus-visible:ring-offset-background',
 
             // Motion
             'motion-reduce:transition-none',

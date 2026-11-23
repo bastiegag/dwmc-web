@@ -26,8 +26,11 @@ describe('ColorPicker', () => {
         const primary = screen.getByRole('radio', { name: 'Primary color' })
         expect(primary).toBeChecked()
         expect(primary.querySelector('[aria-hidden="true"]')).toBeNull()
-        expect(primary).toHaveClass('data-checked:border-background')
-        expect(primary).not.toHaveClass('data-checked:ring-2')
+        expect(primary).toHaveClass(
+            'data-checked:ring-2',
+            'data-checked:ring-offset-2',
+            'data-checked:ring-ring',
+        )
 
         await user.click(screen.getByRole('radio', { name: 'Warning color' }))
         expect(onValueChange).toHaveBeenCalledWith('warning')

@@ -17,7 +17,7 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
     return (
         <header
             className="
-                flex h-16 shrink-0 items-center justify-between
+                flex h-16 items-center justify-between
                 gap-4 bg-foreground px-4 text-background
                 sm:px-6
             "
@@ -30,11 +30,6 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
                 aria-label="Dude, where's my cash? — Home"
                 className="
                     flex min-w-0 items-center gap-2 rounded-md
-                    focus-visible:outline-none
-                    focus-visible:ring-2
-                    focus-visible:ring-primary-foreground
-                    focus-visible:ring-offset-2
-                    focus-visible:ring-offset-primary
                 "
             >
                 <Logo className="size-7 shrink-0" />
@@ -45,14 +40,7 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
             </Link>
 
             <div className="flex shrink-0 items-center gap-1">
-                <ThemeToggle
-                    className="
-                        text-primary-foreground
-                        hover:bg-primary-foreground/10
-                        focus-visible:ring-primary-foreground
-                        focus-visible:ring-offset-primary
-                    "
-                />
+                <ThemeToggle />
 
                 <Button
                     type="button"
@@ -61,12 +49,6 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
                     aria-label="Sign out"
                     onClick={onLogout}
                     disabled={isLoggingOut}
-                    className="
-                        text-primary-foreground
-                        hover:bg-primary-foreground/10
-                        focus-visible:ring-primary-foreground
-                        focus-visible:ring-offset-primary
-                    "
                 >
                     <LogOut aria-hidden="true" />
                 </Button>

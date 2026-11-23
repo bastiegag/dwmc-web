@@ -193,7 +193,7 @@
     --semantic-info-border: var(--color-blue-700);
 
     --muted: var(--color-neutral-100);
-    --muted-foreground: var(--color-neutral-700);
+    --muted-foreground: var(--color-neutral-500);
     --accent: var(--color-neutral-100);
     --accent-foreground: var(--color-neutral-900);
     --link: var(--color-lavender-800);
