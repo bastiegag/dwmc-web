@@ -3,7 +3,7 @@ import { Input } from '@/components/ui'
 import { Field, FieldDescription, FieldError, FieldLabel, FieldLegend, Fieldset } from './Field'
 
 const meta = {
-    title: 'Design System/Components/Forms/Field',
+    title: 'Design System/Primitives/Forms/Field',
     component: Field,
     tags: ['autodocs'],
     parameters: {

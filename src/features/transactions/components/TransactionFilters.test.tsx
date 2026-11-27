@@ -32,7 +32,7 @@ describe('TransactionFilters', () => {
                         startingBalance: 0,
                         currentBalance: 0,
                         goal: null,
-                        color: '#000000',
+                        color: 'primary',
                         icon: 'wallet',
                         isArchived: false,
                         createdAt: '',
@@ -43,7 +43,7 @@ describe('TransactionFilters', () => {
                     {
                         id: 'section-1',
                         name: 'Living',
-                        color: '#000000',
+                        color: 'primary',
                         isArchived: false,
                         createdAt: '',
                         updatedAt: '',
@@ -51,7 +51,7 @@ describe('TransactionFilters', () => {
                             {
                                 id: 'category-1',
                                 name: 'Groceries',
-                                icon: 'cart',
+                                icon: 'shopping-cart',
                                 sectionId: 'section-1',
                                 isArchived: false,
                                 createdAt: '',

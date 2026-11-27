@@ -3,10 +3,9 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Button } from '@/components/ui'
 import { CurrencyInput } from './CurrencyInput'
-import { Field, FieldError, FieldLabel } from './Field'
 
 const meta = {
-    title: 'Design System/Components/Forms/Currency Input',
+    title: 'Design System/Form Fields/Currency Input',
     component: CurrencyInput,
     tags: ['autodocs'],
     parameters: {
@@ -106,24 +105,19 @@ const TransferForm = () => {
                 control={control}
                 rules={{ required: 'Enter an amount.' }}
                 render={({ field, fieldState }) => (
-                    <Field invalid={Boolean(fieldState.error)}>
-                        <FieldLabel htmlFor="transfer-amount">Amount</FieldLabel>
-                        <CurrencyInput
-                            id="transfer-amount"
-                            name={field.name}
-                            ref={field.ref}
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            onBlur={field.onBlur}
-                            currency="CAD"
-                            locale="en-CA"
-                            required
-                            error={fieldState.error?.message}
-                        />
-                        {fieldState.error ? (
-                            <FieldError>{fieldState.error.message}</FieldError>
-                        ) : null}
-                    </Field>
+                    <CurrencyInput
+                        id="transfer-amount"
+                        name={field.name}
+                        ref={field.ref}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        label="Amount"
+                        currency="CAD"
+                        locale="en-CA"
+                        required
+                        error={fieldState.error?.message}
+                    />
                 )}
             />
             <Button type="submit">Save</Button>

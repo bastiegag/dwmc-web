@@ -15,7 +15,7 @@ const variants = ['contained', 'outlined', 'link'] as const
 const formatColor = (color: (typeof colors)[number]) => color[0].toUpperCase() + color.slice(1)
 
 const meta = {
-    title: 'Design System/Components/Actions/Button',
+    title: 'Design System/Primitives/Actions/Button',
     component: Button,
     tags: ['autodocs'],
     parameters: {

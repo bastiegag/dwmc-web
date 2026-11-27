@@ -1,6 +1,2 @@
-export * from './api'
-export * from './hooks'
-export * from './schemas'
-export * from './types'
-export * from './components'
-export * from './pages'
+export { accountQueryKeys, useAccounts } from './hooks/use-accounts'
+export type { Account } from './types/account.types'

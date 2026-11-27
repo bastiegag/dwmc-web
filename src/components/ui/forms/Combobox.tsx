@@ -106,9 +106,12 @@ export const ComboboxContent = React.forwardRef<
 ))
 ComboboxContent.displayName = 'ComboboxContent'
 
+export type ComboboxListProps = React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.List>
+
+/** Use render-function children to have the root `items` filtered as the input changes. */
 export const ComboboxList = React.forwardRef<
     React.ComponentRef<typeof ComboboxPrimitive.List>,
-    React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.List>
+    ComboboxListProps
 >(({ className, ...props }, ref) => (
     <ComboboxPrimitive.List
         ref={ref}
@@ -124,7 +127,12 @@ export const ComboboxEmpty = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <ComboboxPrimitive.Empty
         ref={ref}
-        className={cn('px-3 py-6 text-center', 'text-sm text-muted-foreground', className)}
+        className={cn(
+            'empty:sr-only',
+            'px-3 py-2 text-center',
+            'text-sm text-muted-foreground',
+            className,
+        )}
         {...props}
     />
 ))

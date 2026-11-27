@@ -27,7 +27,7 @@ const categories: Category[] = [
 const section: SectionWithCategories = {
     id: 'section-needs',
     name: 'Needs',
-    color: '#7cb2ac',
+    color: 'secondary',
     isArchived: false,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',

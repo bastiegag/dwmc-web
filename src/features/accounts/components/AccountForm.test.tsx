@@ -23,10 +23,29 @@ describe('AccountForm', () => {
                 type: 'CREDIT_CARD',
                 startingBalance: -850,
                 goal: null,
-                color: '#3b82f6',
+                color: 'primary',
                 icon: 'credit-card',
             }).success,
         ).toBe(true)
+    })
+
+    it('accepts only shared semantic colors and finance icons', () => {
+        const validAccount = {
+            name: 'Account',
+            type: 'CHECKING',
+            startingBalance: 0,
+            goal: null,
+            color: 'secondary',
+            icon: 'credit-card',
+        }
+
+        expect(accountFormSchema.safeParse(validAccount).success).toBe(true)
+        expect(accountFormSchema.safeParse({ ...validAccount, color: '#3b82f6' }).success).toBe(
+            false,
+        )
+        expect(accountFormSchema.safeParse({ ...validAccount, icon: 'archive' }).success).toBe(
+            false,
+        )
     })
 
     it.each([
@@ -43,7 +62,7 @@ describe('AccountForm', () => {
                 type: 'CHECKING',
                 startingBalance,
                 goal: null,
-                color: '#3b82f6',
+                color: 'primary',
                 icon: 'wallet',
             }).success,
         ).toBe(true)
@@ -69,7 +88,7 @@ describe('AccountForm', () => {
                 type: 'CHECKING',
                 startingBalance,
                 goal: null,
-                color: '#3b82f6',
+                color: 'primary',
                 icon: 'wallet',
             }).success,
         ).toBe(false)
@@ -81,7 +100,7 @@ describe('AccountForm', () => {
             type: 'CHECKING',
             startingBalance: value,
             goal: null,
-            color: '#3b82f6',
+            color: 'primary',
             icon: 'wallet',
         })
 
@@ -94,7 +113,7 @@ describe('AccountForm', () => {
             name: 'Savings',
             type: 'SAVINGS',
             startingBalance: 0,
-            color: '#3b82f6',
+            color: 'primary',
             icon: 'wallet',
         }
 
@@ -129,7 +148,7 @@ describe('AccountForm', () => {
                 type,
                 startingBalance: 0,
                 goal,
-                color: '#3b82f6',
+                color: 'primary',
                 icon: 'wallet',
             }).success,
         ).toBe(isValid)
@@ -199,5 +218,20 @@ describe('AccountForm', () => {
 
         expect(screen.getByRole('textbox', { name: 'Account name' })).toBeRequired()
         expect(screen.getByRole('alert')).toHaveTextContent('Unable to save account.')
+    })
+
+    it('submits the selected semantic color and icon identifiers', async () => {
+        const user = userEvent.setup()
+        const onSubmit = vi.fn()
+        render(<AccountForm submitLabel="Create" onSubmit={onSubmit} />)
+
+        await user.type(screen.getByRole('textbox', { name: 'Account name' }), 'Travel')
+        await user.click(screen.getByRole('radio', { name: 'Info color' }))
+        await user.click(screen.getByRole('radio', { name: 'Travel' }))
+        await user.click(screen.getByRole('button', { name: 'Create' }))
+
+        expect(onSubmit).toHaveBeenCalledWith(
+            expect.objectContaining({ color: 'info', icon: 'plane' }),
+        )
     })
 })

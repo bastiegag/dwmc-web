@@ -5,11 +5,11 @@ import { createCategory } from '@/test/fixtures/domain'
 import { CategoryItem } from './CategoryItem'
 
 describe('CategoryItem', () => {
-    it('uses a fallback icon for unknown icons and exposes category actions', async () => {
+    it('renders the selected icon and exposes category actions', async () => {
         const user = userEvent.setup()
         const category = createCategory({
             name: 'A very long household category name',
-            icon: 'not-a-supported-icon',
+            icon: 'house',
         })
         const onEdit = vi.fn()
 
@@ -20,7 +20,7 @@ describe('CategoryItem', () => {
         expect(
             screen.getByRole('button', { name: `Archive category ${category.name}` }),
         ).toBeVisible()
-        expect(document.querySelector('svg[aria-hidden="true"]')).toBeInTheDocument()
+        expect(document.querySelector('svg.lucide-house[aria-hidden="true"]')).toBeInTheDocument()
 
         await user.click(screen.getByRole('button', { name: `Edit category ${category.name}` }))
         expect(onEdit).toHaveBeenCalledWith(category)

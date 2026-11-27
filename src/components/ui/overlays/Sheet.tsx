@@ -82,7 +82,7 @@ export const SheetContent = forwardRef<
                 'min-h-0 overflow-y-auto overscroll-contain',
 
                 // Surface
-                'border border-border bg-background',
+                'border border-border bg-card',
                 'p-6 shadow-lg',
 
                 // Focus

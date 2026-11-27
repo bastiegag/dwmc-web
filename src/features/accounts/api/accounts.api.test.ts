@@ -46,7 +46,7 @@ describe('accounts API', () => {
                 type: 'SAVINGS',
                 startingBalance: 0,
                 goal: null,
-                color: '#ffffff',
+                color: 'primary',
                 icon: 'wallet',
             }),
         ).resolves.toEqual(account)

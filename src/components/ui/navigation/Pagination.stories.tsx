@@ -4,7 +4,7 @@ import { fn } from 'storybook/test'
 import { Pagination } from './Pagination'
 
 const meta = {
-    title: 'Design System/Components/Navigation/Pagination',
+    title: 'Design System/Primitives/Navigation/Pagination',
     component: Pagination,
     args: { page: 1, totalPages: 1, onPageChange: fn() },
     tags: ['autodocs'],

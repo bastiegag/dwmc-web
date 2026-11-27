@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { isFinanceIconName, type FinanceIconName } from '@/shared/finance-icons'
 
 export const categoryFormSchema = z.object({
     name: z
@@ -6,7 +7,7 @@ export const categoryFormSchema = z.object({
         .trim()
         .min(1, 'Category name is required')
         .max(80, 'Category name is too long'),
-    icon: z.string().trim().min(1, 'Icon is required').max(80, 'Icon value is too long'),
+    icon: z.custom<FinanceIconName>(isFinanceIconName, 'Select a supported icon'),
     sectionId: z.string().min(1, 'Section is required'),
 })
 

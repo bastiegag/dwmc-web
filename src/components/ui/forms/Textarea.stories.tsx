@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Label } from './Label'
+import type { ComponentProps } from 'react'
+import { FormField } from '@/components/form'
 import { Textarea } from './Textarea'
 
 const meta = {
-    title: 'Design System/Components/Forms/Textarea',
+    title: 'Design System/Primitives/Forms/Textarea',
     component: Textarea,
     tags: ['autodocs'],
     argTypes: {
@@ -16,12 +17,36 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const NotesField = (props: React.ComponentProps<typeof Textarea>) => (
-    <div className="grid w-full max-w-md gap-2">
-        <Label htmlFor="transaction-notes">Notes</Label>
-        <Textarea id="transaction-notes" {...props} />
-    </div>
-)
+interface NotesFieldProps extends ComponentProps<typeof Textarea> {
+    label?: string
+    description?: string
+    error?: string
+}
+
+const NotesField = ({
+    id = 'transaction-notes',
+    label = 'Notes',
+    description,
+    error,
+    'aria-describedby': ariaDescribedBy,
+    ...props
+}: NotesFieldProps) => {
+    const describedBy =
+        [ariaDescribedBy, description && `${id}-description`, error && `${id}-error`]
+            .filter(Boolean)
+            .join(' ') || undefined
+
+    return (
+        <FormField id={id} label={label} description={description} error={error}>
+            <Textarea
+                {...props}
+                id={id}
+                aria-invalid={Boolean(error)}
+                aria-describedby={describedBy}
+            />
+        </FormField>
+    )
+}
 
 export const Default: Story = {
     render: () => <NotesField placeholder="Add a note about this transaction" />,
@@ -41,17 +66,11 @@ export const ReadOnly: Story = {
 
 export const Invalid: Story = {
     render: () => (
-        <div className="grid w-full max-w-md gap-2">
-            <Label htmlFor="invalid-transaction-notes">Notes</Label>
-            <Textarea
-                id="invalid-transaction-notes"
-                aria-invalid="true"
-                aria-describedby="invalid-transaction-notes-error"
-                defaultValue="This note needs attention."
-            />
-            <p id="invalid-transaction-notes-error" className="text-sm text-destructive">
-                Review the transaction note before saving.
-            </p>
-        </div>
+        <NotesField
+            id="invalid-transaction-notes"
+            defaultValue="This note needs attention."
+            description="Review the transaction note before saving."
+            error="This note contains an issue."
+        />
     ),
 }

@@ -110,7 +110,7 @@ export const DesktopSidebar = () => {
                                             <Icon
                                                 className={cn(
                                                     'size-5 shrink-0',
-                                                    isActive && 'text-primary',
+                                                    isActive && 'text-primary-border',
                                                 )}
                                                 strokeWidth={isActive ? 2.5 : 2}
                                                 aria-hidden="true"

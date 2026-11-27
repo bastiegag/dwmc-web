@@ -1,15 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { FormField } from '@/components/form'
 import { Input } from './Input'
 
 const meta = {
-    title: 'Design System/Components/Forms/Input',
+    title: 'Design System/Primitives/Forms/Input',
     component: Input,
     tags: ['autodocs'],
     parameters: {
         docs: {
             description: {
                 component:
-                    'Accepts single-line text input with native HTML input types, placeholders, values, and native disabled, read-only, and invalid (`aria-invalid`) states. Invalid styling is not built in; compose with Field for labels and error messages.',
+                    'Accepts single-line text input with native HTML input types, placeholders, values, and native disabled, read-only, and invalid (`aria-invalid`) states. Compose with FormField for labels and error messages.',
             },
         },
     },
@@ -53,20 +54,19 @@ export const ReadOnly: Story = {
 
 export const Invalid: Story = {
     render: () => (
-        <div className="flex w-72 flex-col gap-2">
-            <label htmlFor="input-invalid-amount" className="text-sm font-medium">
-                Amount
-            </label>
+        <FormField
+            id="input-invalid-amount"
+            label="Amount"
+            error="Enter an amount with at most two decimal places."
+            className="w-72"
+        >
             <Input
                 id="input-invalid-amount"
                 defaultValue="12.345"
                 aria-invalid="true"
                 aria-describedby="input-invalid-amount-error"
             />
-            <p id="input-invalid-amount-error" className="text-sm text-destructive">
-                Enter an amount with at most two decimal places.
-            </p>
-        </div>
+        </FormField>
     ),
 }
 

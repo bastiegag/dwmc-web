@@ -15,11 +15,10 @@ import {
 } from '@/components/ui'
 
 const meta = {
-    title: 'Design System/Components/Overlays/Sheet',
+    title: 'Design System/Primitives/Overlays/Sheet',
     component: Sheet,
     tags: ['autodocs'],
     parameters: {
-        layout: 'fullscreen',
         docs: {
             description: {
                 component:

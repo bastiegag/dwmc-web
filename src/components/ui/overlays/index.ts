@@ -1,4 +1,5 @@
 export * from './AlertDialog'
+export * from './ConfirmDialog'
 export * from './Dialog'
 export * from './Drawer'
 export * from './Popover'

@@ -41,7 +41,7 @@ describe('category and section mutations', () => {
 
         await result.current.mutateAsync({
             name: 'Snacks',
-            icon: 'cookie',
+            icon: 'coffee',
             sectionId: 'section-1',
         })
 
@@ -91,7 +91,7 @@ describe('category and section mutations', () => {
 
         await result.current.mutateAsync({
             name: 'Food',
-            color: '#22c55e',
+            color: 'success',
         })
 
         await waitFor(() => {

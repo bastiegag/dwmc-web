@@ -33,10 +33,7 @@ export const Scale: Story = {
             {spaces.map(([step, value]) => (
                 <div key={step} className="flex items-center gap-4">
                     <code className="w-20 text-sm text-muted-foreground">space-{step}</code>
-                    <div
-                        className="h-6 rounded-sm bg-primary"
-                        style={{ width: `var(--spacing-${step})` }}
-                    />
+                    <div className="h-6 rounded-sm bg-primary" style={{ width: value }} />
                     <span className="text-sm text-muted-foreground">{value}</span>
                 </div>
             ))}

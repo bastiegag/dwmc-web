@@ -2,12 +2,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { axe } from 'vitest-axe'
 import { render, screen, waitFor } from '@/test/utils/render'
 import userEvent from '@testing-library/user-event'
+import { useLocation } from 'react-router-dom'
 import { ForgotPasswordForm } from '@/features/auth/components/ForgotPasswordForm'
 import { useForgotPassword } from '@/features/auth/hooks'
 
 vi.mock('@/features/auth/hooks', () => ({
     useForgotPassword: vi.fn(),
 }))
+
+const LocationProbe = () => {
+    const location = useLocation()
+    return <output data-testid="location">{location.pathname}</output>
+}
 
 describe('ForgotPasswordForm', () => {
     beforeEach(() => {
@@ -43,16 +49,29 @@ describe('ForgotPasswordForm', () => {
         })
     })
 
-    it('shows a success alert when isSuccess is true', () => {
+    it('redirects to login after the reset link is sent', async () => {
+        const forgotPassword = vi.fn().mockResolvedValue(undefined)
         vi.mocked(useForgotPassword).mockReturnValue({
-            forgotPassword: vi.fn(),
+            forgotPassword,
             isPending: false,
-            isSuccess: true,
+            isSuccess: false,
             error: null,
         })
-        render(<ForgotPasswordForm />)
-        expect(screen.getByRole('status')).toHaveFocus()
-        expect(screen.getByText(/password reset link sent/i)).toBeInTheDocument()
+        const user = userEvent.setup()
+        render(
+            <>
+                <ForgotPasswordForm />
+                <LocationProbe />
+            </>,
+        )
+
+        await user.type(screen.getByLabelText(/email/i), 'test@example.com')
+        await user.click(screen.getByRole('button', { name: /send reset link/i }))
+
+        await waitFor(() => {
+            expect(forgotPassword).toHaveBeenCalledWith('test@example.com')
+            expect(screen.getByTestId('location')).toHaveTextContent('/login')
+        })
     })
 
     it('shows loading text when isPending is true', async () => {
@@ -67,17 +86,6 @@ describe('ForgotPasswordForm', () => {
     })
 
     it('has no accessibility violations', async () => {
-        const { container } = render(<ForgotPasswordForm />)
-        expect((await axe(container)).violations).toHaveLength(0)
-    })
-
-    it('success state has no accessibility violations', async () => {
-        vi.mocked(useForgotPassword).mockReturnValue({
-            forgotPassword: vi.fn(),
-            isPending: false,
-            isSuccess: true,
-            error: null,
-        })
         const { container } = render(<ForgotPasswordForm />)
         expect((await axe(container)).violations).toHaveLength(0)
     })

@@ -9,7 +9,7 @@ import {
 } from './Accordion'
 
 const meta = {
-    title: 'Design System/Components/Surfaces/Accordion',
+    title: 'Design System/Primitives/Disclosure/Accordion',
     component: Accordion,
     tags: ['autodocs'],
     parameters: {

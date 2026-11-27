@@ -6,7 +6,7 @@ import { DatePicker, type DatePickerProps } from './DatePicker'
 const selectedDate = new Date(2026, 8, 15)
 
 const meta = {
-    title: 'Design System/Components/Forms/Date Picker',
+    title: 'Design System/Primitives/Forms/Date Picker',
     component: DatePicker,
     tags: ['autodocs'],
 } satisfies Meta<typeof DatePicker>

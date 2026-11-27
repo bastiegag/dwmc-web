@@ -3,18 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { CurrencyInput } from '@/components/form/CurrencyInput'
 import { FormError } from '@/components/form/FormError'
-import { FormField } from '@/components/form/FormField'
+import { SelectField } from '@/components/form/SelectField'
 import { TextField } from '@/components/form/TextField'
-import {
-    Button,
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectGroupLabel,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui'
+import { Button, SelectGroup, SelectGroupLabel, SelectItem } from '@/components/ui'
 import { MAX_MONEY_AMOUNT } from '@/shared/money'
 import {
     budgetFormSchema,
@@ -75,84 +66,70 @@ export const BudgetForm = ({
             noValidate
         >
             <fieldset disabled={isDisabled} className="min-w-0 space-y-4 border-0 p-0">
-                <FormField
-                    id="budget-category"
-                    label="Category"
-                    required
-                    error={errors.categoryId?.message}
-                    description={
-                        isCategoriesLoading
-                            ? 'Loading categories...'
-                            : selectableCategories.length === 0
-                              ? 'No categories are available. Create a category before adding a budget.'
-                              : undefined
-                    }
-                    disabled={isCategoryDisabled}
-                >
-                    <Controller
-                        name="categoryId"
-                        control={control}
-                        render={({ field }) => {
-                            const selectedCategory = sections
-                                .flatMap((section) => section.categories)
-                                .find((category) => category.id === field.value)
+                <Controller
+                    name="categoryId"
+                    control={control}
+                    render={({ field, fieldState }) => {
+                        const selectedCategory = sections
+                            .flatMap((section) => section.categories)
+                            .find((category) => category.id === field.value)
 
-                            return (
-                                <Select
-                                    value={field.value || null}
-                                    onValueChange={(value) => field.onChange(value ?? '')}
-                                    disabled={isCategoryDisabled}
-                                >
-                                    <SelectTrigger
-                                        id="budget-category"
-                                        ref={field.ref}
-                                        onBlur={field.onBlur}
-                                        aria-required="true"
-                                        aria-invalid={Boolean(errors.categoryId)}
-                                        aria-describedby={
-                                            errors.categoryId ? 'budget-category-error' : undefined
-                                        }
-                                    >
-                                        <SelectValue placeholder="Select a category">
-                                            {selectedCategory
-                                                ? `${selectedCategory.name}${selectedCategory.isArchived ? ' (archived)' : ''}`
-                                                : undefined}
-                                        </SelectValue>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {sections.map((section) =>
-                                            section.categories.length > 0 ? (
-                                                <SelectGroup key={section.id}>
-                                                    <SelectGroupLabel>
-                                                        {section.isArchived
-                                                            ? `${section.name} (archived)`
-                                                            : section.name}
-                                                    </SelectGroupLabel>
-                                                    {section.categories.map((category) => (
-                                                        <SelectItem
-                                                            key={category.id}
-                                                            value={category.id}
-                                                            disabled={
-                                                                category.isArchived &&
-                                                                category.id !==
-                                                                    (initialValues?.categoryId ??
-                                                                        '')
-                                                            }
-                                                        >
-                                                            {category.isArchived
-                                                                ? `${category.name} (archived)`
-                                                                : category.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            ) : null,
-                                        )}
-                                    </SelectContent>
-                                </Select>
-                            )
-                        }}
-                    />
-                </FormField>
+                        return (
+                            <SelectField
+                                id="budget-category"
+                                label="Category"
+                                name={field.name}
+                                required
+                                value={field.value || null}
+                                onValueChange={(value) => field.onChange(value ?? '')}
+                                onBlur={field.onBlur}
+                                ref={field.ref}
+                                disabled={isCategoryDisabled}
+                                error={fieldState.error?.message}
+                                description={
+                                    isCategoriesLoading
+                                        ? 'Loading categories...'
+                                        : selectableCategories.length === 0
+                                          ? 'No categories are available. Create a category before adding a budget.'
+                                          : undefined
+                                }
+                                placeholder="Select a category"
+                                valueLabel={
+                                    selectedCategory
+                                        ? `${selectedCategory.name}${selectedCategory.isArchived ? ' (archived)' : ''}`
+                                        : undefined
+                                }
+                            >
+                                {sections.map((section) =>
+                                    section.categories.length > 0 ? (
+                                        <SelectGroup key={section.id}>
+                                            <SelectGroupLabel>
+                                                {section.isArchived
+                                                    ? `${section.name} (archived)`
+                                                    : section.name}
+                                            </SelectGroupLabel>
+                                            {section.categories.map((category) => (
+                                                <SelectItem
+                                                    key={category.id}
+                                                    value={category.id}
+                                                    disabled={
+                                                        category.isArchived &&
+                                                        category.id !==
+                                                            (initialValues?.categoryId ?? '')
+                                                    }
+                                                >
+                                                    {category.isArchived
+                                                        ? `${category.name} (archived)`
+                                                        : category.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    ) : null,
+                                )}
+                            </SelectField>
+                        )
+                    }}
+                />
 
                 <TextField
                     id="budget-month"

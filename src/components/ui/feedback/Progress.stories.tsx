@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Progress } from './Progress'
 
 const meta = {
-    title: 'Design System/Components/Feedback/Progress',
+    title: 'Design System/Primitives/Feedback/Progress',
     component: Progress,
     tags: ['autodocs'],
     parameters: {

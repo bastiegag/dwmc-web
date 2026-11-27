@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TextField } from './TextField'
 
 const meta = {
-    title: 'Design System/Components/Forms/Text Field',
+    title: 'Design System/Form Fields/Text Field',
     component: TextField,
     tags: ['autodocs'],
     parameters: {

@@ -3,7 +3,7 @@ import { Field, FieldLabel, FieldError, FieldDescription } from './Field'
 
 export interface FormFieldProps {
     id: string
-    label: string
+    label?: string
     error?: string
     description?: string
     required?: boolean
@@ -24,14 +24,16 @@ export const FormField = ({
 }: FormFieldProps) => {
     return (
         <Field className={className} invalid={Boolean(error)} disabled={disabled}>
-            <FieldLabel htmlFor={id}>
-                {label}
-                {required && (
-                    <span className="ml-1 text-destructive-border" aria-hidden="true">
-                        *
-                    </span>
-                )}
-            </FieldLabel>
+            {label ? (
+                <FieldLabel id={`${id}-label`} htmlFor={id}>
+                    {label}
+                    {required && (
+                        <span className="ml-1 text-destructive-border" aria-hidden="true">
+                            *
+                        </span>
+                    )}
+                </FieldLabel>
+            ) : null}
 
             {children}
 

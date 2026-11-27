@@ -1,58 +1,22 @@
-import { NavLink } from 'react-router-dom'
-
-import { cn } from '@/lib/utils'
 import { useSelectedMonth } from '@/shared/month'
+import { SectionNavigation } from './SectionNavigation'
 
 const navigation = [
-    { name: 'Overview', to: '/dashboard' },
-    { name: 'Transactions', to: '/transactions' },
+    { name: 'Overview', pathname: '/dashboard' },
+    { name: 'Transactions', pathname: '/transactions' },
 ] as const
 
 export const DashboardSectionNavigation = () => {
     const { month } = useSelectedMonth()
+    const search = `?month=${encodeURIComponent(month)}`
 
     return (
-        <nav
-            aria-label="Dashboard sections"
-            className={cn('flex justify-center', 'bg-primary px-4 pb-4', 'text-primary-foreground')}
-        >
-            <ul className="flex items-center gap-2">
-                {navigation.map((item) => (
-                    <li key={item.to}>
-                        <NavLink
-                            to={{
-                                pathname: item.to,
-                                search: `?month=${encodeURIComponent(month)}`,
-                            }}
-                            end
-                            className={({ isActive }) =>
-                                cn(
-                                    // Layout
-                                    'inline-flex min-h-11 items-center',
-                                    'justify-center rounded-full',
-                                    'px-4 py-2 text-sm font-medium',
-
-                                    // Interaction
-                                    'transition-colors motion-reduce:transition-none',
-                                    'hover:bg-primary-foreground/10',
-
-                                    // Keyboard focus
-                                    'focus-visible:outline-none',
-                                    'focus-visible:ring-2',
-                                    'focus-visible:ring-primary-foreground',
-                                    'focus-visible:ring-offset-2',
-                                    'focus-visible:ring-offset-primary',
-
-                                    // Active
-                                    isActive && 'bg-primary-foreground/10',
-                                )
-                            }
-                        >
-                            {item.name}
-                        </NavLink>
-                    </li>
-                ))}
-            </ul>
-        </nav>
+        <SectionNavigation
+            ariaLabel="Dashboard sections"
+            items={navigation.map(({ name, pathname }) => ({
+                name,
+                to: { pathname, search },
+            }))}
+        />
     )
 }

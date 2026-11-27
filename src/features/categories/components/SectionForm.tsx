@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { FormError } from '@/components/form/FormError'
+import { Controller, useForm } from 'react-hook-form'
+import { ColorPickerField, FormError, TextField } from '@/components/form'
 import { Button } from '@/components/ui'
-import { TextField } from '@/components/form/TextField'
 import { sectionFormSchema, type SectionFormValues } from '@/features/categories/schemas'
 
 type SectionFormProps = {
@@ -16,7 +15,7 @@ type SectionFormProps = {
 
 const defaultValues: SectionFormValues = {
     name: '',
-    color: '#22c55e',
+    color: 'success',
 }
 
 export const SectionForm = ({
@@ -29,6 +28,7 @@ export const SectionForm = ({
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors, isSubmitting },
         reset,
     } = useForm<SectionFormValues>({
@@ -62,13 +62,22 @@ export const SectionForm = ({
                     error={errors.name?.message}
                 />
 
-                <TextField
-                    id="section-color"
-                    label="Color"
-                    type="color"
-                    required
-                    {...register('color')}
-                    error={errors.color?.message}
+                <Controller
+                    name="color"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <ColorPickerField
+                            id="section-color"
+                            label="Color"
+                            required
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            onBlur={field.onBlur}
+                            ref={field.ref}
+                            disabled={isBusy}
+                            error={fieldState.error?.message}
+                        />
+                    )}
                 />
 
                 <Button type="submit" className="w-full" isLoading={isBusy} loadingText="Saving...">

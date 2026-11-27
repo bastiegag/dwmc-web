@@ -3,7 +3,7 @@ import { fn } from 'storybook/test'
 import { InputGroup, InputGroupAddon, InputGroupButton } from './InputGroup'
 import { Input } from './Input'
 const meta = {
-    title: 'Design System/Components/Forms/Input Group',
+    title: 'Design System/Primitives/Forms/Input Group',
     component: InputGroup,
     tags: ['autodocs'],
     parameters: {

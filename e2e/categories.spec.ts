@@ -14,7 +14,7 @@ test('authenticated users can manage Sections and Categories', async ({ page }) 
     let section = {
         id: 'section-1',
         name: 'Food',
-        color: '#22c55e',
+        color: 'success',
         isArchived: false,
         categories: [],
         createdAt: '2026-01-01T00:00:00.000Z',
@@ -131,7 +131,7 @@ test('authenticated users can manage Sections and Categories', async ({ page }) 
 
     await page.getByTestId('primary-action-button').click()
     await page.getByLabel('Category name').fill('Groceries')
-    await page.getByLabel('Icon').fill('shopping-cart')
+    await page.getByRole('radio', { name: 'Shopping cart' }).click()
     await selectSection(page, 'Food')
     await page.getByRole('button', { name: 'Create category' }).click()
     await expect(page.getByText('Groceries')).toBeVisible()
@@ -253,7 +253,7 @@ test('a new user can create a section and then organize a category inside it', a
 
     await page.getByTestId('primary-action-button').click()
     await page.getByLabel('Category name').fill('Groceries')
-    await page.getByLabel('Icon').fill('shopping-cart')
+    await page.getByRole('radio', { name: 'Shopping cart' }).click()
     await selectSection(page, 'Food')
     await page.getByRole('button', { name: 'Create category' }).click()
 
@@ -272,7 +272,7 @@ test('category layout and dialogs adapt across responsive viewports', async ({ p
     const section = {
         id: 'section-responsive',
         name: sectionName,
-        color: '#22c55e',
+        color: 'success',
         isArchived: false,
         categories: [
             {

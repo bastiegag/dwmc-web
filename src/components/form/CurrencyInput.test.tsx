@@ -14,6 +14,17 @@ describe('CurrencyInput', () => {
         expect(onValueChange).not.toHaveBeenCalled()
     })
 
+    it('supports an external label when the label prop is omitted', () => {
+        render(
+            <>
+                <label htmlFor="amount">Amount</label>
+                <CurrencyInput id="amount" />
+            </>,
+        )
+
+        expect(screen.getByLabelText('Amount')).toBeInTheDocument()
+    })
+
     it('keeps zero distinct from empty', async () => {
         const user = userEvent.setup()
         const onValueChange = vi.fn()

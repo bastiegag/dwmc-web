@@ -6,9 +6,12 @@ export { Badge } from './feedback'
 export { Card } from './data-display'
 export type { CardProps } from './data-display'
 export { Checkbox } from './forms'
+export { ColorPicker, IconPicker } from './forms'
+export type { ColorPickerProps, IconPickerProps } from './forms'
 export { Chart } from './data-display'
 export { Calendar } from './data-display'
-export { DatePicker } from './data-display'
+export { DatePicker } from './forms'
+export type { DatePickerProps } from './forms'
 export { EmptyState } from './feedback'
 export { AppLink } from './navigation'
 export { Input } from './forms'
@@ -36,6 +39,7 @@ export { Textarea } from './forms'
 export { Skeleton } from './feedback'
 export { Separator } from './layout'
 export { ScrollArea } from './layout'
+export { Stack } from './layout'
 export {
     Table,
     TableHeader,
@@ -77,6 +81,8 @@ export {
     AlertDialogTitle,
     AlertDialogDescription,
 } from './overlays'
+export { ConfirmDialog } from './overlays'
+export type { ConfirmDialogProps } from './overlays'
 export {
     Dialog,
     DialogTrigger,
@@ -149,7 +155,7 @@ export type {
     RadioGroupProps,
 } from './forms'
 export type { AppLinkProps, PaginationProps } from './navigation'
-export type { ScrollAreaProps, SeparatorProps } from './layout'
+export type { ScrollAreaProps, SeparatorProps, StackProps } from './layout'
 export type {
     PopoverContentProps,
     PopoverTriggerProps,

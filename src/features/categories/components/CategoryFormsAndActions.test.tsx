@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { fireEvent, render, screen, waitFor } from '@/test/utils/render'
+import { render, screen, waitFor } from '@/test/utils/render'
 import { CategoryForm, SectionForm } from '@/features/categories/components'
 import { CategoriesPage } from '@/features/categories/pages/CategoriesPage'
 import type { SectionWithCategories } from '@/features/categories/types'
@@ -67,8 +67,12 @@ describe('categories forms and actions', () => {
         render(<SectionForm submitLabel="Create section" isPending onSubmit={vi.fn()} />)
 
         expect(screen.getByLabelText(/section name/i)).toBeRequired()
-        expect(screen.getByLabelText(/color/i)).toHaveAttribute('required')
+        expect(screen.getByRole('radiogroup', { name: 'Color' })).toHaveAttribute(
+            'aria-required',
+            'true',
+        )
         expect(screen.getByLabelText(/section name/i)).toBeDisabled()
+        expect(screen.getByRole('radio', { name: 'Success color' })).toBeDisabled()
         expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
     })
 
@@ -87,7 +91,6 @@ describe('categories forms and actions', () => {
         await user.click(screen.getByRole('button', { name: /create category/i }))
 
         expect(await screen.findByText(/category name is required/i)).toBeInTheDocument()
-        expect(screen.getByText(/icon is required/i)).toBeInTheDocument()
         expect(screen.getByText(/section is required/i)).toBeInTheDocument()
         expect(onSubmit).not.toHaveBeenCalled()
     })
@@ -103,12 +106,16 @@ describe('categories forms and actions', () => {
         )
 
         expect(screen.getByLabelText(/category name/i)).toBeRequired()
-        expect(screen.getByLabelText(/icon/i)).toBeRequired()
+        expect(screen.getByRole('radiogroup', { name: 'Icon' })).toHaveAttribute(
+            'aria-required',
+            'true',
+        )
         expect(screen.getByRole('combobox', { name: /section/i })).toHaveAttribute(
             'aria-required',
             'true',
         )
         expect(screen.getByLabelText(/category name/i)).toBeDisabled()
+        expect(screen.getByRole('radio', { name: 'Wallet' })).toBeDisabled()
         expect(screen.getByRole('combobox', { name: /section/i })).toBeDisabled()
         expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
     })
@@ -121,14 +128,14 @@ describe('categories forms and actions', () => {
         render(<SectionForm submitLabel="Create section" onSubmit={onSubmit} />)
 
         await user.type(screen.getByLabelText(/section name/i), 'Home')
-        fireEvent.change(screen.getByLabelText(/color/i), { target: { value: '#3b82f6' } })
+        await user.click(screen.getByRole('radio', { name: 'Info color' }))
 
         await user.click(screen.getByRole('button', { name: /create section/i }))
 
         await waitFor(() => {
             expect(onSubmit).toHaveBeenCalledWith({
                 name: 'Home',
-                color: '#3b82f6',
+                color: 'info',
             })
         })
     })
@@ -147,7 +154,7 @@ describe('categories forms and actions', () => {
         )
 
         await user.type(screen.getByLabelText(/category name/i), 'Restaurants')
-        await user.type(screen.getByLabelText(/icon/i), 'utensils')
+        await user.click(screen.getByRole('radio', { name: 'Dining' }))
         await chooseOption(user, /section/i, 'Food')
 
         await user.click(screen.getByRole('button', { name: /create category/i }))

@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { Label } from './Label'
+import { Field, FieldLabel } from '@/components/form'
 import { Switch } from './Switch'
 
 const meta = {
-    title: 'Design System/Components/Forms/Switch',
+    title: 'Design System/Primitives/Forms/Switch',
     component: Switch,
     tags: ['autodocs'],
 } satisfies Meta<typeof Switch>
@@ -13,10 +13,10 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const NotificationsSwitch = (props: React.ComponentProps<typeof Switch>) => (
-    <div className="flex items-center gap-2">
+    <Field disabled={props.disabled} className="flex items-center gap-2 space-y-0">
         <Switch id="budget-notifications" {...props} />
-        <Label htmlFor="budget-notifications">Enable budget notifications</Label>
-    </div>
+        <FieldLabel htmlFor="budget-notifications">Enable budget notifications</FieldLabel>
+    </Field>
 )
 
 export const Default: Story = {
@@ -36,16 +36,16 @@ export const Controlled: Story = {
         const [checked, setChecked] = useState(false)
 
         return (
-            <div className="flex items-center gap-2">
+            <Field className="flex items-center gap-2 space-y-0">
                 <Switch
                     id="controlled-budget-notifications"
                     checked={checked}
                     onCheckedChange={setChecked}
                 />
-                <Label htmlFor="controlled-budget-notifications">
+                <FieldLabel htmlFor="controlled-budget-notifications">
                     Budget notifications: {checked ? 'on' : 'off'}
-                </Label>
-            </div>
+                </FieldLabel>
+            </Field>
         )
     },
 }

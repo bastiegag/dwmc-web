@@ -1,18 +1,14 @@
-import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextField, FormError } from '@/components/form'
-import { Alert, AppLink, Button } from '@/components/ui'
+import { AppLink, Button } from '@/components/ui'
 import { useForgotPassword } from '@/features/auth/hooks'
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/features/auth/schemas'
 
 export const ForgotPasswordForm = () => {
-    const { forgotPassword, isPending, isSuccess } = useForgotPassword()
-    const successRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        successRef.current?.focus()
-    }, [isSuccess])
+    const { forgotPassword, isPending } = useForgotPassword()
+    const navigate = useNavigate()
 
     const {
         register,
@@ -27,26 +23,10 @@ export const ForgotPasswordForm = () => {
     const onSubmit = async (data: ForgotPasswordInput) => {
         try {
             await forgotPassword(data.email)
+            navigate('/login', { replace: true })
         } catch (err) {
             if (err instanceof Error) setError('root', { message: err.message })
         }
-    }
-
-    if (isSuccess) {
-        return (
-            <div className="space-y-4">
-                <Alert
-                    ref={successRef}
-                    tabIndex={-1}
-                    role="status"
-                    variant="success"
-                    description="Password reset link sent! Check your email inbox."
-                />
-                <p className="text-center text-sm">
-                    <AppLink to="/login">Back to sign in</AppLink>
-                </p>
-            </div>
-        )
     }
 
     return (
@@ -65,6 +45,7 @@ export const ForgotPasswordForm = () => {
             <Button
                 type="submit"
                 className="w-full"
+                color="primary"
                 isLoading={isPending}
                 loadingText="Sending reset link..."
             >

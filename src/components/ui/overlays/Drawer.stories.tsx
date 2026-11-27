@@ -15,11 +15,10 @@ import {
 } from '@/components/ui'
 
 const meta = {
-    title: 'Design System/Components/Overlays/Drawer',
+    title: 'Design System/Primitives/Overlays/Drawer',
     component: Drawer,
     tags: ['autodocs'],
     parameters: {
-        layout: 'fullscreen',
         docs: {
             description: {
                 component:

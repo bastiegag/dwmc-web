@@ -56,7 +56,7 @@ export const DrawerContent = forwardRef<
 
                 // Surface
                 'rounded-t-xl border border-border',
-                'bg-background p-6 shadow-lg',
+                'bg-card p-6 shadow-lg',
 
                 // Safe area
                 'pb-[max(1.5rem,env(safe-area-inset-bottom))]',

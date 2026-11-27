@@ -7,7 +7,7 @@ const sections: SectionWithCategories[] = [
     {
         id: 'section-needs',
         name: 'Needs',
-        color: '#7cb2ac',
+        color: 'secondary',
         isArchived: false,
         createdAt: '2026-01-01T00:00:00.000Z',
         updatedAt: '2026-01-01T00:00:00.000Z',
@@ -63,7 +63,7 @@ export const ArchivedSection: Story = {
         ],
         initialValues: {
             name: 'Historical category',
-            icon: 'tags',
+            icon: 'shopping-bag',
             sectionId: 'section-archived',
         },
         submitLabel: 'Save changes',

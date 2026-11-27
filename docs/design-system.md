@@ -13,6 +13,8 @@ a separate package.
   exports one component family. Stories and focused behavior tests are
   colocated beside components where they provide useful coverage; not every
   styling-only primitive needs a separate test file.
+- Interactive `DatePicker` belongs in `forms/`; the reusable `Calendar`
+  primitive it composes remains in `data-display/`.
 - Import primitives from the root barrel `@/components/ui`, which re-exports
   each category barrel. Inside `src/components/ui/`, primitives import sibling
   or cross-category files by relative path (for example `../actions/Button`)
@@ -32,8 +34,9 @@ Do not duplicate a shared primitive inside a feature.
 
 The shared primitive library includes overlays and interactions (dialog, drawer,
 sheet, dropdown menu, combobox, tooltip, accordion, and number field), form
-foundations (field, fieldset, input group, and currency input), and semantic
-content primitives (table, pagination, separator, skeleton, and scroll area).
+foundations (field, fieldset, input group, color picker, icon picker, and
+currency input), and semantic content primitives (table, pagination,
+separator, skeleton, and scroll area).
 These components own accessibility and interaction behavior, but not feature
 data fetching or business rules. Currency input values use decimal strings (or
 `null` for empty) so callers can preserve monetary precision without relying on
@@ -85,12 +88,31 @@ styling and token-based defaults; they should not hide the Base UI API.
 
 ## Form fields and currency input
 
-Compose form fields with `Field`, `FieldLabel`, `FieldDescription`,
-`FieldError`, and `Fieldset`/`FieldLegend` from `src/components/form/`. The
-label, description, and error are linked to the control with `htmlFor` and
-`aria-describedby`; set `aria-invalid` on the control when `invalid` is true.
-Use `Controller` from React Hook Form for `CurrencyInput` and other controls
-that do not expose a native `ref` value.
+Use the composed fields exported from `src/components/form/` for the
+recommended form composition: `TextField`, `PasswordField`, `CurrencyInput`,
+`CheckboxField`, `SwitchField`, `TextareaField`, `SelectField`,
+`ComboboxField`, `RadioGroupField`, `NumberInputField`, `DatePickerField`,
+`ColorPickerField`, and `IconPickerField`. These provide the field label,
+description, validation message, and accessibility relationships alongside
+their existing UI controls. Use the lower-level `Field`, `FieldLabel`,
+`FieldDescription`, `FieldError`, and `Fieldset`/`FieldLegend` primitives when
+a custom composition is needed; do not wrap an already-composed field in
+another field wrapper.
+
+`SelectField` accepts `options` and `groups` for common choices, or custom
+popup `children` when option rendering needs more control. `ComboboxField`
+accepts string `options` and supports custom option rendering or popup
+children, while keeping the existing Combobox filtering and keyboard behavior.
+For React Hook Form, use `Controller` when a control's value or callback
+contract differs from a native input, such as `CurrencyInput`, select-like
+controls, pickers, and date controls. Connect labels, descriptions, and errors
+through the composed field props rather than duplicating their markup.
+
+Account and section colors use the finite semantic color options in
+`src/shared/semantic-colors.ts`; account and category icons use the shared
+finance icon registry in `src/shared/finance-icons.ts`. Pickers and feature
+displays must resolve from these registries rather than accepting arbitrary CSS
+colors or maintaining separate icon maps.
 
 `CurrencyInput` uses a `string | null` contract:
 
@@ -118,21 +140,42 @@ represent implemented states, including light/dark themes, hover/focus,
 disabled, loading, empty, error, and validation states where relevant. Use
 deterministic data and avoid live API calls.
 
-Each primitive has its own colocated `*.stories.tsx` beside its implementation
-(for example `src/components/ui/forms/Combobox.stories.tsx`). Titles follow
-`Design System/Components/<Category>/<Name>`. Use `tags: ['autodocs']` and
-document public props in the component's story metadata. Navigate to a single
-primitive in Storybook by its name under the category, and add a new story file
-rather than extending a shared catalogue.
+Keep story files colocated with their implementations; use explicit `title`
+metadata to organize the sidebar independently from source directories. The
+Storybook hierarchy distinguishes:
+
+- **Foundations** (`Design System/Foundations/*`) for design tokens and visual
+  foundations.
+- **Primitives** (`Design System/Primitives/*`) for low-level controls and
+  building blocks that consumers can combine into custom compositions.
+- **Form Fields** (`Design System/Form Fields/*`) for recommended ready-to-use
+  controls with integrated labels, descriptions, validation, and accessibility
+  behavior.
+- **Patterns** (`Design System/Patterns/*`) for reusable interactions and
+  multi-component examples, such as form validation and loading states.
+- **Product** (`Design System/Product/*`) for real DWMC feature components and
+  domain-specific compositions.
+
+Use `tags: ['autodocs']` on component stories and document public props and
+composition guidance in their story metadata. `.storybook/preview.ts` defines
+the top-level order and alphabetizes entries within each group. Keep primitive
+and composed-field stories separate; avoid duplicating the same example under
+both categories.
 
 ### Design workspace
 
-- **Foundations** (`Design System/Foundations/*`) show the live token values
-  read from the CSS: primitive palettes, semantic colors with light and dark
-  columns, radius, shadows, borders, breakpoints, motion, spacing, typography,
-  surfaces, and icons.
-- **Patterns** (`Design System/Patterns/*`) compose primitives into loading,
-  form-validation, error, and empty states using deterministic data.
+- **Foundations** show the live token values read from the CSS: primitive
+  palettes, semantic colors with light and dark columns, radius, shadows,
+  borders, breakpoints, motion, spacing, typography, surfaces, and icons.
+- **Primitives** document the standalone controls and layout, navigation,
+  overlay, feedback, data-display, and disclosure building blocks.
+- **Form Fields** document complete field components, including
+  `PasswordField`, beside `TextField`, `CurrencyInput`, and the other composed
+  fields.
+- **Patterns** compose primitives and form fields into loading, form-validation,
+  error, and empty states using deterministic data.
+- **Product** documents feature-level components from accounts, budgets,
+  categories, dashboard, transactions, authentication, profile, and settings.
 - **Viewports** use the presets in `.storybook/preview.ts`: small mobile (320),
   large mobile (430), tablet (768), and desktop (1280). Select one from the
   Storybook toolbar.

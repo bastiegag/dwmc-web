@@ -5,7 +5,7 @@ import { Button } from '../actions/Button'
 import { EmptyState } from './EmptyState'
 
 const meta = {
-    title: 'Design System/Patterns/Empty States/Empty State',
+    title: 'Design System/Primitives/Feedback/Empty State',
     component: EmptyState,
     tags: ['autodocs'],
 } satisfies Meta<typeof EmptyState>

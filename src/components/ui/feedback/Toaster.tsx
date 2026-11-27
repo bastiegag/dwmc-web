@@ -40,13 +40,20 @@ export const Toaster = ({
     theme: themeOverride,
     ...props
 }: ToasterProps) => {
-    const { theme } = useTheme()
+    const { theme, toastThemeOverride } = useTheme()
+    const activeTheme = themeOverride ?? toastThemeOverride ?? theme ?? 'system'
+    const themeClass =
+        themeOverride === 'light' || themeOverride === 'dark'
+            ? themeOverride
+            : themeOverride === undefined
+              ? toastThemeOverride
+              : undefined
 
     return (
         <Sonner
             {...props}
-            theme={themeOverride ?? theme ?? 'system'}
-            className={['toaster group', className].filter(Boolean).join(' ')}
+            theme={activeTheme}
+            className={['toaster group', themeClass, className].filter(Boolean).join(' ')}
             toastOptions={{
                 ...toastOptions,
                 classNames: {

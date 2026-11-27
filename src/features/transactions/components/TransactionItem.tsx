@@ -1,20 +1,7 @@
 import { useState } from 'react'
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    Button,
-    Badge,
-    Card,
-} from '@/components/ui'
+import { Button, Badge, Card, ConfirmDialog } from '@/components/ui'
 import type { Transaction } from '@/features/transactions/types/transaction.types'
 import { isValidDateOnly } from '@/shared/date'
-import { getErrorMessage } from '@/shared/errors'
 import { formatCurrency } from '@/lib/format-currency'
 
 type TransactionItemProps = {
@@ -25,8 +12,6 @@ type TransactionItemProps = {
 
 export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionItemProps) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-    const [archiveError, setArchiveError] = useState<string | null>(null)
-    const [isArchiving, setIsArchiving] = useState(false)
     const { type, amount, date } = transaction
 
     const displayAmount = formatCurrency(amount)
@@ -96,7 +81,6 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                             size="sm"
                             className="min-h-11"
                             onClick={() => {
-                                setArchiveError(null)
                                 setIsConfirmOpen(true)
                             }}
                             aria-label={`Archive transaction ${transaction.id}`}
@@ -107,59 +91,17 @@ export const TransactionItem = ({ transaction, onEdit, onArchive }: TransactionI
                 </div>
             </div>
 
-            <AlertDialog
+            <ConfirmDialog
                 open={isConfirmOpen}
-                onOpenChange={(open, eventDetails) => {
-                    if (!open && isArchiving) {
-                        eventDetails.cancel()
-                        return
-                    }
-                    setIsConfirmOpen(open)
-                }}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Archive transaction?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This will archive this transaction.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    {archiveError ? (
-                        <p role="alert" className="text-sm text-destructive-border">
-                            {archiveError}
-                        </p>
-                    ) : null}
-                    <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isArchiving}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            asChild
-                            disabled={isArchiving}
-                            onClick={async (event) => {
-                                event.preventDefault()
-                                setIsArchiving(true)
-                                setArchiveError(null)
-                                try {
-                                    await onArchive(transaction)
-                                    setIsConfirmOpen(false)
-                                } catch (error) {
-                                    setArchiveError(
-                                        getErrorMessage(
-                                            error,
-                                            'Unable to archive transaction. Please try again.',
-                                        ),
-                                    )
-                                } finally {
-                                    setIsArchiving(false)
-                                }
-                            }}
-                        >
-                            <Button type="button" color="destructive" variant="contained">
-                                {isArchiving ? 'Archiving...' : 'Archive'}
-                            </Button>
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+                onOpenChange={setIsConfirmOpen}
+                title="Archive transaction?"
+                description="This will archive this transaction."
+                confirmLabel="Archive"
+                pendingLabel="Archiving..."
+                errorFallback="Unable to archive transaction. Please try again."
+                variant="destructive"
+                onConfirm={() => onArchive(transaction)}
+            />
         </Card>
     )
 }

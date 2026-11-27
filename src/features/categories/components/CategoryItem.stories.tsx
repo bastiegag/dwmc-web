@@ -34,8 +34,8 @@ export const LongName: Story = {
     },
 }
 
-export const UnknownIcon: Story = {
-    args: { category: { ...category, icon: 'unknown-category-icon' } },
+export const HomeIcon: Story = {
+    args: { category: { ...category, icon: 'house' } },
 }
 
 export const Archived: Story = {

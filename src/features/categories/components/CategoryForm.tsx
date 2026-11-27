@@ -1,17 +1,8 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
-import { FormError } from '@/components/form/FormError'
-import { FormField } from '@/components/form/FormField'
-import {
-    Button,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui'
-import { TextField } from '@/components/form/TextField'
+import { IconPickerField, FormError, SelectField, TextField } from '@/components/form'
+import { Button, SelectItem } from '@/components/ui'
 import {
     categoryFormSchema,
     type CategoryFormSubmitValues,
@@ -30,7 +21,7 @@ type CategoryFormProps = {
 
 const defaultValues: CategoryFormValues = {
     name: '',
-    icon: '',
+    icon: 'shopping-cart',
     sectionId: '',
 }
 
@@ -86,80 +77,73 @@ export const CategoryForm = ({
                     error={errors.name?.message}
                 />
 
-                <TextField
-                    id="category-icon"
-                    label="Icon"
-                    placeholder="shopping-cart"
-                    required
-                    maxLength={80}
-                    {...register('icon')}
-                    error={errors.icon?.message}
+                <Controller
+                    name="icon"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <IconPickerField
+                            id="category-icon"
+                            label="Icon"
+                            required
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            onBlur={field.onBlur}
+                            ref={field.ref}
+                            disabled={isBusy}
+                            error={fieldState.error?.message}
+                        />
+                    )}
                 />
 
-                <FormField
-                    id="category-section"
-                    label="Section"
-                    required
-                    error={errors.sectionId?.message}
-                    description={
-                        selectableSections.length === 0
-                            ? 'No active sections are available. Create a section before adding a category.'
-                            : undefined
-                    }
-                    disabled={isBusy || selectableSections.length === 0}
-                >
-                    <Controller
-                        name="sectionId"
-                        control={control}
-                        render={({ field }) => {
-                            const selectedSection = sections.find(
-                                (section) => section.id === field.value,
-                            )
+                <Controller
+                    name="sectionId"
+                    control={control}
+                    render={({ field, fieldState }) => {
+                        const selectedSection = sections.find(
+                            (section) => section.id === field.value,
+                        )
 
-                            return (
-                                <Select
-                                    name={field.name}
-                                    value={field.value || null}
-                                    required
-                                    disabled={isBusy || selectableSections.length === 0}
-                                    onValueChange={(value) => field.onChange(value ?? '')}
-                                >
-                                    <SelectTrigger
-                                        id="category-section"
-                                        ref={field.ref}
-                                        onBlur={field.onBlur}
-                                        aria-required="true"
-                                        aria-invalid={Boolean(errors.sectionId)}
-                                        aria-describedby={
-                                            errors.sectionId ? 'category-section-error' : undefined
+                        return (
+                            <SelectField
+                                id="category-section"
+                                label="Section"
+                                name={field.name}
+                                required
+                                value={field.value || null}
+                                onValueChange={(value) => field.onChange(value ?? '')}
+                                onBlur={field.onBlur}
+                                ref={field.ref}
+                                disabled={isBusy || selectableSections.length === 0}
+                                error={fieldState.error?.message}
+                                description={
+                                    selectableSections.length === 0
+                                        ? 'No active sections are available. Create a section before adding a category.'
+                                        : undefined
+                                }
+                                placeholder="Select a section"
+                                valueLabel={
+                                    selectedSection
+                                        ? `${selectedSection.name}${selectedSection.isArchived ? ' (archived)' : ''}`
+                                        : undefined
+                                }
+                            >
+                                {sections.map((section) => (
+                                    <SelectItem
+                                        key={section.id}
+                                        value={section.id}
+                                        disabled={
+                                            section.isArchived &&
+                                            section.id !== initialValues?.sectionId
                                         }
                                     >
-                                        <SelectValue placeholder="Select a section">
-                                            {selectedSection
-                                                ? `${selectedSection.name}${selectedSection.isArchived ? ' (archived)' : ''}`
-                                                : undefined}
-                                        </SelectValue>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {sections.map((section) => (
-                                            <SelectItem
-                                                key={section.id}
-                                                value={section.id}
-                                                disabled={
-                                                    section.isArchived &&
-                                                    section.id !== initialValues?.sectionId
-                                                }
-                                            >
-                                                {section.name}
-                                                {section.isArchived ? ' (archived)' : ''}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            )
-                        }}
-                    />
-                </FormField>
+                                        {section.name}
+                                        {section.isArchived ? ' (archived)' : ''}
+                                    </SelectItem>
+                                ))}
+                            </SelectField>
+                        )
+                    }}
+                />
 
                 <Button type="submit" className="w-full" isLoading={isBusy} loadingText="Saving...">
                     {submitLabel}

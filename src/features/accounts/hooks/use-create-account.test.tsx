@@ -14,7 +14,7 @@ describe('useCreateAccount', () => {
 
         await result.current.mutateAsync({
             name: 'Cash',
-            color: '#0f172a',
+            color: 'secondary',
             icon: 'wallet',
         })
 

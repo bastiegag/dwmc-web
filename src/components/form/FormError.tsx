@@ -1,5 +1,4 @@
 import { Alert } from '@/components/ui'
-import { cn } from '@/lib/utils'
 
 export interface FormErrorProps {
     message?: string | null
@@ -16,7 +15,7 @@ export const FormError = ({ message, className, id }: FormErrorProps) => {
             variant="destructive"
             role="alert"
             description={message}
-            className={cn(className)}
+            className={className}
         />
     )
 }

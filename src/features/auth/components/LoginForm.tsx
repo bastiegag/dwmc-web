@@ -69,6 +69,7 @@ export const LoginForm = () => {
             <Button
                 type="submit"
                 className="w-full"
+                color="primary"
                 isLoading={isPending}
                 loadingText="Signing in..."
             >

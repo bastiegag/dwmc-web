@@ -98,36 +98,43 @@
     --color-default-background: var(--default-background);
     --color-default-foreground: var(--default-foreground);
     --color-default-border: var(--default-border);
+    --color-default-hover: var(--default-hover);
 
     --color-primary: var(--primary);
     --color-primary-background: var(--primary-background);
     --color-primary-foreground: var(--primary-foreground);
     --color-primary-border: var(--primary-border);
+    --color-primary-hover: var(--primary-hover);
 
     --color-secondary: var(--secondary);
     --color-secondary-background: var(--secondary-background);
     --color-secondary-foreground: var(--secondary-foreground);
     --color-secondary-border: var(--secondary-border);
+    --color-secondary-hover: var(--secondary-hover);
 
     --color-destructive: var(--destructive);
     --color-destructive-background: var(--destructive-background);
     --color-destructive-foreground: var(--destructive-foreground);
     --color-destructive-border: var(--semantic-destructive-border);
+    --color-destructive-hover: var(--destructive-hover);
 
     --color-warning: var(--warning);
     --color-warning-background: var(--warning-background);
     --color-warning-foreground: var(--warning-foreground);
     --color-warning-border: var(--semantic-warning-border);
+    --color-warning-hover: var(--warning-hover);
 
     --color-success: var(--success);
     --color-success-background: var(--success-background);
     --color-success-foreground: var(--success-foreground);
     --color-success-border: var(--semantic-success-border);
+    --color-success-hover: var(--success-hover);
 
     --color-info: var(--info);
     --color-info-background: var(--info-background);
     --color-info-foreground: var(--info-foreground);
     --color-info-border: var(--semantic-info-border);
+    --color-info-hover: var(--info-hover);
 
     --color-card: var(--card);
     --color-card-foreground: var(--card-foreground);
@@ -136,6 +143,7 @@
 
     --color-muted: var(--muted);
     --color-muted-foreground: var(--muted-foreground);
+    --color-muted-border: var(--muted-border);
     --color-accent: var(--accent);
     --color-accent-foreground: var(--accent-foreground);
     --color-link: var(--link);
@@ -157,43 +165,51 @@
     --default-background: var(--color-neutral-100);
     --default-foreground: var(--color-neutral-950);
     --default-border: var(--color-neutral-700);
+    --default-hover: var(--color-neutral-400);
 
     --primary: var(--color-lavender-500);
     --primary-background: var(--color-lavender-50);
-    --primary-foreground: var(--color-lavender-950);
+    --primary-foreground: var(--color-neutral-950);
     --primary-border: var(--color-lavender-700);
+    --primary-hover: var(--color-lavender-400);
 
     --secondary: var(--color-teal-500);
     --secondary-background: var(--color-teal-50);
     --secondary-foreground: var(--color-teal-950);
     --secondary-border: var(--color-teal-800);
+    --secondary-hover: var(--color-teal-400);
 
     --destructive: var(--color-red-500);
     --destructive-background: var(--color-red-50);
     --destructive-foreground: var(--color-red-950);
     --destructive-border: var(--color-red-700);
+    --destructive-hover: var(--color-red-400);
     --semantic-destructive-border: var(--color-red-700);
 
     --warning: var(--color-yellow-500);
     --warning-background: var(--color-yellow-50);
     --warning-foreground: var(--color-yellow-950);
     --warning-border: var(--color-yellow-800);
+    --warning-hover: var(--color-yellow-400);
     --semantic-warning-border: var(--color-yellow-800);
 
     --success: var(--color-green-500);
     --success-background: var(--color-green-50);
     --success-foreground: var(--color-green-950);
     --success-border: var(--color-green-700);
+    --success-hover: var(--color-green-400);
     --semantic-success-border: var(--color-green-700);
 
     --info: var(--color-blue-500);
     --info-background: var(--color-blue-50);
     --info-foreground: var(--color-blue-950);
     --info-border: var(--color-blue-700);
+    --info-hover: var(--color-blue-400);
     --semantic-info-border: var(--color-blue-700);
 
     --muted: var(--color-neutral-100);
-    --muted-foreground: var(--color-neutral-700);
+    --muted-foreground: var(--color-neutral-600);
+    --muted-border: var(--color-neutral-200);
     --accent: var(--color-neutral-100);
     --accent-foreground: var(--color-neutral-900);
     --link: var(--color-lavender-800);
@@ -217,43 +233,51 @@
     --default-background: var(--color-neutral-950);
     --default-foreground: var(--color-neutral-950);
     --default-border: var(--color-neutral-400);
+    --default-hover: var(--color-neutral-400);
 
     --primary: var(--color-lavender-500);
     --primary-background: var(--color-lavender-950);
-    --primary-foreground: var(--color-lavender-950);
+    --primary-foreground: var(--color-neutral-950);
     --primary-border: var(--color-lavender-400);
+    --primary-hover: var(--color-lavender-400);
 
     --secondary: var(--color-teal-500);
     --secondary-background: var(--color-teal-950);
     --secondary-foreground: var(--color-teal-950);
     --secondary-border: var(--color-teal-500);
+    --secondary-hover: var(--color-teal-400);
 
     --destructive: var(--color-red-500);
     --destructive-background: var(--color-red-950);
     --destructive-foreground: var(--color-red-950);
     --destructive-border: var(--color-red-400);
+    --destructive-hover: var(--color-red-400);
     --semantic-destructive-border: var(--color-red-400);
 
     --warning: var(--color-yellow-500);
     --warning-background: var(--color-yellow-950);
     --warning-foreground: var(--color-yellow-950);
     --warning-border: var(--color-yellow-500);
+    --warning-hover: var(--color-yellow-400);
     --semantic-warning-border: var(--color-yellow-500);
 
     --success: var(--color-green-500);
     --success-background: var(--color-green-950);
     --success-foreground: var(--color-green-950);
     --success-border: var(--color-green-500);
+    --success-hover: var(--color-green-400);
     --semantic-success-border: var(--color-green-500);
 
     --info: var(--color-blue-500);
     --info-background: var(--color-blue-950);
     --info-foreground: var(--color-blue-950);
     --info-border: var(--color-blue-500);
+    --info-hover: var(--color-blue-400);
     --semantic-info-border: var(--color-blue-500);
 
     --muted: var(--color-neutral-800);
     --muted-foreground: var(--color-neutral-300);
+    --muted-border: var(--color-neutral-200);
     --accent: var(--color-neutral-800);
     --accent-foreground: var(--color-neutral-50);
     --link: var(--color-lavender-300);

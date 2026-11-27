@@ -142,7 +142,7 @@ describe('CategoriesPage', () => {
 
         await user.click(screen.getByRole('button', { name: 'Add category' }))
         await user.type(screen.getByLabelText(/category name/i), 'Utilities')
-        await user.type(screen.getByLabelText(/icon/i), 'bolt')
+        await user.click(screen.getByRole('radio', { name: 'Phone' }))
         await user.click(screen.getByRole('combobox', { name: /section/i }))
         await user.click(await screen.findByRole('option', { name: 'Food' }))
         await user.click(screen.getByRole('button', { name: 'Create category' }))
@@ -150,7 +150,7 @@ describe('CategoriesPage', () => {
         await waitFor(() =>
             expect(createCategoryMock).toHaveBeenCalledWith({
                 name: 'Utilities',
-                icon: 'bolt',
+                icon: 'smartphone',
                 sectionId: 'section-1',
             }),
         )

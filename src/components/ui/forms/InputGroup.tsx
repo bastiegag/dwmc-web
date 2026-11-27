@@ -1,5 +1,7 @@
 import { forwardRef } from 'react'
-import type { HTMLAttributes, ButtonHTMLAttributes } from 'react'
+import type { HTMLAttributes } from 'react'
+import { Button } from '../actions/Button'
+import type { ButtonProps } from '../actions/Button'
 import { cn } from '@/lib/utils'
 
 export type InputGroupProps = HTMLAttributes<HTMLDivElement>
@@ -14,30 +16,26 @@ export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
                 'rounded-md border border-input bg-card',
 
                 // Focus
-                'ring-offset-background',
                 'focus-within:ring-2',
-                'focus-within:ring-ring',
+                'focus-within:ring-ring/50',
                 'focus-within:ring-offset-2',
 
                 // Invalid
+                'has-[input[aria-invalid=true]]:border-2',
                 'has-[input[aria-invalid=true]]:border-destructive',
-                'has-[input[aria-invalid=true]]:focus-within:ring-destructive',
+                'has-[input[aria-invalid=true]]:focus-within:ring-destructive/25',
 
                 // Disabled
                 'has-[input:disabled]:opacity-50',
 
                 // Nested input
-                '[&>input]:h-full',
-                '[&>input]:min-w-0',
-                '[&>input]:flex-1',
                 '[&>input]:border-0',
+                '[&>input]:opacity-100',
                 '[&>input]:bg-transparent',
-                '[&>input]:shadow-none',
-                '[&>input]:outline-none',
                 '[&>input]:ring-0',
                 '[&>input]:ring-offset-0',
                 '[&>input:focus-visible]:ring-0',
-                '[&>input:focus-visible]:ring-offset-0',
+                '[&>input:read-only]:bg-transparent',
 
                 className,
             )}
@@ -67,32 +65,23 @@ export const InputGroupAddon = forwardRef<HTMLDivElement, InputGroupAddonProps>(
 
 InputGroupAddon.displayName = 'InputGroupAddon'
 
-export type InputGroupButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
+export type InputGroupButtonProps = Omit<ButtonProps, 'asChild'>
 
 export const InputGroupButton = forwardRef<HTMLButtonElement, InputGroupButtonProps>(
-    ({ className, type = 'button', ...props }, ref) => (
-        <button
+    (
+        { className, type = 'button', variant = 'link', color = 'default', size = 'sm', ...props },
+        ref,
+    ) => (
+        <Button
             ref={ref}
             type={type}
+            variant={variant}
+            color={color}
+            size={size}
             className={cn(
                 // Layout
                 'mx-1 inline-flex h-8 shrink-0 items-center',
-                'justify-center gap-1.5 rounded-md px-2',
-
-                // Typography
-                'text-sm font-medium text-foreground',
-
-                // Interaction
-                'cursor-pointer transition-colors motion-reduce:transition-none',
-                'hover:bg-muted',
-                'focus-visible:outline-none',
-                'focus-visible:ring-2',
-                'focus-visible:ring-ring',
-                'focus-visible:ring-inset',
-
-                // Disabled
-                'disabled:cursor-not-allowed',
-                'disabled:opacity-50',
+                'rounded-md px-2',
 
                 className,
             )}

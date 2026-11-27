@@ -24,6 +24,31 @@ const preview: Preview = {
     ],
     loaders: [mswLoader],
     parameters: {
+        options: {
+            storySort: {
+                method: 'alphabetical',
+                order: [
+                    'Design System',
+                    [
+                        'Foundations',
+                        'Primitives',
+                        [
+                            'Actions',
+                            'Forms',
+                            'Layout',
+                            'Navigation',
+                            'Overlays',
+                            'Feedback',
+                            'Data Display',
+                            'Disclosure',
+                        ],
+                        'Form Fields',
+                        'Patterns',
+                        'Product',
+                    ],
+                ],
+            },
+        },
         backgrounds: { disable: true },
         layout: 'centered',
         viewport: {
