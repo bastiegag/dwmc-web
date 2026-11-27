@@ -2,7 +2,6 @@ import { forwardRef } from 'react'
 import type { InputHTMLAttributes } from 'react'
 
 import { Input } from '@/components/ui'
-import { cn } from '@/lib/utils'
 import { FormField } from './FormField'
 
 export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -49,11 +48,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
                     disabled={disabled}
                     aria-invalid={Boolean(error)}
                     aria-describedby={describedBy}
-                    className={cn(
-                        error &&
-                            'border-destructive bg-destructive-subtle focus-visible:ring-destructive',
-                        className,
-                    )}
+                    className={className}
                 />
             </FormField>
         )

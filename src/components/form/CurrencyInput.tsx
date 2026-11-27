@@ -2,8 +2,7 @@ import { forwardRef, useCallback, useEffect, useId, useMemo, useRef, useState } 
 import type { ChangeEvent, FocusEvent, InputHTMLAttributes } from 'react'
 
 import { Input } from '@/components/ui'
-import { cn } from '@/lib/utils'
-import { Field, FieldDescription, FieldError, FieldLabel } from './Field'
+import { FormField } from './FormField'
 
 type Amount = string | null
 
@@ -230,18 +229,14 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
         }
 
         return (
-            <Field invalid={Boolean(message)} disabled={disabled}>
-                {label && (
-                    <FieldLabel htmlFor={id}>
-                        {label}
-                        {required && (
-                            <span className="ml-1 text-destructive" aria-hidden="true">
-                                *
-                            </span>
-                        )}
-                    </FieldLabel>
-                )}
-
+            <FormField
+                id={id}
+                label={label}
+                error={message ?? undefined}
+                description={description}
+                required={required}
+                disabled={disabled}
+            >
                 <Input
                     {...props}
                     ref={ref}
@@ -254,21 +249,12 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
                     value={editText ?? (committed === null ? '' : formatAmount(committed))}
                     aria-invalid={Boolean(message)}
                     aria-describedby={describedBy}
-                    className={cn(
-                        message && 'border-destructive focus-visible:ring-destructive',
-                        className,
-                    )}
+                    className={className}
                     onChange={handleChange}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                 />
-
-                {description && (
-                    <FieldDescription id={descriptionId}>{description}</FieldDescription>
-                )}
-
-                <FieldError id={errorId}>{message}</FieldError>
-            </Field>
+            </FormField>
         )
     },
 )

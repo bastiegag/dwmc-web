@@ -56,29 +56,20 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
                         readOnly={readOnly}
                         aria-invalid={Boolean(error)}
                         aria-describedby={describedBy}
-                        className={cn(
-                            'pr-11',
-                            error && 'border-destructive focus-visible:ring-destructive',
-                            className,
-                        )}
+                        className={cn('pr-11', className)}
                     />
 
                     <Button
                         type="button"
                         variant="link"
                         color="default"
+                        size="sm"
                         icon
                         disabled={disabled}
                         aria-label={visible ? 'Hide password' : 'Show password'}
                         aria-pressed={visible}
                         onClick={() => setVisible((value) => !value)}
-                        className={cn(
-                            'absolute inset-y-0 right-0',
-                            'h-full w-10 rounded-l-none rounded-r-md p-0',
-                            'text-muted-foreground',
-                            'hover:bg-transparent hover:text-foreground',
-                            'focus-visible:z-10',
-                        )}
+                        className="absolute top-1/2 -translate-y-1/2 right-1"
                     >
                         {visible ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </Button>

@@ -24,24 +24,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 'file:text-foreground',
 
                 // Interaction
-                'transition-colors motion-reduce:transition-none',
-                'focus-visible:outline-none',
-                'focus-visible:ring-2',
-                'focus-visible:ring-ring',
-                'focus-visible:ring-offset-2',
-                'focus-visible:ring-offset-background',
-
-                // Invalid
-                'aria-invalid:border-destructive',
-                'aria-invalid:focus-visible:ring-destructive',
+                'transition motion-reduce:transition-none',
 
                 // Read-only
-                'read-only:cursor-default',
-                'read-only:bg-muted/30',
-
-                // Disabled
-                'disabled:cursor-not-allowed',
-                'disabled:opacity-50',
+                'read-only:bg-muted',
+                'read-only:text-muted-foreground',
+                'read-only:border-muted-border',
 
                 className,
             )}
