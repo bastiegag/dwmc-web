@@ -37,6 +37,7 @@ export const ThemeToggle = ({ className, ...props }: ThemeToggleProps) => {
             {...props}
             type="button"
             variant="link"
+            color="theme"
             icon
             aria-label={NEXT_LABEL[theme]}
             onClick={() => setTheme(NEXT_THEME[theme])}

@@ -32,6 +32,7 @@
     content: '';
     pointer-events: none;
     animation: progress-stripe 1.2s linear infinite;
+    z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {

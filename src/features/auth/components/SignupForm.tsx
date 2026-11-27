@@ -82,6 +82,7 @@ export const SignupForm = () => {
             <Button
                 type="submit"
                 className="w-full"
+                color="primary"
                 isLoading={isPending}
                 loadingText="Creating account..."
             >

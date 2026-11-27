@@ -71,6 +71,7 @@ export const ResetPasswordForm = () => {
             <Button
                 type="submit"
                 className="w-full"
+                color="primary"
                 isLoading={isPending}
                 loadingText="Updating password..."
             >

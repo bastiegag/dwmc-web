@@ -20,6 +20,9 @@ export const ThemeProvider = ({
             typeof window === 'undefined' ? null : window.localStorage.getItem(storageKey)
         return isTheme(storedTheme) ? storedTheme : defaultTheme
     })
+    const [toastThemeOverride, setToastThemeOverride] = useState<
+        Exclude<Theme, 'system'> | undefined
+    >()
 
     useEffect(() => {
         const root = window.document.documentElement
@@ -47,6 +50,8 @@ export const ThemeProvider = ({
             }
             setTheme(nextTheme)
         },
+        toastThemeOverride,
+        setToastThemeOverride,
     }
 
     return <ThemeProviderContext.Provider value={value}>{children}</ThemeProviderContext.Provider>

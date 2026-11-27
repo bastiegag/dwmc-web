@@ -1,23 +1,28 @@
+import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Container, Logo, SkipLink, ThemeToggle } from '@/components/layout'
+import { Container, SkipLink } from '@/components/layout'
+import { useTheme } from '@/shared/theme'
 
 export const AuthLayout = () => {
+    const { setToastThemeOverride } = useTheme()
+
+    useEffect(() => {
+        setToastThemeOverride('light')
+        return () => setToastThemeOverride(undefined)
+    }, [setToastThemeOverride])
+
     return (
-        <div className="flex min-h-dvh flex-col bg-gradient">
+        <div className="flex min-h-dvh flex-col bg-gradient light text-foreground">
             <SkipLink />
-            <header className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-2 text-sm">
-                    <Logo className="size-6" />
-                    Dude, where's my cash?
-                </div>
-                <ThemeToggle />
+            <header className="p-4 text-center text-sm">
+                <p>Dude, where's my cash?</p>
             </header>
             <main
                 id="main-content"
                 tabIndex={-1}
                 className="flex flex-1 items-center justify-center px-4 py-12"
             >
-                <Container className="light">
+                <Container>
                     <Outlet />
                 </Container>
             </main>

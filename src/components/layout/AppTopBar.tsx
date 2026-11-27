@@ -35,6 +35,7 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
                     <Button
                         type="button"
                         variant="link"
+                        color="theme"
                         icon
                         aria-label="Sign out"
                         onClick={onLogout}
