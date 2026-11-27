@@ -7,7 +7,7 @@ import { ColorPickerField } from './ColorPickerField'
 import type { SemanticColor } from '@/shared/semantic-colors'
 
 const meta = {
-    title: 'Design System/Composed Fields/ColorPickerField',
+    title: 'Design System/Form Fields/Color Picker Field',
     component: ColorPickerField,
     tags: ['autodocs'],
     args: { id: 'section-color', label: 'Section color', value: 'primary', onValueChange: fn() },

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui'
 import { CurrencyInput } from './CurrencyInput'
 
 const meta = {
-    title: 'Design System/Components/Forms/Currency Input',
+    title: 'Design System/Form Fields/Currency Input',
     component: CurrencyInput,
     tags: ['autodocs'],
     parameters: {

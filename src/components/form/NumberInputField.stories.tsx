@@ -5,7 +5,7 @@ import { Button } from '@/components/ui'
 import { NumberInputField } from './NumberInputField'
 
 const meta = {
-    title: 'Design System/Composed Fields/NumberInputField',
+    title: 'Design System/Form Fields/Number Input Field',
     component: NumberInputField,
     tags: ['autodocs'],
     args: { id: 'quantity', label: 'Quantity', min: 0, max: 10 },

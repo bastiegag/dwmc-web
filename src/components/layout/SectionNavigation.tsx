@@ -16,7 +16,10 @@ export interface SectionNavigationProps {
 }
 
 export const SectionNavigation = ({ ariaLabel, items, className }: SectionNavigationProps) => (
-    <nav aria-label={ariaLabel} className={cn('bg-primary px-4 pb-4 text-foreground', className)}>
+    <nav
+        aria-label={ariaLabel}
+        className={cn('bg-primary px-4 pb-4 text-primary-foreground', className)}
+    >
         <Stack direction="horizontal" gap={2} align="center" justify="center">
             {items.map(({ name, to, end = true }) => (
                 <NavLink
@@ -34,7 +37,7 @@ export const SectionNavigation = ({ ariaLabel, items, className }: SectionNaviga
 
                             // Active
                             isActive &&
-                                'bg-primary-border/50 hover:bg-primary-border/50 text-white',
+                                'bg-primary-background text-primary-border hover:bg-primary-background',
                         )
                     }
                 >

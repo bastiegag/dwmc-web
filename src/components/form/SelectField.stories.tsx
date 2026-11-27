@@ -10,7 +10,7 @@ const accounts = [
 ]
 
 const meta = {
-    title: 'Design System/Composed Fields/SelectField',
+    title: 'Design System/Form Fields/Select Field',
     component: SelectField,
     tags: ['autodocs'],
     args: { id: 'account', label: 'Account', options: accounts },

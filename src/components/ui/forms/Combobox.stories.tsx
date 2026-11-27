@@ -19,7 +19,7 @@ import {
 const accounts = ['Checking', 'Savings', 'Credit card']
 
 const meta = {
-    title: 'Design System/Components/Forms/Combobox',
+    title: 'Design System/Primitives/Forms/Combobox',
     component: Combobox,
     tags: ['autodocs'],
     parameters: {

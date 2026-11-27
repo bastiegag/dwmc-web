@@ -4,7 +4,7 @@ import { FormField } from '@/components/form'
 import { Textarea } from './Textarea'
 
 const meta = {
-    title: 'Design System/Components/Forms/Textarea',
+    title: 'Design System/Primitives/Forms/Textarea',
     component: Textarea,
     tags: ['autodocs'],
     argTypes: {

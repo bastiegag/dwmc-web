@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LoadingSpinner } from './LoadingSpinner'
 
 const meta = {
-    title: 'Design System/Components/Feedback/Loading Spinner',
+    title: 'Design System/Primitives/Feedback/Loading Spinner',
     component: LoadingSpinner,
     tags: ['autodocs'],
     parameters: {

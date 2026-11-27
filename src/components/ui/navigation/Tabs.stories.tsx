@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs'
 
 const meta = {
-    title: 'Design System/Components/Navigation/Tabs',
+    title: 'Design System/Primitives/Navigation/Tabs',
     component: Tabs,
     tags: ['autodocs'],
 } satisfies Meta<typeof Tabs>

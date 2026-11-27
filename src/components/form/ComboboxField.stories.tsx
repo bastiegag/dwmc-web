@@ -7,7 +7,7 @@ import { ComboboxField } from './ComboboxField'
 const accounts = ['Checking', 'Savings', 'Credit card']
 
 const meta = {
-    title: 'Design System/Composed Fields/ComboboxField',
+    title: 'Design System/Form Fields/Combobox Field',
     component: ComboboxField,
     tags: ['autodocs'],
     args: { id: 'account', label: 'Account', options: accounts },

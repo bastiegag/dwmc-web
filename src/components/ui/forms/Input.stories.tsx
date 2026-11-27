@@ -3,7 +3,7 @@ import { FormField } from '@/components/form'
 import { Input } from './Input'
 
 const meta = {
-    title: 'Design System/Components/Forms/Input',
+    title: 'Design System/Primitives/Forms/Input',
     component: Input,
     tags: ['autodocs'],
     parameters: {

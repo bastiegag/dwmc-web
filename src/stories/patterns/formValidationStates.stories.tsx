@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/form/Field'
-import { Input } from '@/components/ui'
+import {
+    CheckboxField,
+    CurrencyInput,
+    Field,
+    FieldDescription,
+    FieldError,
+    FieldLabel,
+    SelectField,
+    TextField,
+} from '@/components/form'
+import { Button, Input } from '@/components/ui'
 
 const meta = {
     title: 'Design System/Patterns/Form Validation States',
@@ -9,7 +18,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Recommended composition for validated fields: Field owns the layout and invalid/disabled flags, FieldLabel and Input are associated by id, FieldDescription and FieldError are linked through aria-describedby, and Input receives aria-invalid when an error is shown.',
+                    'Use composed form fields for typical application forms. The manual Field composition is retained as an advanced example for controls that need a custom inline action.',
             },
         },
     },
@@ -18,46 +27,9 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const ValidatedField = ({
-    id,
-    label,
-    description,
-    error,
-    defaultValue,
-    disabled = false,
-}: {
-    id: string
-    label: string
-    description?: string
-    error?: string
-    defaultValue?: string
-    disabled?: boolean
-}) => {
-    const descriptionId = description ? `${id}-description` : undefined
-    const errorId = error ? `${id}-error` : undefined
-    const describedBy = [descriptionId, errorId].filter(Boolean).join(' ') || undefined
-
-    return (
-        <Field invalid={Boolean(error)} disabled={disabled} className="w-72">
-            <FieldLabel htmlFor={id}>{label}</FieldLabel>
-            <Input
-                id={id}
-                defaultValue={defaultValue}
-                disabled={disabled}
-                aria-invalid={error ? true : undefined}
-                aria-describedby={describedBy}
-            />
-            {description ? (
-                <FieldDescription id={descriptionId}>{description}</FieldDescription>
-            ) : null}
-            {error ? <FieldError id={errorId}>{error}</FieldError> : null}
-        </Field>
-    )
-}
-
 export const Valid: Story = {
     render: () => (
-        <ValidatedField
+        <TextField
             id="validation-valid"
             label="Account name"
             description="Shown on your dashboard."
@@ -68,7 +40,7 @@ export const Valid: Story = {
 
 export const Invalid: Story = {
     render: () => (
-        <ValidatedField
+        <TextField
             id="validation-invalid"
             label="Amount"
             description="Use up to two decimal places."
@@ -80,7 +52,7 @@ export const Invalid: Story = {
 
 export const Disabled: Story = {
     render: () => (
-        <ValidatedField
+        <TextField
             id="validation-disabled"
             label="Account number"
             defaultValue="0000-1234"
@@ -91,20 +63,65 @@ export const Disabled: Story = {
 
 export const FormSummary: Story = {
     render: () => (
-        <form className="flex w-72 flex-col gap-6" noValidate>
-            <ValidatedField
+        <form
+            aria-label="Edit account"
+            className="flex w-80 flex-col gap-4"
+            noValidate
+            onSubmit={(event) => event.preventDefault()}
+        >
+            <TextField
                 id="summary-name"
-                label="Name"
+                label="Account name"
                 defaultValue=""
-                error="Name is required."
+                error="Account name is required."
             />
-            <ValidatedField
+            <SelectField
+                id="summary-type"
+                label="Account type"
+                defaultValue="checking"
+                options={[
+                    { value: 'checking', label: 'Checking' },
+                    { value: 'savings', label: 'Savings' },
+                ]}
+            />
+            <CurrencyInput
                 id="summary-limit"
                 label="Monthly limit"
-                description="Enter a positive amount."
-                defaultValue="-50"
-                error="Limit must be greater than zero."
+                description="Enter an amount with up to two decimal places."
+                currency="CAD"
+                locale="en-CA"
+                defaultValue="12.345"
+                error="Use no more than two decimal places."
             />
+            <CheckboxField
+                id="summary-confirm"
+                label="Confirm account details"
+                error="Please confirm the account details."
+            />
+            <Button type="submit">Save changes</Button>
         </form>
+    ),
+}
+
+export const AdvancedManualComposition: Story = {
+    render: () => (
+        <Field className="w-80" invalid>
+            <FieldLabel htmlFor="reference-code">Transaction reference</FieldLabel>
+            <div className="flex items-center gap-2">
+                <Input
+                    id="reference-code"
+                    defaultValue="AB"
+                    aria-invalid="true"
+                    aria-describedby="reference-code-description reference-code-error"
+                />
+                <Button type="button" variant="outlined" size="sm">
+                    Generate
+                </Button>
+            </div>
+            <FieldDescription id="reference-code-description">
+                Use a short code to identify this transaction.
+            </FieldDescription>
+            <FieldError id="reference-code-error">Reference code is already in use.</FieldError>
+        </Field>
     ),
 }

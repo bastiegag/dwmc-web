@@ -10,7 +10,7 @@ const data = [
 ]
 
 const meta = {
-    title: 'Design System/Components/Data Display/Chart',
+    title: 'Design System/Primitives/Data Display/Chart',
     component: Chart,
     tags: ['autodocs'],
 } satisfies Meta<typeof Chart>

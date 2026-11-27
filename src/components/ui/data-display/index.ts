@@ -1,5 +1,4 @@
 export * from './Calendar'
 export * from './Card'
 export * from './Chart'
-export * from './DatePicker'
 export * from './Table'

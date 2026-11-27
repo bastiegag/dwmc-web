@@ -7,7 +7,7 @@ import type { Locale } from 'date-fns'
 import type { Matcher } from 'react-day-picker'
 
 import { cn } from '@/lib/utils'
-import { Calendar } from './Calendar'
+import { Calendar } from '../data-display/Calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '../overlays/Popover'
 
 export interface DatePickerProps {

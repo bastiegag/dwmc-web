@@ -6,7 +6,7 @@ import { ColorPicker } from './ColorPicker'
 import type { SemanticColor } from '@/shared/semantic-colors'
 
 const meta = {
-    title: 'Design System/Components/Forms/Color Picker',
+    title: 'Design System/Primitives/Forms/Color Picker',
     component: ColorPicker,
     tags: ['autodocs'],
     args: { value: 'primary', onValueChange: fn() },

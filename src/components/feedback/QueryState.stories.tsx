@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { QueryState } from './QueryState'
 
 const meta = {
-    title: 'Design System/Components/Feedback/Query State',
+    title: 'Design System/Primitives/Feedback/Query State',
     component: QueryState,
     tags: ['autodocs'],
     parameters: {

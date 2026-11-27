@@ -94,8 +94,8 @@ const buttonVariants = cva(
                 ),
                 theme: cn(
                     '[--button-color:var(--foreground)]',
-                    '[--button-foreground:var(--foreground)]',
-                    '[--button-border:var(--foreground)]',
+                    '[--button-foreground:var(--primary-foreground)]',
+                    '[--button-border:var(--primary-foreground)]',
                     '[--button-hover:var(--foreground)]',
                 ),
             },

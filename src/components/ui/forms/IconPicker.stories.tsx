@@ -6,7 +6,7 @@ import { IconPicker } from './IconPicker'
 import type { FinanceIconName } from '@/shared/finance-icons'
 
 const meta = {
-    title: 'Design System/Components/Forms/Icon Picker',
+    title: 'Design System/Primitives/Forms/Icon Picker',
     component: IconPicker,
     tags: ['autodocs'],
     args: { value: 'wallet', onValueChange: fn() },

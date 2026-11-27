@@ -5,7 +5,7 @@ import { Button } from '@/components/ui'
 import { SwitchField } from './SwitchField'
 
 const meta = {
-    title: 'Design System/Composed Fields/SwitchField',
+    title: 'Design System/Form Fields/Switch Field',
     component: SwitchField,
     tags: ['autodocs'],
     args: { id: 'notifications', label: 'Enable budget notifications' },

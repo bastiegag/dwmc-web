@@ -6,7 +6,7 @@ import { Toaster } from './Toaster'
 import { ThemeProvider } from '@/shared/theme'
 
 const meta = {
-    title: 'Design System/Components/Feedback/Toaster',
+    title: 'Design System/Primitives/Feedback/Toaster',
     component: Toaster,
     tags: ['autodocs'],
     decorators: [

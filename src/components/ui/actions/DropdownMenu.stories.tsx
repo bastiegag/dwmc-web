@@ -17,7 +17,7 @@ import {
 import { Button } from './Button'
 
 const meta = {
-    title: 'Design System/Components/Actions/Dropdown Menu',
+    title: 'Design System/Primitives/Actions/Dropdown Menu',
     component: DropdownMenu,
     tags: ['autodocs'],
     parameters: {

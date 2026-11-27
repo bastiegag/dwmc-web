@@ -49,6 +49,10 @@ headers manually or call `fetch` for domain requests.
 | `src/stories/`             | Foundation and pattern Storybook stories.                                                                           |
 | `src/test/`                | Shared Vitest setup, fixtures, MSW handlers, render helpers, and test utilities.                                    |
 
+`src/components/ui/layout/` contains shared layout primitives; the separate
+`src/components/layout/` directory contains the application shell and
+navigation.
+
 Feature folders commonly contain `api/`, `components/`, `hooks/`, `pages/`,
 `schemas/`, `types/`, and a public `index.ts`. The exact folders vary by
 feature; follow the existing slice rather than creating empty layers. Imports

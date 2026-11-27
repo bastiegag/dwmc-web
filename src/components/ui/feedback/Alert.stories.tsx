@@ -3,7 +3,7 @@ import { fn } from 'storybook/test'
 import { Alert } from './Alert'
 
 const meta = {
-    title: 'Design System/Components/Feedback/Alert',
+    title: 'Design System/Primitives/Feedback/Alert',
     component: Alert,
     tags: ['autodocs'],
     argTypes: {

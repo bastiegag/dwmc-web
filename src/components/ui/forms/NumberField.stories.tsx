@@ -9,7 +9,7 @@ import {
 } from './NumberField'
 
 const meta = {
-    title: 'Design System/Components/Forms/Number Field',
+    title: 'Design System/Primitives/Forms/Number Field',
     component: NumberField,
     tags: ['autodocs'],
     parameters: {

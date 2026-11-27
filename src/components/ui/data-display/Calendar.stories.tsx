@@ -4,7 +4,7 @@ import { Calendar } from './Calendar'
 const selectedDate = new Date(2026, 8, 15)
 
 const meta = {
-    title: 'Design System/Components/Forms/Calendar',
+    title: 'Design System/Primitives/Forms/Calendar',
     component: Calendar,
     tags: ['autodocs'],
     argTypes: {

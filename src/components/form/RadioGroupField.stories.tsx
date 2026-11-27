@@ -11,7 +11,7 @@ const periods = [
 ]
 
 const meta = {
-    title: 'Design System/Composed Fields/RadioGroupField',
+    title: 'Design System/Form Fields/Radio Group Field',
     component: RadioGroupField,
     tags: ['autodocs'],
     args: { id: 'period', label: 'Budget period', options: periods },

@@ -7,7 +7,7 @@ import { IconPickerField } from './IconPickerField'
 import type { FinanceIconName } from '@/shared/finance-icons'
 
 const meta = {
-    title: 'Design System/Composed Fields/IconPickerField',
+    title: 'Design System/Form Fields/Icon Picker Field',
     component: IconPickerField,
     tags: ['autodocs'],
     args: { id: 'account-icon', label: 'Account icon', value: 'wallet', onValueChange: fn() },

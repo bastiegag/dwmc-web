@@ -15,7 +15,7 @@ export const AppTopBar = ({ onLogout, isLoggingOut = false }: AppTopBarProps) =>
     const { month } = useSelectedMonth()
 
     return (
-        <header className="bg-primary py-2 px-4">
+        <header className="bg-primary py-2 px-4 text-primary-foreground">
             <Stack direction="horizontal" gap={4} align="center" justify="between">
                 <Link
                     to={{

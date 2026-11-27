@@ -5,7 +5,7 @@ import { Button } from '@/components/ui'
 import { CheckboxField } from './CheckboxField'
 
 const meta = {
-    title: 'Design System/Composed Fields/CheckboxField',
+    title: 'Design System/Form Fields/Checkbox Field',
     component: CheckboxField,
     tags: ['autodocs'],
     args: { id: 'terms', label: 'Accept the terms of service' },

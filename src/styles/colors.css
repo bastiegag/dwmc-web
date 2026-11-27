@@ -169,7 +169,7 @@
 
     --primary: var(--color-lavender-500);
     --primary-background: var(--color-lavender-50);
-    --primary-foreground: var(--color-lavender-950);
+    --primary-foreground: var(--color-neutral-950);
     --primary-border: var(--color-lavender-700);
     --primary-hover: var(--color-lavender-400);
 
@@ -208,12 +208,12 @@
     --semantic-info-border: var(--color-blue-700);
 
     --muted: var(--color-neutral-100);
-    --muted-foreground: var(--color-neutral-500);
+    --muted-foreground: var(--color-neutral-600);
     --muted-border: var(--color-neutral-200);
     --accent: var(--color-neutral-100);
     --accent-foreground: var(--color-neutral-900);
-    --link: var(--primary);
-    --link-hover: var(--primary-border);
+    --link: var(--color-lavender-800);
+    --link-hover: var(--color-lavender-900);
 
     --card: var(--color-white);
     --card-foreground: var(--color-neutral-900);
@@ -237,7 +237,7 @@
 
     --primary: var(--color-lavender-500);
     --primary-background: var(--color-lavender-950);
-    --primary-foreground: var(--color-lavender-950);
+    --primary-foreground: var(--color-neutral-950);
     --primary-border: var(--color-lavender-400);
     --primary-hover: var(--color-lavender-400);
 

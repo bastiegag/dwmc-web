@@ -6,7 +6,7 @@ import { Button } from '../actions/Button'
 import { Checkbox } from './Checkbox'
 
 const meta = {
-    title: 'Design System/Components/Forms/Checkbox',
+    title: 'Design System/Primitives/Forms/Checkbox',
     component: Checkbox,
     parameters: {
         layout: 'centered',

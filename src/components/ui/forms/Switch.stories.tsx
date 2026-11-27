@@ -4,7 +4,7 @@ import { Field, FieldLabel } from '@/components/form'
 import { Switch } from './Switch'
 
 const meta = {
-    title: 'Design System/Components/Forms/Switch',
+    title: 'Design System/Primitives/Forms/Switch',
     component: Switch,
     tags: ['autodocs'],
 } satisfies Meta<typeof Switch>

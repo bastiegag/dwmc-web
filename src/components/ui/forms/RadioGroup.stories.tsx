@@ -3,7 +3,7 @@ import { Field, FieldLabel, FieldLegend, Fieldset } from '@/components/form'
 import { RadioGroup, RadioGroupItem } from './RadioGroup'
 
 const meta = {
-    title: 'Design System/Components/Forms/Radio Group',
+    title: 'Design System/Primitives/Forms/Radio Group',
     component: RadioGroup,
     tags: ['autodocs'],
 } satisfies Meta<typeof RadioGroup>

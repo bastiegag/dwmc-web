@@ -5,7 +5,7 @@ import { Button } from '@/components/ui'
 import { TextareaField } from './TextareaField'
 
 const meta = {
-    title: 'Design System/Composed Fields/TextareaField',
+    title: 'Design System/Form Fields/Textarea Field',
     component: TextareaField,
     tags: ['autodocs'],
     args: { id: 'note', label: 'Transaction note' },

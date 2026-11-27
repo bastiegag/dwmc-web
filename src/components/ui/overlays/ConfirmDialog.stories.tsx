@@ -5,7 +5,7 @@ import { Button } from '../actions/Button'
 import { ConfirmDialog } from './ConfirmDialog'
 
 const meta = {
-    title: 'Design System/Components/Overlays/Confirm Dialog',
+    title: 'Design System/Primitives/Overlays/Confirm Dialog',
     component: ConfirmDialog,
     tags: ['autodocs'],
     args: {

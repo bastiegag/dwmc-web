@@ -17,7 +17,7 @@ import {
 const accounts = ['Everyday spending', 'Savings', 'Travel fund']
 
 const meta = {
-    title: 'Design System/Components/Forms/Select',
+    title: 'Design System/Primitives/Forms/Select',
     component: Select,
     tags: ['autodocs'],
 } satisfies Meta<typeof Select>

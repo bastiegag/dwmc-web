@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Card } from './Card'
 
 const meta = {
-    title: 'Design System/Components/Surfaces/Card',
+    title: 'Design System/Primitives/Data Display/Card',
     component: Card,
     tags: ['autodocs'],
 } satisfies Meta<typeof Card>

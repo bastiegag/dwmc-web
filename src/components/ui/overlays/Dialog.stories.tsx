@@ -14,7 +14,7 @@ import {
 } from './Dialog'
 
 const meta = {
-    title: 'Design System/Components/Overlays/Dialog',
+    title: 'Design System/Primitives/Overlays/Dialog',
     component: Dialog,
     tags: ['autodocs'],
 } satisfies Meta<typeof Dialog>

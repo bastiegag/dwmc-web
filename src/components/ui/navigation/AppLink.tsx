@@ -9,12 +9,11 @@ export const AppLink = ({ className, ...props }: AppLinkProps) => (
         className={cn(
             // Typography
             'text-link',
-            'decoration-current',
+            'underline decoration-current underline-offset-2',
 
             // Interaction
             'cursor-pointer transition-colors',
             'hover:text-link-hover',
-            'hover:underline hover:underline-offset-2',
 
             // Motion
             'motion-reduce:transition-none',

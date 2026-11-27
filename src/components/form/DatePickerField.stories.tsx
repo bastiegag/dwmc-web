@@ -7,7 +7,7 @@ import { DatePickerField } from './DatePickerField'
 const selectedDate = new Date(2026, 8, 15)
 
 const meta = {
-    title: 'Design System/Composed Fields/DatePickerField',
+    title: 'Design System/Form Fields/Date Picker Field',
     component: DatePickerField,
     tags: ['autodocs'],
     args: { id: 'due-date', label: 'Due date', onSelect: () => undefined },

@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './Tool
 import { Button } from '../actions/Button'
 
 const meta = {
-    title: 'Design System/Components/Overlays/Tooltip',
+    title: 'Design System/Primitives/Overlays/Tooltip',
     component: Tooltip,
     tags: ['autodocs'],
     parameters: {
