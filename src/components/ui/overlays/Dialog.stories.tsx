@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { TextField } from '@/components/form'
 import { Button } from '../actions/Button'
 import {
     Dialog,
@@ -33,15 +34,12 @@ const ProfileForm = () => {
                     setSubmitted(true)
                 }}
             >
-                <label htmlFor="dialog-display-name" className="grid gap-2 text-sm font-medium">
-                    Display name
-                    <input
-                        id="dialog-display-name"
-                        name="displayName"
-                        required
-                        className="h-10 rounded-md border border-input bg-card px-3 text-sm text-foreground"
-                    />
-                </label>
+                <TextField
+                    id="dialog-display-name"
+                    name="displayName"
+                    label="Display name"
+                    required
+                />
                 <DialogFooter>
                     <Button type="submit">Save changes</Button>
                 </DialogFooter>

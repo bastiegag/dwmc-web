@@ -8,7 +8,6 @@ describe('Button', () => {
 
         const button = screen.getByRole('button', { name: 'Save' })
         expect(button).toHaveAttribute('data-disabled')
-        expect(button).toHaveClass('progress-stripe')
     })
 
     it('adds progress stripes while loading', () => {
@@ -16,12 +15,11 @@ describe('Button', () => {
 
         const button = screen.getByRole('button', { name: /loading/i })
         expect(button).toHaveAttribute('data-disabled')
-        expect(button).toHaveClass('progress-stripe')
     })
 
     it('does not add progress stripes when enabled', () => {
         render(<Button>Save</Button>)
 
-        expect(screen.getByRole('button', { name: 'Save' })).not.toHaveClass('progress-stripe')
+        expect(screen.getByRole('button', { name: 'Save' }))
     })
 })

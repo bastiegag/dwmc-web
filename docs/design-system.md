@@ -86,12 +86,25 @@ styling and token-based defaults; they should not hide the Base UI API.
 
 ## Form fields and currency input
 
-Compose form fields with `Field`, `FieldLabel`, `FieldDescription`,
-`FieldError`, and `Fieldset`/`FieldLegend` from `src/components/form/`. The
-label, description, and error are linked to the control with `htmlFor` and
-`aria-describedby`; set `aria-invalid` on the control when `invalid` is true.
-Use `Controller` from React Hook Form for `CurrencyInput` and other controls
-that do not expose a native `ref` value.
+Use the composed fields exported from `src/components/form/` for the
+recommended form composition: `TextField`, `PasswordField`, `CurrencyInput`,
+`CheckboxField`, `SwitchField`, `TextareaField`, `SelectField`,
+`ComboboxField`, `RadioGroupField`, `NumberInputField`, `DatePickerField`,
+`ColorPickerField`, and `IconPickerField`. These provide the field label,
+description, validation message, and accessibility relationships alongside
+their existing UI controls. Use the lower-level `Field`, `FieldLabel`,
+`FieldDescription`, `FieldError`, and `Fieldset`/`FieldLegend` primitives when
+a custom composition is needed; do not wrap an already-composed field in
+another field wrapper.
+
+`SelectField` accepts `options` and `groups` for common choices, or custom
+popup `children` when option rendering needs more control. `ComboboxField`
+accepts string `options` and supports custom option rendering or popup
+children, while keeping the existing Combobox filtering and keyboard behavior.
+For React Hook Form, use `Controller` when a control's value or callback
+contract differs from a native input, such as `CurrencyInput`, select-like
+controls, pickers, and date controls. Connect labels, descriptions, and errors
+through the composed field props rather than duplicating their markup.
 
 Account and section colors use the finite semantic color options in
 `src/shared/semantic-colors.ts`; account and category icons use the shared

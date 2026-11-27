@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
+import { Field, FieldError, FieldLegend, Fieldset } from '@/components/form'
 import { ColorPicker } from './ColorPicker'
 import type { SemanticColor } from '@/shared/semantic-colors'
 
@@ -46,17 +47,19 @@ export const Invalid: Story = {
         const [value, setValue] = useState<SemanticColor>('destructive')
 
         return (
-            <div className="space-y-2">
-                <ColorPicker
-                    value={value}
-                    onValueChange={setValue}
-                    invalid
-                    aria-describedby="color-picker-error"
-                />
-                <p id="color-picker-error" className="text-sm text-destructive-border">
-                    Choose a supported color.
-                </p>
-            </div>
+            <Field invalid className="space-y-2">
+                <Fieldset>
+                    <FieldLegend id="color-picker-legend">Section color</FieldLegend>
+                    <ColorPicker
+                        value={value}
+                        onValueChange={setValue}
+                        invalid
+                        aria-labelledby="color-picker-legend"
+                        aria-describedby="color-picker-error"
+                    />
+                </Fieldset>
+                <FieldError id="color-picker-error">Choose a supported color.</FieldError>
+            </Field>
         )
     },
 }

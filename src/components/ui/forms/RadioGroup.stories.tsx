@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Label } from './Label'
+import { Field, FieldLabel, FieldLegend, Fieldset } from '@/components/form'
 import { RadioGroup, RadioGroupItem } from './RadioGroup'
 
 const meta = {
@@ -33,19 +33,32 @@ const BudgetPeriod = ({
     orientation?: 'vertical' | 'horizontal'
     options?: typeof defaultOptions
 }) => (
-    <RadioGroup
-        defaultValue="monthly"
-        disabled={disabled}
-        aria-label="Budget period"
-        orientation={orientation}
-    >
-        {options.map((option) => (
-            <div key={option.value} className="flex items-center gap-2">
-                <RadioGroupItem value={option.value} id={`budget-period-${option.value}`} />
-                <Label htmlFor={`budget-period-${option.value}`}>{option.label}</Label>
-            </div>
-        ))}
-    </RadioGroup>
+    <Fieldset>
+        <FieldLegend id="budget-period-legend">Budget period</FieldLegend>
+        <RadioGroup
+            defaultValue="monthly"
+            disabled={disabled}
+            aria-labelledby="budget-period-legend"
+            orientation={orientation}
+        >
+            {options.map((option) => (
+                <Field
+                    key={option.value}
+                    disabled={disabled}
+                    className="flex items-center gap-2 space-y-0"
+                >
+                    <RadioGroupItem
+                        value={option.value}
+                        id={`budget-period-${option.value}`}
+                        disabled={disabled}
+                    />
+                    <FieldLabel htmlFor={`budget-period-${option.value}`}>
+                        {option.label}
+                    </FieldLabel>
+                </Field>
+            ))}
+        </RadioGroup>
+    </Fieldset>
 )
 
 export const Default: Story = {

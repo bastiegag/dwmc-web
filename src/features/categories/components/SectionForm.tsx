@@ -1,10 +1,8 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
-import { FormError } from '@/components/form/FormError'
-import { Button, ColorPicker } from '@/components/ui'
-import { FormField } from '@/components/form/FormField'
-import { TextField } from '@/components/form/TextField'
+import { ColorPickerField, FormError, TextField } from '@/components/form'
+import { Button } from '@/components/ui'
 import { sectionFormSchema, type SectionFormValues } from '@/features/categories/schemas'
 
 type SectionFormProps = {
@@ -64,34 +62,23 @@ export const SectionForm = ({
                     error={errors.name?.message}
                 />
 
-                <FormField
-                    id="section-color"
-                    label="Color"
-                    required
-                    error={errors.color?.message}
-                    disabled={isBusy}
-                >
-                    <Controller
-                        name="color"
-                        control={control}
-                        render={({ field, fieldState }) => (
-                            <ColorPicker
-                                id="section-color"
-                                ref={field.ref}
-                                value={field.value}
-                                onValueChange={field.onChange}
-                                onBlur={field.onBlur}
-                                aria-labelledby="section-color-label"
-                                required
-                                disabled={isBusy}
-                                invalid={Boolean(fieldState.error)}
-                                aria-describedby={
-                                    fieldState.error ? 'section-color-error' : undefined
-                                }
-                            />
-                        )}
-                    />
-                </FormField>
+                <Controller
+                    name="color"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <ColorPickerField
+                            id="section-color"
+                            label="Color"
+                            required
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            onBlur={field.onBlur}
+                            ref={field.ref}
+                            disabled={isBusy}
+                            error={fieldState.error?.message}
+                        />
+                    )}
+                />
 
                 <Button type="submit" className="w-full" isLoading={isBusy} loadingText="Saving...">
                     {submitLabel}

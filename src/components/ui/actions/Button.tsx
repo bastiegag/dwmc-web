@@ -151,11 +151,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 {...props}
                 ref={ref}
                 type={asChild ? undefined : type}
-                className={cn(
-                    buttonVariants({ variant, color, size, icon }),
-                    //isLoading && 'progress-stripe',
-                    className,
-                )}
+                className={cn(buttonVariants({ variant, color, size, icon }), className)}
                 disabled={isDisabled}
                 focusableWhenDisabled={isLoading && !disabled}
                 aria-busy={isLoading || undefined}

@@ -1,16 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import {
-    Button,
-    Input,
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectGroupLabel,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui'
-import { FormField } from '@/components/form/FormField'
+import { Button, Input } from '@/components/ui'
+import { FormField, SelectField } from '@/components/form'
 import type {
     GetTransactionsParams,
     TransactionType,
@@ -20,6 +10,12 @@ import type { SectionWithCategories } from '@/features/categories/types'
 
 const ALL_FILTERS_VALUE = '__all__'
 const SEARCH_DEBOUNCE_MS = 300
+
+const getFilterValue = (value: unknown): string | null => {
+    if (value === null || typeof value === 'string') return value
+
+    throw new TypeError('Transaction filter values must be strings or null.')
+}
 
 const isTransactionType = (value: string): value is TransactionType =>
     value === 'INCOME' || value === 'EXPENSE' || value === 'TRANSFER' || value === 'ADJUSTMENT'
@@ -77,70 +73,57 @@ export const TransactionFilters = ({ accounts, sections, onChange }: Transaction
 
     return (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
-            <FormField id="filter-type" label="Type">
-                <Select
-                    value={type}
-                    onValueChange={(value) => setType(value === ALL_FILTERS_VALUE ? null : value)}
-                >
-                    <SelectTrigger id="filter-type">
-                        <SelectValue placeholder="All" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value={ALL_FILTERS_VALUE}>All</SelectItem>
-                        <SelectItem value="INCOME">Income</SelectItem>
-                        <SelectItem value="EXPENSE">Expense</SelectItem>
-                        <SelectItem value="TRANSFER">Transfer</SelectItem>
-                        <SelectItem value="ADJUSTMENT">Adjustment</SelectItem>
-                    </SelectContent>
-                </Select>
-            </FormField>
+            <SelectField
+                id="filter-type"
+                label="Type"
+                placeholder="All"
+                value={type}
+                onValueChange={(value) => {
+                    const filterValue = getFilterValue(value)
+                    setType(filterValue === ALL_FILTERS_VALUE ? null : filterValue)
+                }}
+                options={[
+                    { value: ALL_FILTERS_VALUE, label: 'All' },
+                    { value: 'INCOME', label: 'Income' },
+                    { value: 'EXPENSE', label: 'Expense' },
+                    { value: 'TRANSFER', label: 'Transfer' },
+                    { value: 'ADJUSTMENT', label: 'Adjustment' },
+                ]}
+            />
 
-            <FormField id="filter-account" label="Account">
-                <Select
-                    value={accountId}
-                    onValueChange={(value) =>
-                        setAccountId(value === ALL_FILTERS_VALUE ? null : value)
-                    }
-                >
-                    <SelectTrigger id="filter-account">
-                        <SelectValue placeholder="All accounts" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value={ALL_FILTERS_VALUE}>All accounts</SelectItem>
-                        {accounts.map((account) => (
-                            <SelectItem key={account.id} value={account.id}>
-                                {account.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </FormField>
+            <SelectField
+                id="filter-account"
+                label="Account"
+                placeholder="All accounts"
+                value={accountId}
+                onValueChange={(value) => {
+                    const filterValue = getFilterValue(value)
+                    setAccountId(filterValue === ALL_FILTERS_VALUE ? null : filterValue)
+                }}
+                options={[
+                    { value: ALL_FILTERS_VALUE, label: 'All accounts' },
+                    ...accounts.map((account) => ({ value: account.id, label: account.name })),
+                ]}
+            />
 
-            <FormField id="filter-category" label="Category">
-                <Select
-                    value={categoryId}
-                    onValueChange={(value) =>
-                        setCategoryId(value === ALL_FILTERS_VALUE ? null : value)
-                    }
-                >
-                    <SelectTrigger id="filter-category">
-                        <SelectValue placeholder="All categories" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value={ALL_FILTERS_VALUE}>All categories</SelectItem>
-                        {sections.map((section) => (
-                            <SelectGroup key={section.id}>
-                                <SelectGroupLabel>{section.name}</SelectGroupLabel>
-                                {section.categories.map((category) => (
-                                    <SelectItem key={category.id} value={category.id}>
-                                        {category.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectGroup>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </FormField>
+            <SelectField
+                id="filter-category"
+                label="Category"
+                placeholder="All categories"
+                value={categoryId}
+                onValueChange={(value) => {
+                    const filterValue = getFilterValue(value)
+                    setCategoryId(filterValue === ALL_FILTERS_VALUE ? null : filterValue)
+                }}
+                options={[{ value: ALL_FILTERS_VALUE, label: 'All categories' }]}
+                groups={sections.map((section) => ({
+                    label: section.name,
+                    options: section.categories.map((category) => ({
+                        value: category.id,
+                        label: category.name,
+                    })),
+                }))}
+            />
 
             <FormField id="filter-search" label="Search">
                 <div className="flex gap-2">

@@ -1,17 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { FormError } from '@/components/form/FormError'
-import { FormField } from '@/components/form/FormField'
-import { TextField } from '@/components/form/TextField'
-import {
-    Button,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui'
+import { FormError, SelectField, TextField } from '@/components/form'
+import { Button } from '@/components/ui'
 import { useUpdateProfile } from '../hooks'
 import { profileFormSchema, type ProfileFormValues } from '../schemas/profile.schema'
 import { supportedCurrencies, type UserProfile } from '../types/profile.types'
@@ -122,37 +113,26 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
                             amounts.
                         </p>
                     </div>
-                    <FormField
-                        id="preferredCurrency"
-                        label="Preferred currency"
-                        error={errors.preferredCurrency?.message}
-                    >
-                        <Controller
-                            name="preferredCurrency"
-                            control={control}
-                            render={({ field }) => (
-                                <Select value={field.value} onValueChange={field.onChange}>
-                                    <SelectTrigger
-                                        id="preferredCurrency"
-                                        aria-describedby={
-                                            errors.preferredCurrency
-                                                ? 'preferredCurrency-error'
-                                                : undefined
-                                        }
-                                    >
-                                        <SelectValue placeholder="Select a currency" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {supportedCurrencies.map((currency) => (
-                                            <SelectItem key={currency} value={currency}>
-                                                {currency}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            )}
-                        />
-                    </FormField>
+                    <Controller
+                        name="preferredCurrency"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <SelectField
+                                id="preferredCurrency"
+                                label="Preferred currency"
+                                options={supportedCurrencies.map((currency) => ({
+                                    value: currency,
+                                    label: currency,
+                                }))}
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                onBlur={field.onBlur}
+                                ref={field.ref}
+                                error={fieldState.error?.message}
+                                placeholder="Select a currency"
+                            />
+                        )}
+                    />
                 </section>
 
                 <Button

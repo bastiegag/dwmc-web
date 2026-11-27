@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
 import { useState } from 'react'
+import { FormField } from '@/components/form'
+import { Button } from '@/components/ui/actions/Button'
 import {
     Combobox,
     ComboboxContent,
@@ -176,4 +178,87 @@ export const GroupedOptions: Story = {
             </ComboboxContent>
         </Combobox>
     ),
+}
+
+function AccountForm() {
+    const [account, setAccount] = useState<string | null>(null)
+    const [attempted, setAttempted] = useState(false)
+    const [submitted, setSubmitted] = useState(false)
+    const error = attempted && !account ? 'Choose an account to continue.' : undefined
+    const describedBy = ['account-combobox-description', error && 'account-combobox-error']
+        .filter(Boolean)
+        .join(' ')
+
+    return (
+        <form
+            noValidate
+            className="grid w-72 gap-4"
+            onSubmit={(event) => {
+                event.preventDefault()
+                setAttempted(true)
+                setSubmitted(Boolean(account))
+            }}
+        >
+            <FormField
+                id="account-combobox"
+                label="Account"
+                description="Search and select the account for this transaction."
+                error={error}
+                required
+            >
+                <Combobox
+                    items={accounts}
+                    value={account}
+                    onValueChange={(value) => {
+                        setAccount(value)
+                        setSubmitted(false)
+                    }}
+                >
+                    <ComboboxInput
+                        id="account-combobox"
+                        placeholder="Choose an account"
+                        required
+                        aria-invalid={Boolean(error)}
+                        aria-describedby={describedBy}
+                    />
+                    <ComboboxContent>
+                        <ComboboxEmpty>No accounts found.</ComboboxEmpty>
+                        <ComboboxList>
+                            {(item: string) => (
+                                <ComboboxItem key={item} value={item}>
+                                    {item}
+                                </ComboboxItem>
+                            )}
+                        </ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
+            </FormField>
+            <Button type="submit">Continue</Button>
+            {submitted && <p role="status">Account selected: {account}.</p>}
+        </form>
+    )
+}
+
+export const FormExample: Story = {
+    render: () => <AccountForm />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement.ownerDocument.body)
+        const input = canvas.getByRole('combobox', { name: 'Account' })
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
+        await expect(await canvas.findByRole('alert')).toHaveTextContent(
+            'Choose an account to continue.',
+        )
+        await expect(input).toHaveAttribute('aria-invalid', 'true')
+
+        await userEvent.click(input)
+        await userEvent.type(input, 'sav')
+        await expect(await canvas.findByRole('option', { name: 'Savings' })).toBeVisible()
+        await userEvent.keyboard('{ArrowDown}{Enter}')
+        await expect(input).toHaveValue('Savings')
+        await userEvent.click(canvas.getByRole('button', { name: 'Continue' }))
+        await expect(await canvas.findByRole('status')).toHaveTextContent(
+            'Account selected: Savings.',
+        )
+    },
 }

@@ -1,20 +1,15 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, useWatch } from 'react-hook-form'
-import { FormError } from '@/components/form/FormError'
-import { CurrencyInput } from '@/components/form/CurrencyInput'
-import { FormField } from '@/components/form/FormField'
 import {
-    Button,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    ColorPicker,
-    IconPicker,
-} from '@/components/ui'
-import { TextField } from '@/components/form/TextField'
+    ColorPickerField,
+    CurrencyInput,
+    FormError,
+    IconPickerField,
+    SelectField,
+    TextField,
+} from '@/components/form'
+import { Button } from '@/components/ui'
 import { MAX_MONEY_AMOUNT } from '@/shared/money'
 import {
     accountFormSchema,
@@ -95,32 +90,23 @@ export const AccountForm = ({
                 error={errors.name?.message}
             />
 
-            <FormField id="account-type" label="Type" required error={errors.type?.message}>
-                <Controller
-                    name="type"
-                    control={control}
-                    render={({ field }) => (
-                        <Select value={field.value} onValueChange={field.onChange} required>
-                            <SelectTrigger
-                                id="account-type"
-                                ref={field.ref}
-                                onBlur={field.onBlur}
-                                aria-invalid={Boolean(errors.type)}
-                                aria-describedby={errors.type ? 'account-type-error' : undefined}
-                            >
-                                <SelectValue placeholder="Select account type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {accountTypeOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-                />
-            </FormField>
+            <Controller
+                name="type"
+                control={control}
+                render={({ field, fieldState }) => (
+                    <SelectField
+                        id="account-type"
+                        label="Type"
+                        required
+                        options={accountTypeOptions}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                        error={fieldState.error?.message}
+                    />
+                )}
+            />
 
             <Controller
                 name="startingBalance"
@@ -176,47 +162,41 @@ export const AccountForm = ({
                 with reality.
             </p>
 
-            <FormField id="account-color" label="Color" required error={errors.color?.message}>
-                <Controller
-                    name="color"
-                    control={control}
-                    render={({ field, fieldState }) => (
-                        <ColorPicker
-                            id="account-color"
-                            ref={field.ref}
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            onBlur={field.onBlur}
-                            aria-labelledby="account-color-label"
-                            required
-                            disabled={isPending || isSubmitting}
-                            invalid={Boolean(fieldState.error)}
-                            aria-describedby={fieldState.error ? 'account-color-error' : undefined}
-                        />
-                    )}
-                />
-            </FormField>
+            <Controller
+                name="color"
+                control={control}
+                render={({ field, fieldState }) => (
+                    <ColorPickerField
+                        id="account-color"
+                        label="Color"
+                        required
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                        disabled={isPending || isSubmitting}
+                        error={fieldState.error?.message}
+                    />
+                )}
+            />
 
-            <FormField id="account-icon" label="Icon" required error={errors.icon?.message}>
-                <Controller
-                    name="icon"
-                    control={control}
-                    render={({ field, fieldState }) => (
-                        <IconPicker
-                            id="account-icon"
-                            ref={field.ref}
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            onBlur={field.onBlur}
-                            aria-labelledby="account-icon-label"
-                            required
-                            disabled={isPending || isSubmitting}
-                            invalid={Boolean(fieldState.error)}
-                            aria-describedby={fieldState.error ? 'account-icon-error' : undefined}
-                        />
-                    )}
-                />
-            </FormField>
+            <Controller
+                name="icon"
+                control={control}
+                render={({ field, fieldState }) => (
+                    <IconPickerField
+                        id="account-icon"
+                        label="Icon"
+                        required
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        ref={field.ref}
+                        disabled={isPending || isSubmitting}
+                        error={fieldState.error?.message}
+                    />
+                )}
+            />
 
             <FormError message={errorMessage} />
 

@@ -75,8 +75,8 @@ export const SuccessFeedback: Story = {
     play: async ({ canvas, userEvent }) => {
         await userEvent.type(canvas.getByLabelText(/^Email/), 'person@example.com')
         await userEvent.click(canvas.getByRole('button', { name: 'Send reset link' }))
-        await expect(canvas.findByRole('status')).resolves.toHaveTextContent(
-            'Password reset link sent!',
-        )
+        await expect(
+            canvas.findByRole('region', { name: /notifications/i }),
+        ).resolves.toHaveTextContent('Reset link sent')
     },
 }

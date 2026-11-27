@@ -1,7 +1,9 @@
-import { createElement, useState, type ReactNode } from 'react'
+import { createElement, Fragment, useState, type ReactNode } from 'react'
 import type { Decorator } from '@storybook/react-vite'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
+import { Toaster } from '@/components/ui'
+import { ThemeProvider } from '@/shared/theme'
 
 const AppStoryProviders = ({ children }: { children: ReactNode }) => {
     const [queryClient] = useState(
@@ -17,7 +19,15 @@ const AppStoryProviders = ({ children }: { children: ReactNode }) => {
     return createElement(
         QueryClientProvider,
         { client: queryClient },
-        createElement(MemoryRouter, null, children),
+        createElement(ThemeProvider, {
+            defaultTheme: 'light',
+            children: createElement(
+                Fragment,
+                null,
+                createElement(MemoryRouter, null, children),
+                createElement(Toaster),
+            ),
+        }),
     )
 }
 

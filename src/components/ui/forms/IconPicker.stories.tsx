@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
+import { Field, FieldError, FieldLegend, Fieldset } from '@/components/form'
 import { IconPicker } from './IconPicker'
 import type { FinanceIconName } from '@/shared/finance-icons'
 
@@ -42,15 +43,21 @@ export const Disabled: Story = {
 }
 
 export const Invalid: Story = {
-    args: { value: 'shopping-cart', invalid: true, 'aria-describedby': 'icon-picker-error' },
+    args: {
+        value: 'shopping-cart',
+        invalid: true,
+        'aria-labelledby': 'icon-picker-legend',
+        'aria-describedby': 'icon-picker-error',
+    },
     decorators: [
         (Story) => (
-            <div className="space-y-2">
-                <Story />
-                <p id="icon-picker-error" className="text-sm text-destructive-border">
-                    Choose a supported icon.
-                </p>
-            </div>
+            <Field invalid className="space-y-2">
+                <Fieldset>
+                    <FieldLegend id="icon-picker-legend">Account icon</FieldLegend>
+                    <Story />
+                </Fieldset>
+                <FieldError id="icon-picker-error">Choose a supported icon.</FieldError>
+            </Field>
         ),
     ],
 }
